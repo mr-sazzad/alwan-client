@@ -29,15 +29,24 @@ const ordersApi = baseApi.injectEndpoints({
 
     getSingleOrderByOrderId: build.query({
       query: (orderId) => ({
-        url: `/orders/${orderId}`,
+        url: `/orders/single-order/${orderId}`,
         method: "GET",
       }),
       providesTags: [tagTypes.order],
     }),
 
-    updateSingleOrder: build.mutation({
-      query: ({ userId, data }) => ({
-        url: `/orders/${userId}`,
+    updateOrderByOrderId: build.mutation({
+      query: ({ orderId, ...data }) => ({
+        url: `/orders/update-order/${orderId}`,
+        method: "PATCH",
+        data,
+      }),
+      invalidatesTags: [tagTypes.order],
+    }),
+
+    updateOrderStatus: build.mutation({
+      query: ({ id, ...data }) => ({
+        url: `/orders/update-order-item/${id}`,
         method: "PATCH",
         data,
       }),
@@ -51,5 +60,6 @@ export const {
   useGetAllOrdersQuery,
   useGetSingleUserOrdersQuery,
   useGetSingleOrderByOrderIdQuery,
-  useUpdateSingleOrderMutation,
+  useUpdateOrderByOrderIdMutation,
+  useUpdateOrderStatusMutation,
 } = ordersApi;

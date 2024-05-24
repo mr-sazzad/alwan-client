@@ -8,7 +8,7 @@ import { Button } from "../ui/button";
 const EmptyProductsPage = () => {
   const router = useRouter();
   return (
-    <div className="flex flex-col items-center justify-center h-64 w-full">
+    <div className="flex flex-col items-center justify-center h-full w-full">
       <Image
         src={notFoundSvg}
         alt="No Products Found"
@@ -17,7 +17,7 @@ const EmptyProductsPage = () => {
       />
       <h2 className="text-xl font-semibold mb-2">No Products Found</h2>
       <p className="text-center text-gray-600 mb-2">
-        We can't find any products matching your filters.
+        We can&apos;t find any products matching your filters.
       </p>
       <p className="text-center text-gray-600 mb-2">
         Please reset your filters and try again.

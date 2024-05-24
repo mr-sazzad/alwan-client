@@ -10,6 +10,8 @@ import { ITShirt as ITShirtProduct } from "@/types";
 import { useSearchParams } from "next/navigation";
 import Loading from "../loading";
 
+import ProductsPageBreadCrumb from "@/components/breadcrumbs/products-page-breadcrumbs";
+
 const ProductsPage = () => {
   const { data: products, isLoading } = useGetAllProductsQuery(undefined);
   const searchParams = useSearchParams();
@@ -78,11 +80,15 @@ const ProductsPage = () => {
         </div>
 
         {/* Products list */}
-        <div className="flex-1 flex flex-wrap justify-start pt-5 h-full">
-          {!filteredProducts.length && <EmptyProductsPage />}
-          {filteredProducts.map((tShirt: ITShirtProduct) => (
-            <ProductCard key={tShirt.id} {...tShirt} />
-          ))}
+        <div className="flex-1 flex flex-col mt-2 h-full">
+          <ProductsPageBreadCrumb />
+
+          <div className="flex flex-wrap justify-start pt-2">
+            {!filteredProducts.length && <EmptyProductsPage />}
+            {filteredProducts.map((tShirt: ITShirtProduct) => (
+              <ProductCard key={tShirt.id} {...tShirt} />
+            ))}
+          </div>
         </div>
       </div>
     </MaxWidth>

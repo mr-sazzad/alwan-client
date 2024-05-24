@@ -29,8 +29,11 @@ export interface ITShirt {
   desc: string[];
   features: string[];
   images: string[];
-  totalStocks: number;
   orderQty: number;
+  mSizeStock: number;
+  lSizeStock: number;
+  xlSizeStock: number;
+  xxlSizeStock: number;
   orderSize: string;
   sizes: string[];
   color:
@@ -48,7 +51,7 @@ export interface ITShirt {
 
 export interface OrderItem {
   productId: string;
-  size?: string;
+  size: string;
   quantity: number;
 }
 

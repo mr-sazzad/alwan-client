@@ -1,7 +1,8 @@
 import Footer from "@/components/footer/footer";
 import Header from "@/components/header";
 import { Toaster } from "@/components/ui/toaster";
-import Providers from "@/context/reduxProvider";
+import Providers from "@/providers/reduxProvider";
+import { ThemeProvider } from "@/providers/theme-provider";
 import type { Metadata } from "next";
 import { Nunito } from "next/font/google";
 import "./globals.css";
@@ -25,10 +26,17 @@ export default function RootLayout({
     <Providers>
       <html lang="en">
         <body className={font.className}>
-          <Header />
-          {children}
-          <Toaster />
-          <Footer />
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <Header />
+            {children}
+            <Toaster />
+            <Footer />
+          </ThemeProvider>
         </body>
       </html>
     </Providers>

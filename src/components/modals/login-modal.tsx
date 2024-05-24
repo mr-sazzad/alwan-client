@@ -2,7 +2,10 @@
 
 import { getUserFromLocalStorage } from "@/helpers/jwt";
 import { setToLocalStorage } from "@/helpers/local-storage";
-import { useSignInUserMutation } from "@/redux/api/auth/auth-api";
+import {
+  useLoginWithGoogleMutation,
+  useSignInUserMutation,
+} from "@/redux/api/auth/auth-api";
 import { loginSchema } from "@/schemas/login-schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
@@ -28,6 +31,7 @@ import {
   FormMessage,
 } from "../ui/form";
 import { Input } from "../ui/input";
+import { Separator } from "../ui/separator";
 import { toast } from "../ui/use-toast";
 
 interface LoginModalProps {
@@ -37,6 +41,8 @@ interface LoginModalProps {
 
 const LoginModal: React.FC<LoginModalProps> = ({ open, setOpen }) => {
   const [signInUser, { isLoading }] = useSignInUserMutation();
+  const [loginWithGoogle, { isLoading: isGoogleloading }] =
+    useLoginWithGoogleMutation();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
@@ -74,6 +80,13 @@ const LoginModal: React.FC<LoginModalProps> = ({ open, setOpen }) => {
         description: "Something went wrong Please try again",
       });
     }
+  };
+
+  const handleSignInWithGoogle = async () => {
+    console.log("hello");
+    const result = loginWithGoogle(null);
+
+    console.log("login with google => ", result);
   };
 
   return (
@@ -126,11 +139,17 @@ const LoginModal: React.FC<LoginModalProps> = ({ open, setOpen }) => {
           </Form>
           <div className="flex flex-col gap-5 w-full">
             {/* GOOGLE LOGIN PART */}
+            <div className="flex gap-2 items-center w-full">
+              <Separator orientation="horizontal" className="flex-1" />
+              <span className="text-sm">OR</span>
+              <Separator orientation="horizontal" className="flex-1" />
+            </div>
             <div className="w-full">
               <Button
                 className="w-full flex gap-2"
                 variant="outline"
                 type="submit"
+                onClick={handleSignInWithGoogle}
               >
                 <FcGoogle />
                 <span className="text-slate-500">Sign In With Google</span>

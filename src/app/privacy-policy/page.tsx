@@ -99,7 +99,7 @@ const PrivacyPolicy = () => {
         contacting us.
       </p>
       <h3 className="mt-5 text-lg font-medium text-gray-600 mb-1">
-        6. Children's Privacy:
+        6. Children&apos;s Privacy:
       </h3>
       <p>
         Our website and services are not directed to children under the age of

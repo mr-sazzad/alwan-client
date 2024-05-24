@@ -6,7 +6,7 @@ import { colors } from "@/static/product-color";
 import { prices } from "@/static/product-prices";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Checkbox } from "../ui/checkbox";
@@ -22,8 +22,6 @@ import {
 
 const Filter = () => {
   const router = useRouter();
-  const [initialLoad, setInitialLoad] = useState(false);
-
   const form = useForm<z.infer<typeof filterSchema>>({
     resolver: zodResolver(filterSchema),
     defaultValues: {
@@ -34,14 +32,7 @@ const Filter = () => {
 
   const { watch } = form;
 
-  useEffect(() => {
-    const subscription = watch(() => {
-      updateQueryParams();
-    });
-    return () => subscription.unsubscribe();
-  }, [watch]);
-
-  const updateQueryParams = () => {
+  const updateQueryParams = useCallback(() => {
     const colorsValue = form.getValues("colors");
     const pricesValue = form.getValues("prices");
     const queryParams = new URLSearchParams();
@@ -58,8 +49,15 @@ const Filter = () => {
       `/t-shirts${queryString ? `?${queryString}` : ""}`,
       undefined
     );
-  };
+  }, [form, router]);
 
+  useEffect(() => {
+    // This ensures effect runs only when watch values change after the initial render
+    const subscription = watch(() => {
+      updateQueryParams();
+    });
+    return () => subscription.unsubscribe();
+  }, [watch, updateQueryParams]);
   return (
     <div>
       <h2 className="text-2xl font-semibold py-5">Filter By</h2>

@@ -2,14 +2,15 @@
 
 import Link from "next/link";
 import Cart from "./cart/cart";
-import Menu from "./menu";
+import Navigation from "./navigation-menu/navigation";
 import Profile from "./profile/profile-menu";
+import ModeToggle from "./themes/theme-toggle";
 
 const Header = () => {
   return (
-    <nav className="flex justify-between items-center h-[90px] w-full md:px-14 sm:px-10 px-5 fixed top-0 z-50 bg-white/30 backdrop-blur-2xl">
+    <nav className="flex justify-between items-center h-[90px] w-full md:px-14 sm:px-10 px-5 fixed top-0 z-50 backdrop-blur-2xl border-b border-gray-200">
       <menu className="flex gap-5 flex-1">
-        <Menu />
+        <Navigation />
       </menu>
       <div className="font-bold text-2xl cursor-pointer flex-1 flex justify-center">
         <Link href="/">ALWAN</Link>
@@ -19,6 +20,7 @@ const Header = () => {
           <Cart />
         </div>
         <Profile />
+        <ModeToggle />
       </menu>
     </nav>
   );

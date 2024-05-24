@@ -1,6 +1,5 @@
 "use client";
 
-import AlertDialogComp from "@/components/alert-dialog/alert-dialog";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenuContent,
@@ -26,13 +25,7 @@ export type Order = {
 const OrderTableColumns = () => {
   const [open, setOpen] = useState(false);
 
-  const isLoading = false;
-
   const path = "/admins/dashboard/orders";
-
-  const deleteProductHandler = async (id: string) => {
-    //   const result = await deleteSingleProduct(id);
-  };
 
   const columns: ColumnDef<Order>[] = [
     {
@@ -81,23 +74,8 @@ const OrderTableColumns = () => {
                     <Button variant="secondary">Order Details</Button>
                   </Link>
                 </DropdownMenuItem>
-                {/* <DropdownMenuSeparator />
-                <DropdownMenuItem onSelect={() => setOpen(true)}>
-                  <Button variant="destructive" className="w-full">
-                    Delete this product
-                  </Button>
-                </DropdownMenuItem> */}
               </DropdownMenuContent>
             </DropdownMenu>
-            {/* alert dialog */}
-            <AlertDialogComp
-              open={open}
-              setOpen={setOpen}
-              loading={isLoading}
-              title="Confirm Product Deletion"
-              description="This action is irreversible and will permanently remove the product from your inventory. Please note, we do not backup our database, so deleted products cannot be retrieved."
-              handler={() => deleteProductHandler(id)}
-            />
           </div>
         );
       },

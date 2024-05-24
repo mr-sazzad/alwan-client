@@ -8,7 +8,7 @@ const Page = () => {
 
       <div className="mt-5 text-center">
         <p className="text-lg font-medium text-gray-500">
-          If you have any query please don't hasitate to email us
+          If you have any query please don&apos;t hasitate to email us
         </p>
         <p>Our Email: alwan.bd@gmail.com</p>
       </div>

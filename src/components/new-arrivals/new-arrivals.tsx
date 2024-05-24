@@ -13,17 +13,15 @@ const NewArrivals = () => {
 
   if (isLoading) {
     return (
-      <div className="h-[350px]">
+      <div className="h-[400px]">
         <Loading />;
       </div>
     );
   }
 
-  console.log("Products => ", products);
-
   return (
     <MaxWidth>
-      <div className="my-2">
+      <div className="my-2 w-full">
         <Banner bannerImage={bannerImage} />
       </div>
 

@@ -62,7 +62,7 @@ const Profile = () => {
           >
             <Avatar>
               <AvatarImage
-                src="https://i.ibb.co/sy9pQN0/profile.png"
+                src="https://i.ibb.co/Qkf0sqm/images.jpg"
                 alt="profile-image"
               />
               <AvatarFallback>AW</AvatarFallback>

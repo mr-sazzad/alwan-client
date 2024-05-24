@@ -1,7 +1,7 @@
 "use client";
 
 import { ITShirt } from "@/types";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FaBangladeshiTakaSign } from "react-icons/fa6";
 import ImageSlider from "../cards/image-slider";
 import { Button } from "../ui/button";
@@ -32,6 +32,21 @@ const BuyProductModal = ({ product }: { product: ITShirt }) => {
   const [isPlusHovered, setIsPlusHovered] = useState(false);
   const [isMinusHovered, setIsMinusHovered] = useState(false);
 
+  // State for managing stock of each size
+  const availableQuantities = useRef(0);
+
+  useEffect(() => {
+    if (product && product.sizes && product.sizes.length > 0) {
+      const initialSize = product.sizes[0];
+      setSelectedSize(initialSize);
+      const sizeKey =
+        `${initialSize.toLocaleLowerCase()}SizeStock` as keyof ITShirt;
+      const initialSizeQuantities = product[sizeKey] as number | undefined;
+      availableQuantities.current = initialSizeQuantities || 0;
+      setQuantity(initialSizeQuantities && initialSizeQuantities > 0 ? 1 : 0);
+    }
+  }, [product]);
+
   const handlePlusMouseEnter = () => {
     setIsPlusHovered(true);
   };
@@ -49,9 +64,10 @@ const BuyProductModal = ({ product }: { product: ITShirt }) => {
   };
 
   const handleIncrementQuantity = () => {
-    if (quantity < product.totalStocks) {
-      setQuantity((prevQuantity) => prevQuantity + 1);
-    }
+    setQuantity((prev) => {
+      const maxQty = availableQuantities.current;
+      return prev < maxQty ? prev + 1 : prev;
+    });
   };
 
   const handleDecrementQuantity = () => {
@@ -62,6 +78,10 @@ const BuyProductModal = ({ product }: { product: ITShirt }) => {
 
   const handleSelectSize = (size: string) => {
     setSelectedSize(size);
+    const sizeKey = `${size.toLocaleLowerCase()}SizeStock` as keyof ITShirt;
+    const sizeQuantities = product[sizeKey] as number | undefined;
+    availableQuantities.current = sizeQuantities || 0;
+    setQuantity(sizeQuantities && sizeQuantities > 0 ? 1 : 0);
   };
 
   const handlePlaceOrder = () => {
@@ -161,9 +181,10 @@ const BuyProductModal = ({ product }: { product: ITShirt }) => {
               </div>
 
               <div className="capitalize flex gap-[1px]">
-                {product.totalStocks < 3 && (
+                {availableQuantities.current < 3 && (
                   <p className="text-xs flex items-center">
-                    Only {product.totalStocks > 1 ? "pics are" : "Pic"}{" "}
+                    Only{" "}
+                    {availableQuantities.current > 1 ? "pieces are" : "piece"}{" "}
                     available
                   </p>
                 )}

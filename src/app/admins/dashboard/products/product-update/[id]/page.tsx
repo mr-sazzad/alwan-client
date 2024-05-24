@@ -70,7 +70,7 @@ const UpdateProductPage = () => {
         prices: product.prices,
       });
     }
-  }, [product, form.reset]);
+  }, [product, form.reset, form]);
 
   if (isLoading) {
     return <Loading />;
