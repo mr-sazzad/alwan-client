@@ -5,7 +5,6 @@ import { useGetAllProductsQuery } from "@/redux/api/products/productsApi";
 import { bannerImage } from "@/static/banner-image";
 import { ITShirt } from "@/types";
 import ProductCard from "../cards/product-card";
-import MaxWidth from "../max-width";
 import Banner from "./banner";
 
 const NewArrivals = () => {
@@ -14,13 +13,13 @@ const NewArrivals = () => {
   if (isLoading) {
     return (
       <div className="h-[400px]">
-        <Loading />;
+        <Loading />
       </div>
     );
   }
 
   return (
-    <MaxWidth>
+    <div>
       <div className="my-2 w-full">
         <Banner bannerImage={bannerImage} />
       </div>
@@ -31,7 +30,7 @@ const NewArrivals = () => {
             <ProductCard key={index} {...card} />
           ))}
       </div>
-    </MaxWidth>
+    </div>
   );
 };
 

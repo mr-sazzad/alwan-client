@@ -3,7 +3,7 @@ import banner from "../../images/banner.jpeg";
 
 const Adverticement = () => {
   return (
-    <div className="px-7">
+    <div>
       <Image
         src={banner}
         alt="banner-image"

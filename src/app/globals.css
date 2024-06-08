@@ -3,7 +3,8 @@
 @tailwind utilities;
 
 html,
-body {
+body,
+:root {
   position: relative;
   height: 100%;
 }
@@ -73,14 +74,15 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #ff8b2c;
+  background: #535352;
+  border-radius: 5px;
 }
 
 .swiper-pagination-bullet {
-  width: 7px !important;
-  height: 7px !important;
-  background: rgba(255, 255, 255, 0.2);
+  width: 10px !important;
+  height: 4px !important;
   scale: 0.9 !important;
+  border-radius: 3px !important;
 }
 
 .swiper-pagination-bullet-active {

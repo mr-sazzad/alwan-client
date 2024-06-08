@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import Image from "next/image";
 
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -35,7 +34,7 @@ export default function Carousel({ images }: CarouselSliderProps) {
           clickable: true,
         }}
         modules={[Autoplay, EffectFade, Navigation, Pagination]}
-        className="md:h-[68vh] h-[40vh] w-full"
+        className="md:h-[68vh] sm:h-[40vh] h-[23vh] w-full"
       >
         {images.map((image, i) => (
           <SwiperSlide key={i} className="bg-center bg-contain">

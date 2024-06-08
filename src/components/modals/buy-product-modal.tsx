@@ -2,7 +2,6 @@
 
 import { ITShirt } from "@/types";
 import { useEffect, useRef, useState } from "react";
-import { FaBangladeshiTakaSign } from "react-icons/fa6";
 import ImageSlider from "../cards/image-slider";
 import { Button } from "../ui/button";
 import {
@@ -14,15 +13,20 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 
+import { getFromLocalStorage } from "@/helpers/local-storage";
 import { useRouter } from "next/navigation";
 import "swiper/css";
 import "swiper/css/pagination";
 import { toast } from "../ui/use-toast";
 
 // icons
+import { addProduct } from "@/redux/api/wishlist/wishlistSlice";
+import { RootState } from "@/redux/store";
 import { BsCheck2Circle } from "react-icons/bs";
+import { FaBangladeshiTakaSign } from "react-icons/fa6";
 import { PiSpinnerBold } from "react-icons/pi";
-import { RiHeart2Line } from "react-icons/ri";
+import { RiHeart2Fill, RiHeart2Line } from "react-icons/ri";
+import { useDispatch, useSelector } from "react-redux";
 
 const BuyProductModal = ({ product }: { product: ITShirt }) => {
   const router = useRouter();
@@ -31,8 +35,13 @@ const BuyProductModal = ({ product }: { product: ITShirt }) => {
   const [buttonLoading, SetButtonLoading] = useState(false);
   const [isPlusHovered, setIsPlusHovered] = useState(false);
   const [isMinusHovered, setIsMinusHovered] = useState(false);
+  const [isInWishlist, setIsInWishlist] = useState(false);
 
-  // State for managing stock of each size
+  const dispatch = useDispatch();
+  const wishlistProducts = useSelector(
+    (state: RootState) => state.wishlist.products
+  );
+
   const availableQuantities = useRef(0);
 
   useEffect(() => {
@@ -45,7 +54,32 @@ const BuyProductModal = ({ product }: { product: ITShirt }) => {
       availableQuantities.current = initialSizeQuantities || 0;
       setQuantity(initialSizeQuantities && initialSizeQuantities > 0 ? 1 : 0);
     }
+
+    const wishlistItems = getFromLocalStorage(
+      "alwan_user_wishlist_items"
+    ) as string;
+    if (wishlistItems) {
+      try {
+        const parsedItems: ITShirt[] = JSON.parse(wishlistItems);
+        const productExists = parsedItems.some(
+          (item) => item.id === product.id
+        );
+        setIsInWishlist(productExists);
+      } catch (error) {
+        console.error("Error parsing wishlist items from local storage", error);
+      }
+    }
   }, [product]);
+
+  useEffect(() => {
+    setIsInWishlist(
+      wishlistProducts.some((item: ITShirt) => item.id === product.id)
+    );
+  }, [wishlistProducts, product.id]);
+
+  const handleAddToWishlist = (product: ITShirt) => {
+    dispatch(addProduct(product));
+  };
 
   const handlePlusMouseEnter = () => {
     setIsPlusHovered(true);
@@ -102,10 +136,6 @@ const BuyProductModal = ({ product }: { product: ITShirt }) => {
     router.push(`/checkout${queryString}`);
   };
 
-  const handleAddToWishlist = () => {
-    // add to wishlist work goes here
-  };
-
   return (
     <div className="flex justify-center items-center">
       <Dialog>
@@ -116,39 +146,41 @@ const BuyProductModal = ({ product }: { product: ITShirt }) => {
           <DialogHeader>
             <DialogTitle>Order This Item</DialogTitle>
             <DialogDescription>
-              Please see details for confirmation
+              Please select your size and quantity
             </DialogDescription>
           </DialogHeader>
           <div className="flex flex-col md:flex-row gap-5 md:justify-start w-full">
-            <div className="flex justify-center">
+            <div className="flex justify-center w-full">
               <div className="md:max-w-[300px] sm:max-w-[465px] w-[300px] overflow-hidden rounded">
                 <ImageSlider urls={product.images} />
               </div>
             </div>
 
             <div className="flex flex-col gap-2 flex-1">
-              <h2 className="md:text-xl md:font-semibold text-lg font-medium text-start">
-                {product.name}
-              </h2>
-              <h2 className="md:text-xl md:font-semibold text-lg font-medium">
-                {product.prices && product.prices.length > 1 ? (
-                  <div className="flex flex-row gap-1">
-                    <p className="text-2xl font-semibold flex items-center">
-                      <FaBangladeshiTakaSign size={20} />
-                      {product.prices[1]}
+              <div>
+                <h2 className="md:text-xl md:font-semibold text-lg font-medium text-start">
+                  {product.name}
+                </h2>
+                <h2 className="md:text-xl md:font-semibold text-lg font-medium">
+                  {product.prices && product.prices.length > 1 ? (
+                    <div className="flex flex-row gap-1">
+                      <p className="text-2xl font-semibold flex items-center">
+                        <FaBangladeshiTakaSign size={20} />
+                        {product.prices[1]}
+                      </p>
+                      <p className="text-sm font-semibold line-through flex items-center">
+                        <FaBangladeshiTakaSign size="14" />
+                        {product.prices[0]}
+                      </p>
+                    </div>
+                  ) : (
+                    <p className="text-2xl font-semibold flex items-center gap-1">
+                      <FaBangladeshiTakaSign />
+                      {product.prices && product.prices[0]}
                     </p>
-                    <p className="text-sm font-semibold line-through flex items-center">
-                      <FaBangladeshiTakaSign size="14" />
-                      {product.prices[0]}
-                    </p>
-                  </div>
-                ) : (
-                  <p className="text-2xl font-semibold flex items-center gap-1">
-                    <FaBangladeshiTakaSign />
-                    {product.prices && product.prices[0]}
-                  </p>
-                )}
-              </h2>
+                  )}
+                </h2>
+              </div>
               <div>
                 <p className="font-medium text-sm mb-1">Update Quantity</p>
                 <div className="flex items-center gap-2 w-full">
@@ -180,19 +212,9 @@ const BuyProductModal = ({ product }: { product: ITShirt }) => {
                 </div>
               </div>
 
-              <div className="capitalize flex gap-[1px]">
-                {availableQuantities.current < 3 && (
-                  <p className="text-xs flex items-center">
-                    Only{" "}
-                    {availableQuantities.current > 1 ? "pieces are" : "piece"}{" "}
-                    available
-                  </p>
-                )}
-              </div>
-
-              <div className="">
+              <div className="mt-3">
                 <p className="font-medium text-sm">Select Your Size:</p>
-                <div className="flex mt-3">
+                <div className="flex mt-1">
                   {product.sizes &&
                     product.sizes.map((size: string, i: number) => (
                       <Button
@@ -209,8 +231,22 @@ const BuyProductModal = ({ product }: { product: ITShirt }) => {
                 </div>
               </div>
 
+              <div className="ml-3 flex gap-[1px]">
+                <p className="text-xs flex items-center">
+                  Only{" "}
+                  {availableQuantities.current > 1
+                    ? `${availableQuantities.current} pieces are `
+                    : `${availableQuantities.current} piece is`}
+                  available
+                </p>
+              </div>
+
               <div className="flex gap-2 w-full mt-3">
-                <Button className="flex-1" onClick={handlePlaceOrder}>
+                <Button
+                  className="flex-1"
+                  onClick={handlePlaceOrder}
+                  disabled={!availableQuantities.current}
+                >
                   {buttonLoading ? (
                     <PiSpinnerBold className="animate-spin" />
                   ) : (
@@ -220,10 +256,22 @@ const BuyProductModal = ({ product }: { product: ITShirt }) => {
                   )}
                 </Button>
                 <Button
-                  onClick={handleAddToWishlist}
+                  onClick={() => handleAddToWishlist(product)}
                   className="flex-1 flex gap-2 items-center justify-center"
+                  disabled={isInWishlist}
                 >
-                  <RiHeart2Line /> <p>Add To Wishlist</p>
+                  <div>
+                    {isInWishlist ? (
+                      <div className="flex items-center gap-2">
+                        <RiHeart2Fill className="text-rose-500" />
+                        <p>In Wishlist</p>
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-2">
+                        <RiHeart2Line /> <p>Add To Wishilist</p>
+                      </div>
+                    )}
+                  </div>
                 </Button>
               </div>
             </div>

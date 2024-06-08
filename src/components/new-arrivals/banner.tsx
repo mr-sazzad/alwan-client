@@ -1,5 +1,4 @@
 import Image from "next/image";
-import React from "react";
 
 interface newArrivalsBannerProps {
   bannerImage: {
@@ -11,7 +10,7 @@ interface newArrivalsBannerProps {
 
 const Banner = ({ bannerImage }: newArrivalsBannerProps) => {
   return (
-    <div className="">
+    <div>
       <Image
         src={bannerImage.src}
         alt={bannerImage.alt}

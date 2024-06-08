@@ -18,7 +18,7 @@ const Home = () => {
         <div className="flex justify-center">
           <Adverticement />
         </div>
-        <div className="flex md:flex-row flex-col gap-5 rounded bg-gray-100 m-6 md:items-center">
+        <div className="flex md:flex-row flex-col gap-5 rounded bg-gray-50 md:m-5 m-1 md:items-center">
           <WhoWeAre />
           <WhatWeOffer />
         </div>

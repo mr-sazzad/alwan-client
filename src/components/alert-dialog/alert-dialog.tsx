@@ -19,7 +19,9 @@ interface AlertDialogCompProps {
   title: string;
   description: string;
   handler: () => void;
-  loading: boolean;
+  loading?: boolean;
+  className?: string;
+  buttonText: string;
 }
 
 const AlertDialogComp: React.FC<AlertDialogCompProps> = ({
@@ -29,24 +31,24 @@ const AlertDialogComp: React.FC<AlertDialogCompProps> = ({
   description,
   handler,
   loading,
+  className,
+  buttonText,
 }) => {
   return (
-    <div>
-      <AlertDialog open={open} onOpenChange={setOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>{title}</AlertDialogTitle>
-            <AlertDialogDescription>{description}</AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handler}>
-              {loading ? <RiLoaderLine className="animate-spin" /> : "Continue"}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-    </div>
+    <AlertDialog open={open} onOpenChange={setOpen}>
+      <AlertDialogContent className="rounded">
+        <AlertDialogHeader>
+          <AlertDialogTitle>{title}</AlertDialogTitle>
+          <AlertDialogDescription>{description}</AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction onClick={handler} className={className}>
+            {loading ? <RiLoaderLine className="animate-spin" /> : buttonText}
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 };
 

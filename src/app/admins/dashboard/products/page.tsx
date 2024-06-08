@@ -1,7 +1,7 @@
 "use client";
 
 import Loading from "@/app/loading";
-import { DataTable } from "@/components/admins/dashboard/products/product-table";
+import { DataTable } from "@/components/admins/dashboard/products/data-table";
 import { Button } from "@/components/ui/button";
 import { useGetAllProductsQuery } from "@/redux/api/products/productsApi";
 import ProductTableColumns from "./product-columns";

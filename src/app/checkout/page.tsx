@@ -1,7 +1,14 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+
 import CheckOutPageBliilinInfo from "@/components/cards/checkout-page-billing-info";
 import CheckoutPageSingleProductCard from "@/components/cards/checkout-page-single-product-card";
+import DeliveryOptions from "@/components/delivery-options/delivery-options";
 import MaxWidth from "@/components/max-width";
 import {
   Form,
@@ -23,40 +30,31 @@ import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/use-toast";
 import { getUserFromLocalStorage } from "@/helpers/jwt";
-import { getFromLocalStorage } from "@/helpers/local-storage";
-import CashOnDelivery from "@/images/cash-on-delivery";
+import {
+  getFromLocalStorage,
+  setToLocalStorage,
+} from "@/helpers/local-storage";
 import { useCreateAOrderMutation } from "@/redux/api/orders/ordersApi";
 import { useGetSingleProductQuery } from "@/redux/api/products/productsApi";
+import { useGetSingleUserQuery } from "@/redux/api/users/user-api";
 import { checkOutSchema } from "@/schemas/checkout-schema";
 import { cities } from "@/static/cities";
-import { ITShirt, OrderData } from "@/types";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { ITShirt, IUserData, OrderData } from "@/types";
 import Loading from "../loading";
 
 const CheckoutPage = () => {
-  const searchParms = useSearchParams();
-  const productId = searchParms.get("productId");
-  const quantity = searchParms.get("quantity");
-  const size = searchParms.get("size");
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const productId = searchParams.get("productId");
+  const quantity = searchParams.get("quantity");
+  const size = searchParams.get("size");
 
-  // state variables
-  let [cartProducts, setCartProducts] = useState<ITShirt[]>([]);
+  const [cartProducts, setCartProducts] = useState<ITShirt[]>([]);
   const [totalPrice, setTotalPrice] = useState<number>(0);
-  const [name, setName] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
-  const [city, setCity] = useState<string>("");
-  const [address, setAddress] = useState<string>("");
-  const [phone, setPhone] = useState<string>("");
-  const [altPhone, setAltPhone] = useState<string>("");
-  const [note, setNote] = useState<string>("");
-
-  const [currentUser, setCurrentUser] = useState(getUserFromLocalStorage());
+  const [currentUser, setCurrentUser] = useState<IUserData | null>(null);
   const [createAOrder] = useCreateAOrderMutation();
-
+  const [cartItems, setCartItems] = useState<ITShirt[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
   const { data: product, isLoading } = useGetSingleProductQuery(productId);
 
   const form = useForm<z.infer<typeof checkOutSchema>>({
@@ -72,98 +70,151 @@ const CheckoutPage = () => {
   });
 
   useEffect(() => {
-    const cartProductsString = getFromLocalStorage("cartItems") as string;
+    const user = getUserFromLocalStorage() as IUserData | null;
+    setCurrentUser(user);
+
+    const cartProductsString = getFromLocalStorage(
+      "alwan_user_cart_items"
+    ) as string;
     const cartProductsData = JSON.parse(cartProductsString) as ITShirt[];
     setCartProducts(cartProductsData);
+  }, [form]);
+
+  const { data: user, isLoading: isUserLoading } = useGetSingleUserQuery(
+    currentUser?.userId
+  );
+
+  useEffect(() => {
+    const items = JSON.parse(
+      getFromLocalStorage("alwan_user_cart_items") as string
+    );
+    setCartItems(items);
   }, []);
 
-  if (isLoading) {
+  useEffect(() => {
+    if (user) {
+      form.setValue("username", user.username);
+      form.setValue("email", user.email);
+      form.setValue("phone", user.phone);
+      form.setValue("altPhone", user.altPhone);
+      form.setValue("city", user.shippingDistrict);
+      form.setValue("shippingAddress", user.shippingAddress);
+    }
+  }, [user, form]);
+
+  if (isLoading || isUserLoading) {
     return <Loading />;
   }
 
-  const handleProductDelete = (productId: string) => {
-    const remainingProducts = cartProducts.filter(
-      (product) => product.id !== productId
-    );
-    setCartProducts(remainingProducts);
-  };
-
-  const handleAddressChange = (value: string) => {
-    setCity(value);
-  };
-
   const handlePlaceOrder = async () => {
+    setLoading(true);
     if (
-      name === "" ||
-      email === "" ||
-      address === "" ||
-      city === "" ||
-      phone === ""
+      !form.getValues("username") ||
+      !form.getValues("email") ||
+      !form.getValues("phone") ||
+      !form.getValues("city") ||
+      !form.getValues("shippingAddress")
     ) {
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Please fill out your information",
+        description: "Please fill out your delivery information",
       });
+      setLoading(false);
       return;
     }
-    let orderData: OrderData = {
-      shippingCity: city,
-      shippingAddress: address,
-      phone: phone,
-      altPhone: altPhone,
+
+    const orderData: OrderData = {
+      shippingCity: form.getValues("city"),
+      shippingAddress: form.getValues("shippingAddress"),
+      phone: form.getValues("phone"),
+      altPhone: form.getValues("altPhone"),
       totalCost: totalPrice,
-      orderNote: note,
+      orderNote: form.getValues("orderNote"),
       items: [],
     };
 
+    if (currentUser) {
+      orderData.userId = currentUser.userId;
+    } else {
+      orderData.username = form.getValues("username");
+      orderData.email = form.getValues("email");
+    }
+
     if (!productId && !quantity) {
-      // here we taking data from cart
       orderData.items = cartProducts.map((product) => ({
         productId: product.id,
         size: product.orderSize,
         quantity: product.orderQty,
       }));
     } else {
-      // here we ar taking data from url params
       orderData.items = [
         {
           productId: product.id,
-          quantity: Number(quantity as string),
+          quantity: Number(quantity),
           size: size as string,
         },
       ];
     }
 
-    const createdOrder = await createAOrder(orderData);
+    const createdOrder: any = await createAOrder(orderData);
 
-    console.log(createdOrder);
+    console.log("order => ", createdOrder);
 
-    if (createdOrder) {
+    if (!createdOrder.data.id) {
+      setLoading(false);
+      toast({
+        title: "Error",
+        description: "Something went wrong. Please try again.",
+        variant: "destructive",
+      });
+    } else {
+      setLoading(false);
       toast({
         title: "Success",
-        description: "Order Submitted Successfully",
+        description: "Order placed successfully.",
       });
+
+      setTimeout(() => {
+        router.back();
+      }, 2000);
     }
+  };
+
+  const handleProductDelete = (id: string, size: string) => {
+    const remainingItems = cartItems.filter(
+      (item) => item.id !== id || item.orderSize !== size
+    );
+
+    if (!remainingItems.length) {
+      setTimeout(() => {
+        router.back();
+      }, 1000);
+    }
+
+    setToLocalStorage("alwan_user_cart_items", JSON.stringify(remainingItems));
+    setCartItems(remainingItems);
   };
 
   return (
     <MaxWidth>
       <div className="flex md:flex-row flex-col gap-5 w-full px-5 items-center md:items-stretch mt-[100px]">
         <div className="w-full md:hidden">
-          <h3 className="font-medium text-gary-700 text-lg mb-3">
-            ORDER OVERVIEW
-          </h3>
-          {productId && quantity && (
-            <CheckoutPageSingleProductCard
-              product={product}
-              quantity={quantity}
-              size={size as string}
-            />
-          )}
-
-          {/* if any products in the cart */}
-          {!productId && !quantity && cartProducts.length && (
+          <h3 className="font-medium text-lg mb-3">ORDER OVERVIEW</h3>
+          <Separator className="mb-3" />
+          <div className="max-h-[300px] pr-3 overflow-y-auto">
+            {productId && quantity && size && (
+              <div>
+                <CheckoutPageSingleProductCard
+                  product={product}
+                  quantity={quantity}
+                  size={size}
+                  onProductDelete={handleProductDelete}
+                />
+              </div>
+            )}
+          </div>
+          {!productId && !quantity && cartProducts.length > 0 && (
             <div>
               {cartProducts.map((product) => (
                 <div key={product.id} className="md:min-h-full mt-auto w-full">
@@ -171,17 +222,15 @@ const CheckoutPage = () => {
                     product={product}
                     quantity={String(product.orderQty)}
                     size={product.orderSize}
+                    onProductDelete={handleProductDelete}
                   />
                 </div>
               ))}
             </div>
           )}
         </div>
-
         <div className="max-w-xl w-full">
-          <h3 className="font-medium text-gary-700 text-lg">
-            DELIVERY & BILLING INFO
-          </h3>
+          <h3 className="font-medium text-lg">DELIVERY & BILLING INFO</h3>
           <Separator className="my-4" />
           <Form {...form}>
             <form className="space-y-4">
@@ -192,14 +241,7 @@ const CheckoutPage = () => {
                   <FormItem>
                     <FormLabel>Name</FormLabel>
                     <FormControl>
-                      <Input
-                        placeholder="Abdullah"
-                        onChange={(e) => {
-                          field.onChange(e.target.value);
-                          setName(e.target.value);
-                          form.setValue("username", e.target.value);
-                        }}
-                      />
+                      <Input placeholder="Abdullah" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -212,15 +254,7 @@ const CheckoutPage = () => {
                   <FormItem>
                     <FormLabel>Email</FormLabel>
                     <FormControl>
-                      <Input
-                        placeholder="example@gmail.com"
-                        {...field}
-                        onChange={(e) => {
-                          field.onChange(e.target.value);
-                          setEmail(e.target.value);
-                          form.setValue("email", e.target.value);
-                        }}
-                      />
+                      <Input placeholder="example@gmail.com" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -234,15 +268,7 @@ const CheckoutPage = () => {
                     <FormItem className="w-full">
                       <FormLabel>Phone</FormLabel>
                       <FormControl>
-                        <Input
-                          placeholder="017******21"
-                          {...field}
-                          onChange={(e) => {
-                            field.onChange(e.target.value);
-                            setPhone(e.target.value);
-                            form.setValue("phone", e.target.value);
-                          }}
-                        />
+                        <Input placeholder="017******21" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -255,15 +281,7 @@ const CheckoutPage = () => {
                     <FormItem className="w-full">
                       <FormLabel>Alt Phone</FormLabel>
                       <FormControl>
-                        <Input
-                          placeholder="018******37"
-                          {...field}
-                          onChange={(e) => {
-                            field.onChange(e.target.value);
-                            setAltPhone(e.target.value);
-                            form.setValue("altPhone", e.target.value);
-                          }}
-                        />
+                        <Input placeholder="018******37" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -271,7 +289,7 @@ const CheckoutPage = () => {
                 />
               </div>
               <div className="flex w-full">
-                <Select onValueChange={(value) => handleAddressChange(value)}>
+                <Select onValueChange={(value) => form.setValue("city", value)}>
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Select Your City" />
                   </SelectTrigger>
@@ -294,11 +312,6 @@ const CheckoutPage = () => {
                       <Input
                         placeholder="Please write your address in detail"
                         {...field}
-                        onChange={(e) => {
-                          field.onChange(e.target.value);
-                          setAddress(e.target.value);
-                          form.setValue("shippingAddress", e.target.value);
-                        }}
                       />
                     </FormControl>
                     <FormMessage />
@@ -313,14 +326,8 @@ const CheckoutPage = () => {
                     <FormLabel>Order Note (Optional)</FormLabel>
                     <FormControl>
                       <Textarea
-                        placeholder="Anithing you want to add.."
+                        placeholder="Anything you want to add.."
                         {...field}
-                        onChange={(e) => {
-                          field.onChange(e.target.value);
-                          const noteValue = e.target.value ?? "";
-                          setNote(noteValue);
-                          form.setValue("orderNote", noteValue);
-                        }}
                       />
                     </FormControl>
                     <FormMessage />
@@ -330,28 +337,27 @@ const CheckoutPage = () => {
             </form>
           </Form>
           <div>
-            <CashOnDelivery />
+            <DeliveryOptions />
           </div>
         </div>
-
-        {/* RIGHT SIDE */}
         <div className="w-full flex flex-col justify-between">
           <div className="w-full md:block hidden">
-            <h3 className="font-medium text-gary-700 text-lg mb-3">
-              ORDER OVERVIEW
-            </h3>
-            <Separator className="my-4" />
-            {productId && quantity && (
-              <CheckoutPageSingleProductCard
-                product={product}
-                quantity={quantity}
-                size={size as string}
-              />
-            )}
-
-            {/* if any products in the cart */}
-            {!productId && !quantity && cartProducts.length && (
-              <div>
+            <h3 className="font-medium text-lg mb-3">ORDER OVERVIEW</h3>
+            <Separator className="my-3" />
+            <div className="md:h-[352px] overflow-y-auto md:pr-3">
+              {productId && quantity && size && (
+                <div className="">
+                  <CheckoutPageSingleProductCard
+                    product={product}
+                    quantity={quantity}
+                    size={size}
+                    onProductDelete={handleProductDelete}
+                  />
+                </div>
+              )}
+            </div>
+            {!productId && !quantity && cartProducts.length > 0 && (
+              <div className="max-h-[53vh] overflow-y-auto">
                 {cartProducts.map((product) => (
                   <div
                     key={product.id}
@@ -361,32 +367,33 @@ const CheckoutPage = () => {
                       product={product}
                       quantity={String(product.orderQty)}
                       size={product.orderSize}
+                      onProductDelete={handleProductDelete}
                     />
                   </div>
                 ))}
               </div>
             )}
           </div>
-
-          {/* billing info */}
           <div className="w-full">
             {productId && quantity && size && (
               <CheckOutPageBliilinInfo
-                products={[{ ...product }]}
-                city={city}
+                products={[product]}
+                city={form.getValues("city")}
                 qty={Number(quantity)}
                 handlePlaceOrder={handlePlaceOrder}
                 setTotalPrice={setTotalPrice}
                 totalPrice={totalPrice}
+                buttonLoading={loading}
               />
             )}
-            {!productId && !quantity && !size && cartProducts && (
+            {!productId && !quantity && cartProducts.length > 0 && (
               <CheckOutPageBliilinInfo
                 products={cartProducts}
-                city={city}
+                city={form.getValues("city")}
                 handlePlaceOrder={handlePlaceOrder}
                 setTotalPrice={setTotalPrice}
                 totalPrice={totalPrice}
+                buttonLoading={loading}
               />
             )}
           </div>

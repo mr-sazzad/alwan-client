@@ -96,6 +96,7 @@ const ProductTableColumns = () => {
               title="Confirm Product Deletion"
               description="This action is irreversible and will permanently remove the product from your inventory. Please note, we do not backup our database, so deleted products cannot be retrieved."
               handler={() => deleteProductHandler(id)}
+              buttonText="Continue"
             />
           </div>
         );

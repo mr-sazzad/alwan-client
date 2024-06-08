@@ -10,15 +10,16 @@ import {
 } from "../ui/sheet";
 
 import { CgMenuLeftAlt } from "react-icons/cg";
+import ModeToggle from "../themes/theme-toggle";
 import { Button } from "../ui/button";
 
 const Navigation = () => {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <CgMenuLeftAlt size={22} className="cursor-pointer" />
+        <CgMenuLeftAlt size={22} className="cursor-pointer text-gray-800" />
       </SheetTrigger>
-      <SheetContent side="left">
+      <SheetContent side="left" className="md:w-[400px] w-[300px]">
         <SheetHeader>
           <SheetTitle>Application Menu</SheetTitle>
           <SheetDescription>
@@ -26,20 +27,26 @@ const Navigation = () => {
           </SheetDescription>
         </SheetHeader>
 
-        <div className="grid gap-4 py-4 h-[90%]">
+        <div className="grid gap-4 py-4 h-[83%]">
           <div className="grid gap-4">
             <Link href="/t-shirts" legacyBehavior passHref className="w-full">
               <Button className="w-full" variant="secondary">
-                <p className="text-start w-full">Products</p>
+                <p className="text-start w-full">T-Shirt</p>
               </Button>
             </Link>
           </div>
         </div>
 
-        <SheetFooter className="">
-          <p className="text-sm text-center w-full text-gray-600">
-            all right reserved @alwan
-          </p>
+        <SheetFooter>
+          <div className="flex flex-col gap-5 items-center w-full">
+            <div className="flex justify-center">
+              <ModeToggle />
+            </div>
+
+            <p className="text-sm text-center w-full text-gray-600">
+              all rights reserved by alwan
+            </p>
+          </div>
         </SheetFooter>
       </SheetContent>
     </Sheet>

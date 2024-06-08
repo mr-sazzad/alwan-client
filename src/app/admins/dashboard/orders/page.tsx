@@ -1,9 +1,9 @@
 "use client";
 
 import Loading from "@/app/loading";
-import { DataTable } from "@/components/admins/dashboard/products/product-table";
-import OrderTableColumns from "./orders-column";
+import { DataTable } from "@/components/admins/dashboard/products/data-table";
 import { useGetAllOrdersQuery } from "@/redux/api/orders/ordersApi";
+import OrderTableColumns from "./orders-column";
 
 const Page = () => {
   const { data, isLoading } = useGetAllOrdersQuery(undefined);

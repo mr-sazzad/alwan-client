@@ -28,6 +28,14 @@ const nextConfig = {
           },
         ],
       },
+      webpack: (config, { dev, isServer }) => {
+        if (dev) {
+          config.devtool = 'inline-source-map';
+        } else {
+          config.devtool = 'source-map';
+        }
+        return config;
+      },
 };
 
 export default nextConfig;

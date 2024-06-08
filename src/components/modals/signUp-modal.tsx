@@ -32,6 +32,7 @@ import { Input } from "../ui/input";
 import { toast } from "../ui/use-toast";
 
 import { RiLoaderLine } from "react-icons/ri";
+import { Separator } from "../ui/separator";
 
 interface SignUpModalProps {
   signUpOpen: boolean;
@@ -56,13 +57,15 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
 
   const onSubmit = async (data: z.infer<typeof signUpSchema>) => {
     try {
-      const res: any = await signUpUser(data);
-
+      const stringData = JSON.stringify(data);
+      const res: any = await signUpUser({ data: stringData });
+      setSignUpOpen(true);
       if (!res.data.id) {
         toast({
           variant: "destructive",
           title: "Sign Up Failed",
-          description: "Something went wrong please try again later",
+          description:
+            "Something went wrong. Please try again, or log in if you already have an account.",
         });
       } else {
         const loginData = {
@@ -71,7 +74,13 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
         };
 
         const loginRes: any = await signInUser(loginData);
-        setToLocalStorage("access-token", loginRes.data.accessToken);
+        setToLocalStorage("alwan-user-access-token", loginRes.data.accessToken);
+
+        // Reset the form inputs
+        form.reset();
+
+        setSignUpOpen(false);
+
         toast({
           title: "Sign Up Success",
           description: "your new account created successfully",
@@ -89,7 +98,7 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
   return (
     <div>
       <Dialog open={signUpOpen} onOpenChange={setSignUpOpen}>
-        <DialogContent className="md:max-w-[500px] sm:max-w-[425px]">
+        <DialogContent className="md:max-w-[500px] sm:max-w-[425px] rounded">
           <DialogHeader>
             <DialogTitle className="text-xl">Sign Up</DialogTitle>
             <DialogDescription>Create an account.</DialogDescription>
@@ -146,6 +155,11 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
               </DialogFooter>
             </form>
           </Form>
+          <div className="flex gap-2 items-center w-full">
+            <Separator orientation="horizontal" className="flex-1" />
+            <span className="text-sm text-muted-foreground">OR</span>
+            <Separator orientation="horizontal" className="flex-1" />
+          </div>
           <div className="flex flex-col gap-5 w-full">
             <Button className="w-full flex gap-2" variant="outline">
               <FcGoogle />

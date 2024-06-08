@@ -1,44 +1,32 @@
 "use client";
 
 import { ITShirt } from "@/types";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { MdOutlineColorLens } from "react-icons/md";
-import { Button } from "../ui/button";
-
 import { PiSpinnerBold, PiTrashLight } from "react-icons/pi";
+import { Button } from "../ui/button";
 import ImageSlider from "./image-slider";
 
 interface CheckoutPageSingleProductCardProps {
   product: ITShirt;
   quantity: string;
-
   size: string;
+  onProductDelete: (id: string, size: string) => void;
 }
 
 const CheckoutPageSingleProductCard: React.FC<
   CheckoutPageSingleProductCardProps
-> = ({ product, quantity, size }) => {
-  const router = useRouter();
+> = ({ product, quantity, size, onProductDelete }) => {
   const [loading, setLoading] = useState(false);
 
   const qty = Number(quantity);
 
-  let timeoutId: NodeJS.Timeout | undefined;
-
-  const handleGoBack = () => {
+  const handleProductDelete = () => {
     setLoading(true);
-    timeoutId = setTimeout(() => {
-      router.back();
+    setTimeout(() => {
+      onProductDelete(product.id, size);
+      setLoading(false);
     }, 300);
-  };
-
-  const clearTimeoutAndGoBack = () => {
-    if (timeoutId) {
-      clearTimeout(timeoutId);
-    }
-    setLoading(false);
-    router.back();
   };
 
   return (
@@ -50,13 +38,13 @@ const CheckoutPageSingleProductCard: React.FC<
               <ImageSlider urls={product.images} />
             </div>
             <div>
-              <p className="text-gray-700">
+              <p className="text-muted-foreground">
                 {product.name.length > 23
                   ? product.name.slice(0, 20) + "..."
                   : product.name}
               </p>
               <div className="flex gap-2 items-end">
-                <div className="flex gap-1 items-center text-gray-700 font-semibold">
+                <div className="flex gap-1 items-center text-muted-foreground font-semibold">
                   TK.
                   <p>
                     {product.prices.length > 1
@@ -65,23 +53,23 @@ const CheckoutPageSingleProductCard: React.FC<
                   </p>
                 </div>
                 {product.prices.length > 1 && (
-                  <div className="flex gap-1 items-center text-xs text-gray-700 line-through">
+                  <div className="flex gap-1 items-center text-xs text-muted-foreground line-through">
                     TK.
                     <p>{product.prices[0]}</p>
                   </div>
                 )}
               </div>
               <div className="flex gap-2">
-                <div className="flex gap-1 items-center text-sm text-gray-700">
+                <div className="flex gap-1 items-center text-sm text-muted-foreground">
                   <MdOutlineColorLens />
                   <p>{product.color}</p>
                 </div>
-                <div className="flex gap-1 items-center text-sm text-gray-700">
+                <div className="flex gap-1 items-center text-sm text-muted-foreground">
                   <p>Qty: {qty > 1 ? `${quantity} pcs` : `${quantity} pic`}</p>
                 </div>
               </div>
               <div className="flex gap-1 items-end">
-                <p className="text-gray-700 flex">Size:</p>
+                <p className="text-muted-foreground flex">Size:</p>
                 <p className="text-sm font-medium">{size.toUpperCase()}</p>
               </div>
             </div>
@@ -90,7 +78,7 @@ const CheckoutPageSingleProductCard: React.FC<
             variant="secondary"
             size="sm"
             className="rounded-full flex justify-center items-center py-0 px-[10px]"
-            onClick={handleGoBack}
+            onClick={handleProductDelete}
           >
             {loading ? (
               <PiSpinnerBold size={16} className="animate-spin" />

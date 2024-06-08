@@ -4,6 +4,7 @@ import { reducer } from "./api/root-reducer";
 
 export const store = configureStore({
   reducer,
+  devTools: process.env.NODE_ENV !== "production",
 
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(baseApi.middleware),
