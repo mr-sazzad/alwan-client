@@ -19,13 +19,19 @@ import {
 } from "../ui/select";
 import { Textarea } from "../ui/textarea";
 
-import { useGetSingleUserQuery } from "@/redux/api/users/user-api";
+import {
+  useGetSingleUserQuery,
+  useUpdateSingleUserMutation,
+} from "@/redux/api/users/user-api";
 import { profileAddressSchema } from "@/schemas/profile-address-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { GoShieldCheck } from "react-icons/go";
 import { z } from "zod";
-import { Form, FormField, FormItem, FormLabel } from "../ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel } from "../ui/form";
+import { toast } from "../ui/use-toast";
+
+import { GoShieldCheck } from "react-icons/go";
+import { PiSpinner } from "react-icons/pi";
 
 interface IAddressModalProps {
   addressModalOpen: boolean;
@@ -37,8 +43,9 @@ const AddressModal: React.FC<IAddressModalProps> = ({
   setAddressModalOpen,
 }) => {
   const [userData, setUserData] = useState<IUserData>();
-  const [address, setAddress] = useState("");
   const { data: user, isLoading } = useGetSingleUserQuery(userData?.userId);
+  const [updateSingleUser, { isLoading: isUserUpdating }] =
+    useUpdateSingleUserMutation();
 
   const form = useForm<z.infer<typeof profileAddressSchema>>({
     resolver: zodResolver(profileAddressSchema),
@@ -65,10 +72,38 @@ const AddressModal: React.FC<IAddressModalProps> = ({
     }
   }, [user, form]);
 
-  const onSubmit = () => {
-    console.log("hello");
-  };
+  const onSubmit = async (values: z.infer<typeof profileAddressSchema>) => {
+    const requestedData = {
+      id: user.id,
+      shippingDistrict: values.shippingDistrict,
+      shippingAddress: values.shippingAddress,
+    };
 
+    if (values.shippingDistrict === "" || values.shippingAddress === "") {
+      toast({
+        title: "Error",
+        description: "Please fill the inputs first then apply changes!",
+        variant: "destructive",
+      });
+
+      return;
+    }
+
+    const result: any = await updateSingleUser(requestedData);
+    if (!result.data.id) {
+      toast({
+        title: "Error",
+        description: "Something went wrong please try again",
+        variant: "destructive",
+      });
+    } else {
+      setAddressModalOpen(false);
+      toast({
+        title: "Successfull",
+        description: "Your information was updated",
+      });
+    }
+  };
   return (
     <Dialog open={addressModalOpen} onOpenChange={setAddressModalOpen}>
       <DialogContent className="sm:max-w-[500px]">
@@ -88,8 +123,8 @@ const AddressModal: React.FC<IAddressModalProps> = ({
                   <FormItem>
                     <div className="flex flex-col gap-4">
                       <Select
-                        onValueChange={(value) => setAddress(value)}
-                        defaultValue={field.value}
+                        onValueChange={field.onChange}
+                        value={field.value}
                       >
                         <FormLabel>Select your city</FormLabel>
                         <SelectTrigger className="w-full">
@@ -119,20 +154,27 @@ const AddressModal: React.FC<IAddressModalProps> = ({
                       >
                         Details address
                       </FormLabel>
-                      <Textarea
-                        id="details address"
-                        placeholder="write your full address"
-                        className="col-span-3"
-                      />
+                      <FormControl>
+                        <Textarea
+                          id="details address"
+                          placeholder="write your full address"
+                          className="col-span-3"
+                          {...field}
+                        />
+                      </FormControl>
                     </div>
                   </FormItem>
                 )}
               />
             </div>
-            <Button type="submit" className="w-full">
-              <div className="flex justify-center items-center gap-2">
-                <GoShieldCheck /> <span>Save Address</span>
-              </div>
+            <Button type="submit" className="w-full" disabled={isUserUpdating}>
+              {isUserUpdating ? (
+                <PiSpinner className="animate-spin" size={18} />
+              ) : (
+                <div className="flex justify-center items-center gap-2">
+                  <GoShieldCheck /> <span>Save</span>
+                </div>
+              )}
             </Button>
           </form>
         </Form>

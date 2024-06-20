@@ -17,7 +17,10 @@ const Navigation = () => {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <CgMenuLeftAlt size={22} className="cursor-pointer text-gray-800" />
+        <CgMenuLeftAlt
+          size={22}
+          className="cursor-pointer text-black dark:text-gray-200"
+        />
       </SheetTrigger>
       <SheetContent side="left" className="md:w-[400px] w-[300px]">
         <SheetHeader>

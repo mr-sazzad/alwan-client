@@ -117,7 +117,7 @@ const ProductDetailsPage = () => {
   };
   return (
     <MaxWidth>
-      <div className="mt-[90px]">
+      <div className="mt-[110px]">
         <div>
           <SingleProductPageBreadcrumb name={product?.name} />
           <div className="flex md:flex-row flex-col gap-5 relative">
@@ -372,7 +372,7 @@ export default ProductDetailsPage;
 
 //   return (
 //     <MaxWidth>
-//       <div className="mt-[90px]">
+//       <div className="mt-[110px]">
 //         <div>
 //           <SingleProductPageBreadcrumb name={product?.name} />
 //           <div className="flex md:flex-row flex-col gap-5 relative">

@@ -10,7 +10,7 @@ interface DashboardLayoutProps {
 
 const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   return (
-    <MaxWidth className="mt-[90px]">
+    <MaxWidth className="mt-[110px]">
       <div className="relative w-full h-custom-height">
         <div className="flex gap-5 w-full min-h-full">
           <AdminsDesktopMenu />

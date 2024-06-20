@@ -1,11 +1,20 @@
+import Image from "next/image";
 import Link from "next/link";
+
+import footerLogo from "../../images/footer-logo.png";
 
 const Footer = () => {
   return (
-    <div className="w-full mt-5 pt-9">
+    <div className="w-full mt-8 py-16">
       <div className="flex sm:flex-row flex-col justify-around gap-3 w-full md:px-10 px-5 mb-2">
         <div className="flex-1 flex flex-col gap-5 md:text-start text-center">
-          <h2 className="text-3xl font-bold ">ALWAN</h2>
+          <Image
+            src={footerLogo}
+            alt="footer-logo"
+            width={1517}
+            height={292}
+            className="flex justify-start"
+          />
           <p>+880 9606999695</p>
         </div>
         <div className="flex flex-col gap-4 flex-1">

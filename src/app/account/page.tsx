@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 const Account = () => {
   return (
     <MaxWidth>
-      <div className="mt-[90px]">
+      <div className="mt-[110px]">
         <div>Hello from account page</div>
       </div>
     </MaxWidth>

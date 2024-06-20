@@ -1,13 +1,22 @@
+import Image from "next/image";
 import MaxWidth from "../max-width";
+
+import mainLogo from "../../images/logo-main.png";
+import logo from "../../images/logo.png";
 
 const WhoWeAre = () => {
   return (
     <MaxWidth>
-      <div>
-        <h2 className="text-2xl font-semibold text-center my-3 text-gray-800 pt-1">
-          Vision
-        </h2>
-        <p className="text-gray-600 md:text-base text-sm px-1">
+      <div className="pt-2">
+        <div className="mb-5">
+          <div className="flex justify-center items-center sm:hidden">
+            <Image src={logo} alt="logo" height={40} width={1517} />
+          </div>
+          <div className="justify-center items-center sm:flex hidden">
+            <Image src={mainLogo} alt="logo" height={40} width={1517} />
+          </div>
+        </div>
+        <p className="px-1 text-gray-700">
           <span className="text-2xl font-bold">A</span>lwan reflects
           Bangladesh&apos;s vibrant spirit, infusing each garment with passion
           and purpose. Committed to quality, creativity, and community, we

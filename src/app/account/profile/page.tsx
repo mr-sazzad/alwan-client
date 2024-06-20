@@ -42,7 +42,7 @@ const ProfilePage = () => {
 
   return (
     <>
-      <MaxWidth className="mt-[90px]">
+      <MaxWidth className="mt-[110px]">
         <UserAccountPageBreadCrumb name="profile" />
         <div className="flex lg:flex-row flex-col gap-5 w-full md:justify-around">
           <div>
@@ -64,7 +64,7 @@ const ProfilePage = () => {
                   <p>{user.username}</p>
                   <div className="">
                     {user.phone ? (
-                      <p>{user.phone}</p>
+                      <p className="text-sm">{user.phone}</p>
                     ) : (
                       <p className="text-sm text-muted-foreground">
                         Number not added
@@ -74,16 +74,21 @@ const ProfilePage = () => {
 
                   <div className="">
                     {user.altPhone ? (
-                      <p>{user.altPhone}</p>
+                      <p className="text-sm">{user.altPhone}</p>
                     ) : (
                       <p className="text-sm text-muted-foreground">
                         Alt number not added
                       </p>
                     )}
                   </div>
-                  <p className="text-muted-foreground text-sm">
-                    main.sazzad@gmail.com
-                  </p>
+                  <div className="flex gap-2 items-center">
+                    <p className="text-muted-foreground text-sm">
+                      {user.email}
+                    </p>
+                    <p className="text-muted-foreground text-sm">
+                      ( Read only field )
+                    </p>
+                  </div>
                 </div>
               </div>
 
@@ -99,7 +104,7 @@ const ProfilePage = () => {
                     <p>Shipping City</p>
                     <div>
                       {user.shippingDistrict ? (
-                        <p>{user.shippingDistrict}</p>
+                        <p className="text-sm">{user.shippingDistrict}</p>
                       ) : (
                         <p className="text-sm text-muted-foreground">
                           Shipping City not added
@@ -110,7 +115,7 @@ const ProfilePage = () => {
                   <div>
                     <p>Exact Address</p>
                     {user.shippingAddress ? (
-                      <p>{user.shippingAddress}</p>
+                      <p className="text-sm">{user.shippingAddress}</p>
                     ) : (
                       <p className="text-sm text-muted-foreground">
                         Full address not added
@@ -123,9 +128,9 @@ const ProfilePage = () => {
           </div>
           <div>
             <ProfileOrderTabs orders={orders} />
-            <div className="flex flex-row items-center gap-2 mt-5 border p-2">
+            <div className="flex flex-row items-center gap-2 mt-5 border p-2 rounded-md">
               <p className="text-muted-foreground">
-                If you want to see your cancelletions and returns
+                If you&apos;d like to review your cancellations and returns
               </p>
               <Button variant="destructive" size="sm">
                 Rejected Orders

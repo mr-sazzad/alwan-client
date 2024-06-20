@@ -2,7 +2,7 @@ import MaxWidth from "@/components/max-width";
 
 const Page = () => {
   return (
-    <MaxWidth className="mt-[90px]">
+    <MaxWidth className="mt-[110px]">
       <h2 className="md:text-2xl sm:text-xl text-lg font-semibold md:text-start text-center">
         FAQs
       </h2>

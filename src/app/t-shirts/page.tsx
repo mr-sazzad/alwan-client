@@ -67,7 +67,7 @@ const ProductsPage = () => {
 
   return (
     <MaxWidth>
-      <div className="flex flex-col md:flex-row gap-5 mt-[90px] relative w-full">
+      <div className="flex flex-col md:flex-row gap-5 mt-[110px] relative w-full">
         {/* Desktop Filter (Fixed Position) */}
         <div className="md:w-[200px] w-full">
           <div className="md:min-w-[200px] md:border-r md:sticky md:top-[90px] hidden md:flex self-start h-screen">

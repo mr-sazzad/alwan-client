@@ -22,7 +22,7 @@ interface CarouselSliderProps {
 
 export default function Carousel({ images }: CarouselSliderProps) {
   return (
-    <div className="mt-[90px]">
+    <div className="mt-[110px]">
       <Swiper
         spaceBetween={30}
         effect={"fade"}
