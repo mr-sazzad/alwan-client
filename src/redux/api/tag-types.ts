@@ -6,6 +6,12 @@ export enum tagTypes {
   feedback = "feedback",
   comment = "comment",
   coupon = "coupon",
+  category = "category",
+  address = "address",
+  size = "size",
+  carousel = "carousel",
+  productType = "productType",
+  color = "color",
 }
 
 export const tagTypeLists = [
@@ -16,4 +22,10 @@ export const tagTypeLists = [
   tagTypes.feedback,
   tagTypes.comment,
   tagTypes.coupon,
+  tagTypes.category,
+  tagTypes.address,
+  tagTypes.size,
+  tagTypes.carousel,
+  tagTypes.productType,
+  tagTypes.color,
 ];

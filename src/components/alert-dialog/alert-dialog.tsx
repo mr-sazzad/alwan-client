@@ -42,8 +42,12 @@ const AlertDialogComp: React.FC<AlertDialogCompProps> = ({
           <AlertDialogDescription>{description}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={handler} className={className}>
+          <AlertDialogCancel disabled={loading}>Cancel</AlertDialogCancel>
+          <AlertDialogAction
+            onClick={handler}
+            className={className}
+            disabled={loading}
+          >
             {loading ? <RiLoaderLine className="animate-spin" /> : buttonText}
           </AlertDialogAction>
         </AlertDialogFooter>

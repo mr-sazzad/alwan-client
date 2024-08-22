@@ -3,37 +3,40 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import mainLogo from "../images/logo-main.png";
-import logo from "../images/logo.png";
+// import logo from "../images/logo-40.png";
+import blackLogo from "../images/logo-black-40.png";
 import Cart from "./cart/cart";
-import Navigation from "./navigation-menu/navigation";
 import Profile from "./profile/profile-menu";
+// import DesktopMenu from "./sidebar/desktop-menu";
+
+// icons
+// import MobileSidebar from "./sidebar/mobile-sidebar";
 
 const Header = () => {
   const [open, setOpen] = useState(false);
 
   return (
-    <nav className="flex justify-between items-center h-[110px] w-full md:px-14 sm:px-10 px-5 fixed top-0 z-50 backdrop-blur-[8px] border-b border-gray-50 bg-gray-50/30 dark:bg-gray-50/10">
-      <menu className="flex gap-5">
-        <Navigation />
-      </menu>
-
-      <div className="font-bold text-2xl cursor-pointer flex-1 flex justify-center">
-        <Link href="/">
-          <div className="sm:flex hidden">
-            <Image src={mainLogo} alt="main-logo" height={1517} width={292} />
-          </div>
-          <div className="sm:hidden">
-            <Image src={logo} alt="main-logo" height={1517} width={292} />
-          </div>
-        </Link>
-      </div>
-      <menu className="items-center gap-3 flex justify-end">
-        <div className="hidden md:flex">
-          <Cart cartOpen={open} setCartOpen={setOpen} />
+    <nav className="flex flex-col gap-1 justify-between h-[90px] md:px-14 sm:px-10 px-5 w-full fixed top-0 z-30 backdrop-blur-[8px] border-b border-gray-50 bg-gray-50/30 dark:bg-gray-50/10">
+      <div className="flex justify-between items-center relative h-full">
+        <div>
+          <Link href="/">
+            <Image src={blackLogo} alt="main-logo" height={40} width={40} />
+          </Link>
         </div>
-        <Profile />
-      </menu>
+
+        <menu className="items-center gap-3 flex justify-end">
+          <Profile />
+          <div className="md:hidden flex">{/* <MobileSidebar /> */}</div>
+          <div className="hidden md:flex">
+            <Cart cartOpen={open} setCartOpen={setOpen} />
+          </div>
+        </menu>
+      </div>
+
+      {/* Desktop Navigation Menu */}
+      <div className="hidden md:flex justify-center">
+        {/* <DesktopMenu /> */}
+      </div>
     </nav>
   );
 };

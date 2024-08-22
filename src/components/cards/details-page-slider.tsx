@@ -19,6 +19,8 @@ const DetailsPageImageSlider: React.FC<DetailsPageImageSliderProps> = ({
 }) => {
   const [swiper, setSwiper] = useState<null | SwiperType>(null);
 
+  console.log(urls);
+
   return (
     <div className="group relative aspect-square rounded-t w-full h-full">
       <Swiper
@@ -38,8 +40,8 @@ const DetailsPageImageSlider: React.FC<DetailsPageImageSliderProps> = ({
             <Image
               src={url}
               alt={`Slide ${index}`}
-              width={500}
-              height={500}
+              width={1400}
+              height={1400}
               objectFit="cover"
             />
           </SwiperSlide>

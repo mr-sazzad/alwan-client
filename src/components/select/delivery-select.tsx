@@ -42,11 +42,13 @@ const DeliveryFeeSelector: React.FC<ReactSelectProps> = ({
           control: (base, state) => ({
             ...base,
             border: "1px solid #334155",
-            opacity: 0.7,
             borderRadius: "6px",
             boxShadow: "none",
             "&:hover": {
               border: "1px solid #334155",
+            },
+            "&:active": {
+              outline: "2px solid black",
             },
           }),
         }}

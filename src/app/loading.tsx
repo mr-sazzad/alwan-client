@@ -12,14 +12,14 @@ interface LoadingProps {
 const Loading: React.FC<LoadingProps> = ({ className, height, width }) => {
   return (
     <div
-      className={`flex justify-center items-center w-full h-full ${className}`}
+      className={`flex justify-center items-center w-full h-full mt-[90px] ${className}`}
     >
       <Skeleton>
         <Image
           src={logoImage}
           alt="logo"
-          height={height || 40}
-          width={width || 40}
+          height={height || 100}
+          width={width || 100}
         />
       </Skeleton>
     </div>

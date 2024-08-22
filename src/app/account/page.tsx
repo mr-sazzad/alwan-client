@@ -1,4 +1,3 @@
-import MaxWidth from "@/components/max-width";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -11,11 +10,14 @@ export const metadata: Metadata = {
 
 const Account = () => {
   return (
-    <MaxWidth>
-      <div className="mt-[110px]">
-        <div>Hello from account page</div>
+    <div className="flex justify-center items-center w-full h-[70%]">
+      <div className="flex justify-center flex-col gap-2 items-center">
+        <h2 className="text-xl font-semibold">Image</h2>
+        <p className="text-sm text-muted-foreground">
+          Please Select A Section First
+        </p>
       </div>
-    </MaxWidth>
+    </div>
   );
 };
 

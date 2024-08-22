@@ -1,21 +1,23 @@
 "use client";
 
-import Loading from "@/app/loading";
 import { DataTable } from "@/components/admins/dashboard/products/data-table";
 import { Button } from "@/components/ui/button";
 import { useGetAllProductsQuery } from "@/redux/api/products/productsApi";
 import ProductTableColumns from "./product-columns";
 
+import AdminDashboardLoading from "@/components/lodings/admin-dashboard-loding";
 import Link from "next/link";
 import { HiOutlineSquaresPlus } from "react-icons/hi2";
 
 const Page = () => {
-  const { data, isLoading } = useGetAllProductsQuery(undefined);
+  const { data: products, isLoading } = useGetAllProductsQuery(undefined);
   const columns = ProductTableColumns();
 
   if (isLoading) {
-    return <Loading />;
+    return <AdminDashboardLoading />;
   }
+
+  console.log("PRODUCTS =>", products.data);
 
   return (
     <div className="container mx-auto py-10">
@@ -26,7 +28,13 @@ const Page = () => {
           </Button>
         </Link>
       </div>
-      <DataTable columns={columns} data={data} />
+      {!isLoading && products && (
+        <DataTable
+          columns={columns}
+          data={products?.data}
+          filterColumn="name"
+        />
+      )}
     </div>
   );
 };

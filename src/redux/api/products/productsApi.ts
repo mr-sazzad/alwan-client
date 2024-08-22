@@ -5,9 +5,10 @@ const productsApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
     registerAProduct: build.mutation({
       query: (data) => ({
-        url: "/products/register-a-product",
+        url: "/products/register-product",
         method: "POST",
         data,
+        contentType: "multipart/form-data",
       }),
       invalidatesTags: [tagTypes.product],
     }),
@@ -20,9 +21,17 @@ const productsApi = baseApi.injectEndpoints({
       providesTags: [tagTypes.product],
     }),
 
+    getCategoryProducts: build.query({
+      query: (categoryId) => ({
+        url: `/products/categories/${categoryId}`,
+        method: "GET",
+      }),
+      providesTags: [tagTypes.product],
+    }),
+
     getSingleProduct: build.query({
       query: (id) => ({
-        url: `/products/single-product/${id}`,
+        url: `/products/${id}`,
         method: "GET",
       }),
       providesTags: [tagTypes.product],
@@ -50,6 +59,7 @@ const productsApi = baseApi.injectEndpoints({
 export const {
   useRegisterAProductMutation,
   useGetAllProductsQuery,
+  useGetCategoryProductsQuery,
   useGetSingleProductQuery,
   useUpdateSingleProductMutation,
   useDeleteSingleProductMutation,

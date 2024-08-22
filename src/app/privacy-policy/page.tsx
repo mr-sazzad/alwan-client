@@ -11,11 +11,13 @@ const PrivacyPolicy = () => {
     <MaxWidth>
       <div className="mt-[100px] flex md:flex-row flex-col gap-5 md:px-[120px] px-3">
         <div className="flex-1">
-          <h2 className="md:text-2xl text-xl md:font-semibold font-medium text-gray-700">
+          <h2 className="md:text-2xl text-xl md:font-semibold font-medium">
             Privacy Policy
           </h2>
-          <p className="text-sm mb-5 text-gray-700">alwan clothing</p>
-          <p className="text-gray-600">
+          <p className="text-sm mb-5 text-muted-foreground">
+            alwan ideal lifestyle
+          </p>
+          <p>
             We are committed to protecting your privacy and ensuring the
             security of your personal information. This Privacy Policy outlines
             how we collect, use, disclose, and protect the information you
@@ -39,7 +41,9 @@ const PrivacyPolicy = () => {
         <div className="flex-1">
           <Accordion type="single" collapsible className="w-full">
             <AccordionItem value="item-1">
-              <AccordionTrigger>1. Information We Collect:</AccordionTrigger>
+              <AccordionTrigger className="text-lg font-medium">
+                1. Information We Collect:
+              </AccordionTrigger>
               <AccordionContent>
                 <strong>Personal Information:</strong>
                 <p className="mb-3">
@@ -57,7 +61,7 @@ const PrivacyPolicy = () => {
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="item-2">
-              <AccordionTrigger>
+              <AccordionTrigger className="text-lg font-medium">
                 2. How We Use Your Information
               </AccordionTrigger>
               <AccordionContent>
@@ -86,7 +90,7 @@ const PrivacyPolicy = () => {
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="item-3">
-              <AccordionTrigger>
+              <AccordionTrigger className="text-lg font-medium">
                 3. Data Sharing and Disclosure
               </AccordionTrigger>
               <AccordionContent>
@@ -111,7 +115,9 @@ const PrivacyPolicy = () => {
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="item-4">
-              <AccordionTrigger>4. Data Security</AccordionTrigger>
+              <AccordionTrigger className="text-lg font-medium">
+                4. Data Security
+              </AccordionTrigger>
               <AccordionContent>
                 <p className="mb-3">
                   We implement industry-standard security measures to protect
@@ -126,7 +132,10 @@ const PrivacyPolicy = () => {
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="item-5">
-              <AccordionTrigger> 5. Your Privacy Choices</AccordionTrigger>
+              <AccordionTrigger className="text-lg font-medium">
+                {" "}
+                5. Your Privacy Choices
+              </AccordionTrigger>
               <AccordionContent>
                 <p className="mb-3">
                   You have the right to access, update, or delete your personal
@@ -142,7 +151,9 @@ const PrivacyPolicy = () => {
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="item-6">
-              <AccordionTrigger>6. Children&apos;s Privacy</AccordionTrigger>
+              <AccordionTrigger className="text-lg font-medium">
+                6. Children&apos;s Privacy
+              </AccordionTrigger>
               <AccordionContent>
                 <p>
                   Our website and services are not directed to children under
@@ -154,7 +165,7 @@ const PrivacyPolicy = () => {
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="item-7">
-              <AccordionTrigger>
+              <AccordionTrigger className="text-lg font-medium">
                 7. Changes to This Privacy Policy
               </AccordionTrigger>
               <AccordionContent>
@@ -167,7 +178,10 @@ const PrivacyPolicy = () => {
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="item-8">
-              <AccordionTrigger> 8. Contact Us</AccordionTrigger>
+              <AccordionTrigger className="text-lg font-medium">
+                {" "}
+                8. Contact Us
+              </AccordionTrigger>
               <AccordionContent>
                 <p>
                   If you have any questions, concerns, or requests regarding

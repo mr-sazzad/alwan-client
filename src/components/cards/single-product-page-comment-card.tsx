@@ -2,7 +2,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "../ui/card";
@@ -26,12 +25,6 @@ const ReviewsCard = () => {
           <p className="text-sm">Reviews Not Available</p>
         </div>
       </CardContent>
-      <CardFooter>
-        <div>
-          <h1 className="text-xl font-semibold">AlWAN</h1>
-          <p className="text-sm text-gray-500">clothing brand</p>
-        </div>
-      </CardFooter>
     </Card>
   );
 };

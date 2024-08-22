@@ -68,8 +68,8 @@ const Cart: React.FC<ICartProps> = ({ cartOpen, setCartOpen }) => {
     <>
       <Sheet open={cartOpen} onOpenChange={setCartOpen}>
         <SheetTrigger asChild>
-          <Button variant="outline">
-            <IoBagHandleOutline />
+          <Button variant="link">
+            <IoBagHandleOutline size={20} />
           </Button>
         </SheetTrigger>
         <SheetContent className="flex flex-col justify-between">

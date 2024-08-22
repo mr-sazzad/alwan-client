@@ -24,11 +24,11 @@ const ProfileOnDeliveredOrderItem: React.FC<
   return (
     <div>
       {items?.map((item: IOrderItemResponse) => (
-        <div key={item.id} className="flex gap-2  relative">
+        <div key={item.id} className="flex gap-2 relative">
           {item.itemStatus === "delivered" && (
-            <div className="flex justify-between gap-5 items-center w-full">
+            <div className="flex justify-between gap-5 items-center w-full mb-2">
               <div className="h-[100px] w-[100px]">
-                <ImageSlider urls={item.product.images} />
+                <ImageSlider urls={item.product.images} isRounded />
               </div>
               <div className="flex flex-col gap-2 items-start h-full">
                 <div>
@@ -54,9 +54,6 @@ const ProfileOnDeliveredOrderItem: React.FC<
                 )}
                 <p className="text-muted-foreground">Size: {item.size}</p>
               </div>
-              <div className="absolute right-0 top-0 px-3 py-1 border rounded-3xl border-cyan-200 bg-cyan-500/10 z-50 capitalize text-xs">
-                {item.itemStatus}
-              </div>
               <div className="flex sm:flex-row flex-col gap-2 items-end mt-5">
                 <Button
                   variant="outline"
@@ -75,7 +72,7 @@ const ProfileOnDeliveredOrderItem: React.FC<
                 >
                   <div className="flex items-center gap-2">
                     <TbExchange size={18} />
-                    Request to Return
+                    Return
                   </div>
                 </Button>
               </div>

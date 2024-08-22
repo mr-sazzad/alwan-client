@@ -1,5 +1,6 @@
+import chroma from "chroma-js";
 import React from "react";
-import Select from "react-select";
+import Select, { StylesConfig } from "react-select";
 import makeAnimated from "react-select/animated";
 
 interface IOption {
@@ -25,31 +26,42 @@ const ColorSelector: React.FC<ReactSelectProps> = ({
   handleSelect,
 }) => {
   const animatedSelect = makeAnimated();
+  const customStyles: StylesConfig<IOption, false> = {
+    control: (base, state) => ({
+      ...base,
+      border: "1px solid #334155",
+      opacity: 0.7,
+      borderRadius: "6px",
+      boxShadow: "none",
+      "&:hover": {
+        border: "1px solid #334155",
+      },
+    }),
+    option: (base, state) => ({
+      ...base,
+      backgroundColor: state.isFocused ? "#334155" : base.backgroundColor,
+      color: state.isFocused ? "#fff" : "#000000",
+      "&:hover": {
+        backgroundColor: chroma("#334155").brighten(1).hex(),
+        color: "#fff",
+      },
+    }),
+  };
+
   return (
     <div className="md:mt-[5px]">
       <p className="text-sm mb-2">{title}</p>
       <Select
         options={options}
         placeholder={placeholder}
-        onChange={(selectedOptions) => {
-          const value = (selectedOptions as IOption)?.value || "";
+        onChange={(selectedOption) => {
+          const value = (selectedOption as IOption)?.value || "";
           handleSelect(value);
         }}
         components={animatedSelect}
         name={name}
         closeMenuOnSelect={closeMenuOnSelect}
-        styles={{
-          control: (base, state) => ({
-            ...base,
-            border: "1px solid #334155",
-            opacity: 0.7,
-            borderRadius: "6px",
-            boxShadow: "none",
-            "&:hover": {
-              border: "1px solid #334155",
-            },
-          }),
-        }}
+        styles={customStyles}
       />
     </div>
   );

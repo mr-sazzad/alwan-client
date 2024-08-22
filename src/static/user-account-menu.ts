@@ -4,8 +4,9 @@ import { usePathname } from "next/navigation";
 import { useMemo } from "react";
 
 // react icons
-import { RxDashboard } from "react-icons/rx";
-import { TbHome } from "react-icons/tb";
+import { HiOutlineHome } from "react-icons/hi2";
+import { MdOutlineStarBorderPurple500 } from "react-icons/md";
+import { VscAccount } from "react-icons/vsc";
 
 export const useUserAccountMenu = () => {
   const pathname = usePathname();
@@ -14,17 +15,24 @@ export const useUserAccountMenu = () => {
     () => [
       {
         id: 1,
-        title: "My Account",
+        title: "Profile",
         href: "/account/profile",
-        icon: TbHome,
+        icon: VscAccount,
         active: pathname === "/account/profile",
       },
       {
         id: 2,
         title: "Address",
-        href: "/account/profile/address",
-        icon: RxDashboard,
-        active: pathname.startsWith("/account/profile/address"),
+        href: "/account/address",
+        icon: HiOutlineHome,
+        active: pathname.startsWith("/account/address"),
+      },
+      {
+        id: 3,
+        title: "Orders",
+        href: "/account/orders",
+        icon: MdOutlineStarBorderPurple500,
+        active: pathname.startsWith("/account/orders"),
       },
     ],
     [pathname]

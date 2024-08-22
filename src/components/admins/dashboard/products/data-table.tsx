@@ -34,11 +34,13 @@ import { useState } from "react";
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  filterColumn: string;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  filterColumn: name,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -66,12 +68,12 @@ export function DataTable<TData, TValue>({
       <div className="flex items-center py-4 overflow-x-auto">
         {/* Filtering Part */}
         <Input
-          placeholder="Filter by email..."
-          value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
+          placeholder={`Filter by ${name}...`}
+          value={(table.getColumn(name)?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
-            table.getColumn("email")?.setFilterValue(event.target.value)
+            table.getColumn(name)?.setFilterValue(event.target.value)
           }
-          className="max-w-sm"
+          className="max-w-sm ml-1"
         />
         {/* Visibility Cell */}
         <DropdownMenu>
@@ -123,7 +125,7 @@ export function DataTable<TData, TValue>({
               </TableRow>
             ))}
           </TableHeader>
-          <TableBody>
+          <TableBody className="overflow-x-auto hide-scrollbar">
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow

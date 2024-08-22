@@ -14,8 +14,8 @@ const ProfileOnTheWayOrderItem: React.FC<IProfileOnTheWayOrderItemProps> = ({
         <div key={item.id} className="flex gap-2 relative">
           {item.itemStatus === "onTheWay" && (
             <div className="flex justify-start gap-8 items-center w-full mb-2">
-              <div className="h-[110px] w-[110px]">
-                <ImageSlider urls={item.product.images} />
+              <div className="h-[100px] w-[100px]">
+                <ImageSlider urls={item.product.images} isRounded />
               </div>
               <div className="flex flex-col gap-2 items-start h-full">
                 <div>

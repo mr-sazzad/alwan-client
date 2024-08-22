@@ -1,9 +1,8 @@
 "use client";
 
 import { filterSchema } from "@/schemas/filter-schema";
-
-import { colors } from "@/static/product-color";
 import { prices } from "@/static/product-prices";
+import { IConvertedColor, IReadColor } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect } from "react";
@@ -20,8 +19,15 @@ import {
   FormMessage,
 } from "../ui/form";
 
-const Filter = () => {
+interface IFilterProps {
+  colorsFromServer: {
+    data: IReadColor[];
+  };
+}
+
+const Filter: React.FC<IFilterProps> = ({ colorsFromServer }) => {
   const router = useRouter();
+
   const form = useForm<z.infer<typeof filterSchema>>({
     resolver: zodResolver(filterSchema),
     defaultValues: {
@@ -46,21 +52,31 @@ const Filter = () => {
 
     const queryString = queryParams.toString();
     router.replace(
-      `/t-shirts${queryString ? `?${queryString}` : ""}`,
+      `/products${queryString ? `?${queryString}` : ""}`,
       undefined
     );
   }, [form, router]);
 
   useEffect(() => {
-    // This ensures effect runs only when watch values change after the initial render
     const subscription = watch(() => {
       updateQueryParams();
     });
     return () => subscription.unsubscribe();
   }, [watch, updateQueryParams]);
+
+  const ConvertedColors = (colors: IReadColor[]): IConvertedColor[] => {
+    return colors.map((col: IReadColor) => ({
+      id: col.id,
+      value: col.name.toLowerCase(),
+      label: col.name,
+    }));
+  };
+
+  const colors = ConvertedColors(colorsFromServer?.data);
+
   return (
     <div>
-      <h2 className="text-2xl font-semibold py-5">Filter By</h2>
+      <h2 className="text-lg font-semibold py-5">Filter by</h2>
       <Form {...form}>
         <form className="space-y-8">
           <FormField
@@ -69,10 +85,9 @@ const Filter = () => {
             render={() => (
               <FormItem>
                 <div className="mb-4">
-                  <FormLabel className="text-base">Color</FormLabel>
-                  <FormDescription>Select your Favorite color.</FormDescription>
+                  <FormLabel className="text-base">Colors</FormLabel>
                 </div>
-                {colors.map((item) => (
+                {colors.map((item: IConvertedColor) => (
                   <FormField
                     key={item.id}
                     control={form.control}

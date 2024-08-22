@@ -13,6 +13,7 @@ import { Dispatch, SetStateAction, useMemo, useState } from "react";
 import SearchDialogProductCard from "./search-dialog-product-card";
 
 import { useRouter } from "next/navigation";
+import { FiSearch } from "react-icons/fi";
 import { IoInformation } from "react-icons/io5";
 import { PiSpinner } from "react-icons/pi";
 
@@ -45,21 +46,27 @@ const SearchDialog: React.FC<ISearchDialogProps> = ({
 
   return (
     <Dialog open={searchDialogOpen} onOpenChange={setSearchDialogOpen}>
-      <DialogContent className="sm:w-[500px] rounded">
+      <DialogContent className="sm:w-[500px] sm:h-[500px] w-full h-full flex flex-col gap-3">
         <DialogHeader>
-          <DialogTitle>Search Product</DialogTitle>
-          <DialogDescription>
+          <DialogTitle className="text-xl font-medium">
+            Search Product
+          </DialogTitle>
+          <DialogDescription className="pb-0 mb-0">
             search your favorite product by product name.
           </DialogDescription>
         </DialogHeader>
-        <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
+        <div className="grid gap-4 py-4 h-full">
+          <div className="grid grid-cols-4 gap-4 relative">
             <Input
               id="search"
               placeholder="Type product name..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="col-span-4"
+              className="col-span-4 py-5 rounded-full outline-none focus:outline-none active:outline-0"
+            />
+            <FiSearch
+              className="absolute right-4 top-3 text-muted-foreground"
+              size={20}
             />
           </div>
           <div>
@@ -80,22 +87,21 @@ const SearchDialog: React.FC<ISearchDialogProps> = ({
                 ))}
               </div>
             ) : (
-              searchTerm.length >= 3 && <p>No products found</p>
+              searchTerm.length >= 3 && (
+                <div className="flex flex-col gap-2 justify-center items-center font-medium text-xl text-muted-foreground">
+                  <p>Icon</p>
+                  <p className="">Products Not Found</p>
+                </div>
+              )
             )}
           </div>
         </div>
         <DialogFooter>
-          <div className="flex flex-col gap-2">
-            <div className="flex flex-row items-center gap-1">
-              <IoInformation
-                size={22}
-                className="p-1 border rounded-full text-muted-foreground"
-              />
-              <p className="font-medium text-muted-foreground">Information</p>
-            </div>
-            <p className="text-sm text-muted-foreground pl-7">
-              Any product that matches your search criteria will be displayed in
-              this section.
+          <div className="flex flex-row items-start">
+            <IoInformation className="mt-1 text-muted-foreground" />
+            <p className="text-muted-foreground pl-2 text-sm">
+              Any product that matches your search, will be displayed in this
+              section.
             </p>
           </div>
         </DialogFooter>

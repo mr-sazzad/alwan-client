@@ -11,8 +11,15 @@ export const checkOutSchema = z.object({
     .string()
     .min(11, { message: "Please enter a valid phone number" })
     .startsWith("01", { message: "Please enter a valid phone number" }),
-  city: z.string(),
-  shippingAddress: z
+  division: z
+    .string()
+    .min(1, { message: "Please fill the division carefully" }),
+  district: z
+    .string()
+    .min(1, { message: "Please fill the district carefully" }),
+  upazila: z.string().min(1, { message: "Please fill the upazila carefully" }),
+  union: z.string().min(1, { message: "Please fill the union carefully" }),
+  streetAddress: z
     .string()
     .min(3, { message: "Please fill the address carefully" }),
   orderNote: z.string().optional(),

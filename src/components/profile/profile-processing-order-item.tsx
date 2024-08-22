@@ -27,17 +27,13 @@ const ProfileProcessingOrderItem: React.FC<
       {items?.map((item: IOrderItemResponse) => (
         <div key={item.id} className="flex gap-2 relative">
           {item.itemStatus === "processing" && (
-            <div className="flex justify-between items-center w-full">
-              <div className="h-[110px] w-[110px]">
-                <ImageSlider urls={item.product.images} />
+            <div className="flex justify-between items-center w-full mb-2">
+              <div className="h-[100px] w-[100px]">
+                <ImageSlider urls={item.product.images} isRounded />
               </div>
               <div className="flex flex-col gap-2 items-start h-full">
                 <div>
-                  {item.product.name.length > 20 ? (
-                    <p>{item.product.name.slice(0, 17) + "..."}</p>
-                  ) : (
-                    <p>{item.product.name}</p>
-                  )}
+                  <p>{item.product.name}</p>
                 </div>
                 {item.product.prices.length > 1 ? (
                   <div className="flex gap-2 items-end">
@@ -57,9 +53,6 @@ const ProfileProcessingOrderItem: React.FC<
                   Size: {item.size.toLocaleUpperCase()}
                 </p>
               </div>
-              <div className="absolute right-0 top-0 px-3 py-1 border rounded-3xl border-green-200 bg-green-500/10 capitalize text-xs">
-                {item.itemStatus}
-              </div>
               <div className="flex h-full items-end mb-5">
                 <Button
                   variant="destructive"
@@ -67,7 +60,7 @@ const ProfileProcessingOrderItem: React.FC<
                   onClick={handleCancelModal}
                 >
                   <div className="flex items-center gap-2">
-                    <IoClose size={16} />{" "}
+                    <IoClose size={16} />
                     <span className="text-sm">Cancel</span>
                   </div>
                 </Button>

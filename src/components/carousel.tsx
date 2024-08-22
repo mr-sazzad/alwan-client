@@ -22,7 +22,7 @@ interface CarouselSliderProps {
 
 export default function Carousel({ images }: CarouselSliderProps) {
   return (
-    <div className="mt-[110px]">
+    <div className="mt-[90px]">
       <Swiper
         spaceBetween={30}
         effect={"fade"}
@@ -34,11 +34,16 @@ export default function Carousel({ images }: CarouselSliderProps) {
           clickable: true,
         }}
         modules={[Autoplay, EffectFade, Navigation, Pagination]}
-        className="md:h-[68vh] sm:h-[40vh] h-[23vh] w-full"
+        className="md:h-[68vh] sm:h-[40vh] h-[30vh] w-full"
       >
         {images.map((image, i) => (
           <SwiperSlide key={i} className="bg-center bg-contain">
-            <Image fill src={image.src} alt={image.alt} objectFit="cover" />
+            <Image
+              fill
+              src={image.src}
+              alt={image.alt}
+              className="object-cover"
+            />
           </SwiperSlide>
         ))}
       </Swiper>

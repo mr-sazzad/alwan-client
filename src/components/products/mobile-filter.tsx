@@ -1,8 +1,7 @@
 "use client";
 
+import { useGetAllColorsQuery } from "@/redux/api/color/color-api";
 import { filterSchema } from "@/schemas/filter-schema";
-
-import { colors } from "@/static/product-color";
 import { prices } from "@/static/product-prices";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
@@ -16,7 +15,6 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTrigger,
 } from "../ui/dialog";
@@ -30,8 +28,10 @@ import {
   FormMessage,
 } from "../ui/form";
 
-const Filter = () => {
+const MobileFilter = () => {
   const router = useRouter();
+  const { data: colors, isLoading: isLoading } =
+    useGetAllColorsQuery(undefined);
   const form = useForm<z.infer<typeof filterSchema>>({
     resolver: zodResolver(filterSchema),
     defaultValues: {
@@ -56,13 +56,12 @@ const Filter = () => {
 
     const queryString = queryParams.toString();
     router.replace(
-      `/t-shirts${queryString ? `?${queryString}` : ""}`,
+      `/products${queryString ? `?${queryString}` : ""}`,
       undefined
     );
   }, [form, router]);
 
   useEffect(() => {
-    // This ensures effect runs only when watch values change after the initial render
     const subscription = watch(() => {
       updateQueryParams();
     });
@@ -81,10 +80,9 @@ const Filter = () => {
           <DialogHeader>
             <h2 className="text-2xl font-semibold mt-2">Filter</h2>
             <DialogDescription>
-              Filter for getting your product easily.
+              for getting your favorite product easily.
             </DialogDescription>
           </DialogHeader>
-          <h2 className="text-2xl font-semibold py-5">Filter By</h2>
           <Form {...form}>
             <form className="space-y-8">
               <FormField
@@ -93,10 +91,7 @@ const Filter = () => {
                 render={() => (
                   <FormItem>
                     <div className="mb-4">
-                      <FormLabel className="text-base">Color</FormLabel>
-                      <FormDescription>
-                        Select your Favorite color.
-                      </FormDescription>
+                      <FormLabel className="text-base">By Color</FormLabel>
                     </div>
                     {colors.map((item) => (
                       <FormField
@@ -191,15 +186,10 @@ const Filter = () => {
               />
             </form>
           </Form>
-          <DialogFooter>
-            <p className="text-sm text-center text-gray-500">
-              All right reserved by @alwan
-            </p>
-          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>
   );
 };
 
-export default Filter;
+export default MobileFilter;

@@ -4,10 +4,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 
 const ReviewAndInfoTab = () => {
   return (
-    <Tabs defaultValue="information" className="md:w-[800px] w-full">
+    <Tabs defaultValue="information" className="w-full">
       <TabsList className="grid w-full grid-cols-2">
-        <TabsTrigger value="information">Information</TabsTrigger>
-        <TabsTrigger value="comments">Reviews</TabsTrigger>
+        <TabsTrigger value="information" className="font-semibold">
+          Information
+        </TabsTrigger>
+        <TabsTrigger value="comments" className="font-semibold">
+          Reviews
+        </TabsTrigger>
       </TabsList>
       <TabsContent value="information">
         <InformationCard />

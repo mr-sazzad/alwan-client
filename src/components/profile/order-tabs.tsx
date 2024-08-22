@@ -32,8 +32,8 @@ const ProfileOrderTabs: React.FC<IProfileOrderTabsProps> = ({ orders }) => {
               Please review and carefully cancel your processing orders.
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-2 h-[300px] overflow-y-auto">
-            <div className="flex flex-col gap-2 border rounded-md px-2">
+          <CardContent className="space-y-2 max-h-[300px] overflow-y-auto hide-scrollbar">
+            <div className="flex flex-col border rounded-md pt-2 px-2">
               {orders.map((order: IOrderResponse) => (
                 <ProfileProcessingOrderItem
                   key={order.id}
@@ -55,12 +55,12 @@ const ProfileOrderTabs: React.FC<IProfileOrderTabsProps> = ({ orders }) => {
           <CardHeader>
             <CardTitle>On The Way</CardTitle>
             <CardDescription>
-              Change your password here. After saving, you&apos;ll be logged
-              out.
+              Your order is on its way! Track its journey and get ready for its
+              arrival.
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-2 max-h-[300px] overflow-y-auto">
-            <div className="flex flex-col border rounded-md p-2">
+          <CardContent className="space-y-2 max-h-[300px] overflow-y-auto hide-scrollbar">
+            <div className="flex flex-col border rounded-md pt-2 px-2">
               {orders.map((order: IOrderResponse) => (
                 <ProfileOnTheWayOrderItem key={order.id} items={order.items} />
               ))}
@@ -68,7 +68,7 @@ const ProfileOrderTabs: React.FC<IProfileOrderTabsProps> = ({ orders }) => {
           </CardContent>
           <CardFooter className="flex justify-center">
             <p className="text-muted-foreground text-sm">
-              All of your shipping orders
+              All of your on the way orders
             </p>
           </CardFooter>
         </Card>
@@ -85,8 +85,8 @@ const ProfileOrderTabs: React.FC<IProfileOrderTabsProps> = ({ orders }) => {
               to us.
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-2 max-h-[300px] overflow-y-auto">
-            <div className="flex flex-col gap-2 border rounded-md p-2">
+          <CardContent className="space-y-2 max-h-[300px] overflow-y-auto hide-scrollbar">
+            <div className="flex flex-col border rounded-md pt-2 px-2">
               {orders.map((order: IOrderResponse) => (
                 <ProfileOnDeliveredOrderItem
                   key={order.id}
@@ -95,8 +95,10 @@ const ProfileOrderTabs: React.FC<IProfileOrderTabsProps> = ({ orders }) => {
               ))}
             </div>
           </CardContent>
-          <CardFooter>
-            <p></p>
+          <CardFooter className="flex justify-center">
+            <p className="text-muted-foreground text-sm">
+              All of your delivered orders
+            </p>
           </CardFooter>
         </Card>
       </TabsContent>

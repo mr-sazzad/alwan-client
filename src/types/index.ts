@@ -6,8 +6,14 @@ export interface IMeta {
   size: number;
 }
 
-export interface IResponse {
+export interface IResponseData {
+  status: number;
+  success: boolean;
   data: any;
+}
+
+export interface IResponse {
+  data: IResponseData;
   meta?: IMeta;
 }
 
@@ -16,37 +22,110 @@ export interface ILoginRes {
   refreshToken: string;
 }
 
-interface imageProps {
+export interface ICreateCategory {
+  name: string;
+  file: File;
+  clientUrl: string;
+  parentId: string;
+  firstTitle: string;
+  secondTitle: string;
+  isOnHomePage: boolean;
+}
+
+export interface IReadCategory {
+  id: string;
+  name: string;
+  imageUrl: string;
+  clientUrl: string;
+  parentId: string;
+  firstTitle: string;
+  secondTitle: string;
+  isOnHomePage: boolean;
+}
+
+export interface IReadProductType {
+  id: string;
+  name: string;
+}
+
+export interface imageProps {
   id: number;
   src: string;
   alt: string;
 }
 
-export interface ITShirt {
+export interface ICoupon {
+  id: string;
+  code: string;
+  discountPercentage: number;
+  discountValue: number;
+  parentId?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface IReadColor {
   id: string;
   name: string;
-  prices: number[];
-  desc: string[];
+  hexCode: string;
+}
+
+export interface IConvertedColor {
+  id: string;
+  value: string;
+  label: string;
+}
+
+export interface IReadSize {
+  id: string;
+  name: string;
+}
+
+export interface SizeVariant {
+  id: string;
+  productId: string;
+  price: number;
+  stock: number;
+  colorId: string;
+  sizeId: string;
+  createdAt: string;
+  updatedAt: string;
+}
+export interface IReadSizeVariant {
+  id: string;
+  productId: string;
+  price: number;
+  stock: number;
+  color: IReadColor;
+  size: IReadSize;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface IProduct {
+  id: string;
+  name: string;
+  brand: string;
+  description: string[];
   features: string[];
-  images: string[];
-  orderQty: number;
-  mSizeStock: number;
-  lSizeStock: number;
-  xlSizeStock: number;
-  xxlSizeStock: number;
-  orderSize: string;
-  sizes: ("M" | "L" | "XL" | "XXL")[];
-  color:
-    | "black"
-    | "white"
-    | "skyblue"
-    | "gray"
-    | "purple"
-    | "lightgreen"
-    | "multicolor";
+  imageUrls: string[];
+  categoryId: string;
+  productTypeId: string;
+  isCouponApplicable: boolean;
   isFreeDeliveryAvailable: boolean;
   status: "in_stock" | "stock_out";
+  sizeVariants: IReadSizeVariant[];
   createdAt: string;
+}
+
+export interface IReview {
+  id: string;
+  rating: number;
+  content: string;
+  userId: string;
+  productId: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface OrderItem {
@@ -59,8 +138,11 @@ export interface OrderData {
   userId?: string;
   username?: string;
   email?: string;
-  shippingCity: string;
-  shippingAddress: string;
+  division: string;
+  district: string;
+  upazila: string;
+  union: string;
+  streetAddress: string;
   phone: string;
   altPhone?: string;
   totalCost: number;
@@ -90,7 +172,7 @@ export interface IOrderItemResponse {
     | "requestToReturn"
     | "returned";
   orderId: string;
-  product: ITShirt;
+  product: IProduct;
   productId: string;
   quantity: number;
   returnNote: string | null;
@@ -116,4 +198,65 @@ export interface IOrderResponse {
   totalCost: number;
   updatedAt: string;
   userId: string;
+}
+
+export interface IProductCategory {
+  id: string;
+  title: string;
+  imageUrl: string;
+  subsCategories: ProductSubCategory[];
+}
+
+export interface ProductSubCategory {
+  id: string;
+  title: string;
+  imageUrl: string;
+  parentId: string;
+}
+
+export interface Category {
+  id: string;
+  title: string;
+  imageUrl: string | null;
+  parentId: string | null;
+  createdAt: string;
+  updatedAt: string;
+  parent?: Category | null;
+  clientUrl: string;
+  description: string | null;
+  subCategories?: Category[];
+}
+
+// Addresses
+export interface IDivision {
+  id: string;
+  name: string;
+  bn_name: string;
+  url: string;
+}
+
+export interface IDistrict {
+  id: string;
+  division_id: string;
+  name: string;
+  bn_name: string;
+  lat: string;
+  lon: string;
+  url: string;
+}
+
+export interface IUpazila {
+  id: string;
+  district_id: string;
+  name: string;
+  bn_name: string;
+  url: string;
+}
+
+export interface IUnion {
+  id: string;
+  upazilla_id: string;
+  name: string;
+  bn_name: string;
+  url: string;
 }

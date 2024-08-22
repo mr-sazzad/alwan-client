@@ -13,8 +13,8 @@ const AdminDashboard = () => {
           size={25}
           className="mb-3 text-gray-800 dark:text-white"
         />
-        <h1 className="text-lg font-semibold text-gray-800 dark:text-white">
-          Select a menu
+        <h1 className="text-xl font-semibold text-gray-800 dark:text-white">
+          Select a Menu
         </h1>
         <p className="text-sm text-gray-800 dark:text-white">
           For detailed information

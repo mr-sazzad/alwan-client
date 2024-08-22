@@ -34,9 +34,9 @@ const UserMobileFooter = () => {
   });
 
   return (
-    <>
+    <div className="fixed bottom-2 right-2 left-2 z-10 w-full">
       <div
-        className={`fixed bottom-2 right-2 left-2 z-50 ${
+        className={`max-w-[300px] mx-auto flex justify-center ${
           pathname.startsWith("/admins/dashboard") ? "hidden" : ""
         }`}
       >
@@ -53,16 +53,22 @@ const UserMobileFooter = () => {
                 {menu.href ? (
                   <Link
                     href={menu.href}
-                    className="w-full h-full flex justify-center items-center"
+                    className="w-full h-full flex justify-center items-center group"
                   >
-                    <menu.icon size={20} />
+                    <menu.icon
+                      size={22}
+                      className="font-extrabold text-muted-foreground group-hover:text-black"
+                    />
                   </Link>
                 ) : (
                   <div
                     onClick={menu.onClick}
-                    className="w-full h-full flex justify-center items-center"
+                    className="w-full h-full flex justify-center items-center group"
                   >
-                    <menu.icon />
+                    <menu.icon
+                      size={22}
+                      className="font-extrabold text-muted-foreground group-hover:text-black"
+                    />
                   </div>
                 )}
               </div>
@@ -80,7 +86,7 @@ const UserMobileFooter = () => {
       <div className="hidden">
         <Wishlist open={wishlistModelOpen} setOpen={setWishlistModelOpen} />
       </div>
-    </>
+    </div>
   );
 };
 

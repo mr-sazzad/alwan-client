@@ -10,7 +10,7 @@ import Link from "next/link";
 const AdminsDesktopMenu = () => {
   const adminRoutes = useAdminDashboardMenu();
   return (
-    <div className="sm:flex hidden flex-col gap-1 lg:w-[220px] md:w-[200px] sm:w-[40px]">
+    <div className="sm:flex hidden flex-col gap-1 lg:w-[220px] md:w-[200px] sm:w-[40px] border-r pr-2">
       {adminRoutes.map((menu) => (
         <Link
           key={menu.id}
@@ -26,7 +26,7 @@ const AdminsDesktopMenu = () => {
               <TooltipTrigger>
                 <menu.icon />
               </TooltipTrigger>
-              <TooltipContent side="right">
+              <TooltipContent side="right" className="md:hidden sm:ml-3">
                 <p>{menu.title}</p>
               </TooltipContent>
             </Tooltip>

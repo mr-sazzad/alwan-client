@@ -1,20 +1,21 @@
 "use state";
 
-import Image from "next/image";
-import React, { useEffect, useState } from "react";
-import { Swiper, SwiperSlide } from "swiper/react";
-import "swiper/css";
-import "swiper/css/pagination";
-import type SwiperType from "swiper";
-import { Pagination } from "swiper/modules";
 import { cn } from "@/lib/utils";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import Image from "next/image";
+import React, { useEffect, useState } from "react";
+import type SwiperType from "swiper";
+import "swiper/css";
+import "swiper/css/pagination";
+import { Pagination } from "swiper/modules";
+import { Swiper, SwiperSlide } from "swiper/react";
 
 interface ImageSliderProps {
   urls: string[];
+  isRounded?: boolean;
 }
 
-const ImageSlider: React.FC<ImageSliderProps> = ({ urls }) => {
+const ImageSlider: React.FC<ImageSliderProps> = ({ urls, isRounded }) => {
   const [swiper, setSwiper] = useState<null | SwiperType>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [slideConfig, setSlideConfig] = useState({
@@ -37,7 +38,11 @@ const ImageSlider: React.FC<ImageSliderProps> = ({ urls }) => {
   const inactiveStyles = "hidden text-gray-400";
 
   return (
-    <div className="group relative bg-zinc-100 aspect-square overflow-hidden rounded-t w-full h-full">
+    <div
+      className={`group relative bg-zinc-100 aspect-square overflow-hidden rounded w-full h-full ${
+        isRounded && "rounded"
+      }`}
+    >
       <div className="absolute z-10 inset-0 opacity-0 group-hover:opacity-100 transition">
         <button
           onClick={(e) => {

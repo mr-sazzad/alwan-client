@@ -11,7 +11,6 @@ instance.defaults.timeout = 50000;
 // Add a request interceptor
 instance.interceptors.request.use(
   function (config) {
-    // set accessToken to headers before request is sent
     const accessToken = getFromLocalStorage(KEY);
 
     if (accessToken) {
@@ -24,20 +23,16 @@ instance.interceptors.request.use(
   }
 );
 
-// Add a response interceptor
-
 instance.interceptors.response.use(
   //@ts-ignore
   function (response) {
-    // Do something with response data
     const responseObject: IResponse = {
-      data: response?.data?.data,
+      data: response?.data,
       meta: response?.data?.meta,
     };
     return responseObject;
   },
   function (error) {
     return error.response;
-    // return Promise.reject(error);
   }
 );

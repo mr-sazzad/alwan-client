@@ -5,18 +5,15 @@ import { Toaster } from "@/components/ui/toaster";
 import Providers from "@/providers/reduxProvider";
 import { ThemeProvider } from "@/providers/theme-provider";
 import type { Metadata } from "next";
-import { Nunito } from "next/font/google";
+import { Raleway } from "next/font/google";
 import "./globals.css";
-
-const font = Nunito({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
-});
 
 export const metadata: Metadata = {
   title: "Alwan",
   description: "The ideal lifestyle",
 };
+
+const raleway = Raleway({ subsets: ["latin"] });
 
 export default function RootLayout({
   children,
@@ -26,7 +23,7 @@ export default function RootLayout({
   return (
     <Providers>
       <html lang="en">
-        <body className={font.className}>
+        <body className={raleway.className}>
           <ThemeProvider
             attribute="class"
             defaultTheme="system"
@@ -34,10 +31,10 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             <Header />
-            <div>{children}</div>
+            <div className="mb-5">{children}</div>
             <Toaster />
-            <Footer />
             <UserMobileMenu />
+            <Footer />
           </ThemeProvider>
         </body>
       </html>

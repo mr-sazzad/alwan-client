@@ -47,10 +47,10 @@ const Profile = () => {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
-              variant="outline"
+              variant="link"
               className="rounded-full p-0 flex justify-center items-center overflow-hidden border-0 outline-none w-[30px] h-[30px]"
             >
-              <Avatar className="w-[30px] h-[30px]">
+              <Avatar className="w-[25px] h-[25px]">
                 <AvatarImage
                   src="https://i.ibb.co/Qkf0sqm/images.jpg"
                   alt="profile-image"
@@ -59,7 +59,7 @@ const Profile = () => {
               </Avatar>
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-56">
+          <DropdownMenuContent className="w-[300px]">
             {currentUser ? (
               <>
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
@@ -85,20 +85,35 @@ const Profile = () => {
             ) : (
               <>
                 <DropdownMenuItem
-                  className="w-full list-none m-1 cursor-pointer"
+                  className="w-full list-none"
+                  onSelect={() => setOpen(true)}
+                >
+                  <div>
+                    <h2 className="text-lg font-semibold">Login First</h2>
+                    <p className="text-sm text-muted-foreground">
+                      Experience seamless access to your account with our secure
+                      login.
+                    </p>
+                  </div>
+                </DropdownMenuItem>
+                <Separator className="my-1" />
+                <DropdownMenuItem
+                  className="w-full list-none cursor-pointer"
                   onSelect={() => setOpen(true)}
                 >
                   <div className="py-1 flex items-center gap-2">
-                    <FiUserCheck size={16} /> <p>Sign In</p>
+                    <FiUserCheck size={16} />{" "}
+                    <p className="text-lg font-medium">Sign In</p>
                   </div>
                 </DropdownMenuItem>
-                <Separator />
+                <Separator className="my-1" />
                 <DropdownMenuItem
-                  className="w-full list-none m-1 cursor-pointer"
+                  className="w-full list-none cursor-pointer"
                   onSelect={() => setSignUpOpen(true)}
                 >
                   <div className="py-1 flex items-center gap-2">
-                    <FiUserPlus size={16} /> <p>Sign Up</p>
+                    <FiUserPlus size={16} />{" "}
+                    <p className="text-lg font-medium">Sign Up</p>
                   </div>
                 </DropdownMenuItem>
               </>

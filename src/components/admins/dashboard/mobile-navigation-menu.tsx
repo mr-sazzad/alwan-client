@@ -1,39 +1,49 @@
+"use client";
+
+import { Button } from "@/components/ui/button";
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerFooter,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
 import { useAdminDashboardMenu } from "@/static/admin-dashboard-menu";
 import Link from "next/link";
 
 const AdminsMobileMenu = () => {
   const adminRoutes = useAdminDashboardMenu();
   return (
-    <div className="sm:hidden flex flex-row gap-1 w-full rounded-full z-50 backdrop-blur bg-black/30 mb-2 dark:bg-white/10">
-      {adminRoutes.map((menu) => (
-        <Link
-          key={menu.id}
-          href={menu.href}
-          className={`py-4 w-full flex justify-center items-center ${
-            menu.active
-              ? "bg-black/90 dark:bg-slate-100 text-slate-100 dark:text-black/80 hover:bg-black/80 hover:text-slate-100 dark:hover:text-gray-400"
-              : "hover:bg-gray-300 dark:hover:bg-gray-100 text-muted-foreground dark:hover:text-black/80 hover:text-gray-800"
-          }`}
-        >
-          <TooltipProvider delayDuration={0}>
-            <Tooltip>
-              <TooltipTrigger>
-                <menu.icon size={20} />
-              </TooltipTrigger>
-              <TooltipContent side="top">
-                <p>{menu.title}</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        </Link>
-      ))}
-    </div>
+    <Drawer>
+      <DrawerTrigger asChild>
+        <Button variant="outline" className="rounded-full text-xl font-medium">
+          Dashboard menu
+        </Button>
+      </DrawerTrigger>
+      <DrawerContent>
+        <div className="flex flex-row justify-start gap-2 w-full flex-wrap px-5">
+          {adminRoutes.map((menu) => (
+            <Link
+              key={menu.id}
+              href={menu.href}
+              className={`flex flex-col gap-1 justify-center items-center p-3 rounded w-[23%] border border-gray-400 ${
+                menu.active
+                  ? "bg-black/90 dark:bg-slate-100 text-slate-100 dark:text-black/80 hover:bg-black/80 hover:text-slate-100 dark:hover:text-gray-400"
+                  : "hover:bg-gray-300 dark:hover:bg-gray-100 text-muted-foreground dark:hover:text-black/80 hover:text-gray-800"
+              }`}
+            >
+              <menu.icon size={28} className="p-1 border rounded-full" />
+              <p className="text-xs font-medium">{menu.title}</p>
+            </Link>
+          ))}
+        </div>
+        <DrawerFooter>
+          <DrawerClose>
+            <Button className="w-full">Cancel</Button>
+          </DrawerClose>
+        </DrawerFooter>
+      </DrawerContent>
+    </Drawer>
   );
 };
 
