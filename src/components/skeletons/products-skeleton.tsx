@@ -23,20 +23,20 @@ const ProductsSkeleton = () => {
           </div>
 
           <div className="flex-1">
-            <div className=" flex flex-row flex-wrap justify-start w-full h-full gap-2 md:mt-2 mt-10">
+            <div className=" flex flex-row flex-wrap justify-start w-full gap-3 md:mt-2 mt-10">
               <Skeleton className="h-10 w-full md:hidden" />
 
-              <Skeleton className="md:h-[260px] h-[300px] md:md:w-[32%] w-[48%]" />
+              <Skeleton className="md:h-[400px] h-[300px] md:w-[31%] w-[48%]" />
 
-              <Skeleton className="md:h-[260px] h-[300px] md:w-[32%] w-[48%]" />
+              <Skeleton className="md:h-[400px] h-[300px] md:w-[31%] w-[48%]" />
 
-              <Skeleton className="md:h-[260px] h-[300px] md:w-[32%] w-[48%]" />
+              <Skeleton className="md:h-[400px] h-[300px] md:w-[31%] w-[48%]" />
 
-              <Skeleton className="md:h-[260px] h-[300px] md:w-[32%] w-[48%]" />
+              <Skeleton className="md:h-[400px] h-[300px] md:w-[31%] w-[48%]" />
 
-              <Skeleton className="md:h-[260px] h-[300px] md:w-[32%] w-[48%]" />
+              <Skeleton className="md:h-[400px] h-[300px] md:w-[31%] w-[48%]" />
 
-              <Skeleton className="md:h-[260px] h-[300px] md:w-[32%] w-[48%]" />
+              <Skeleton className="md:h-[400px] h-[300px] md:w-[31%] w-[48%]" />
             </div>
           </div>
         </div>

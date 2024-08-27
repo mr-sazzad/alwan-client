@@ -6,23 +6,24 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { getUserFromLocalStorage } from "@/helpers/jwt";
-import { cities } from "@/static/cities";
-import { IUserData } from "@/types";
+import { IDistrict, IDivision, IUnion, IUpazila } from "@/types";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
 import { Textarea } from "../ui/textarea";
 
-import {
-  useGetSingleUserQuery,
-  useUpdateSingleUserMutation,
-} from "@/redux/api/users/user-api";
+import districtData from "../../../public/address/district.json";
+import divisionData from "../../../public/address/division.json";
+import unionData from "../../../public/address/union.json";
+import upazilaData from "../../../public/address/upazila.json";
+
 import { profileAddressSchema } from "@/schemas/profile-address-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -30,152 +31,284 @@ import { z } from "zod";
 import { Form, FormControl, FormField, FormItem, FormLabel } from "../ui/form";
 import { toast } from "../ui/use-toast";
 
-import { GoShieldCheck } from "react-icons/go";
 import { PiSpinner } from "react-icons/pi";
+import { getNameById } from "../utils/get-name-by-id";
 
 interface IAddressModalProps {
   addressModalOpen: boolean;
   setAddressModalOpen: Dispatch<SetStateAction<boolean>>;
+  currentUser: any;
+  title: string;
+  description: string;
+  submitHandler: (values: z.infer<typeof profileAddressSchema>) => void;
+  selectedAddress: any;
+  isLoading: boolean;
 }
 
 const AddressModal: React.FC<IAddressModalProps> = ({
   addressModalOpen,
   setAddressModalOpen,
+  currentUser: user,
+  title,
+  description,
+  submitHandler,
+  selectedAddress,
+  isLoading,
 }) => {
-  const [userData, setUserData] = useState<IUserData>();
-  const { data: user, isLoading } = useGetSingleUserQuery(userData?.userId);
-  const [updateSingleUser, { isLoading: isUserUpdating }] =
-    useUpdateSingleUserMutation();
+  const [selectedDivision, setSelectedDivision] = useState<string | undefined>(
+    selectedAddress?.division || ""
+  );
+  const [selectedDistrict, setSelectedDistrict] = useState<string | undefined>(
+    selectedAddress?.district || ""
+  );
+  const [selectedUpazila, setSelectedUpazila] = useState<string | undefined>(
+    selectedAddress?.upazila || ""
+  );
+
+  const [filteredDistricts, setFilteredDistricts] = useState<IDistrict[]>([]);
+  const [filteredUpazilas, setFilteredUpazilas] = useState<IUpazila[]>([]);
+  const [filteredUnions, setFilteredUnions] = useState<IUnion[]>([]);
+
+  console.log("SELECTED ADDRESS =>", selectedAddress);
+  console.log("SELECTED DIVISION =>", selectedDivision);
+
+  useEffect(() => {
+    if (selectedDivision) {
+      const districts = districtData.filter(
+        (district) => district.division_id === selectedDivision
+      );
+
+      console.log("FROM USE EFFECT", selectedDivision);
+      setFilteredDistricts(districts);
+    }
+  }, [selectedDivision]);
+
+  useEffect(() => {
+    if (selectedDistrict) {
+      const upazilas = upazilaData.filter(
+        (upazila) => upazila.district_id === selectedDistrict
+      );
+      setFilteredUpazilas(upazilas);
+    }
+  }, [selectedDistrict]);
+
+  useEffect(() => {
+    if (selectedUpazila) {
+      const unions = unionData.filter(
+        (union) => union.upazilla_id === selectedUpazila
+      );
+      setFilteredUnions(unions);
+    }
+  }, [selectedUpazila]);
 
   const form = useForm<z.infer<typeof profileAddressSchema>>({
     resolver: zodResolver(profileAddressSchema),
     defaultValues: {
-      shippingDistrict: "",
-      shippingAddress: "",
+      division: selectedDivision,
+      district: selectedDistrict,
+      upazila: selectedUpazila,
+      union: selectedAddress?.union || undefined,
+      streetAddress: selectedAddress?.streetAddress || "",
     },
   });
 
-  useEffect(() => {
-    const currentUserData = getUserFromLocalStorage() as any;
-    if (!currentUserData) {
-    } else {
-      setUserData(currentUserData);
-    }
-  }, []);
+  const onSubmit = (values: z.infer<typeof profileAddressSchema>) => {
+    const divisionName = getNameById(values.division, divisionData) || "";
+    const districtName = getNameById(values.district, districtData) || "";
+    const upazilaName = getNameById(values.upazila, upazilaData) || "";
+    const unionName = getNameById(values.union, unionData) || "";
 
-  useEffect(() => {
-    if (user) {
-      form.reset({
-        shippingDistrict: user.shippingDistrict || "",
-        shippingAddress: user.shippingAddress || "",
-      });
-    }
-  }, [user, form]);
-
-  const onSubmit = async (values: z.infer<typeof profileAddressSchema>) => {
-    const requestedData = {
-      id: user.id,
-      shippingDistrict: values.shippingDistrict,
-      shippingAddress: values.shippingAddress,
+    const finalValues = {
+      division: divisionName,
+      district: districtName,
+      upazila: upazilaName,
+      union: unionName,
+      streetAddress: values.streetAddress || "",
     };
 
-    if (values.shippingDistrict === "" || values.shippingAddress === "") {
+    // Check for changes before submission
+    if (
+      selectedAddress &&
+      finalValues.division === selectedAddress.division &&
+      finalValues.district === selectedAddress.district &&
+      finalValues.upazila === selectedAddress.upazila &&
+      finalValues.union === selectedAddress.union &&
+      finalValues.streetAddress === selectedAddress.streetAddress
+    ) {
       toast({
         title: "Error",
-        description: "Please fill the inputs first then apply changes!",
+        description: "No changes detected",
         variant: "destructive",
       });
-
       return;
     }
 
-    const result: any = await updateSingleUser(requestedData);
-    if (!result.data.id) {
-      toast({
-        title: "Error",
-        description: "Something went wrong please try again",
-        variant: "destructive",
-      });
-    } else {
-      setAddressModalOpen(false);
-      toast({
-        title: "Successfull",
-        description: "Your information was updated",
-      });
-    }
+    submitHandler(finalValues);
   };
+
   return (
     <Dialog open={addressModalOpen} onOpenChange={setAddressModalOpen}>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent>
         <DialogHeader>
-          <DialogTitle>Edit your address</DialogTitle>
-          <DialogDescription>
-            Please dubble check your address before update the address.
-          </DialogDescription>
+          <DialogTitle>{title}</DialogTitle>
+          <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <div className="grid gap-4 py-4">
-              <FormField
-                control={form.control}
-                name="shippingDistrict"
-                render={({ field }) => (
-                  <FormItem>
-                    <div className="flex flex-col gap-4">
-                      <Select
-                        onValueChange={field.onChange}
-                        value={field.value}
-                      >
-                        <FormLabel>Select your city</FormLabel>
-                        <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Select Your City" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {cities.map((city) => (
-                            <SelectItem value={city.value} key={city.id}>
-                              {city.city}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="shippingAddress"
-                render={({ field }) => (
-                  <FormItem>
-                    <div className="flex flex-col gap-4">
-                      <FormLabel
-                        htmlFor="details address"
-                        className="text-start"
-                      >
-                        Details address
-                      </FormLabel>
-                      <FormControl>
-                        <Textarea
-                          id="details address"
-                          placeholder="write your full address"
-                          className="col-span-3"
-                          {...field}
-                        />
-                      </FormControl>
-                    </div>
-                  </FormItem>
-                )}
-              />
-            </div>
-            <Button type="submit" className="w-full" disabled={isUserUpdating}>
-              {isUserUpdating ? (
-                <PiSpinner className="animate-spin" size={18} />
-              ) : (
-                <div className="flex justify-center items-center gap-2">
-                  <GoShieldCheck /> <span>Save</span>
-                </div>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <FormField
+              control={form.control}
+              name="division"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Division</FormLabel>
+                  <Select
+                    onValueChange={(value) => {
+                      setSelectedDivision(value);
+                      field.onChange(value);
+                    }}
+                    value={field.value}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select division" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectLabel>Divisions</SelectLabel>
+                        {divisionData.map((division: IDivision) => (
+                          <SelectItem value={division.id} key={division.id}>
+                            {selectedDivision
+                              ? selectedDivision
+                              : division.name}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </FormItem>
               )}
-            </Button>
+            />
+
+            <FormField
+              control={form.control}
+              name="district"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>District</FormLabel>
+                  <Select
+                    onValueChange={(value) => {
+                      setSelectedDistrict(value);
+                      field.onChange(value);
+                    }}
+                    value={field.value}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select district" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectLabel>District</SelectLabel>
+                        {filteredDistricts.map((district: IDistrict) => (
+                          <SelectItem value={district.id} key={district.id}>
+                            {district.name}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="upazila"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Upazila</FormLabel>
+                  <Select
+                    onValueChange={(value) => {
+                      setSelectedUpazila(value);
+                      field.onChange(value);
+                    }}
+                    value={field.value}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select upazila" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectLabel>Upazila</SelectLabel>
+                        {filteredUpazilas.map((upazila: IUpazila) => (
+                          <SelectItem value={upazila.id} key={upazila.id}>
+                            {upazila.name}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="union"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Union</FormLabel>
+                  <Select
+                    onValueChange={(value) => {
+                      field.onChange(value);
+                    }}
+                    value={field.value}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select union" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectLabel>Union</SelectLabel>
+                        {filteredUnions.map((union: IUnion) => (
+                          <SelectItem value={union.id} key={union.id}>
+                            {union.name}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="streetAddress"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Exact Address</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="e.g., House # 123, Road # 456, ABC Area"
+                      {...field}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+
+            <div className="mt-8 flex items-center justify-end gap-2">
+              <Button type="submit" disabled={isLoading} className="gap-2">
+                {isLoading && <PiSpinner className="animate-spin" />}
+                {selectedAddress ? "Update" : "Save"}
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setAddressModalOpen(false)}
+              >
+                Cancel
+              </Button>
+            </div>
           </form>
         </Form>
       </DialogContent>

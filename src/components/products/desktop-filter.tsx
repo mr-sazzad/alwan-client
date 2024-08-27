@@ -18,6 +18,7 @@ import {
   FormLabel,
   FormMessage,
 } from "../ui/form";
+import { ConvertedColors } from "../utils/convert-color";
 
 interface IFilterProps {
   colorsFromServer: {
@@ -63,14 +64,6 @@ const Filter: React.FC<IFilterProps> = ({ colorsFromServer }) => {
     });
     return () => subscription.unsubscribe();
   }, [watch, updateQueryParams]);
-
-  const ConvertedColors = (colors: IReadColor[]): IConvertedColor[] => {
-    return colors.map((col: IReadColor) => ({
-      id: col.id,
-      value: col.name.toLowerCase(),
-      label: col.name,
-    }));
-  };
 
   const colors = ConvertedColors(colorsFromServer?.data);
 

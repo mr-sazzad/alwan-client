@@ -1,4 +1,4 @@
-import { ITShirt } from "@/types";
+import { IProduct } from "@/types";
 import { Dispatch, SetStateAction } from "react";
 import {
   AlertDialog,
@@ -16,7 +16,7 @@ import { Button } from "../ui/button";
 interface IEraseCartProsuctsModalProps {
   eraseModalOpen: boolean;
   setEraseModalOpen: Dispatch<SetStateAction<boolean>>;
-  cartProducts: ITShirt[];
+  cartProducts: IProduct[];
   handleCartClear: () => void;
   className?: string;
 }

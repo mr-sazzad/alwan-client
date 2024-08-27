@@ -79,7 +79,7 @@ const ResetPassword = () => {
                     </FormItem>
                   )}
                 />
-                <Button type="submit" variant="outline" className="w-full">
+                <Button type="submit" className="w-full">
                   Reset Password
                 </Button>
               </form>

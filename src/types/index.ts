@@ -118,6 +118,26 @@ export interface IProduct {
   createdAt: string;
 }
 
+export interface IUserCartProduct {
+  id: string;
+  name: string;
+  brand: string;
+  description: string[];
+  features: string[];
+  imageUrls: string[];
+  categoryId: string;
+  productTypeId: string;
+  isCouponApplicable: boolean;
+  isFreeDeliveryAvailable: boolean;
+  status: "in_stock" | "stock_out";
+  sizeVariants: IReadSizeVariant[];
+  orderColor: string;
+  orderSize: string;
+  orderQty: number;
+  orderHexCode: string;
+  createdAt: string;
+}
+
 export interface IReview {
   id: string;
   rating: number;
@@ -136,16 +156,17 @@ export interface OrderItem {
 
 export interface OrderData {
   userId?: string;
-  username?: string;
+  userName?: string;
   email?: string;
-  division: string;
-  district: string;
-  upazila: string;
-  union: string;
-  streetAddress: string;
+  division?: string;
+  district?: string;
+  upazila?: string;
+  union?: string;
+  streetAddress?: string;
   phone: string;
   altPhone?: string;
   totalCost: number;
+  shippingCost: number;
   orderNote?: string;
   items: OrderItem[];
 }
@@ -232,7 +253,6 @@ export interface IDivision {
   id: string;
   name: string;
   bn_name: string;
-  url: string;
 }
 
 export interface IDistrict {

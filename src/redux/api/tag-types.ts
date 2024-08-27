@@ -16,6 +16,7 @@ export enum tagTypes {
 
 export const tagTypeLists = [
   tagTypes.auth,
+  tagTypes.address,
   tagTypes.user,
   tagTypes.product,
   tagTypes.order,

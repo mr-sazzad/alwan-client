@@ -1,27 +1,28 @@
-import { ITShirt } from "@/types";
+import { IUserCartProduct } from "@/types";
 import React, { useEffect, useState } from "react";
+import { PiSpinner } from "react-icons/pi";
 import CouponCodeModal from "../modals/coupon-code-modals";
 import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
 
-import { PiSpinner } from "react-icons/pi";
-
 interface CheckOutPageBillingInfoProps {
-  products: ITShirt[];
-  city: string;
+  products: IUserCartProduct[];
+  district: string;
   qty?: number;
   handlePlaceOrder: () => void;
   setTotalPrice: React.Dispatch<React.SetStateAction<number>>;
+  setShippingCost: React.Dispatch<React.SetStateAction<number>>;
   totalPrice: number;
   buttonLoading: boolean;
 }
 
 const CheckOutPageBillingInfo: React.FC<CheckOutPageBillingInfoProps> = ({
   products,
-  city,
+  district,
   qty,
   handlePlaceOrder,
   setTotalPrice,
+  setShippingCost,
   totalPrice,
   buttonLoading,
 }) => {
@@ -29,77 +30,131 @@ const CheckOutPageBillingInfo: React.FC<CheckOutPageBillingInfoProps> = ({
   const [charge, setCharge] = useState<number>(0);
   const [couponModalOpen, setCouponModalOpen] = useState(false);
   const [couponId, setCouponId] = useState<string | null>(null);
-  const [discountPercentage, setDiscountPercentage] = useState<number>(0);
+  const [discountValue, setDiscountValue] = useState<number>(0);
+  const [total, setTotal] = useState<number>(0);
+  const [discountType, setDiscountType] = useState<"PERCENTAGE" | "FIXED">(
+    "PERCENTAGE"
+  );
+  const [isDeliveryCoupon, setIsDeliveryCoupon] = useState<boolean>(false);
+  const [isGlobalCoupon, setIsGlobalCoupon] = useState<boolean>(false);
+  const [discountedAmount, setDiscountedAmount] = useState<number>(0);
 
   useEffect(() => {
-    let sTotal = 0;
+    let amount = 0;
 
     products.forEach((product) => {
-      const price =
-        product.prices.length > 1 ? product.prices[1] : product.prices[0];
-      const orderQty = qty || product.orderQty;
-      sTotal += price * orderQty;
+      const selectedVariant = product.sizeVariants.find(
+        (variant) =>
+          variant.size.name === product.orderSize &&
+          variant.color.name === product.orderColor
+      );
+
+      if (selectedVariant) {
+        const orderQty = qty || product.orderQty;
+        amount += selectedVariant.price * orderQty;
+      }
     });
 
-    setSubTotal(sTotal);
+    setSubTotal(amount);
 
     // Update charge based on city
-    const newCharge = city === "dhaka" ? 70 : 130;
-    setCharge(newCharge);
-  }, [products, qty, city]);
+    const shippingCharge = district === "dhaka" ? 70 : 130;
+    setCharge(shippingCharge);
+  }, [products, qty, district]);
 
   useEffect(() => {
-    // Calculate the discount amount
-    const discountAmount = subTotal * (discountPercentage / 100);
+    let discountAmount = 0;
+    let discountedSubTotal = subTotal;
+    let discountedCharge = charge;
 
-    // Calculate the discounted subtotal
-    const discountedSubTotal = subTotal - discountAmount;
+    if (isGlobalCoupon) {
+      discountAmount =
+        discountType === "PERCENTAGE"
+          ? subTotal * (discountValue / 100)
+          : discountValue;
+      discountedSubTotal = subTotal - discountAmount;
+    } else if (isDeliveryCoupon) {
+      discountAmount =
+        discountType === "PERCENTAGE"
+          ? charge * (discountValue / 100)
+          : discountValue;
+      discountedCharge = charge - discountAmount;
+    }
 
-    // Calculate the total price with the discount applied
-    const total = discountedSubTotal + charge;
+    setDiscountedAmount(discountAmount);
+    const total = discountedSubTotal + discountedCharge;
 
-    // Set the total price
-    setTotalPrice(total);
-  }, [subTotal, charge, discountPercentage, setTotalPrice]);
+    setTotalPrice(discountedSubTotal);
+    setTotal(total);
+    setShippingCost(discountedCharge);
+  }, [
+    subTotal,
+    charge,
+    discountValue,
+    discountType,
+    isDeliveryCoupon,
+    isGlobalCoupon,
+    setShippingCost,
+    setTotalPrice,
+  ]);
 
-  const handleCouponApply = (id: string, discount: number) => {
+  const handleCouponApply = (
+    id: string,
+    type: "PERCENTAGE" | "FIXED",
+    value: number,
+    isDeliveryCoupon: boolean,
+    isGlobalCoupon: boolean
+  ) => {
     setCouponId(id);
-    setDiscountPercentage(discount);
+    setDiscountValue(value);
+    setDiscountType(type);
+    setIsDeliveryCoupon(isDeliveryCoupon);
+    setIsGlobalCoupon(isGlobalCoupon);
   };
 
   return (
     <>
       <div className="flex flex-col">
-        <Separator className="my-4" />
         <div className="flex justify-between items-center">
           <p>Sub Total:</p> <p>{subTotal} TK</p>
         </div>
         <Separator className="my-4" />
-        {couponId && discountPercentage && (
+        {couponId && (
           <>
             <div className="flex justify-between items-center">
               <p>Discount:</p>
               <p className="text-destructive">
-                - {subTotal * (discountPercentage / 100)} TK
+                -
+                {discountType === "PERCENTAGE"
+                  ? `${discountValue}%`
+                  : `${discountValue} TK`}
               </p>
             </div>
             <Separator className="my-4" />
           </>
         )}
         <div className="flex justify-between items-center">
-          <p>Delivery:</p> <p>{charge} TK</p>
+          <p>Shipping:</p> <p>{charge} TK</p>
         </div>
         <Separator className="my-4" />
 
-        <div className="flex justify-between items-center">
-          <p>Total:</p>
-          <p>{totalPrice} TK</p>
+        <div className="flex flex-col mb-4 font-semibold">
+          <div className="flex justify-between items-center">
+            <p>Total:</p>
+            <div className="flex items-center gap-2">
+              {discountValue > 0 && (
+                <p className="text-destructive font-normal text-sm">
+                  {`( ${discountedAmount} )`}
+                </p>
+              )}
+              <p>{total} TK</p>
+            </div>
+          </div>
         </div>
-        <Separator className="my-4" />
-        <div className="flex sm:flex-row sm:justify-between flex-col-reverse">
-          <div className="flex gap-2 items-center sm:mt-0 mt-2 sm:jusify-start">
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center justify-between">
             <p className="text-sm text-muted-foreground">
-              Do you have a coupon code?
+              Do you have a coupon or promo code?
             </p>
             <Button
               variant="link"

@@ -1,13 +1,14 @@
 "use client";
 
-import Loading from "@/app/loading";
 import DetailsPageImageSlider from "@/components/cards/details-page-slider";
 import MaxWidth from "@/components/max-width";
+import ProductDetailsPageSkeleton from "@/components/skeletons/product-details-skeleton";
 import ReviewAndInfoTab from "@/components/tabs/review-and-info-tab";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
 import { addProductToCart } from "@/redux/api/cart/cartSlice";
 import { useGetSingleProductQuery } from "@/redux/api/products/productsApi";
+import { IProduct } from "@/types";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { IoIosCheckmarkCircleOutline } from "react-icons/io";
@@ -51,8 +52,9 @@ const ProductDetailsPage = () => {
   }, [selectedSizeVariant]);
 
   if (isLoading) {
-    return <Loading className="h-[93vh]" />;
+    return <ProductDetailsPageSkeleton />;
   }
+  console.log(product);
 
   const handleQtyIncrease = () => {
     setQty((prev) => {
@@ -73,7 +75,7 @@ const ProductDetailsPage = () => {
     }
   };
 
-  const handleAddToCart = (product: any) => {
+  const handleAddToCart = (product: IProduct) => {
     if (!selectedSizeVariant) {
       toast({
         variant: "destructive",
@@ -85,9 +87,11 @@ const ProductDetailsPage = () => {
 
     dispatch(
       addProductToCart({
-        ...product.data,
+        ...product,
         orderSize: selectedSizeVariant.size.name,
         orderQty: qty,
+        orderColor: selectedSizeVariant.color.name,
+        orderHexCode: selectedSizeVariant.color.hexCode,
       })
     );
     toast({
@@ -123,12 +127,12 @@ const ProductDetailsPage = () => {
             <p className="text-sm font-medium capitalize">
               {product?.data.category.name}
             </p>
-            <p className="mt-5 text-sm font-medium capitalize">
-              ${product?.data.price}
+            <p className="mt-5 font-semibold capitalize">
+              TK. {selectedSizeVariant?.price}
             </p>
           </div>
           {/* Image Slider */}
-          <div className="flex justify-center items-center lg:h-[450px] lg:w-[450px] md:w-[320px] md:h-[320px] w-full relative flex-1 h-fit bg-blue-700">
+          <div className="flex justify-center items-center lg:h-[450px] lg:w-[450px] md:w-[320px] md:h-[320px] w-full relative flex-1 h-fit">
             {product?.data.imageUrls && (
               <DetailsPageImageSlider urls={product?.data.imageUrls} />
             )}
@@ -144,7 +148,7 @@ const ProductDetailsPage = () => {
                 {product?.data.category.name}
               </p>
               <p className="md:mt-5 text-xl font-semibold">
-                Price: ${product?.data.price}
+                TK. {selectedSizeVariant?.price}
               </p>
             </div>
 
@@ -199,6 +203,17 @@ const ProductDetailsPage = () => {
                 </Button>
               </div>
 
+              {/* add to cart button */}
+              <Button
+                className="px-6 flex gap-2 items-center rounded-full font-medium"
+                variant="outline"
+                onClick={() => handleAddToCart(product.data)}
+                disabled={!qty}
+                size="lg"
+              >
+                Add To Bag
+              </Button>
+
               {/* buy now button */}
               <Button
                 className="px-6 flex gap-2 items-center rounded-full font-medium"
@@ -209,19 +224,8 @@ const ProductDetailsPage = () => {
                 {loading ? (
                   <TbLoader size={16} className="animate-spin" />
                 ) : (
-                  "Buy Now"
+                  "Buy It Now"
                 )}
-              </Button>
-
-              {/* add to cart button */}
-              <Button
-                className="px-6 flex gap-2 items-center rounded-full font-medium"
-                variant="outline"
-                onClick={() => handleAddToCart(product)}
-                disabled={!qty}
-                size="lg"
-              >
-                Add To Bag
               </Button>
             </div>
 

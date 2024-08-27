@@ -3,7 +3,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { RiLoaderLine } from "react-icons/ri";
-import { TbError404 } from "react-icons/tb";
 import { z } from "zod";
 import { Button } from "../ui/button";
 import {
@@ -14,20 +13,19 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../ui/dialog";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "../ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel } from "../ui/form";
 import { Input } from "../ui/input";
 
 interface CouponCodeModalProps {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  onCouponApply: (couponId: string, discountPercentage: number) => void;
+  onCouponApply: (
+    couponId: string,
+    type: "PERCENTAGE" | "FIXED",
+    value: number,
+    isDeliveryCoupon: boolean,
+    isGlobalCoupon: boolean
+  ) => void;
 }
 
 const CouponCodeModal: React.FC<CouponCodeModalProps> = ({
@@ -49,20 +47,26 @@ const CouponCodeModal: React.FC<CouponCodeModalProps> = ({
     setIsLoading(true);
     try {
       const response = await fetch(
-        `${serverUrl}/coupons/get-single-coupon-by-code/${data.coupon}`
+        `${serverUrl}/coupons/get-coupon/${data.coupon}`
       );
       if (!response.ok) {
         setError("Invalid coupon code");
       }
       const result: any = await response.json();
       const coupon = result?.data;
-      onCouponApply(coupon.id, coupon.discountPercentage);
-      console.log(coupon.id, coupon.discountPercentage);
+
+      onCouponApply(
+        coupon.id,
+        coupon.discountType,
+        coupon.discountValue,
+        coupon.isDeliveryCoupon,
+        coupon.isGlobalCoupon
+      );
+
       setOpen(false);
       form.reset();
     } catch (error) {
       console.error(error);
-      // Handle error (e.g., show a toast notification)
     } finally {
       setIsLoading(false);
     }
@@ -78,9 +82,8 @@ const CouponCodeModal: React.FC<CouponCodeModalProps> = ({
           </DialogDescription>
         </DialogHeader>
         {error && (
-          <div className="bg-red-500/30 flex justify-center items-center gap-2 border rounded-md w-full py-2">
-            <TbError404 size={20} />
-            <span className="font-medium">{error}</span>
+          <div className="bg-red-100 flex justify-center items-center gap-2 border rounded-md w-full py-2">
+            <span className="font-medium text-sm">{error}</span>
           </div>
         )}
         <Form {...form}>
@@ -92,9 +95,8 @@ const CouponCodeModal: React.FC<CouponCodeModalProps> = ({
                 <FormItem className="mb-5">
                   <FormLabel>Coupon</FormLabel>
                   <FormControl>
-                    <Input placeholder="alwan_coupon_2024" {...field} />
+                    <Input placeholder="coupon_code" {...field} />
                   </FormControl>
-                  <FormMessage />
                 </FormItem>
               )}
             />

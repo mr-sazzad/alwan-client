@@ -1,8 +1,21 @@
 "use client";
 
-import { ITShirt } from "@/types";
+import {
+  clearCart,
+  decreaseProductQty,
+  deleteProduct,
+  increaseProductQty,
+} from "@/redux/api/cart/cartSlice";
+import { RootState } from "@/redux/store";
+import { IUserCartProduct } from "@/types";
 import Link from "next/link";
 import { Dispatch, SetStateAction, useState } from "react";
+import { FiTrash2 } from "react-icons/fi";
+import { HiMinusSm, HiPlusSm } from "react-icons/hi";
+import { IoBagHandleOutline } from "react-icons/io5";
+import { TbShoppingBagX } from "react-icons/tb";
+import { useDispatch, useSelector } from "react-redux";
+import AlertDialogComp from "../alert-dialog/alert-dialog";
 import ImageSlider from "../cards/image-slider";
 import { Button } from "../ui/button";
 import {
@@ -14,23 +27,8 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "../ui/sheet";
-import CartMoney from "../utils/cart-money";
-import SmallName from "../utils/product-name";
-
-import {
-  clearCart,
-  decreaseProductQty,
-  deleteProduct,
-  increaseProductQty,
-} from "@/redux/api/cart/cartSlice";
-import { RootState } from "@/redux/store";
-import { HiMinusSm, HiPlusSm } from "react-icons/hi";
-import { IoBagHandleOutline } from "react-icons/io5";
-import { PiTrashLight } from "react-icons/pi";
-import { TbShoppingBagX } from "react-icons/tb";
-import { useDispatch, useSelector } from "react-redux";
-import AlertDialogComp from "../alert-dialog/alert-dialog";
 import { toast } from "../ui/use-toast";
+import SmallName from "../utils/product-name";
 
 interface ICartProps {
   cartOpen: boolean;
@@ -38,10 +36,9 @@ interface ICartProps {
 }
 
 const Cart: React.FC<ICartProps> = ({ cartOpen, setCartOpen }) => {
-  // state of erase cart products modal
   const [eraseModalOpen, setEraseModalOpen] = useState(false);
-
   const cartProducts = useSelector((state: RootState) => state.cart.products);
+
   const dispatch = useDispatch();
 
   const handleCartClear = () => {
@@ -54,9 +51,13 @@ const Cart: React.FC<ICartProps> = ({ cartOpen, setCartOpen }) => {
 
   const calculateTotalPrice = () => {
     return cartProducts
-      .reduce((total, product) => {
-        const productPrice =
-          product.prices.length > 1 ? product.prices[1] : product.prices[0];
+      .reduce((total: number, product: IUserCartProduct) => {
+        const sizeVariant = product.sizeVariants.find(
+          (variant) =>
+            variant.size.name === product.orderSize &&
+            variant.color.name === product.orderColor
+        );
+        const productPrice = sizeVariant?.price || 0;
         return total + productPrice * product.orderQty;
       }, 0)
       .toFixed(2);
@@ -80,27 +81,29 @@ const Cart: React.FC<ICartProps> = ({ cartOpen, setCartOpen }) => {
           <>
             {cartProducts.length ? (
               <div className="h-[72vh] flex flex-col justify-between">
-                <div className="flex flex-col overflow-y-auto h-full">
-                  {cartProducts.map((product: ITShirt) => (
+                <div className="flex flex-col gap-1 overflow-y-auto h-full">
+                  {cartProducts.map((product) => (
                     <div
                       key={product.id}
                       className="flex flex-row gap-2 w-full items-center"
                     >
                       <div className="flex flex-row gap-4 flex-1">
-                        <div className="relative w-[80px] h-[80px]">
-                          <ImageSlider urls={product.images} />
+                        <div className="relative w-[90px] h-[90px]">
+                          <ImageSlider urls={product.imageUrls} />
                         </div>
-                        <div>
+                        <div className="w-[60%] flex flex-col gap-2">
                           <SmallName
                             name={product.name}
-                            className="text-sm font-medium text-gray-500"
+                            className="text-sm font-medium text-muted-foreground"
                           />
-                          <div className="flex gap-1 items-center text-sm text-gray-400">
-                            {product.prices && (
-                              <CartMoney prices={product.prices} />
-                            )}
+                          <div className="flex gap-[30%] items-center">
+                            <p className="font-semibold">{`${product.orderSize}`}</p>
+                            <div
+                              className={`w-4 h-4 rounded-full`}
+                              style={{ backgroundColor: product.orderHexCode }}
+                            />
                           </div>
-                          <div className="flex flex-row items-center border rounded-md w-full gap-2">
+                          <div className="flex items-center border rounded-full w-full gap-2 overflow-hidden">
                             <HiMinusSm
                               className="cursor-pointer flex-1"
                               onClick={() =>
@@ -108,6 +111,7 @@ const Cart: React.FC<ICartProps> = ({ cartOpen, setCartOpen }) => {
                                   decreaseProductQty({
                                     id: product.id,
                                     size: product.orderSize,
+                                    color: product.orderColor,
                                   })
                                 )
                               }
@@ -122,40 +126,37 @@ const Cart: React.FC<ICartProps> = ({ cartOpen, setCartOpen }) => {
                                   increaseProductQty({
                                     id: product.id,
                                     size: product.orderSize,
+                                    color: product.orderColor,
                                   })
                                 )
                               }
                             />
                           </div>
-                          <div>
-                            <p className="text-sm text-gray-500">
-                              Size: {product.orderSize}
-                            </p>
-                          </div>
                         </div>
                       </div>
                       <Button
-                        variant="outline"
+                        variant="destructive"
                         size="sm"
                         className="rounded-full flex justify-center items-center py-0 px-[10px]"
-                        onClick={() =>
+                        onClick={() => {
                           dispatch(
                             deleteProduct({
                               id: product.id,
                               size: product.orderSize,
                             })
-                          )
-                        }
+                          );
+                        }}
                       >
-                        <PiTrashLight size={16} />
+                        <FiTrash2 size={18} />
                       </Button>
                     </div>
                   ))}
                 </div>
                 <div className="mt-5 flex justify-end items-end">
                   <div className="flex gap-2 items-center">
-                    <p>Total:</p>
-                    <p className="flex items-center">{totalPrice}</p>
+                    <p className="flex items-center text-xl font-medium">
+                      {totalPrice}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -173,14 +174,9 @@ const Cart: React.FC<ICartProps> = ({ cartOpen, setCartOpen }) => {
             )}
           </>
           <SheetFooter>
-            <Button
-              variant="outline"
-              className="mt-1 w-full"
-              disabled={cartProducts.length < 1}
-            >
+            <Button className="mt-1 w-full" disabled={cartProducts.length < 1}>
               <Link href="/checkout">Checkout</Link>
             </Button>
-
             <Button
               className="mt-1 w-full"
               variant="destructive"

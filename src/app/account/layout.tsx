@@ -25,7 +25,7 @@ const AccountLayout: React.FC<AccountLayoutProps> = ({ children }) => {
         </div>
       </div>
       <div className="flex sm:flex-row flex-col min-h-[50vh]">
-        <div className="flex md:w-[170px] sm:w-[50px] sm:flex-col flex-row sm:justify-start justify-center items-center w-full sm:h-[73vh] sm:border-r gap-1 sm:pt-10 pt-10">
+        <div className="flex md:w-[170px] sm:w-[50px] sm:flex-col flex-row sm:justify-start sm:items-start justify-center items-center w-full sm:h-[73vh] sm:border-r gap-1 sm:pt-10 pt-10">
           {userRoutes.map((route) => (
             <Link
               key={route.id}

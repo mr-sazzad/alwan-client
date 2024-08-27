@@ -1,6 +1,11 @@
 import { z } from "zod";
 
 export const profileAddressSchema = z.object({
-  shippingDistrict: z.string(),
-  shippingAddress: z.string(),
+  id: z.string().optional(),
+  addressId: z.string().optional(),
+  division: z.string(),
+  district: z.string(),
+  upazila: z.string(),
+  union: z.string(),
+  streetAddress: z.string(),
 });

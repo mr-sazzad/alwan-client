@@ -8,6 +8,7 @@ export const baseApi = createApi({
     baseUrl: "http://localhost:4000/api/v1",
     // baseUrl: "https://alwan-api-server.vercel.app/api/v1",
   }),
+
   endpoints: (builder) => ({}),
   tagTypes: tagTypeLists,
 });

@@ -20,14 +20,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../ui/dialog";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "../ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel } from "../ui/form";
 import { Input } from "../ui/input";
 import { toast } from "../ui/use-toast";
 
@@ -58,9 +51,11 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
   const onSubmit = async (data: z.infer<typeof signUpSchema>) => {
     try {
       const stringData = JSON.stringify(data);
-      const res: any = await signUpUser({ data: stringData });
+      const response: any = await signUpUser({ data: stringData });
       setSignUpOpen(true);
-      if (!res.data.id) {
+      console.log(response);
+
+      if (!response || response.data.status !== 201) {
         toast({
           variant: "destructive",
           title: "Sign Up Failed",
@@ -73,10 +68,13 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
           password: data.password,
         };
 
+        console.log("DATA =>", loginData);
+
         const loginRes: any = await signInUser(loginData);
         setToLocalStorage("alwan-user-access-token", loginRes.data.accessToken);
 
-        // Reset the form inputs
+        console.log("LOGIN RESPONSE =>", loginRes);
+
         form.reset();
 
         setSignUpOpen(false);
@@ -85,6 +83,11 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
           title: "Sign Up Success",
           description: "your new account created successfully",
         });
+
+        setToLocalStorage(
+          "alwan-user-access-token",
+          loginRes.data.data.accessToken
+        );
       }
     } catch (err) {
       toast({
@@ -114,7 +117,6 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
                     <FormControl>
                       <Input placeholder="John Doe" {...field} />
                     </FormControl>
-                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -127,7 +129,6 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
                     <FormControl>
                       <Input placeholder="example@gmail.com" {...field} />
                     </FormControl>
-                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -140,7 +141,6 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
                     <FormControl>
                       <Input type="password" placeholder="******" {...field} />
                     </FormControl>
-                    <FormMessage />
                   </FormItem>
                 )}
               />

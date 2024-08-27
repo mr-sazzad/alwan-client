@@ -4,6 +4,7 @@ import ProductCard from "@/components/cards/product-card";
 import MaxWidth from "@/components/max-width";
 import Filter from "@/components/products/desktop-filter";
 import EmptyProductsPage from "@/components/products/EmptyProductsPage";
+import MobileFilter from "@/components/products/mobile-filter";
 import ProductsSkeleton from "@/components/skeletons/products-skeleton";
 import { useGetAllColorsQuery } from "@/redux/api/color/color-api";
 import { useGetAllProductsQuery } from "@/redux/api/products/productsApi";
@@ -73,7 +74,9 @@ const ProductsPage = () => {
             <Filter colorsFromServer={colors} />
           </div>
           {/* // Mobile Filter */}
-          <div className="md:hidden block mt-5">{/* <MobileFilter /> */}</div>
+          <div className="md:hidden block mt-5">
+            <MobileFilter colorsFromServer={colors} />
+          </div>
         </div>
 
         {/* Products list */}

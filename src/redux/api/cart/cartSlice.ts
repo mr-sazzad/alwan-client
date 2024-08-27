@@ -2,11 +2,11 @@ import {
   removeFromLocalStorage,
   setToLocalStorage,
 } from "@/helpers/local-storage";
-import { ITShirt } from "@/types";
+import { IUserCartProduct } from "@/types";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 interface CartState {
-  products: ITShirt[];
+  products: IUserCartProduct[];
 }
 
 const initialState: CartState = {
@@ -20,67 +20,102 @@ const cartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
-    setCart: (state, action: PayloadAction<ITShirt[]>) => {
+    setCart: (state, action: PayloadAction<IUserCartProduct[]>) => {
       state.products = action.payload;
       setToLocalStorage(
         "alwan_user_cart_items",
         JSON.stringify(state.products)
       );
     },
-    addProductToCart: (state, action: PayloadAction<ITShirt>) => {
+
+    addProductToCart: (state, action: PayloadAction<IUserCartProduct>) => {
+      const { id } = action.payload;
+      const { orderSize, orderQty, orderColor } = action.payload;
+
       const existingProduct = state.products.find(
         (product) =>
-          product.id === action.payload.id &&
-          product.orderSize === action.payload.orderSize
+          product.id === id &&
+          product.orderSize === orderSize &&
+          product.orderColor === orderColor
       );
+
       if (existingProduct) {
-        existingProduct.orderQty += action.payload.orderQty;
+        console.log("HELLO I AM HERE");
+        existingProduct.orderQty += 1;
       } else {
+        console.log(
+          "STATE PAYLOAD",
+          JSON.parse(JSON.stringify(action.payload))
+        );
         state.products.push(action.payload);
       }
+
       setToLocalStorage(
         "alwan_user_cart_items",
         JSON.stringify(state.products)
       );
     },
+
     increaseProductQty: (
       state,
-      action: PayloadAction<{ id: string; size: string }>
+      action: PayloadAction<{ id: string; size: string; color: string }>
     ) => {
+      const { id, size, color } = action.payload;
+
       const product = state.products.find(
         (product) =>
-          product.id === action.payload.id &&
-          product.orderSize === action.payload.size
+          product.id === id &&
+          product.orderSize === size &&
+          product.orderColor === color
       );
+
       if (product) {
-        const orderingSize =
-          `${action.payload.size.toLowerCase()}SizeStock` as keyof ITShirt;
-        if ((product as any)[orderingSize] > product.orderQty) {
+        const variant = product.sizeVariants.find(
+          (variant) =>
+            variant.size.name === size && variant.color.name === color
+        );
+
+        if (variant && product.orderQty < variant.stock) {
           product.orderQty += 1;
         }
       }
+
       setToLocalStorage(
         "alwan_user_cart_items",
         JSON.stringify(state.products)
       );
     },
+
     decreaseProductQty: (
       state,
-      action: PayloadAction<{ id: string; size: string }>
+      action: PayloadAction<{ id: string; size: string; color: string }>
     ) => {
+      const { id, size, color } = action.payload;
+
       const product = state.products.find(
         (product) =>
-          product.id === action.payload.id &&
-          product.orderSize === action.payload.size
+          product.id === id &&
+          product.orderSize === size &&
+          product.orderColor === color
       );
-      if (product && product.orderQty > 1) {
-        product.orderQty -= 1;
+
+      if (product) {
+        const variant = product.sizeVariants.find(
+          (variant) =>
+            variant.size.name === size && variant.color.name === color
+        );
+
+        if (variant && product.orderQty > 1) {
+          product.orderQty -= 1;
+        }
       }
+
       setToLocalStorage(
         "alwan_user_cart_items",
         JSON.stringify(state.products)
       );
     },
+
     deleteProduct: (
       state,
       action: PayloadAction<{ id: string; size: string }>
@@ -97,6 +132,7 @@ const cartSlice = createSlice({
         JSON.stringify(state.products)
       );
     },
+
     clearCart: (state) => {
       state.products = [];
       removeFromLocalStorage("alwan_user_cart_items");

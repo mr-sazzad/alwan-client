@@ -8,15 +8,10 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { getUserFromLocalStorage } from "@/helpers/jwt";
-import {
-  useGetSingleUserQuery,
-  useUpdateSingleUserMutation,
-} from "@/redux/api/users/user-api";
+import { useUpdateSingleUserMutation } from "@/redux/api/users/user-api";
 import { profileInfoSchema } from "@/schemas/profile-info-schema";
-import { IUserData } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import {
@@ -35,15 +30,14 @@ import { toast } from "../ui/use-toast";
 interface IInfoModalProps {
   infoModalOpen: boolean;
   setInfoModalOpen: Dispatch<SetStateAction<boolean>>;
+  currentUser: any;
 }
 
 const InfoModal: React.FC<IInfoModalProps> = ({
   infoModalOpen,
   setInfoModalOpen,
+  currentUser: user,
 }) => {
-  const [currentUser, setCurrentUser] = useState<IUserData | null>(null);
-
-  const { data: user } = useGetSingleUserQuery(currentUser?.userId);
   const [updateSingleUser, { isLoading: isUserUpdating }] =
     useUpdateSingleUserMutation();
 
@@ -58,33 +52,34 @@ const InfoModal: React.FC<IInfoModalProps> = ({
   });
 
   useEffect(() => {
-    const currentUserData = getUserFromLocalStorage() as any;
-    if (currentUserData) {
-      setCurrentUser(currentUserData);
-    }
-  }, []);
-
-  useEffect(() => {
     if (user) {
       form.reset({
-        username: user.username || "",
-        phone: user.phone || "",
-        altPhone: user.altPhone || "",
-        email: user.email || "",
+        username: user?.data.username || "",
+        phone: user?.data.phone || "",
+        altPhone: user?.data.altPhone || "",
+        email: user?.data.email || "",
       });
     }
   }, [user, form]);
 
+  console.log("USER FROM PROFILE =>", user);
+
   const onSubmit = async (values: z.infer<typeof profileInfoSchema>) => {
+    console.log("VALUES FROM PROFILE =>", values);
+
     const requestedData = {
-      id: user.id,
+      username: values.username || user?.data.username,
       email: user.email || values.email,
-      username: values.username || user.username,
-      phone: values.phone || user.phone,
-      altPhone: values.altPhone || user.altPhone,
+      phone: values.phone || user?.data.phone,
+      altPhone: values.altPhone || user?.data.altPhone,
     };
-    const result: any = await updateSingleUser(requestedData);
-    if (!result.data.id) {
+
+    const result: any = await updateSingleUser({
+      id: user?.data.id,
+      ...requestedData,
+    });
+
+    if (!result?.data.data.id) {
       toast({
         title: "Error",
         description: "Something went wrong please try again",
@@ -156,11 +151,11 @@ const InfoModal: React.FC<IInfoModalProps> = ({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    Email{" "}
-                    <span className="text-muted-foreground">(read only)</span>
+                    Email
+                    <span className="text-muted-foreground"> (read only)</span>
                   </FormLabel>
                   <FormControl>
-                    <Input {...field} />
+                    <Input {...field} className="text-destructive" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

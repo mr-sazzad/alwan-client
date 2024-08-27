@@ -1,8 +1,8 @@
 "use client";
 
-import { useGetAllColorsQuery } from "@/redux/api/color/color-api";
 import { filterSchema } from "@/schemas/filter-schema";
 import { prices } from "@/static/product-prices";
+import { IReadColor } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect } from "react";
@@ -27,11 +27,17 @@ import {
   FormLabel,
   FormMessage,
 } from "../ui/form";
+import { ConvertedColors } from "../utils/convert-color";
 
-const MobileFilter = () => {
+interface MobileFilterProps {
+  colorsFromServer: {
+    data: IReadColor[];
+  };
+}
+
+const MobileFilter: React.FC<MobileFilterProps> = ({ colorsFromServer }) => {
   const router = useRouter();
-  const { data: colors, isLoading: isLoading } =
-    useGetAllColorsQuery(undefined);
+
   const form = useForm<z.infer<typeof filterSchema>>({
     resolver: zodResolver(filterSchema),
     defaultValues: {
@@ -68,6 +74,8 @@ const MobileFilter = () => {
     return () => subscription.unsubscribe();
   }, [watch, updateQueryParams]);
 
+  const colors = ConvertedColors(colorsFromServer?.data);
+
   return (
     <div>
       <Dialog>
@@ -80,7 +88,7 @@ const MobileFilter = () => {
           <DialogHeader>
             <h2 className="text-2xl font-semibold mt-2">Filter</h2>
             <DialogDescription>
-              for getting your favorite product easily.
+              For getting your favorite product easily.
             </DialogDescription>
           </DialogHeader>
           <Form {...form}>
@@ -93,7 +101,7 @@ const MobileFilter = () => {
                     <div className="mb-4">
                       <FormLabel className="text-base">By Color</FormLabel>
                     </div>
-                    {colors.map((item) => (
+                    {colors?.map((item) => (
                       <FormField
                         key={item.id}
                         control={form.control}
