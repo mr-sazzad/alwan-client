@@ -54,7 +54,6 @@ const ProductDetailsPage = () => {
   if (isLoading) {
     return <ProductDetailsPageSkeleton />;
   }
-  console.log(product);
 
   const handleQtyIncrease = () => {
     setQty((prev) => {

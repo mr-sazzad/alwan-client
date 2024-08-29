@@ -7,10 +7,9 @@ import { useState } from "react";
 import blackLogo from "../images/logo-black-40.png";
 import Cart from "./cart/cart";
 import Profile from "./profile/profile-menu";
-// import DesktopMenu from "./sidebar/desktop-menu";
 
 // icons
-// import MobileSidebar from "./sidebar/mobile-sidebar";
+import MobileSidebar from "./sidebar/mobile-sidebar";
 
 const Header = () => {
   const [open, setOpen] = useState(false);
@@ -26,7 +25,9 @@ const Header = () => {
 
         <menu className="items-center gap-3 flex justify-end">
           <Profile />
-          <div className="md:hidden flex">{/* <MobileSidebar /> */}</div>
+          <div className="md:hidden flex">
+            <MobileSidebar />
+          </div>
           <div className="hidden md:flex">
             <Cart cartOpen={open} setCartOpen={setOpen} />
           </div>

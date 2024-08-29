@@ -1,6 +1,6 @@
 interface Category {
   id: string;
-  title: string;
+  name: string;
   parentId: string | null;
   clientUrl: string;
   description: string | null;
@@ -9,7 +9,7 @@ interface Category {
 
 interface GroupedCategory {
   id: string;
-  title: string;
+  name: string;
   clientUrl: string;
   description: string | null;
   children: Category[];

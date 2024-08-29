@@ -1,61 +1,69 @@
-"use clint";
+"use client";
 
-import Loading from "@/app/loading";
 import { useGetAllCategoriesQuery } from "@/redux/api/categoies/categoriesApi";
 import { Category } from "@/types";
 import { useState } from "react";
-import { convertCategories } from "../utils/convert-categories";
+import { HiOutlineMenuAlt1 } from "react-icons/hi";
+import { Button } from "../ui/button";
+import { Skeleton } from "../ui/skeleton";
 import Sidebar from "./sidebar";
 
-const SheetComponent = () => {
-  const { data, isLoading } = useGetAllCategoriesQuery(undefined);
-  const [currentCategory, setCurrentCategory] = useState<Category | null>(null);
-  const [breadcrumb, setBreadcrumb] = useState<string[]>([]);
-
-  const handleBack = () => {
-    console.log("BREADCRUMB =>", breadcrumb);
-    if (breadcrumb.length > 0) {
-      const newBreadcrumb = [...breadcrumb];
-      newBreadcrumb.pop();
-      setBreadcrumb(newBreadcrumb);
-
-      const parentCategoryId =
-        newBreadcrumb.length > 0
-          ? newBreadcrumb[newBreadcrumb.length - 1]
-          : null;
-      const parentCategory = data.find(
-        (category: Category) => category.id === parentCategoryId
-      );
-      setCurrentCategory(parentCategory || null);
-    } else {
-      setCurrentCategory(null);
-    }
-  };
+export default function SheetComponent() {
+  const [open, setOpen] = useState(false);
+  const { data: response, isLoading } = useGetAllCategoriesQuery(undefined);
+  const [categoryStack, setCategoryStack] = useState<Category[]>([]);
 
   if (isLoading) {
-    return <Loading />;
+    return <Skeleton className="h-10 w-10" />;
   }
 
-  const convertedCategories = convertCategories(data);
+  const convertCategories = (categories: Category[]): Category[] => {
+    const categoryMap: { [key: string]: Category } = {};
+
+    categories.forEach((category) => {
+      categoryMap[category.id] = { ...category, subCategories: [] };
+    });
+
+    const nestedCategories: Category[] = [];
+
+    categories.forEach((category) => {
+      if (category.parentId) {
+        const parentCategory = categoryMap[category.parentId];
+        if (parentCategory) {
+          parentCategory.subCategories!.push(categoryMap[category.id]);
+        }
+      } else {
+        nestedCategories.push(categoryMap[category.id]);
+      }
+    });
+
+    return nestedCategories;
+  };
+
+  const convertedCategories = convertCategories(response.data);
 
   const handleCategorySelect = (category: Category) => {
-    setCurrentCategory(category);
-    setBreadcrumb((prev) => [...prev, category.id]);
+    setCategoryStack((prev) => [...prev, category]);
+  };
+
+  const handleBack = () => {
+    setCategoryStack((prev) => prev.slice(0, -1));
   };
 
   return (
     <>
+      <Button onClick={() => setOpen(true)} variant="ghost" size="icon">
+        <HiOutlineMenuAlt1 size={20} />
+      </Button>
+
       <Sidebar
+        open={open}
+        setOpen={setOpen}
         categories={convertedCategories}
         onBack={handleBack}
         onCategorySelect={handleCategorySelect}
-        backButtonText={
-          breadcrumb.length > 1 ? breadcrumb[breadcrumb.length - 2] : "Back"
-        }
-        currentCategory={currentCategory}
+        categoryStack={categoryStack}
       />
     </>
   );
-};
-
-export default SheetComponent;
+}

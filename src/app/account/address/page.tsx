@@ -19,6 +19,7 @@ import {
   useAddNewAddressMutation,
   useDeleteAddressMutation,
   useSetActiveAddressMutation,
+  useUpdateAddressMutation,
 } from "@/redux/api/address/addressApi";
 import {
   useGetSingleUserQuery,
@@ -43,26 +44,19 @@ const Address = () => {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [resetForm, setResetForm] = useState(false);
 
   const [selectedAddress, setSelectedAddress] = useState<any>(null);
   const [userData, setUserData] = useState<IUserData>();
 
   const [updateSingleUser, { isLoading: isUserUpdating }] =
     useUpdateSingleUserMutation();
-  const [setActiveAddress, { isLoading: isAddressUpdating }] =
+  const [setActiveAddress, { isLoading: isAddressStatusChanging }] =
     useSetActiveAddressMutation();
   const [deleteAddress, { isLoading: isAddressDeleting }] =
     useDeleteAddressMutation();
-
-  useEffect(() => {
-    const currentUserData = getUserFromLocalStorage() as any;
-    if (!currentUserData) {
-      console.log("User not found");
-    } else {
-      setUserData(currentUserData);
-    }
-  }, [router]);
-
+  const [updateAddress, { isLoading: isAddressUpdating }] =
+    useUpdateAddressMutation();
   const {
     data: user,
     isLoading,
@@ -71,11 +65,18 @@ const Address = () => {
   const [addNewAddress, { isLoading: isAddressAdding }] =
     useAddNewAddressMutation();
 
+  useEffect(() => {
+    const currentUserData = getUserFromLocalStorage() as any;
+    if (!currentUserData) {
+      router.back();
+    } else {
+      setUserData(currentUserData);
+    }
+  }, [router]);
+
   if (isLoading) {
     return <AddressSkeleton />;
   }
-
-  console.log("USER FROM ADDRESS PAGE =>", user);
 
   const handleAddAddressClick = () => {
     setSelectedAddress(null);
@@ -134,25 +135,29 @@ const Address = () => {
         description: "Address deleted successfully",
       });
       setDialogOpen(false);
+      refetch();
     }
   };
 
   const handler = async (values: z.infer<typeof profileAddressSchema>) => {
     const requestedData = {
       division: values.division || selectedAddress?.division || "",
-      // divisionId: values.division,
+      divisionId: values.divisionId,
       district: values.district || selectedAddress?.district || "",
-      // districtId: values.district,
+      districtId: values.districtId,
       upazila: values.upazila || selectedAddress?.upazila || "",
-      // upazilaId: values.upazila,
+      upazilaId: values.upazilaId,
       union: values.union || selectedAddress?.union || "",
       streetAddress:
         values.streetAddress || selectedAddress?.streetAddress || "",
     };
 
-    console.log("REQUESTED DATA =>", requestedData);
-
-    if (!requestedData.division || !requestedData.district) {
+    if (
+      !requestedData.division ||
+      !requestedData.district ||
+      !requestedData.upazila ||
+      !requestedData.union
+    ) {
       toast({
         title: "Error",
         description: "Please fill the inputs first then apply changes!",
@@ -164,8 +169,7 @@ const Address = () => {
     let result: any;
     if (selectedAddress) {
       // Update existing address
-      result = await updateSingleUser({
-        id: user.id,
+      result = await updateAddress({
         addressId: selectedAddress.id,
         ...requestedData,
       });
@@ -175,6 +179,7 @@ const Address = () => {
         id: user?.data.id,
         ...requestedData,
       });
+      setResetForm(true);
     }
 
     if (!result.data.data.id) {
@@ -189,6 +194,7 @@ const Address = () => {
         title: "Success",
         description: "Your information was updated",
       });
+      refetch();
     }
   };
 
@@ -224,10 +230,10 @@ const Address = () => {
       {user?.data.addresses.length ? (
         user?.data.addresses.map((adrs: any) => (
           <div key={adrs.address.id} className="relative">
-            {user.data.activeAddressId === adrs.address.id && (
-              <div className="absolute top-4 right-16 p-1 px-2 text-green-600 bg-green-50 flex gap-1 items-center rounded-md">
+            {user?.data.activeAddressId === adrs.address.id && (
+              <div className="absolute top-4 right-16 p-1 text-orange-500 bg-orange-50/50 flex gap-1 items-center rounded-md">
                 <BiHome size={18} />
-                <p className="font-medium">Delivery Address</p>
+                <p className="text-sm font-medium tracking-wider">Active</p>
               </div>
             )}
             <div className="border rounded mt-5 p-2">
@@ -246,7 +252,7 @@ const Address = () => {
                       <DropdownMenuGroup>
                         <DropdownMenuItem
                           disabled={
-                            user.data.activeAddressId === adrs.address.id ||
+                            user?.data.activeAddressId === adrs.address.id ||
                             isAddressUpdating
                           }
                           onClick={() => handleSetActiveAddress(adrs.address)}
@@ -340,7 +346,8 @@ const Address = () => {
         }
         submitHandler={handler}
         selectedAddress={selectedAddress}
-        isLoading={isUserUpdating || isAddressAdding}
+        resetForm={resetForm}
+        isLoading={isUserUpdating || isAddressAdding || isAddressStatusChanging}
       />
 
       <AlertDialogComp

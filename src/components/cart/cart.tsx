@@ -49,6 +49,8 @@ const Cart: React.FC<ICartProps> = ({ cartOpen, setCartOpen }) => {
       });
   };
 
+  console.log("CART PRODUCTS =>", cartProducts);
+
   const calculateTotalPrice = () => {
     return cartProducts
       .reduce((total: number, product: IUserCartProduct) => {

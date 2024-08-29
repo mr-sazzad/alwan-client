@@ -1,28 +1,35 @@
-import DeliveryTruck from "@/images/delivery-truck";
-import OnlineSupport from "@/images/online-support";
-import PackageDelivery from "@/images/package-delivery";
-import ReturnProduct from "@/images/product-return";
+import { IconType } from "react-icons";
 
-const WhatWeOffer = () => {
+interface IItemType {
+  id: number;
+  icon: IconType;
+  label: string;
+}
+
+interface IItems {
+  items: IItemType[];
+}
+
+const WhatWeOffer: React.FC<IItems> = ({ items }) => {
   return (
     <div className="w-full pb-2">
-      <div className="flex flex-wrap justify-center gap-2">
-        <div className="flex flex-col items-center border rounded border-dashed text-gray-700 p-3 md:w-[48%] sm:w-[48%] w-[48%] hover:bg-gray-100 hover:font-medium transition group border-gray-400 hover:border-gray-100">
-          <DeliveryTruck className="group-hover:scale-75 transition-all duration-75" />
-          <p className="md:text-base text-sm">Faster Delivery</p>
-        </div>
-        <div className="flex flex-col items-center border rounded border-dashed text-gray-700 p-3 md:w-[48%] sm:w-[48%] w-[48%] hover:bg-gray-100 hover:font-medium transition group border-gray-400 hover:border-gray-100">
-          <ReturnProduct className="group-hover:scale-75 transition-all duration-75" />
-          <p className="md:text-base text-sm">Easy Return</p>
-        </div>
-        <div className="flex flex-col items-center border rounded border-dashed text-gray-700 p-3 md:w-[48%] sm:w-[48%] w-[48%] hover:bg-gray-100 hover:font-medium transition group border-gray-400 hover:border-gray-100">
-          <PackageDelivery className="group-hover:scale-75 transition-all duration-75" />
-          <p className="md:text-base text-sm">Cash On Delivery</p>
-        </div>
-        <div className="flex flex-col items-center border rounded border-dashed text-gray-700 p-3 md:w-[48%] sm:w-[48%] w-[48%] hover:bg-gray-100 hover:font-medium transition group border-gray-400 hover:border-gray-100">
-          <OnlineSupport className="group-hover:scale-75 transition-all duration-75" />
-          <p className="md:text-base text-sm">Online Support 24/7</p>
-        </div>
+      <div className="flex justify-center gap-2 w-full">
+        {items.map((item) => (
+          <div
+            className="flex flex-col items-center border rounded border-dashed text-muted-foreground p-2 hover:bg-gray-100 hover:font-semibold transition group border-gray-400 hover:border-gray-100 w-full"
+            key={item.id}
+          >
+            <div className="p-2 bg-cyan-100 rounded-full">
+              <item.icon
+                size={26}
+                className="group-hover:scale-75 transition-all duration-75"
+              />
+            </div>
+            <p className="md:text-base group-hover:font-medium text-sm group-hover:scale-110 duration-75 tracking-tight">
+              {item.label}
+            </p>
+          </div>
+        ))}
       </div>
     </div>
   );

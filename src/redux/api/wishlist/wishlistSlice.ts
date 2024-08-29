@@ -3,11 +3,11 @@ import {
   removeFromLocalStorage,
   setToLocalStorage,
 } from "@/helpers/local-storage";
-import { ITShirt } from "@/types";
+import { IProduct } from "@/types";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 interface WishlistState {
-  products: ITShirt[];
+  products: IProduct[];
 }
 
 const initialState: WishlistState = {
@@ -21,7 +21,7 @@ const wishlistSlice = createSlice({
   name: "wishlist",
   initialState,
   reducers: {
-    setWishlist: (state, action: PayloadAction<ITShirt[]>) => {
+    setWishlist: (state, action: PayloadAction<IProduct[]>) => {
       state.products = action.payload;
       setToLocalStorage(
         "alwan_user_wishlist_items",
@@ -29,11 +29,11 @@ const wishlistSlice = createSlice({
       );
     },
 
-    addProduct: (state, action: PayloadAction<ITShirt>) => {
+    addProduct: (state, action: PayloadAction<IProduct>) => {
       const existingProducts = getFromLocalStorage(
         "alwan_user_wishlist_items"
       ) as string;
-      const parsedExistingProducts: ITShirt[] = existingProducts
+      const parsedExistingProducts: IProduct[] = existingProducts
         ? JSON.parse(existingProducts)
         : [];
 
@@ -50,16 +50,9 @@ const wishlistSlice = createSlice({
       }
     },
 
-    deleteProduct: (
-      state,
-      action: PayloadAction<{ id: string; size: string }>
-    ) => {
+    deleteProduct: (state, action: PayloadAction<{ id: string }>) => {
       state.products = state.products.filter(
-        (product) =>
-          !(
-            product.id === action.payload.id &&
-            product.orderSize === action.payload.size
-          )
+        (product) => !(product.id === action.payload.id)
       );
       setToLocalStorage(
         "alwan_user_wishlist_items",

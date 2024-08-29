@@ -16,22 +16,20 @@ import * as React from "react";
 import transformCategories from "../utils/transformCategories";
 
 const DesktopMenu: React.FC = () => {
-  const { data, isLoading } = useGetAllCategoriesQuery(undefined);
+  const { data: response, isLoading } = useGetAllCategoriesQuery(undefined);
 
   if (isLoading) {
     return <Loading />;
   }
 
-  const categories = transformCategories(data);
+  const categories = transformCategories(response.data);
 
   return (
     <NavigationMenu>
       <NavigationMenuList>
         {categories.map((parentCategory) => (
           <NavigationMenuItem key={parentCategory.id}>
-            <NavigationMenuTrigger>
-              {parentCategory.title}
-            </NavigationMenuTrigger>
+            <NavigationMenuTrigger>{parentCategory.name}</NavigationMenuTrigger>
             <NavigationMenuContent className="drop-shadow-none">
               <div className="p-4 flex flex-row gap-7 justify-start relative w-screen px-[150px]">
                 <div className="flex flex-row">
@@ -41,13 +39,13 @@ const DesktopMenu: React.FC = () => {
                         href={childCategory.clientUrl}
                         className="text-sm font-semibold pt-5 p-4"
                       >
-                        {childCategory.title}
+                        {childCategory.name}
                       </Link>
                       <ul className="flex flex-col gap-3 sm:px-3 mx-auto px-4">
                         {childCategory.children?.map((subCategory) => (
                           <ListItem
                             key={subCategory.id}
-                            title={subCategory.title}
+                            title={subCategory.name}
                             href={subCategory.clientUrl}
                           >
                             {subCategory.description}

@@ -1,4 +1,4 @@
-import { IOrderItemResponse } from "@/types";
+import { IOrderItem } from "@/types";
 import ImageSlider from "../cards/image-slider";
 import { Button } from "../ui/button";
 
@@ -7,7 +7,7 @@ import { IoClose } from "react-icons/io5";
 import AlertDialogComp from "../alert-dialog/alert-dialog";
 
 interface IProfileProcessingOrderItemProps {
-  items: IOrderItemResponse[];
+  items: IOrderItem[];
 }
 
 const ProfileProcessingOrderItem: React.FC<
@@ -22,43 +22,45 @@ const ProfileProcessingOrderItem: React.FC<
   const handleOrderCancel = () => {
     // order cancel handler goes here
   };
+
+  console.log("ITEMS FROM PROFILE PROCESSING ORDER ITEM => ", items);
+
   return (
     <div>
-      {items?.map((item: IOrderItemResponse) => (
-        <div key={item.id} className="flex gap-2 relative">
-          {item.itemStatus === "processing" && (
-            <div className="flex justify-between items-center w-full mb-2">
+      {items?.map((item) => (
+        <div key={item?.id} className="flex gap-2 relative">
+          {item.itemStatus.toLocaleLowerCase() === "processing" && (
+            <div className="flex justify-between gap-4 items-center w-full mb-2">
               <div className="h-[100px] w-[100px]">
-                <ImageSlider urls={item.product.images} isRounded />
+                <ImageSlider urls={item?.product.imageUrls} isRounded />
               </div>
+
               <div className="flex flex-col gap-2 items-start h-full">
                 <div>
-                  <p>{item.product.name}</p>
-                </div>
-                {item.product.prices.length > 1 ? (
-                  <div className="flex gap-2 items-end">
-                    <p className="text-muted-foreground">
-                      TK. {item.product.prices[1]}
-                    </p>
-                    <p className="text-muted-foreground text-sm line-through">
-                      TK. {item.product.prices[0]}
-                    </p>
-                  </div>
-                ) : (
-                  <p className="text-muted-foreground">
-                    TK. {item.product.prices[0]}
+                  <p className="text-sm text-muted-foreground font-medium capitalize">
+                    {item?.product.name}
                   </p>
+                </div>
+                {item.product.sizeVariants.map(
+                  (sizeVariant) =>
+                    sizeVariant?.sizeId === item?.sizeId && (
+                      <div
+                        className="flex flex-col gap-1"
+                        key={sizeVariant?.id}
+                      >
+                        <p className="text-sm text-muted-foreground font-medium">
+                          {sizeVariant?.price}
+                        </p>
+                        <p className="text-sm text-muted-foreground font-medium">
+                          {sizeVariant?.size.name}
+                        </p>
+                      </div>
+                    )
                 )}
-                <p className="text-muted-foreground">
-                  Size: {item.size.toLocaleUpperCase()}
-                </p>
               </div>
+
               <div className="flex h-full items-end mb-5">
-                <Button
-                  variant="destructive"
-                  size="sm"
-                  onClick={handleCancelModal}
-                >
+                <Button size="sm" onClick={handleCancelModal}>
                   <div className="flex items-center gap-2">
                     <IoClose size={16} />
                     <span className="text-sm">Cancel</span>
@@ -77,7 +79,6 @@ const ProfileProcessingOrderItem: React.FC<
         open={alertDialogOpen}
         setOpen={setAlertDialogOpen}
         handler={handleOrderCancel}
-        className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
       />
     </div>
   );

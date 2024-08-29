@@ -43,6 +43,7 @@ interface IAddressModalProps {
   submitHandler: (values: z.infer<typeof profileAddressSchema>) => void;
   selectedAddress: any;
   isLoading: boolean;
+  resetForm: boolean;
 }
 
 const AddressModal: React.FC<IAddressModalProps> = ({
@@ -54,6 +55,7 @@ const AddressModal: React.FC<IAddressModalProps> = ({
   submitHandler,
   selectedAddress,
   isLoading,
+  resetForm,
 }) => {
   const [selectedDivision, setSelectedDivision] = useState<string | undefined>(
     selectedAddress?.division || ""
@@ -69,37 +71,38 @@ const AddressModal: React.FC<IAddressModalProps> = ({
   const [filteredUpazilas, setFilteredUpazilas] = useState<IUpazila[]>([]);
   const [filteredUnions, setFilteredUnions] = useState<IUnion[]>([]);
 
-  console.log("SELECTED ADDRESS =>", selectedAddress);
-  console.log("SELECTED DIVISION =>", selectedDivision);
+  useEffect(() => {
+    setSelectedDivision(selectedAddress?.division);
+    setSelectedDistrict(selectedAddress?.district);
+    setSelectedUpazila(selectedAddress?.upazila);
+  }, [selectedAddress]);
 
   useEffect(() => {
-    if (selectedDivision) {
+    if (selectedAddress) {
       const districts = districtData.filter(
-        (district) => district.division_id === selectedDivision
+        (district) => district.division_id === selectedAddress?.divisionId
       );
-
-      console.log("FROM USE EFFECT", selectedDivision);
       setFilteredDistricts(districts);
     }
-  }, [selectedDivision]);
+  }, [selectedAddress]);
 
   useEffect(() => {
-    if (selectedDistrict) {
+    if (selectedAddress) {
       const upazilas = upazilaData.filter(
-        (upazila) => upazila.district_id === selectedDistrict
+        (upazila) => upazila.district_id === selectedAddress?.districtId
       );
       setFilteredUpazilas(upazilas);
     }
-  }, [selectedDistrict]);
+  }, [selectedAddress]);
 
   useEffect(() => {
-    if (selectedUpazila) {
+    if (selectedAddress) {
       const unions = unionData.filter(
-        (union) => union.upazilla_id === selectedUpazila
+        (union) => union.upazilla_id === selectedAddress?.upazilaId
       );
       setFilteredUnions(unions);
     }
-  }, [selectedUpazila]);
+  }, [selectedAddress]);
 
   const form = useForm<z.infer<typeof profileAddressSchema>>({
     resolver: zodResolver(profileAddressSchema),
@@ -112,6 +115,15 @@ const AddressModal: React.FC<IAddressModalProps> = ({
     },
   });
 
+  useEffect(() => {
+    if (selectedAddress) {
+      // form.setValue("division", selectedAddress?.division);
+      // form.reset({
+      //   division: selectedAddress?.division
+      // })
+    }
+  }, [form, selectedAddress]);
+
   const onSubmit = (values: z.infer<typeof profileAddressSchema>) => {
     const divisionName = getNameById(values.division, divisionData) || "";
     const districtName = getNameById(values.district, districtData) || "";
@@ -120,8 +132,11 @@ const AddressModal: React.FC<IAddressModalProps> = ({
 
     const finalValues = {
       division: divisionName,
+      divisionId: values.division,
       district: districtName,
+      districtId: values.district,
       upazila: upazilaName,
+      upazilaId: values.upazila,
       union: unionName,
       streetAddress: values.streetAddress || "",
     };
@@ -144,6 +159,9 @@ const AddressModal: React.FC<IAddressModalProps> = ({
     }
 
     submitHandler(finalValues);
+    if (resetForm) {
+      form.reset();
+    }
   };
 
   return (
@@ -176,9 +194,7 @@ const AddressModal: React.FC<IAddressModalProps> = ({
                         <SelectLabel>Divisions</SelectLabel>
                         {divisionData.map((division: IDivision) => (
                           <SelectItem value={division.id} key={division.id}>
-                            {selectedDivision
-                              ? selectedDivision
-                              : division.name}
+                            {division.name}
                           </SelectItem>
                         ))}
                       </SelectGroup>

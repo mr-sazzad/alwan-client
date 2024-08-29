@@ -39,9 +39,10 @@ const addressApi = baseApi.injectEndpoints({
     }),
 
     updateAddress: build.mutation({
-      query: ({ addressId }) => ({
+      query: ({ addressId, data }) => ({
         url: `/addresses/${addressId}/update`,
         method: "PATCH",
+        data,
       }),
       invalidatesTags: (result, error, { userId }) => [
         { type: tagTypes.address, id: userId },

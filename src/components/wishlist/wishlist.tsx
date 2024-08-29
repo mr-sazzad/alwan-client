@@ -1,6 +1,5 @@
 "use client";
 
-import { ITShirt } from "@/types";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import ImageSlider from "../cards/image-slider";
 import { Button } from "../ui/button";
@@ -14,7 +13,6 @@ import {
   SheetTrigger,
 } from "../ui/sheet";
 import { toast } from "../ui/use-toast";
-import CartMoney from "../utils/cart-money";
 import SmallName from "../utils/product-name";
 
 import { IoBagHandleOutline } from "react-icons/io5";
@@ -28,6 +26,7 @@ import {
   setWishlist,
 } from "@/redux/api/wishlist/wishlistSlice";
 import { RootState } from "@/redux/store";
+import { IProduct } from "@/types";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -61,8 +60,8 @@ const Wishlist: React.FC<IWishlist> = ({ open, setOpen }) => {
     };
   }, [dispatch]);
 
-  const handleProductDelete = (productId: string, size: string) => {
-    dispatch(deleteProduct({ id: productId, size }));
+  const handleProductDelete = (productId: string) => {
+    dispatch(deleteProduct({ id: productId }));
   };
 
   const handleCartClear = () => {
@@ -92,14 +91,14 @@ const Wishlist: React.FC<IWishlist> = ({ open, setOpen }) => {
             {wishlistProducts.length ? (
               <div className="flex flex-col justify-between h-full">
                 <div className="overflow-y-auto">
-                  {wishlistProducts.map((product: ITShirt) => (
+                  {wishlistProducts.map((product: IProduct) => (
                     <div
                       key={product.id}
                       className="flex flex-row gap-2 mt-5 w-full items-center"
                     >
                       <div className="flex flex-row gap-4 flex-1">
                         <div className="relative w-[80px] h-[80px]">
-                          <ImageSlider urls={product.images} />
+                          <ImageSlider urls={product.imageUrls} />
                         </div>
                         <div>
                           <Button
@@ -114,20 +113,18 @@ const Wishlist: React.FC<IWishlist> = ({ open, setOpen }) => {
                               />
                             </Link>
                           </Button>
-                          <div className="flex gap-1 items-center text-sm text-gray-400">
+                          {/* <div className="flex gap-1 items-center text-sm text-gray-400">
                             {product.prices && (
                               <CartMoney prices={product.prices} />
                             )}
-                          </div>
+                          </div> */}
                         </div>
                       </div>
                       <Button
                         variant="outline"
                         size="sm"
                         className="rounded-full flex justify-center items-center py-0 px-[10px]"
-                        onClick={() =>
-                          handleProductDelete(product.id, product.orderSize)
-                        }
+                        onClick={() => handleProductDelete(product.id)}
                       >
                         <PiTrashLight size={16} />
                       </Button>

@@ -96,7 +96,9 @@ export interface IReadSizeVariant {
   productId: string;
   price: number;
   stock: number;
+  colorId: string;
   color: IReadColor;
+  sizeId: string;
   size: IReadSize;
   createdAt: string;
   updatedAt: string;
@@ -183,42 +185,53 @@ export interface IUserAddress {
   shippingAddress: string;
 }
 
-export interface IOrderItemResponse {
-  createdAt: string;
+export interface IOrderItem {
   id: string;
-  itemStatus:
-    | "processing"
-    | "onTheWay"
-    | "delivered"
-    | "requestToReturn"
-    | "returned";
-  orderId: string;
-  product: IProduct;
-  productId: string;
+  sizeId: string;
   quantity: number;
-  returnNote: string | null;
   returnQuantity: number;
-  returnReason: string | null;
-  size: "M" | "L" | "XL" | "XXL";
+  itemStatus:
+    | "PROCESSING"
+    | "ONTHEWAY"
+    | "DELIVERED"
+    | "REQUESTTORETURN"
+    | "RETURNED";
+  returnNote: string;
+  returnReasene: string;
+  orderId: string;
+  productId: string;
+  createdAt: string;
   updatedAt: string;
+  product: IProduct;
+}
+
+export interface IOrderResponseData {
+  id: string;
+  userName: string;
+  division: string;
+  district: string;
+  upazila: string;
+  union: string;
+  streetAddress: string;
+  totalCost: number;
+  phone: string;
+  altPhone: string | null;
+  couponId: string | null;
+  orderNotes: string | null;
+  userId: string;
+  orderStatus: "ACTIVE" | "CANCELLED";
+  shippingMethod: "CASH_ON_DELIVERY" | "ONLINE_PAYMENT";
+  shippingCost: number;
+  createdAt: Date;
+  updatedAt: Date;
+  items: IOrderItem[];
 }
 
 export interface IOrderResponse {
-  altPhone: string | null;
-  couponId: string;
-  createdAt: string;
-  email: string;
-  id: string;
-  items: IOrderItemResponse[];
-  orderNote: string | null;
-  orderStatus: "normal" | "cancelled";
-  phone: string;
-  shippingAddress: string;
-  shippingCity: string;
-  shippingMethod: "cashOnDelivery" | "onlinePayment";
-  totalCost: number;
-  updatedAt: string;
-  userId: string;
+  status: number;
+  success: boolean;
+  message: string;
+  data: IOrderResponseData[];
 }
 
 export interface IProductCategory {
@@ -237,7 +250,7 @@ export interface ProductSubCategory {
 
 export interface Category {
   id: string;
-  title: string;
+  name: string;
   imageUrl: string | null;
   parentId: string | null;
   createdAt: string;
