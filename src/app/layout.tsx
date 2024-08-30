@@ -5,7 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import Providers from "@/providers/reduxProvider";
 import { ThemeProvider } from "@/providers/theme-provider";
 import type { Metadata } from "next";
-import { Raleway } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -13,7 +13,10 @@ export const metadata: Metadata = {
   description: "The ideal lifestyle",
 };
 
-const raleway = Raleway({ subsets: ["latin"] });
+const myFont = localFont({
+  src: "../../public/fonts/HelveticaNowText-Medium.woff2",
+  variable: "--font-helvetica",
+});
 
 export default function RootLayout({
   children,
@@ -22,8 +25,8 @@ export default function RootLayout({
 }>) {
   return (
     <Providers>
-      <html lang="en">
-        <body className={raleway.className}>
+      <html lang="en" className={`${myFont.variable} font-sans`}>
+        <body>
           <ThemeProvider
             attribute="class"
             defaultTheme="system"

@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { useGetAllProductsQuery } from "@/redux/api/products/productsApi";
-import { ITShirt } from "@/types";
+import { IProduct } from "@/types";
 import { Dispatch, SetStateAction, useMemo, useState } from "react";
 import SearchDialogProductCard from "./search-dialog-product-card";
 
@@ -30,17 +30,18 @@ const SearchDialog: React.FC<ISearchDialogProps> = ({
   const [searchTerm, setSearchTerm] = useState("");
   const { data: products, isLoading } = useGetAllProductsQuery(undefined);
 
-  // Filter products based on search term
   const filteredProducts = useMemo(() => {
     if (!products || searchTerm.length < 3) return [];
-    return products.filter((product: any) =>
+    return products?.data.filter((product: IProduct) =>
       product.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
   }, [products, searchTerm]);
 
+  console.log("PRODUCTS =>", products);
+
   const handleGoToDetailsPage = (id: string) => {
     setSearchTerm("");
-    router.push(`/t-shirts/${id}`);
+    router.push(`/products/${id}`);
     setSearchDialogOpen(false);
   };
 
@@ -52,33 +53,37 @@ const SearchDialog: React.FC<ISearchDialogProps> = ({
             Search Product
           </DialogTitle>
           <DialogDescription className="pb-0 mb-0">
-            search your favorite product by product name.
+            Search your favorite product by product name.
           </DialogDescription>
         </DialogHeader>
-        <div className="grid gap-4 py-4 h-full">
-          <div className="grid grid-cols-4 gap-4 relative">
+        <div className="flex flex-col h-full">
+          <div className="relative">
             <Input
               id="search"
               placeholder="Type product name..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="col-span-4 py-5 rounded-full outline-none focus:outline-none active:outline-0"
+              className="w-full py-2 rounded-full outline-none focus:outline-none"
             />
             <FiSearch
               className="absolute right-4 top-3 text-muted-foreground"
               size={20}
             />
           </div>
-          <div>
+
+          <div className="mt-2 flex-1 overflow-auto">
             {isLoading && (
               <div className="flex justify-center items-center h-[50px]">
                 <PiSpinner className="animate-spin" size={20} />
               </div>
             )}
+
             {filteredProducts.length > 0 ? (
-              <div className="flex flex-col gap-2">
-                <p className="font-medium mb-2">Search Results</p>
-                {filteredProducts.map((product: ITShirt) => (
+              <div className="flex flex-col gap-2 mt-4">
+                <p className="font-medium text-lg text-muted-foreground">
+                  Search Results
+                </p>
+                {filteredProducts.map((product: IProduct) => (
                   <SearchDialogProductCard
                     key={product.id}
                     product={product}
@@ -89,8 +94,7 @@ const SearchDialog: React.FC<ISearchDialogProps> = ({
             ) : (
               searchTerm.length >= 3 && (
                 <div className="flex flex-col gap-2 justify-center items-center font-medium text-xl text-muted-foreground">
-                  <p>Icon</p>
-                  <p className="">Products Not Found</p>
+                  <p>No Products Found</p>
                 </div>
               )
             )}
@@ -100,7 +104,7 @@ const SearchDialog: React.FC<ISearchDialogProps> = ({
           <div className="flex flex-row items-start">
             <IoInformation className="mt-1 text-muted-foreground" />
             <p className="text-muted-foreground pl-2 text-sm">
-              Any product that matches your search, will be displayed in this
+              Any product that matches your search will be displayed in this
               section.
             </p>
           </div>

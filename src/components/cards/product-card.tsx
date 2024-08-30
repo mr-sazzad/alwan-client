@@ -26,7 +26,7 @@ const ProductCard: React.FC<IProduct> = (product) => {
 
   return (
     <>
-      <div className="p-2 xl:w-1/4 lg:w-1/3 md:w-1/3 w-1/2 flex flex-col justify-between">
+      <div className="p-2 xl:w-1/4 lg:w-1/3 md:w-1/2 w-1/2 flex flex-col justify-between">
         <div className="overflow-hidden">
           <Link
             href={`/products/${product.id}`}

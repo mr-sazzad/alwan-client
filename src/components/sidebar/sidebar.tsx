@@ -35,7 +35,7 @@ export default function Sidebar({
 
   const handleCategoryClick = (category: Category) => {
     if (category.clientUrl) {
-      router.push(category.clientUrl);
+      router.push(`/categories/${category.id}`);
     }
 
     if (category.subCategories && category.subCategories.length > 0) {

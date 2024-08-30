@@ -7,7 +7,7 @@ import { Button } from "../ui/button";
 
 // Icons
 
-const ParentCategories = () => {
+const HomeCategories = () => {
   const { data: parentCategories, isLoading } =
     useGetParentCategoriesQuery(undefined);
 
@@ -26,7 +26,7 @@ const ParentCategories = () => {
               src={category.image}
               height={1000}
               width={1440}
-              className="object-cover"
+              className="object-contain"
             />
             <div className="absolute bottom-5 left-5">
               <p className="text-base font-medium text-white">
@@ -44,4 +44,4 @@ const ParentCategories = () => {
   );
 };
 
-export default ParentCategories;
+export default HomeCategories;

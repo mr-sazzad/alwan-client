@@ -1,34 +1,29 @@
 "use client";
 
-import Loading from "@/app/loading";
-import { useGetAllProductsQuery } from "@/redux/api/products/productsApi";
-import { bannerImage } from "@/static/banner-image";
-import { ITShirt } from "@/types";
-import ProductCard from "../cards/product-card";
-import Banner from "./banner";
+import Image from "next/image";
+import Link from "next/link";
+import { Button } from "../ui/button";
 
 const NewArrivals = () => {
-  const { data: products, isLoading } = useGetAllProductsQuery(undefined);
-
-  if (isLoading) {
-    return (
-      <div className="h-[400px]">
-        <Loading />
-      </div>
-    );
-  }
-
   return (
     <div>
-      <div className="my-2 w-full">
-        <Banner bannerImage={bannerImage} />
+      <div className="mt-10 mb-6 w-full flex flex-col gap-3 items-center">
+        <h2 className="text-4xl font-extrabold">New This Month</h2>
+        <Button
+          className="rounded-full text-[17px] font-medium capitalize"
+          asChild
+        >
+          <Link href="/new-arrivals">Shop new arrivals</Link>
+        </Button>
       </div>
 
       <div className="flex flex-wrap justify-start">
-        {products &&
-          products.map((card: ITShirt, index: number) => (
-            <ProductCard key={index} {...card} />
-          ))}
+        <Image
+          src="https://static.nike.com/a/images/f_auto/dpr_1.3,cs_srgb/w_796,c_limit/e2f836f7-0cf7-4548-9202-c1992b443698/nike-just-do-it.jpg"
+          alt="new-arrivals-image"
+          height={559}
+          width={1035}
+        />
       </div>
     </div>
   );
