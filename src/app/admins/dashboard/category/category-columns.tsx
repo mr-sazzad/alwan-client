@@ -86,11 +86,13 @@ const CategoryTableColumns: React.FC<CategoryTableColumnsProps> = ({
       accessorKey: "parent.name",
       header: "Parent",
       cell: ({ row }) =>
-        row.original.parent ? row.original.parent.name : "N/A",
+        row.original.parent ? row.original.parent.name : "not available",
     },
     {
       accessorKey: "clientUrl",
       header: "Client URL",
+      cell: ({ row }) =>
+        row.original.clientUrl ? row.original.clientUrl : "not available",
     },
     {
       id: "actions",

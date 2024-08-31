@@ -3,8 +3,8 @@
 import PageTitle from "@/components/admins/dashboard/page-titles/page-title";
 import AlwanBreadCrumb from "@/components/breadcrumbs/breadcrumb";
 import CreateCagegoryDrawer from "@/components/categories/create-category-drawer";
-import AdminDashboardLoading from "@/components/lodings/admin-dashboard-loding";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useGetAllCategoriesQuery } from "@/redux/api/categoies/categoriesApi";
 import { useState } from "react";
 import CategoryTableColumns from "./category-columns";
@@ -16,8 +16,15 @@ const Category = () => {
 
   if (isLoading) {
     return (
-      <div className="w-full h-full justify-center items-center">
-        <AdminDashboardLoading />
+      <div className="flex flex-col gap-3">
+        <Skeleton className="w-[200px] h-7" />
+        <Skeleton className="w-full h-20" />
+        <Skeleton className="ml-auto w-[150px] h-10" />
+        <div className="flex justify-between gap-2">
+          <Skeleton className="md:w-[250px] w-full h-10" />
+          <Skeleton className="w-[100px] h-10" />
+        </div>
+        <Skeleton className="w-full h-[40vh]" />
       </div>
     );
   }

@@ -76,6 +76,16 @@ export interface IConvertedColor {
   label: string;
 }
 
+export interface IReview {
+  id: string;
+  rating: number;
+  content: string;
+  userId: string;
+  productId: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface IReadSize {
   id: string;
   name: string;
@@ -117,6 +127,7 @@ export interface IProduct {
   isFreeDeliveryAvailable: boolean;
   status: "in_stock" | "stock_out";
   sizeVariants: IReadSizeVariant[];
+  reviews: IReview[];
   createdAt: string;
 }
 

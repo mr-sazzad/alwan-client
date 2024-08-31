@@ -1,6 +1,5 @@
 "use client";
 
-import Loading from "@/app/loading";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -13,13 +12,21 @@ import { cn } from "@/lib/utils";
 import { useGetAllCategoriesQuery } from "@/redux/api/categoies/categoriesApi";
 import Link from "next/link";
 import * as React from "react";
+import { Skeleton } from "../ui/skeleton";
 import transformCategories from "../utils/transformCategories";
 
 const DesktopMenu: React.FC = () => {
   const { data: response, isLoading } = useGetAllCategoriesQuery(undefined);
 
   if (isLoading) {
-    return <Loading />;
+    return (
+      <div className="flex gap-2">
+        <Skeleton className="h-8 w-16" />
+        <Skeleton className="h-8 w-16" />
+        <Skeleton className="h-8 w-16" />
+        <Skeleton className="h-8 w-16" />
+      </div>
+    );
   }
 
   const categories = transformCategories(response.data);
@@ -29,24 +36,32 @@ const DesktopMenu: React.FC = () => {
       <NavigationMenuList>
         {categories.map((parentCategory) => (
           <NavigationMenuItem key={parentCategory.id}>
-            <NavigationMenuTrigger>{parentCategory.name}</NavigationMenuTrigger>
-            <NavigationMenuContent className="drop-shadow-none">
-              <div className="p-4 flex flex-row gap-7 justify-start relative w-screen px-[150px]">
+            <NavigationMenuTrigger className="bg-transparent hover:bg-transparent text-lg font-medium">
+              {parentCategory.name}
+            </NavigationMenuTrigger>
+            <NavigationMenuContent className="drop-shadow-none rounded-none">
+              <div className="p-4 flex flex-row gap-7 justify-start relative w-screen px-[150px] rounded-none">
                 <div className="flex flex-row">
                   {parentCategory.children.map((childCategory) => (
                     <div key={childCategory.id}>
-                      <Link
-                        href={childCategory.clientUrl}
-                        className="text-sm font-semibold pt-5 p-4"
-                      >
-                        {childCategory.name}
-                      </Link>
+                      {childCategory.clientUrl ? (
+                        <Link
+                          href={`/categories/${childCategory.id}`}
+                          className="font-medium pt-5 p-4 text-sm"
+                        >
+                          {childCategory.name}
+                        </Link>
+                      ) : (
+                        <p className="text-sm font-medium pt-5 p-4 cursor-pointer hover:text-muted-foreground">
+                          {childCategory.name}
+                        </p>
+                      )}
                       <ul className="flex flex-col gap-3 sm:px-3 mx-auto px-4">
                         {childCategory.children?.map((subCategory) => (
                           <ListItem
                             key={subCategory.id}
                             title={subCategory.name}
-                            href={subCategory.clientUrl}
+                            href={`/categories/${subCategory.id}`}
                           >
                             {subCategory.description}
                           </ListItem>

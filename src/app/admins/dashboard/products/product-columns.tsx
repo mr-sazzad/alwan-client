@@ -11,6 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useDeleteSingleProductMutation } from "@/redux/api/products/productsApi";
+import { IReadCategory, IReadSize, IReadSizeVariant } from "@/types";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import Link from "next/link";
@@ -19,9 +20,10 @@ import { useState } from "react";
 export type Product = {
   id: string;
   name: string;
-  prices: number[];
-  sizes: string[];
-  status: "in stock" | "stock out";
+  category: IReadCategory;
+  sizeVariants: IReadSizeVariant[];
+  size: IReadSize;
+  status: "IN_STOCK" | "OUT_OF_STOCK";
 };
 
 const ProductTableColumns = () => {
@@ -47,16 +49,24 @@ const ProductTableColumns = () => {
       ),
     },
     {
-      accessorKey: "prices",
-      header: "Price",
+      accessorKey: "category",
+      header: "Category",
+      cell: ({ row }) => <span>{row.original.category?.name || "N/A"}</span>,
     },
     {
-      accessorKey: "sizes",
-      header: "Sizes",
+      accessorKey: "price",
+      header: "Price",
+      cell: ({ row }) => <span>{row.original.sizeVariants[0]?.price}</span>,
+    },
+    {
+      accessorKey: "size",
+      header: "Size",
+      cell: ({ row }) => <span>{row.original.sizeVariants[0]?.size.name}</span>,
     },
     {
       accessorKey: "status",
       header: "Status",
+      cell: ({ row }) => <span>{row.original.status}</span>,
     },
     {
       id: "actions",
@@ -77,17 +87,16 @@ const ProductTableColumns = () => {
                 <DropdownMenuLabel>Actions</DropdownMenuLabel>
                 <DropdownMenuItem>
                   <Link href={`${path}/product-update/${id}`} passHref>
-                    <Button variant="secondary">Update this product</Button>
+                    Update this product
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onSelect={() => setOpen(true)}>
-                  <Button variant="destructive" className="w-full">
-                    Delete this product
-                  </Button>
+                  Delete this product
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
+
             {/* alert dialog */}
             <AlertDialogComp
               open={open}

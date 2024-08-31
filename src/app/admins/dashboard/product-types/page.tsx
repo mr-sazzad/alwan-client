@@ -18,7 +18,6 @@ const ProductType = () => {
   if (isLoading) {
     return <AdminDashboardLoading />;
   }
-  console.log("PRODUCT TYPES => ", productTypes);
   return (
     <div>
       <AlwanBreadCrumb

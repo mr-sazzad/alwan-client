@@ -43,10 +43,10 @@ export const useAdminDashboardMenu = () => {
       },
       {
         id: 4,
-        title: "Comments",
-        href: "/admins/dashboard/comments",
+        title: "Reviews",
+        href: "/admins/dashboard/reviews",
         icon: GoCommentDiscussion,
-        active: pathname.includes("/admins/dashboard/comments"),
+        active: pathname.includes("/admins/dashboard/reviews"),
       },
       {
         id: 5,

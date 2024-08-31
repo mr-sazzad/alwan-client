@@ -30,7 +30,7 @@ import { IUserData } from "@/types";
 import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { BiDotsHorizontalRounded, BiHome } from "react-icons/bi";
+import { BiDotsHorizontalRounded, BiSolidHome } from "react-icons/bi";
 import { FaRegCircleCheck } from "react-icons/fa6";
 import {
   HiOutlineSparkles,
@@ -218,7 +218,7 @@ const Address = () => {
 
         <Button
           variant="outline"
-          disabled={user?.data.addresses.length > 1}
+          disabled={user?.data.addresses?.length > 1}
           className="flex items-center gap-1"
           onClick={handleAddAddressClick}
         >
@@ -227,12 +227,12 @@ const Address = () => {
         </Button>
       </div>
 
-      {user?.data.addresses.length ? (
-        user?.data.addresses.map((adrs: any) => (
+      {user?.data?.addresses?.length ? (
+        user?.data?.addresses?.map((adrs: any) => (
           <div key={adrs.address.id} className="relative">
             {user?.data.activeAddressId === adrs.address.id && (
               <div className="absolute top-4 right-16 p-1 text-orange-500 bg-orange-50/50 flex gap-1 items-center rounded-md">
-                <BiHome size={18} />
+                <BiSolidHome size={18} />
                 <p className="text-sm font-medium tracking-wider">Active</p>
               </div>
             )}

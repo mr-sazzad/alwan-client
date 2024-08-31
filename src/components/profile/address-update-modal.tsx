@@ -57,72 +57,50 @@ const AddressModal: React.FC<IAddressModalProps> = ({
   isLoading,
   resetForm,
 }) => {
-  const [selectedDivision, setSelectedDivision] = useState<string | undefined>(
-    selectedAddress?.division || ""
-  );
-  const [selectedDistrict, setSelectedDistrict] = useState<string | undefined>(
-    selectedAddress?.district || ""
-  );
-  const [selectedUpazila, setSelectedUpazila] = useState<string | undefined>(
-    selectedAddress?.upazila || ""
-  );
-
   const [filteredDistricts, setFilteredDistricts] = useState<IDistrict[]>([]);
   const [filteredUpazilas, setFilteredUpazilas] = useState<IUpazila[]>([]);
   const [filteredUnions, setFilteredUnions] = useState<IUnion[]>([]);
 
-  useEffect(() => {
-    setSelectedDivision(selectedAddress?.division);
-    setSelectedDistrict(selectedAddress?.district);
-    setSelectedUpazila(selectedAddress?.upazila);
-  }, [selectedAddress]);
-
-  useEffect(() => {
-    if (selectedAddress) {
-      const districts = districtData.filter(
-        (district) => district.division_id === selectedAddress?.divisionId
-      );
-      setFilteredDistricts(districts);
-    }
-  }, [selectedAddress]);
-
-  useEffect(() => {
-    if (selectedAddress) {
-      const upazilas = upazilaData.filter(
-        (upazila) => upazila.district_id === selectedAddress?.districtId
-      );
-      setFilteredUpazilas(upazilas);
-    }
-  }, [selectedAddress]);
-
-  useEffect(() => {
-    if (selectedAddress) {
-      const unions = unionData.filter(
-        (union) => union.upazilla_id === selectedAddress?.upazilaId
-      );
-      setFilteredUnions(unions);
-    }
-  }, [selectedAddress]);
-
   const form = useForm<z.infer<typeof profileAddressSchema>>({
     resolver: zodResolver(profileAddressSchema),
     defaultValues: {
-      division: selectedDivision,
-      district: selectedDistrict,
-      upazila: selectedUpazila,
-      union: selectedAddress?.union || undefined,
-      streetAddress: selectedAddress?.streetAddress || "",
+      division: "",
+      district: "",
+      upazila: "",
+      union: "",
+      streetAddress: "",
     },
   });
 
   useEffect(() => {
     if (selectedAddress) {
-      // form.setValue("division", selectedAddress?.division);
-      // form.reset({
-      //   division: selectedAddress?.division
-      // })
+      form.reset({
+        division: selectedAddress.divisionId,
+        district: selectedAddress.districtId,
+        upazila: selectedAddress.upazilaId,
+        union: selectedAddress.union,
+        streetAddress: selectedAddress.streetAddress,
+      });
+
+      // Filter districts based on selected division
+      const districts = districtData.filter(
+        (district) => district.division_id === selectedAddress.divisionId
+      );
+      setFilteredDistricts(districts);
+
+      // Filter upazilas based on selected district
+      const upazilas = upazilaData.filter(
+        (upazila) => upazila.district_id === selectedAddress.districtId
+      );
+      setFilteredUpazilas(upazilas);
+
+      // Filter unions based on selected upazila
+      const unions = unionData.filter(
+        (union) => union.upazilla_id === selectedAddress.upazilaId
+      );
+      setFilteredUnions(unions);
     }
-  }, [form, selectedAddress]);
+  }, [selectedAddress, form]);
 
   const onSubmit = (values: z.infer<typeof profileAddressSchema>) => {
     const divisionName = getNameById(values.division, divisionData) || "";
@@ -141,7 +119,6 @@ const AddressModal: React.FC<IAddressModalProps> = ({
       streetAddress: values.streetAddress || "",
     };
 
-    // Check for changes before submission
     if (
       selectedAddress &&
       finalValues.division === selectedAddress.division &&
@@ -181,8 +158,14 @@ const AddressModal: React.FC<IAddressModalProps> = ({
                   <FormLabel>Division</FormLabel>
                   <Select
                     onValueChange={(value) => {
-                      setSelectedDivision(value);
                       field.onChange(value);
+                      const districts = districtData.filter(
+                        (district) => district.division_id === value
+                      );
+                      setFilteredDistricts(districts);
+                      form.setValue("district", "");
+                      form.setValue("upazila", "");
+                      form.setValue("union", "");
                     }}
                     value={field.value}
                   >
@@ -212,8 +195,13 @@ const AddressModal: React.FC<IAddressModalProps> = ({
                   <FormLabel>District</FormLabel>
                   <Select
                     onValueChange={(value) => {
-                      setSelectedDistrict(value);
                       field.onChange(value);
+                      const upazilas = upazilaData.filter(
+                        (upazila) => upazila.district_id === value
+                      );
+                      setFilteredUpazilas(upazilas);
+                      form.setValue("upazila", "");
+                      form.setValue("union", "");
                     }}
                     value={field.value}
                   >
@@ -243,8 +231,12 @@ const AddressModal: React.FC<IAddressModalProps> = ({
                   <FormLabel>Upazila</FormLabel>
                   <Select
                     onValueChange={(value) => {
-                      setSelectedUpazila(value);
                       field.onChange(value);
+                      const unions = unionData.filter(
+                        (union) => union.upazilla_id === value
+                      );
+                      setFilteredUnions(unions);
+                      form.setValue("union", "");
                     }}
                     value={field.value}
                   >
@@ -272,12 +264,7 @@ const AddressModal: React.FC<IAddressModalProps> = ({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Union</FormLabel>
-                  <Select
-                    onValueChange={(value) => {
-                      field.onChange(value);
-                    }}
-                    value={field.value}
-                  >
+                  <Select onValueChange={field.onChange} value={field.value}>
                     <SelectTrigger>
                       <SelectValue placeholder="Select union" />
                     </SelectTrigger>
