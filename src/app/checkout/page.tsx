@@ -3,6 +3,7 @@
 import MaxWidth from "@/components/max-width";
 import StepperForm from "@/components/stepper/stepper-form";
 import { getUserFromLocalStorage } from "@/helpers/jwt";
+import { usePlaceOrder } from "@/hooks/use-place-order";
 import { useCreateAOrderMutation } from "@/redux/api/orders/ordersApi";
 import { useGetSingleProductQuery } from "@/redux/api/products/productsApi";
 import { useGetSingleUserQuery } from "@/redux/api/users/user-api";
@@ -19,9 +20,9 @@ import Loading from "../loading";
 const CheckoutPage = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const productId = searchParams.get("productId");
+  const productId = searchParams.get("productId") ?? undefined;
   const quantity = searchParams.get("quantity");
-  const size = searchParams.get("size");
+  const size = searchParams.get("size") ?? undefined;
 
   const [selectedDivisionName, setSelectedDivisionName] = useState<string>("");
   const [selectedDistrictName, setSelectedDistrictName] = useState<string>("");
@@ -79,13 +80,33 @@ const CheckoutPage = () => {
     }
   }, [user, form]);
 
+  const toast = (options: {
+    title: string;
+    description: string;
+    variant: "destructive" | "default";
+  }) => {
+    // Implement your toast function here
+  };
+
+  // Call the usePlaceOrder hook unconditionally
+  const handlePlaceOrder = usePlaceOrder({
+    form,
+    totalPrice,
+    shippingCost,
+    currentUser,
+    productId,
+    quantity: quantity ? Number(quantity) : undefined,
+    size,
+    cartProducts,
+    createAOrder,
+    toast,
+    router,
+    setLoading,
+  });
+
   if (isLoading || isUserLoading) {
     return <Loading />;
   }
-
-  const handlePlaceOrder = async () => {
-    // ... (rest of the handlePlaceOrder function remains unchanged)
-  };
 
   return (
     <MaxWidth className="flex justify-center">
@@ -93,10 +114,10 @@ const CheckoutPage = () => {
         <StepperForm
           form={form}
           products={
-            productId && quantity && size ? [product.data] : cartProducts
+            productId && quantity && size ? [product?.data] : cartProducts
           }
           district={form.getValues("district")}
-          handlePlaceOrder={handlePlaceOrder}
+          handlePlaceOrder={handlePlaceOrder} // Pass the handlePlaceOrder function
           setTotalPrice={setTotalPrice}
           setShippingCost={setShippingCost}
           totalPrice={totalPrice}
