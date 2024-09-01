@@ -1,28 +1,28 @@
 export const statusStyles = {
-  processing: {
+  PROCESSING: {
     bgColor: "bg-yellow-300",
     textColor: "text-yellow-900",
-    displayText: "Processing",
+    displayText: "PROCESSING",
   },
-  onTheWay: {
+  ONTHEWAY: {
     bgColor: "bg-blue-300",
     textColor: "text-blue-900",
-    displayText: "On The Way",
+    displayText: "ONTHEWAY",
   },
-  delivered: {
+  DELIVERED: {
     bgColor: "bg-green-300",
     textColor: "text-green-900",
-    displayText: "Delivered",
+    displayText: "DELIVERED",
   },
-  requestToReturn: {
+  REQUESTTORETURN: {
     bgColor: "bg-red-300",
     textColor: "text-red-900",
-    displayText: "Request to Return",
+    displayText: "REQUESTTORETURN",
   },
-  returned: {
+  RETURNED: {
     bgColor: "bg-gray-300",
     textColor: "text-gray-900",
-    displayText: "Returned",
+    displayText: "RETURNED",
   },
 };
 

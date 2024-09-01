@@ -6,21 +6,20 @@ import {
   useGetSingleOrderByOrderIdQuery,
   useUpdateOrderStatusMutation,
 } from "@/redux/api/orders/ordersApi";
-import { useGetSingleUserQuery } from "@/redux/api/users/user-api";
-import { ITShirt } from "@/types";
+import { IProduct } from "@/types";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
-const url =
-  "https://alwan-api-server.vercel.app/api/v1/products/single-product";
+const url = "http://localhost:4000/api/v1/products/single-product";
 
-interface ProductWithDetails extends ITShirt {
+interface ProductWithDetails extends IProduct {
   orderStatus:
-    | "processing"
-    | "onTheWay"
-    | "delivered"
-    | "requestToReturn"
-    | "returned";
+    | "PROCESSING"
+    | "ONTHEWAY"
+    | "DELIVERED"
+    | "REQUESTTORETURN"
+    | "RETURNED";
+
   size: string;
   quantity: number;
 }
@@ -33,15 +32,8 @@ const Page = () => {
   const [updateOrderStatus, { isLoading: isUpdating }] =
     useUpdateOrderStatusMutation();
 
-  const { data: order, isLoading: isOrderLoading } =
+  const { data: response, isLoading: isOrderLoading } =
     useGetSingleOrderByOrderIdQuery(id);
-
-  const { data: buyer, isLoading: isUserLoading } = useGetSingleUserQuery(
-    order?.userId,
-    {
-      skip: !order?.userId,
-    }
-  );
 
   useEffect(() => {
     const fetchProductData = async (productId: string) => {
@@ -51,9 +43,9 @@ const Page = () => {
     };
 
     const fetchProducts = async () => {
-      if (order) {
+      if (response?.data) {
         const productData = await Promise.all(
-          order.items.map(async (item: any) => {
+          response?.data.items.map(async (item: any) => {
             const product = await fetchProductData(item.productId);
             setItemId(item.id);
             return {
@@ -70,15 +62,14 @@ const Page = () => {
     };
 
     fetchProducts();
-  }, [order]);
+  }, [response]);
 
-  if (isOrderLoading || isUserLoading || loadingProducts) {
+  if (isOrderLoading || loadingProducts) {
     return <Loading />;
   }
 
   const handleOrderStatusChange = async (orderStatus: string) => {
     const result = await updateOrderStatus({ id: itemId, orderStatus });
-    console.log("STATUS RESULT => ", result);
   };
 
   return (
@@ -90,22 +81,22 @@ const Page = () => {
           <div className="flex flex-col gap-2 border border-dashed rounded border-gray-500 p-5">
             <div>
               <p className="text-gray-700 font-semibold">Name:</p>
-              <p className="ml-2 text-gray-700 capitalize">{buyer.username}</p>
+              <p className="ml-2 text-gray-700 capitalize">
+                {response?.data.username}
+              </p>
             </div>
             <div>
               <p className="text-gray-700 font-semibold">Email:</p>
-              <p className="ml-2 text-gray-700">{buyer.email}</p>
+              <p className="ml-2 text-gray-700">{response?.data.email}</p>
             </div>
             <div>
               <p className="text-gray-700 font-semibold">Phone:</p>
-              <p className="ml-2 text-gray-700">
-                {buyer.phone ? buyer.phone : order.phone}
-              </p>
+              <p className="ml-2 text-gray-700">{response?.data.phone}</p>
             </div>
-            {buyer.altPhone && (
+            {response?.data.altPhone && (
               <div>
                 <p className="text-gray-700 font-semibold">Alternate Phone:</p>
-                <p className="ml-2 text-gray-700">{buyer.altPhone}</p>
+                <p className="ml-2 text-gray-700">{response?.data.altPhone}</p>
               </div>
             )}
           </div>
@@ -118,7 +109,6 @@ const Page = () => {
               <span className="font-semibold">cancelled</span> or{" "}
               <span className="font-semibold">normal</span>
             </p>
-            
           </div>
         </div>
       </div>
@@ -150,16 +140,20 @@ const Page = () => {
           <div className="flex flex-col gap-2 border border-dashed rounded border-gray-500 p-5">
             <div>
               <p className="text-gray-700 font-semibold">Shipping City: </p>
-              <p className="ml-2 text-gray-700">{order.shippingCity}</p>
+              <p className="ml-2 text-gray-700">
+                {response?.data.shippingCity}
+              </p>
             </div>
             <div>
               <p className="text-gray-700 font-semibold">Shipping Address: </p>
-              <p className="ml-2 text-gray-700">{order.shippingAddress}</p>
+              <p className="ml-2 text-gray-700">
+                {response?.data.shippingAddress}
+              </p>
             </div>
-            {order.orderNote && (
+            {response?.data.orderNote && (
               <div>
                 <p className="text-gray-700 font-semibold">Additional Note: </p>
-                <p className="ml-2 text-gray-700">{order.orderNote}</p>
+                <p className="ml-2 text-gray-700">{response?.data.orderNote}</p>
               </div>
             )}
           </div>
@@ -172,12 +166,12 @@ const Page = () => {
           <div className="flex flex-col gap-2 border border-dashed rounded border-gray-500 p-5">
             <div>
               <p className="text-gray-700 font-semibold">Total Cost:</p>
-              <p className="ml-2 text-gray-700">{order.totalCost}</p>
+              <p className="ml-2 text-gray-700">{response?.data.totalCost}</p>
             </div>
             <div>
               <p className="text-gray-700 font-semibold">Delivery Fee:</p>
               <p className="ml-2 text-gray-700">
-                {order.shippingCity === "Dhaka" ? 70 : 130}
+                {response?.data.shippingCity === "Dhaka" ? 70 : 130}
               </p>
             </div>
           </div>

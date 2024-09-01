@@ -1,6 +1,5 @@
 import { IUserCartProduct } from "@/types";
 import React, { useEffect, useState } from "react";
-import { PiSpinner } from "react-icons/pi";
 import CouponCodeModal from "../modals/coupon-code-modals";
 import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
@@ -20,11 +19,9 @@ const CheckOutPageBillingInfo: React.FC<CheckOutPageBillingInfoProps> = ({
   products,
   district,
   qty,
-  handlePlaceOrder,
   setTotalPrice,
   setShippingCost,
   totalPrice,
-  buttonLoading,
 }) => {
   const [subTotal, setSubTotal] = useState<number>(0);
   const [charge, setCharge] = useState<number>(0);
@@ -165,17 +162,6 @@ const CheckOutPageBillingInfo: React.FC<CheckOutPageBillingInfoProps> = ({
               Apply Coupon
             </Button>
           </div>
-          <Button
-            onClick={handlePlaceOrder}
-            disabled={buttonLoading}
-            className="min-w-[107px]"
-          >
-            {buttonLoading ? (
-              <PiSpinner size={20} className="animate-spin" />
-            ) : (
-              "Place Order"
-            )}
-          </Button>
         </div>
       </div>
       <CouponCodeModal

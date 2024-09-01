@@ -6,13 +6,14 @@ import { RiLoaderLine } from "react-icons/ri";
 import { z } from "zod";
 import { Button } from "../ui/button";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "../ui/dialog";
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+} from "../ui/drawer";
 import { Form, FormControl, FormField, FormItem, FormLabel } from "../ui/form";
 import { Input } from "../ui/input";
 
@@ -73,46 +74,53 @@ const CouponCodeModal: React.FC<CouponCodeModalProps> = ({
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="md:max-w-[500px] sm:max-w-[425px] rounded">
-        <DialogHeader>
-          <DialogTitle className="text-xl">Coupon</DialogTitle>
-          <DialogDescription>
-            If you have a coupon then you can get extra discount
-          </DialogDescription>
-        </DialogHeader>
-        {error && (
-          <div className="bg-red-100 flex justify-center items-center gap-2 border rounded-md w-full py-2">
-            <span className="font-medium text-sm">{error}</span>
-          </div>
-        )}
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
-            <FormField
-              control={form.control}
-              name="coupon"
-              render={({ field }) => (
-                <FormItem className="mb-5">
-                  <FormLabel>Coupon</FormLabel>
-                  <FormControl>
-                    <Input placeholder="coupon_code" {...field} />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-            <DialogFooter>
-              <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? (
-                  <RiLoaderLine className="animate-spin h-5 w-5" />
-                ) : (
-                  "Apply Coupon"
+    <Drawer open={open} onOpenChange={setOpen}>
+      <DrawerContent>
+        <div className="mx-auto w-full max-w-md">
+          <DrawerHeader>
+            <DrawerTitle className="text-xl">Coupon</DrawerTitle>
+            <DrawerDescription>
+              If you have a coupon then you can get extra discount
+            </DrawerDescription>
+          </DrawerHeader>
+          {error && (
+            <div className="bg-red-100 flex justify-center items-center gap-2 border rounded-md w-full py-2">
+              <span className="font-medium text-sm">{error}</span>
+            </div>
+          )}
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)}>
+              <FormField
+                control={form.control}
+                name="coupon"
+                render={({ field }) => (
+                  <FormItem className="mb-5">
+                    <FormLabel>Coupon</FormLabel>
+                    <FormControl>
+                      <Input placeholder="coupon_code" {...field} />
+                    </FormControl>
+                  </FormItem>
                 )}
-              </Button>
-            </DialogFooter>
-          </form>
-        </Form>
-      </DialogContent>
-    </Dialog>
+              />
+              <DrawerFooter className="w-full">
+                <Button type="submit" className="w-full" disabled={isLoading}>
+                  {isLoading ? (
+                    <RiLoaderLine className="animate-spin h-5 w-5" />
+                  ) : (
+                    "Apply Coupon"
+                  )}
+                </Button>
+                <DrawerClose asChild>
+                  <Button variant="outline" className="w-full">
+                    Cancel
+                  </Button>
+                </DrawerClose>
+              </DrawerFooter>
+            </form>
+          </Form>
+        </div>
+      </DrawerContent>
+    </Drawer>
   );
 };
 

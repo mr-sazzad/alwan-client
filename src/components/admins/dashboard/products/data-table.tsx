@@ -34,13 +34,13 @@ import { useState } from "react";
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  filterColumn: string;
+  filterColumn?: string;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
-  filterColumn: name,
+  filterColumn,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -67,14 +67,19 @@ export function DataTable<TData, TValue>({
     <div>
       <div className="flex items-center py-4 overflow-x-auto">
         {/* Filtering Part */}
-        <Input
-          placeholder={`Filter by ${name}...`}
-          value={(table.getColumn(name)?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn(name)?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm ml-1"
-        />
+        {filterColumn && (
+          <Input
+            placeholder={`Filter by ${filterColumn}...`}
+            value={
+              (table.getColumn(filterColumn)?.getFilterValue() as string) ?? ""
+            }
+            onChange={(event) =>
+              table.getColumn(filterColumn)?.setFilterValue(event.target.value)
+            }
+            className="max-w-sm ml-1"
+          />
+        )}
+
         {/* Visibility Cell */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

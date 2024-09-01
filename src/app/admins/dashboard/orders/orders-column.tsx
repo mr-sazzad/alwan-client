@@ -5,14 +5,12 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { DropdownMenu } from "@radix-ui/react-dropdown-menu";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
 
 export type Order = {
   id: string;
@@ -23,8 +21,6 @@ export type Order = {
 };
 
 const OrderTableColumns = () => {
-  const [open, setOpen] = useState(false);
-
   const path = "/admins/dashboard/orders";
 
   const columns: ColumnDef<Order>[] = [

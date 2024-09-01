@@ -145,6 +145,7 @@ export interface IUserCartProduct {
   status: "in_stock" | "stock_out";
   sizeVariants: IReadSizeVariant[];
   orderColor: string;
+  reviews: any[]; //! i will fix this later
   orderSize: string;
   orderQty: number;
   orderHexCode: string;
@@ -303,4 +304,17 @@ export interface IUnion {
   name: string;
   bn_name: string;
   url: string;
+}
+
+export interface FormValues {
+  username: string;
+  email: string;
+  phone: string;
+  altPhone: string;
+  division: string;
+  district: string;
+  upazila: string;
+  union: string;
+  streetAddress: string;
+  orderNote?: string;
 }

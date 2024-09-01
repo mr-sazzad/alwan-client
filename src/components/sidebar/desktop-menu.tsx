@@ -29,7 +29,7 @@ const DesktopMenu: React.FC = () => {
     );
   }
 
-  const categories = transformCategories(response.data);
+  const categories = transformCategories(response?.data);
 
   return (
     <NavigationMenu>

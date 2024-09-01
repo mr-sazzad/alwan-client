@@ -6,22 +6,22 @@ import {
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Separator } from "@/components/ui/separator";
-import { ITShirt } from "@/types";
+import { IProduct } from "@/types";
 
 import { PiSpinnerLight } from "react-icons/pi";
 
 interface OrderPageProductCardProps {
-  product: ITShirt;
+  product: IProduct;
   size: string;
   quantity: number;
   isLoading: boolean;
   handleOrderStatusChange: (orderStatus: string) => void;
   orderStatus:
-    | "processing"
-    | "onTheWay"
-    | "delivered"
-    | "requestToReturn"
-    | "returned";
+    | "PROCESSING"
+    | "ONTHEWAY"
+    | "DELIVERED"
+    | "REQUESTTORETURN"
+    | "RETURNED";
 }
 
 const OrderPageProductCard = ({
@@ -42,7 +42,9 @@ const OrderPageProductCard = ({
     <div className="flex md:flex-row flex-col md:gap-7">
       <div className="flex justify-center mb-5 md:mb-0">
         <div className="md:h-[190px] md:w-[190px] h-full w-[200px]">
-          {product.images?.length > 0 && <ImageSlider urls={product.images} />}
+          {product?.imageUrls?.length > 0 && (
+            <ImageSlider urls={product.imageUrls} />
+          )}
         </div>
       </div>
       <div>
@@ -66,11 +68,7 @@ const OrderPageProductCard = ({
             </div>
             <div className="flex gap-1">
               <p className="text-gray-700 font-semibold">Price:</p>
-              <p className="text-gray-700">
-                {product.prices?.length > 0
-                  ? product.prices[1] * quantity
-                  : product.prices[0] * quantity}
-              </p>
+              <p className="text-gray-700">No Price now</p>
             </div>
           </div>
         </div>
