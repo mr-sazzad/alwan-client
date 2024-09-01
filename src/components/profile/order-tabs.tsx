@@ -8,6 +8,8 @@ import {
   CardTitle,
 } from "../ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
+import ProfileOnDeliveredOrderItem from "./profile-delivered-order-item";
+import ProfileOnTheWayOrderItem from "./profile-on-the-way-order-item";
 import ProfileProcessingOrderItem from "./profile-processing-order-item";
 
 interface IProfileOrderTabsProps {
@@ -48,7 +50,7 @@ const ProfileOrderTabs: React.FC<IProfileOrderTabsProps> = ({ orders }) => {
         </Card>
       </TabsContent>
       {/* on the way */}
-      {/* <TabsContent value="onTheWay">
+      <TabsContent value="onTheWay">
         <Card>
           <CardHeader>
             <CardTitle>On The Way</CardTitle>
@@ -59,7 +61,7 @@ const ProfileOrderTabs: React.FC<IProfileOrderTabsProps> = ({ orders }) => {
           </CardHeader>
           <CardContent className="space-y-2 max-h-[300px] overflow-y-auto hide-scrollbar">
             <div className="flex flex-col border rounded-md pt-2 px-2">
-              {orders.map((order: IOrderResponse) => (
+              {orders?.data.map((order: IOrderResponseData) => (
                 <ProfileOnTheWayOrderItem key={order.id} items={order.items} />
               ))}
             </div>
@@ -70,10 +72,10 @@ const ProfileOrderTabs: React.FC<IProfileOrderTabsProps> = ({ orders }) => {
             </p>
           </CardFooter>
         </Card>
-      </TabsContent> */}
+      </TabsContent>
 
       {/* delivered */}
-      {/* <TabsContent value="delivered">
+      <TabsContent value="delivered">
         <Card>
           <CardHeader>
             <CardTitle>Delivered</CardTitle>
@@ -85,7 +87,7 @@ const ProfileOrderTabs: React.FC<IProfileOrderTabsProps> = ({ orders }) => {
           </CardHeader>
           <CardContent className="space-y-2 max-h-[300px] overflow-y-auto hide-scrollbar">
             <div className="flex flex-col border rounded-md pt-2 px-2">
-              {orders.map((order: IOrderResponse) => (
+              {orders?.data.map((order: IOrderResponseData) => (
                 <ProfileOnDeliveredOrderItem
                   key={order.id}
                   items={order.items}
@@ -99,7 +101,7 @@ const ProfileOrderTabs: React.FC<IProfileOrderTabsProps> = ({ orders }) => {
             </p>
           </CardFooter>
         </Card>
-      </TabsContent> */}
+      </TabsContent>
     </Tabs>
   );
 };
