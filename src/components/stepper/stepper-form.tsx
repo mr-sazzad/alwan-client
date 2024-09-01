@@ -170,7 +170,7 @@ const StepperForm: React.FC<StepperFormProps> = ({
             </Button>
           )}
           {step < totalSteps ? (
-            <Button onClick={nextStep} className="ml-auto">
+            <Button onClick={nextStep} className="ml-auto rounded-full">
               Next
             </Button>
           ) : (
