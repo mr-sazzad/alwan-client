@@ -16,7 +16,7 @@ const TextSection = () => {
         Wear it with pride, letting your story unfold in every thread.
       </p>
 
-      <Button className="rounded-full px-5 py-0 mt-3" variant="black" size="sm">
+      <Button className="rounded-full px-5 py-0 mt-3" size="sm">
         Explore
       </Button>
     </div>
