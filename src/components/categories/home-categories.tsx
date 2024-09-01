@@ -33,7 +33,7 @@ const HomeCategories = () => {
                 {category.desc}
               </p>
               <p className="text-lg font-bold text-white">{category.name}</p>
-              <Button variant="black" size="sm" className="rounded-full px-5">
+              <Button size="sm" className="rounded-full px-5">
                 Shop
               </Button>
             </div>
