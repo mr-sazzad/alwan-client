@@ -4,7 +4,11 @@
 
 @layer base {
   :root {
-    --font-sans: var(--font-helvetica), system-ui, sans-serif;
+    /* To use Poppins */
+    font-family: var(--font-poppins);
+
+    /* To use Helvetica Now Text */
+    /* font-family: var(--font-helvetica); */
   }
 }
 

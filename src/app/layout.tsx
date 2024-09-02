@@ -14,12 +14,13 @@ export const metadata: Metadata = {
   description: "The ideal lifestyle",
 };
 
-const font = Poppins({
+const poppins = Poppins({
   weight: ["400", "500", "700", "800"],
   subsets: ["latin"],
+  variable: "--font-poppins",
 });
 
-const myFont = localFont({
+const helvetica = localFont({
   src: "../../public/fonts/HelveticaNowText-Medium.woff2",
   variable: "--font-helvetica",
 });
@@ -31,7 +32,7 @@ export default function RootLayout({
 }>) {
   return (
     <Providers>
-      <html lang="en" className={font.className}>
+      <html lang="en" className={`${poppins.variable} ${helvetica.variable}`}>
         <body>
           <ThemeProvider
             attribute="class"
