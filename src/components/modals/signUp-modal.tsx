@@ -30,11 +30,13 @@ import { Separator } from "../ui/separator";
 interface SignUpModalProps {
   signUpOpen: boolean;
   setSignUpOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  handler: () => void;
 }
 
 const SignUpModal: React.FC<SignUpModalProps> = ({
   signUpOpen,
   setSignUpOpen,
+  handler,
 }) => {
   const [signUpUser, { isLoading: signUpLoading }] = useSignUpUserMutation();
   const [signInUser, { isLoading }] = useSignInUserMutation();
@@ -161,7 +163,11 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
             <Separator orientation="horizontal" className="flex-1" />
           </div>
           <div className="flex flex-col gap-5 w-full">
-            <Button className="w-full flex gap-2" variant="outline">
+            <Button
+              className="w-full flex gap-2"
+              variant="outline"
+              onClick={handler}
+            >
               <FcGoogle />
               <span className="text-slate-500">Sign In With Google</span>
             </Button>

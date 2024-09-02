@@ -35,9 +35,10 @@ import { toast } from "../ui/use-toast";
 interface LoginModalProps {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
+  handler: () => void;
 }
 
-const LoginModal: React.FC<LoginModalProps> = ({ open, setOpen }) => {
+const LoginModal: React.FC<LoginModalProps> = ({ open, setOpen, handler }) => {
   const [signInUser, { isLoading }] = useSignInUserMutation();
   // const { data: user, isLoading } = useLoginWithGoogleQuery();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -82,22 +83,6 @@ const LoginModal: React.FC<LoginModalProps> = ({ open, setOpen }) => {
         description: "Something went wrong Please try again",
       });
     }
-  };
-
-  const handleSignInWithGoogle = async () => {
-    //   try {
-    //     const response = await axios.get(
-    //       "http://localhost:4000/api/v1/auth/google",
-    //       { withCredentials: true }
-    //     );
-    //     console.log(response);
-    //     // Handle the redirection manually if necessary
-    //   } catch (error) {
-    //     console.error("Google Sign-In error:", error);
-    //   }
-
-    // RECOMMENDED WAY
-    window.location.href = "http://localhost:4000/api/v1/auth/google";
   };
 
   const accessToken = Cookies.get("accessToken") as string;
@@ -163,7 +148,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ open, setOpen }) => {
                 className="w-full flex gap-2"
                 variant="outline"
                 type="submit"
-                onClick={handleSignInWithGoogle}
+                onClick={handler}
               >
                 <FcGoogle />
                 <span className="text-slate-500">Sign In With Google</span>

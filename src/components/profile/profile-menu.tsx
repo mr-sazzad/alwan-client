@@ -32,6 +32,23 @@ const Profile = () => {
   const [signOutDialogOpen, setSignOutDialogOpen] = useState(false);
   const [SignUpOpen, setSignUpOpen] = useState(false);
 
+  const handleSignInWithGoogle = async () => {
+    //   try {
+    //     const response = await axios.get(
+    //       "http://localhost:4000/api/v1/auth/google",
+    //       { withCredentials: true }
+    //     );
+    //     console.log(response);
+    //     // Handle the redirection manually if necessary
+    //   } catch (error) {
+    //     console.error("Google Sign-In error:", error);
+    //   }
+
+    // RECOMMENDED WAY
+    window.location.href =
+      "https://alwan-api-server.vercel.app/api/v1/auth/google";
+  };
+
   const handleUserSignout = () => {
     removeFromLocalStorage("alwan-user-access-token");
 
@@ -121,8 +138,16 @@ const Profile = () => {
           </DropdownMenuContent>
         </DropdownMenu>
 
-        <LoginModal open={open} setOpen={setOpen} />
-        <SignUpModal signUpOpen={SignUpOpen} setSignUpOpen={setSignUpOpen} />
+        <LoginModal
+          open={open}
+          setOpen={setOpen}
+          handler={handleSignInWithGoogle}
+        />
+        <SignUpModal
+          signUpOpen={SignUpOpen}
+          setSignUpOpen={setSignUpOpen}
+          handler={handleSignInWithGoogle}
+        />
       </div>
       <AlertDialogComp
         open={signOutDialogOpen}
