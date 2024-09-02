@@ -15,8 +15,7 @@ const Order = () => {
   useEffect(() => {
     const currentUserData = getUserFromLocalStorage() as any;
     if (!currentUserData) {
-      // router.push("/");
-      console.log("hello");
+      router.push("/");
     } else {
       setUserData(currentUserData);
     }

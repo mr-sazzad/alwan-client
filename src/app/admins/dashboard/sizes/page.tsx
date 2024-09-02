@@ -17,8 +17,6 @@ const Size = () => {
     return <AdminDashboardLoading />;
   }
 
-  console.log("SIZES =>", sizes);
-
   return (
     <div>
       <AlwanBreadCrumb

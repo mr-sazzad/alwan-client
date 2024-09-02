@@ -17,6 +17,13 @@ export interface IResponse {
   meta?: IMeta;
 }
 
+export interface IReadCarousel {
+  id: string;
+  fileUrls: string[];
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface ILoginRes {
   accessToken: string;
   refreshToken: string;

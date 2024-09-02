@@ -32,8 +32,10 @@ const HomeCategories = () => {
               <p className="text-base font-medium text-white">
                 {category.desc}
               </p>
-              <p className="text-lg font-bold text-white">{category.name}</p>
-              <Button size="sm" className="rounded-full px-5">
+              <p className="text-2xl font-medium text-white mb-4">
+                {category.name}
+              </p>
+              <Button size="sm" variant="outline" className="rounded-full px-5">
                 Shop
               </Button>
             </div>

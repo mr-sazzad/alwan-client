@@ -144,7 +144,6 @@ export default function UpdateProductPage() {
       sizeVariants: data.sizeVariants,
       files: data.files,
     };
-    console.log(finalData);
     // Handle form submission (e.g., API call to update product)
   };
 

@@ -1,5 +1,4 @@
 import { offerItems } from "@/static/offer-items";
-import { carouselImages } from "@/static/slide-images";
 import Carousel from "../carousel";
 import HomeCategories from "../categories/home-categories";
 import MaxWidth from "../max-width";
@@ -11,7 +10,7 @@ import TextSection from "../text-section/text-section";
 const Home = () => {
   return (
     <div>
-      <Carousel images={carouselImages} />
+      <Carousel />
       <TextSection />
       <MaxWidth>
         <div className="mb-5">

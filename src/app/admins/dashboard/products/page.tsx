@@ -17,8 +17,6 @@ const Page = () => {
     return <AdminDashboardLoading />;
   }
 
-  console.log("🚀 =>", response.data);
-
   return (
     <div className="container mx-auto py-10">
       <div className="flex justify-end">

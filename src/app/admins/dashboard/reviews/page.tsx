@@ -16,8 +16,6 @@ const Reviews = () => {
 
   const [open, setOpen] = useState(false);
 
-  console.log("SELECTED PRODUCT =>", selectedProduct);
-
   if (isCategoriesLoading) {
     return (
       <div className="flex flex-col gap-3">

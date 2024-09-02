@@ -38,8 +38,6 @@ const ProfilePage = () => {
     return <ProfileSkeleton />;
   }
 
-  console.log("USER FROM MAIN PROFILE =>", user);
-
   return (
     <>
       <AlwanBreadCrumb

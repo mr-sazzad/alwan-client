@@ -66,7 +66,6 @@ const CagegoryProducts = () => {
     return <ProductsSkeleton />;
   }
 
-  console.log(productRes);
   const filteredProducts = filterProducts(productRes?.data.products);
 
   return (
