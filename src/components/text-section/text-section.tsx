@@ -23,28 +23,34 @@ const TextSection = () => {
   const homeText = response?.data[0];
 
   return (
-    <div className="flex flex-col w-full justify-center items-center mt-10">
-      <h1 className="text-4xl font-bold uppercase mb-1">{homeText.title}</h1>
-      {homeText.text.map((txt: string, i: number) => (
-        <p key={i} className="text-center">
-          {txt}
-        </p>
-      ))}
+    <div>
+      {homeText && (
+        <div className="flex flex-col w-full justify-center items-center mt-10">
+          <h1 className="text-4xl font-bold uppercase mb-1">
+            {homeText.title}
+          </h1>
+          {homeText.text.map((txt: string, i: number) => (
+            <p key={i} className="text-center">
+              {txt}
+            </p>
+          ))}
 
-      <Button
-        className="rounded-full text-[17px] font-medium capitalize group transition-all duration-300 mt-3"
-        asChild
-      >
-        {homeText.href && (
-          <Link href={homeText.href}>
-            {homeText.buttonText}
-            <LuArrowUpRight
-              size={20}
-              className="ml-2 group-hover:rotate-45 group-hover:ml-5 group-hover:bg-white group-hover:text-black transition-all duration-300 ease-in-out p-1 rounded-full"
-            />
-          </Link>
-        )}
-      </Button>
+          <Button
+            className="rounded-full text-[17px] font-medium capitalize group transition-all duration-300 mt-3"
+            asChild
+          >
+            {homeText.href && (
+              <Link href={homeText.href}>
+                {homeText.buttonText}
+                <LuArrowUpRight
+                  size={20}
+                  className="ml-2 group-hover:rotate-45 group-hover:ml-5 group-hover:bg-white group-hover:text-black transition-all duration-300 ease-in-out p-1 rounded-full"
+                />
+              </Link>
+            )}
+          </Button>
+        </div>
+      )}
     </div>
   );
 };

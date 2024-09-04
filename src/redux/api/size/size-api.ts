@@ -3,13 +3,13 @@ import { tagTypes } from "../tag-types";
 
 const sizesApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
-    registerASize: build.mutation({
+    registerSize: build.mutation({
       query: (data) => ({
         url: "/sizes/create-size",
         method: "POST",
         data,
       }),
-      invalidatesTags: [tagTypes.product],
+      invalidatesTags: [tagTypes.size],
     }),
 
     getAllSizes: build.query({
@@ -28,7 +28,7 @@ const sizesApi = baseApi.injectEndpoints({
       providesTags: [tagTypes.size],
     }),
 
-    updateSingleSize: build.mutation({
+    updateSize: build.mutation({
       query: ({ id, ...data }) => ({
         url: `/sizes/${id}`,
         method: "PATCH",
@@ -37,7 +37,7 @@ const sizesApi = baseApi.injectEndpoints({
       invalidatesTags: [tagTypes.size],
     }),
 
-    deleteSingleSize: build.mutation({
+    deleteSize: build.mutation({
       query: (sizeId) => ({
         url: `/sizes/${sizeId}`,
         method: "DELETE",
@@ -48,9 +48,9 @@ const sizesApi = baseApi.injectEndpoints({
 });
 
 export const {
-  useRegisterASizeMutation,
+  useRegisterSizeMutation,
   useGetAllSizesQuery,
   useGetSingleSizeQuery,
-  useUpdateSingleSizeMutation,
-  useDeleteSingleSizeMutation,
+  useUpdateSizeMutation,
+  useDeleteSizeMutation,
 } = sizesApi;

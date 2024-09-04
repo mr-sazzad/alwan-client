@@ -15,7 +15,6 @@ const ProductReview: React.FC<ProductReviewProps> = ({ products }) => {
           product={product}
           quantity={String(product.orderQty)}
           size={product.orderSize}
-          onProductDelete={() => {}}
         />
       ))}
     </div>

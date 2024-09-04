@@ -1,7 +1,9 @@
 "use client";
 
+import ProductForm from "@/components/admins/dashboard/products/product-form";
 import AlertDialogComp from "@/components/alert-dialog/alert-dialog";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,10 +13,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useDeleteSingleProductMutation } from "@/redux/api/products/productsApi";
-import { IReadCategory, IReadSize, IReadSizeVariant } from "@/types";
+import { IProduct, IReadCategory, IReadSize, IReadSizeVariant } from "@/types";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
-import Link from "next/link";
 import { useState } from "react";
 
 export type Product = {
@@ -28,6 +29,8 @@ export type Product = {
 
 const ProductTableColumns = () => {
   const [open, setOpen] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [product, setProduct] = useState<IProduct>();
   const [deleteSingleProduct, { isLoading }] = useDeleteSingleProductMutation();
   const path = "/admins/dashboard/products";
 
@@ -35,7 +38,7 @@ const ProductTableColumns = () => {
     const result = await deleteSingleProduct(id);
   };
 
-  const columns: ColumnDef<Product>[] = [
+  const columns: ColumnDef<IProduct>[] = [
     {
       accessorKey: "name",
       header: ({ column }) => (
@@ -51,7 +54,7 @@ const ProductTableColumns = () => {
     {
       accessorKey: "category",
       header: "Category",
-      cell: ({ row }) => <span>{row.original.category?.name || "N/A"}</span>,
+      cell: ({ row }) => <span>{row.original.category.name || "N/A"}</span>,
     },
     {
       accessorKey: "price",
@@ -64,9 +67,9 @@ const ProductTableColumns = () => {
       cell: ({ row }) => <span>{row.original.sizeVariants[0]?.size.name}</span>,
     },
     {
-      accessorKey: "status",
-      header: "Status",
-      cell: ({ row }) => <span>{row.original.status}</span>,
+      accessorKey: "stockStatus",
+      header: "Stock Status",
+      cell: ({ row }) => <span>{row.original.stockStatus}</span>,
     },
     {
       id: "actions",
@@ -85,10 +88,12 @@ const ProductTableColumns = () => {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                <DropdownMenuItem>
-                  <Link href={`${path}/product-update/${id}`} passHref>
-                    Update this product
-                  </Link>
+                <DropdownMenuItem
+                  onClick={() => {
+                    setDialogOpen(true), setProduct(row.original);
+                  }}
+                >
+                  Update this product
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onSelect={() => setOpen(true)}>
@@ -107,6 +112,18 @@ const ProductTableColumns = () => {
               handler={() => deleteProductHandler(id)}
               buttonText="Continue"
             />
+
+            <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+              <DialogContent className="max-w-5xl">
+                <div className="h-[85vh] overflow-y-auto hide-scrollbar mt-5 px-1">
+                  <ProductForm
+                    mode="update"
+                    setOpen={setDialogOpen}
+                    product={product}
+                  />
+                </div>
+              </DialogContent>
+            </Dialog>
           </div>
         );
       },

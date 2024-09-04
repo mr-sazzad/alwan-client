@@ -22,63 +22,63 @@ const CategoryDetailsDrawer: React.FC<CategoryDetailsDrawerProps> = ({
 }) => {
   return (
     <Drawer open={open} onOpenChange={setOpen}>
-      <DrawerContent>
-        <div className="mx-auto max-w-sm w-full">
+      <DrawerContent className="w-full max-w-full">
+        <div className="w-full max-w-md mx-auto">
           {isLoading ? (
             <AdminDashboardLoading />
           ) : (
-            <div className="flex flex-row gap-5 justify-evenly items-center mx-5">
-              <div>
-                <div>
-                  <h2 className="text-2xl font-medium">{category.name}</h2>
+            <div className="flex flex-row gap-5 justify-between w-full">
+              <div className="flex-1 w-full mt-4">
+                <h2 className="text-2xl font-medium mb-4">{category?.name}</h2>
 
-                  <div className="flex flex-col gap-1 mt-2 max-w-[500px] py-2 w-full">
-                    <p className="text-sm text-muted-foreground font-medium">
-                      Parent Id
-                    </p>
-                    <p className="font-medium">
-                      {category.parentId
-                        ? category.parentId
-                        : "Parent id not available"}
-                    </p>
-                  </div>
-                </div>
-                <div className="flex flex-col gap-1 py-2 mt-2 max-w-[500px]">
-                  <p className="text-sm text-muted-foreground font-medium">
-                    Client URL
-                  </p>
-                  <p className="font-medium">{category.clientUrl}</p>
-                </div>
+                <div className="space-y-4">
+                  <InfoItem
+                    label="Parent Id"
+                    value={category?.parentId || "not available"}
+                  />
+                  <InfoItem
+                    label="Is Navigational?"
+                    value={category?.isNavigational ? "Yes" : "No"}
+                  />
+                  <InfoItem
+                    label="Is Leaf?"
+                    value={category?.isLeaf ? "Yes" : "No"}
+                  />
+                  <InfoItem
+                    label="Is On Home?"
+                    value={category?.isOnHomePage ? "Yes" : "No"}
+                  />
 
-                <div className="flex flex-col gap-1 mt-2max-w-[500px]">
-                  {category.firstTitle && (
+                  {category?.firstTitle && (
                     <div>
                       <p className="text-sm text-muted-foreground font-medium">
                         Titles
                       </p>
-                      {category.firstTitle && <p>{category.firstTitle}</p>}
-                      {category.secondTitle && <p>{category.secondTitle}</p>}
+                      <p>{category?.firstTitle}</p>
+                      {category?.secondTitle && <p>{category.secondTitle}</p>}
                     </div>
                   )}
                 </div>
               </div>
-              {category.imageUrl && (
-                <div className="flex justify-center items-center h-[300px] w-[300px] relative">
-                  <Image
-                    src={category.imageUrl}
-                    alt="category-image"
-                    fill
-                    className="mt-2 rounded-xl overflow-hidden object-cover p-1"
-                  />
-                </div>
-              )}
+              <div className="flex-1 flex justify-center items-center">
+                {category?.imageUrl && (
+                  <div className="relative h-[200px] w-[200px] sm:h-[250px] sm:w-[250px] md:h-[300px] md:w-[300px]">
+                    <Image
+                      src={category.imageUrl}
+                      alt="category-image"
+                      fill
+                      className="rounded-xl object-cover"
+                    />
+                  </div>
+                )}
+              </div>
             </div>
           )}
 
           <DrawerFooter>
-            <DrawerClose>
-              <Button className="w-full mt-2" variant="outline">
-                Cancel
+            <DrawerClose asChild>
+              <Button className="w-full mt-4" variant="outline">
+                Close
               </Button>
             </DrawerClose>
           </DrawerFooter>
@@ -87,5 +87,12 @@ const CategoryDetailsDrawer: React.FC<CategoryDetailsDrawerProps> = ({
     </Drawer>
   );
 };
+
+const InfoItem = ({ label, value }: { label: string; value: string }) => (
+  <div>
+    <p className="text-sm text-muted-foreground font-medium">{label}</p>
+    <p className="font-medium">{value}</p>
+  </div>
+);
 
 export default CategoryDetailsDrawer;

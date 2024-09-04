@@ -1,17 +1,16 @@
 "use client";
 
 import PageTitle from "@/components/admins/dashboard/page-titles/page-title";
-import CreateProductType from "@/components/admins/dashboard/product-types/create-product-type";
+import ProductTypeDrawer from "@/components/admins/dashboard/product-types/product-type-drawer";
 import AlwanBreadCrumb from "@/components/breadcrumbs/breadcrumb";
 import AdminDashboardLoading from "@/components/lodings/admin-dashboard-loding";
 import { Button } from "@/components/ui/button";
-import { useGetAllProductTypesQuery } from "@/redux/api/product-types/product-types-api";
+import { useGetProductTypesQuery } from "@/redux/api/product-types/product-types-api";
 import { useState } from "react";
 import ProductTypeColumns from "./product-type-columns";
 
 const ProductType = () => {
-  const { data: productTypes, isLoading } =
-    useGetAllProductTypesQuery(undefined);
+  const { data: productTypes, isLoading } = useGetProductTypesQuery(undefined);
 
   const [open, setOpen] = useState(false);
 
@@ -37,7 +36,7 @@ const ProductType = () => {
       </div>
 
       <ProductTypeColumns productTypes={productTypes.data} />
-      <CreateProductType open={open} setOpen={setOpen} />
+      <ProductTypeDrawer open={open} setOpen={setOpen} />
     </div>
   );
 };

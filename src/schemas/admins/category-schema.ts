@@ -11,8 +11,9 @@ export const categorySchema = z.object({
       )
   ),
   parentId: z.string().optional(),
-  clientUrl: z.string().min(3, { message: "Client URL field is required" }),
   firstTitle: z.string().optional(),
+  isLeaf: z.string(),
+  isNavigational: z.string(),
   secondTitle: z.string().optional(),
   isOnHomePage: z.string().optional(),
 });

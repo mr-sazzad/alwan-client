@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -17,7 +16,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { Textarea } from "../ui/textarea";
 
 import districtData from "../../../public/address/district.json";
 import divisionData from "../../../public/address/division.json";
@@ -32,6 +30,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel } from "../ui/form";
 import { toast } from "../ui/use-toast";
 
 import { PiSpinner } from "react-icons/pi";
+import { Input } from "../ui/input";
 import { getNameById } from "../utils/get-name-by-id";
 
 interface IAddressModalProps {
@@ -64,6 +63,8 @@ const AddressModal: React.FC<IAddressModalProps> = ({
   const form = useForm<z.infer<typeof profileAddressSchema>>({
     resolver: zodResolver(profileAddressSchema),
     defaultValues: {
+      recipientName: "",
+      phone: "",
       division: "",
       district: "",
       upazila: "",
@@ -75,6 +76,8 @@ const AddressModal: React.FC<IAddressModalProps> = ({
   useEffect(() => {
     if (selectedAddress) {
       form.reset({
+        recipientName: selectedAddress.recipientName,
+        phone: selectedAddress.phone,
         division: selectedAddress.divisionId,
         district: selectedAddress.districtId,
         upazila: selectedAddress.upazilaId,
@@ -103,12 +106,16 @@ const AddressModal: React.FC<IAddressModalProps> = ({
   }, [selectedAddress, form]);
 
   const onSubmit = (values: z.infer<typeof profileAddressSchema>) => {
+    const recipientName = values.recipientName || "";
+    const phone = values.phone || "";
     const divisionName = getNameById(values.division, divisionData) || "";
     const districtName = getNameById(values.district, districtData) || "";
     const upazilaName = getNameById(values.upazila, upazilaData) || "";
     const unionName = getNameById(values.union, unionData) || "";
 
     const finalValues = {
+      recipientName,
+      phone,
       division: divisionName,
       divisionId: values.division,
       district: districtName,
@@ -119,8 +126,12 @@ const AddressModal: React.FC<IAddressModalProps> = ({
       streetAddress: values.streetAddress || "",
     };
 
+    console.log("SELECTED ADDRESS =>", selectedAddress);
+
     if (
       selectedAddress &&
+      finalValues.recipientName === selectedAddress.recipientName &&
+      finalValues.phone === selectedAddress.phone &&
       finalValues.division === selectedAddress.division &&
       finalValues.district === selectedAddress.district &&
       finalValues.upazila === selectedAddress.upazila &&
@@ -143,18 +154,45 @@ const AddressModal: React.FC<IAddressModalProps> = ({
 
   return (
     <Dialog open={addressModalOpen} onOpenChange={setAddressModalOpen}>
-      <DialogContent>
+      <DialogContent className="rounded">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
-          <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <div className="flex gap-2 w-full">
+              <FormField
+                control={form.control}
+                name="recipientName"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel>Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Recipient's name" {...field} />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="phone"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel>Phone</FormLabel>
+                    <FormControl>
+                      <Input placeholder="01923******" {...field} />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+            </div>
+
             <FormField
               control={form.control}
               name="division"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="w-full">
                   <FormLabel>Division</FormLabel>
                   <Select
                     onValueChange={(value) => {
@@ -186,12 +224,11 @@ const AddressModal: React.FC<IAddressModalProps> = ({
                 </FormItem>
               )}
             />
-
             <FormField
               control={form.control}
               name="district"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="w-full">
                   <FormLabel>District</FormLabel>
                   <Select
                     onValueChange={(value) => {
@@ -223,65 +260,67 @@ const AddressModal: React.FC<IAddressModalProps> = ({
               )}
             />
 
-            <FormField
-              control={form.control}
-              name="upazila"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Upazila</FormLabel>
-                  <Select
-                    onValueChange={(value) => {
-                      field.onChange(value);
-                      const unions = unionData.filter(
-                        (union) => union.upazilla_id === value
-                      );
-                      setFilteredUnions(unions);
-                      form.setValue("union", "");
-                    }}
-                    value={field.value}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select upazila" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        <SelectLabel>Upazila</SelectLabel>
-                        {filteredUpazilas.map((upazila: IUpazila) => (
-                          <SelectItem value={upazila.id} key={upazila.id}>
-                            {upazila.name}
-                          </SelectItem>
-                        ))}
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                </FormItem>
-              )}
-            />
+            <div className="flex w-full gap-2">
+              <FormField
+                control={form.control}
+                name="upazila"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel>Upazila</FormLabel>
+                    <Select
+                      onValueChange={(value) => {
+                        field.onChange(value);
+                        const unions = unionData.filter(
+                          (union) => union.upazilla_id === value
+                        );
+                        setFilteredUnions(unions);
+                        form.setValue("union", "");
+                      }}
+                      value={field.value}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select upazila" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectLabel>Upazila</SelectLabel>
+                          {filteredUpazilas.map((upazila: IUpazila) => (
+                            <SelectItem value={upazila.id} key={upazila.id}>
+                              {upazila.name}
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </FormItem>
+                )}
+              />
 
-            <FormField
-              control={form.control}
-              name="union"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Union</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select union" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        <SelectLabel>Union</SelectLabel>
-                        {filteredUnions.map((union: IUnion) => (
-                          <SelectItem value={union.id} key={union.id}>
-                            {union.name}
-                          </SelectItem>
-                        ))}
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                </FormItem>
-              )}
-            />
+              <FormField
+                control={form.control}
+                name="union"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel>Union</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select union" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectLabel>Union</SelectLabel>
+                          {filteredUnions.map((union: IUnion) => (
+                            <SelectItem value={union.id} key={union.id}>
+                              {union.name}
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </FormItem>
+                )}
+              />
+            </div>
 
             <FormField
               control={form.control}
@@ -290,7 +329,7 @@ const AddressModal: React.FC<IAddressModalProps> = ({
                 <FormItem>
                   <FormLabel>Exact Address</FormLabel>
                   <FormControl>
-                    <Textarea
+                    <Input
                       placeholder="e.g., House # 123, Road # 456, ABC Area"
                       {...field}
                     />
@@ -300,16 +339,13 @@ const AddressModal: React.FC<IAddressModalProps> = ({
             />
 
             <div className="mt-8 flex items-center justify-end gap-2">
-              <Button type="submit" disabled={isLoading} className="gap-2">
+              <Button
+                type="submit"
+                disabled={isLoading}
+                className="gap-2 w-full"
+              >
                 {isLoading && <PiSpinner className="animate-spin" />}
                 {selectedAddress ? "Update" : "Save"}
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => setAddressModalOpen(false)}
-              >
-                Cancel
               </Button>
             </div>
           </form>

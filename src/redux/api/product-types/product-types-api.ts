@@ -3,7 +3,7 @@ import { tagTypes } from "../tag-types";
 
 const productTypeApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
-    createAProductType: build.mutation({
+    createProductType: build.mutation({
       query: (data) => ({
         url: "/product-types/create",
         method: "POST",
@@ -11,14 +11,14 @@ const productTypeApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: [tagTypes.productType],
     }),
-    getAllProductTypes: build.query({
+    getProductTypes: build.query({
       query: () => ({
         url: "/product-types",
         method: "GET",
       }),
       providesTags: [tagTypes.productType],
     }),
-    getAProductType: build.query({
+    getProductType: build.query({
       query: (productTypeId) => ({
         url: `/product-types/${productTypeId}`,
         method: "GET",
@@ -37,8 +37,8 @@ const productTypeApi = baseApi.injectEndpoints({
 });
 
 export const {
-  useCreateAProductTypeMutation,
-  useGetAllProductTypesQuery,
+  useCreateProductTypeMutation,
+  useGetProductTypesQuery,
   useUpdateProductTypeByIdMutation,
-  useGetAProductTypeQuery,
+  useGetProductTypeQuery,
 } = productTypeApi;

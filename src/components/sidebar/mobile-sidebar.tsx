@@ -1,16 +1,15 @@
 "use client";
 
-import { useGetAllCategoriesQuery } from "@/redux/api/categoies/categoriesApi";
+import { useGetCategoriesQuery } from "@/redux/api/categoies/categoriesApi";
 import { Category } from "@/types";
 import { useState } from "react";
 import { HiOutlineMenuAlt1 } from "react-icons/hi";
 import { Button } from "../ui/button";
 import { Skeleton } from "../ui/skeleton";
-import Sidebar from "./sidebar";
 
 export default function SheetComponent() {
   const [open, setOpen] = useState(false);
-  const { data: response, isLoading } = useGetAllCategoriesQuery(undefined);
+  const { data: response, isLoading } = useGetCategoriesQuery(undefined);
   const [categoryStack, setCategoryStack] = useState<Category[]>([]);
 
   if (isLoading) {
@@ -40,7 +39,8 @@ export default function SheetComponent() {
     return nestedCategories;
   };
 
-  const convertedCategories = convertCategories(response.data);
+  const convertedCategories =
+    response?.data && convertCategories(response?.data);
 
   const handleCategorySelect = (category: Category) => {
     setCategoryStack((prev) => [...prev, category]);
@@ -56,14 +56,14 @@ export default function SheetComponent() {
         <HiOutlineMenuAlt1 size={20} />
       </Button>
 
-      <Sidebar
+      {/* <Sidebar
         open={open}
         setOpen={setOpen}
         categories={convertedCategories}
         onBack={handleBack}
         onCategorySelect={handleCategorySelect}
         categoryStack={categoryStack}
-      />
+      /> */}
     </>
   );
 }

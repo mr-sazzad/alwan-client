@@ -2,21 +2,17 @@
 
 import { IProduct } from "@/types";
 import { useState } from "react";
-import { FiTrash2 } from "react-icons/fi";
-import { PiSpinnerBold } from "react-icons/pi";
-import { Button } from "../ui/button";
 import ImageSlider from "./image-slider";
 
 interface CheckoutPageSingleProductCardProps {
   product: IProduct;
   quantity: string;
   size: string;
-  onProductDelete: (id: string, size: string) => void;
 }
 
 const CheckoutPageSingleProductCard: React.FC<
   CheckoutPageSingleProductCardProps
-> = ({ product, quantity, size, onProductDelete }) => {
+> = ({ product, quantity, size }) => {
   const [loading, setLoading] = useState(false);
 
   // console.log("PRODUCT FROM CHECKOUT SINGLE PRODUCT CARD PAGE =>", product);
@@ -26,7 +22,6 @@ const CheckoutPageSingleProductCard: React.FC<
   const handleProductDelete = () => {
     setLoading(true);
     setTimeout(() => {
-      onProductDelete(product.id, size);
       setLoading(false);
     }, 300);
   };
@@ -34,8 +29,6 @@ const CheckoutPageSingleProductCard: React.FC<
   const selectedSizeVariant = product?.sizeVariants?.find(
     (variant) => variant.size.name.toUpperCase() === size.toUpperCase()
   );
-
-  // console.log("SELECTED SIZE VARIANT =>", selectedSizeVariant);
 
   return (
     <div className="flex flex-col gap-2 w-full items-start justify-between h-full">
@@ -80,18 +73,6 @@ const CheckoutPageSingleProductCard: React.FC<
               </div>
             </div>
           </div>
-          <Button
-            variant="destructive"
-            size="sm"
-            className="rounded-full flex justify-center items-center py-0 px-[10px]"
-            onClick={handleProductDelete}
-          >
-            {loading ? (
-              <PiSpinnerBold size={16} className="animate-spin" />
-            ) : (
-              <FiTrash2 size={16} />
-            )}
-          </Button>
         </div>
       </div>
     </div>

@@ -1,11 +1,16 @@
 "use client";
 
-import { useCreateCategoryMutation } from "@/redux/api/categoies/categoriesApi";
+import {
+  useCreateCategoryMutation,
+  useGetCategoryQuery,
+  useUpdateCategoryMutation,
+} from "@/redux/api/categoies/categoriesApi";
 import { categorySchema } from "@/schemas/admins/category-schema";
 import { ICreateCategory } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Dispatch, SetStateAction, useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { PiSpinnerGapBold } from "react-icons/pi";
 import { VscCloudUpload } from "react-icons/vsc";
 import { z } from "zod";
 import { Button } from "../ui/button";
@@ -13,6 +18,7 @@ import { Drawer, DrawerClose, DrawerContent, DrawerFooter } from "../ui/drawer";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -30,21 +36,30 @@ import {
 } from "../ui/select";
 import { toast } from "../ui/use-toast";
 
-import { PiSpinnerGapBold } from "react-icons/pi";
-
-interface CreateCagegoryDrawerProps {
+interface CategoryDrawerProps {
   open: boolean;
-  setOpen: Dispatch<SetStateAction<boolean>>;
-  categories: any;
+  setOpen: (open: boolean) => void;
+  categoryId?: string;
+  categories: any[];
+  mode: "create" | "update";
 }
 
-const CreateCagegoryDrawer: React.FC<CreateCagegoryDrawerProps> = ({
+const CategoryDrawer: React.FC<CategoryDrawerProps> = ({
   open,
   setOpen,
+  categoryId,
   categories,
+  mode,
 }) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [createCategory, { isLoading }] = useCreateCategoryMutation();
+  const [createCategory, { isLoading: isCreating }] =
+    useCreateCategoryMutation();
+  const [updateCategory, { isLoading: isUpdating }] =
+    useUpdateCategoryMutation();
+  const { data: response, isLoading: isFetching } = useGetCategoryQuery(
+    categoryId,
+    { skip: !categoryId }
+  );
 
   const form = useForm<z.infer<typeof categorySchema>>({
     resolver: zodResolver(categorySchema),
@@ -52,12 +67,39 @@ const CreateCagegoryDrawer: React.FC<CreateCagegoryDrawerProps> = ({
       name: "",
       file: null,
       parentId: "",
-      clientUrl: "",
       firstTitle: "",
       secondTitle: "",
       isOnHomePage: "",
+      isLeaf: "",
+      isNavigational: "",
     },
   });
+
+  useEffect(() => {
+    console.log("Category data:", response?.data);
+    if (mode === "create") {
+      form.reset({
+        name: "",
+        file: null,
+        parentId: "",
+        firstTitle: "",
+        secondTitle: "",
+        isOnHomePage: "",
+        isLeaf: "",
+        isNavigational: "",
+      });
+    } else if (mode === "update" && response?.data) {
+      form.reset({
+        name: response.data.name || "",
+        parentId: response.data.parentId || "",
+        firstTitle: response.data.firstTitle || "",
+        secondTitle: response.data.secondTitle || "",
+        isOnHomePage: response.data.isOnHomePage ? "true" : "false",
+        isLeaf: response.data.isLeaf ? "true" : "false",
+        isNavigational: response.data.isNavigational ? "true" : "false",
+      });
+    }
+  }, [mode, response?.data, form]);
 
   const onSubmit = async (values: z.infer<typeof categorySchema>) => {
     try {
@@ -65,15 +107,17 @@ const CreateCagegoryDrawer: React.FC<CreateCagegoryDrawerProps> = ({
         name,
         file,
         parentId,
-        clientUrl,
         firstTitle,
         secondTitle,
         isOnHomePage,
+        isNavigational,
+        isLeaf,
       } = values;
-      const booleanIsOnHomePage = isOnHomePage === "true";
 
       const newValues: Partial<ICreateCategory> = {
-        isOnHomePage: booleanIsOnHomePage,
+        isOnHomePage: isOnHomePage === "true",
+        isNavigational: isNavigational === "true",
+        isLeaf: isLeaf === "true",
       };
 
       if (name) newValues.name = name;
@@ -81,11 +125,18 @@ const CreateCagegoryDrawer: React.FC<CreateCagegoryDrawerProps> = ({
       if (firstTitle) newValues.firstTitle = firstTitle;
       if (secondTitle) newValues.secondTitle = secondTitle;
       if (parentId) newValues.parentId = parentId;
-      if (clientUrl) newValues.clientUrl = clientUrl;
 
-      const response: any = await createCategory(newValues);
+      let response;
+      if (mode === "create") {
+        response = await createCategory(newValues as ICreateCategory);
+      } else {
+        response = await updateCategory({
+          id: categoryId,
+          ...newValues,
+        } as ICreateCategory);
+      }
 
-      if (!response.data.success) {
+      if ("error" in response) {
         toast({
           title: "Error Message",
           description: "Something went wrong, please try again",
@@ -94,11 +145,14 @@ const CreateCagegoryDrawer: React.FC<CreateCagegoryDrawerProps> = ({
       } else {
         toast({
           title: "Success",
-          description: "Category created successfully",
+          description: `Category ${
+            mode === "create" ? "created" : "updated"
+          } successfully`,
         });
 
         form.reset();
         setSelectedFile(null);
+        setOpen(false);
       }
     } catch (error: any) {
       toast({
@@ -109,14 +163,23 @@ const CreateCagegoryDrawer: React.FC<CreateCagegoryDrawerProps> = ({
     }
   };
 
+  const isLoading = isCreating || isUpdating || isFetching;
+
   return (
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerContent>
-        <div className="w-full max-w-md mx-auto">
+        <div className="mx-auto w-full max-w-md mt-2">
+          <div className="text-xs text-center mb-2 bg-red-50 border-2 border-red-200 mx-2 rounded px-2 py-3 text-muted-foreground">
+            The &apos;isNavigational&apos; and &apos;isLeaf&apos; options should
+            not be set to
+            <span className="font-medium text-black"> Yeah</span> or
+            <span className="font-medium text-black"> Nope</span>.
+          </div>
+
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmit)}
-              className="max-h-[50vh] overflow-y-auto h-full hide-scrollbar space-y-4"
+              className="max-h-[50vh] overflow-y-auto h-full hide-scrollbar space-y-4 w-full px-2 mt-2"
             >
               <FormField
                 name="file"
@@ -130,14 +193,12 @@ const CreateCagegoryDrawer: React.FC<CreateCagegoryDrawerProps> = ({
                           {...fieldProps}
                           accept="image/*"
                           className="absolute w-full h-full opacity-0"
-                          onChange={(event) =>
-                            onChange(
-                              event.target.files && event.target.files[0],
-                              setSelectedFile(
-                                event.target.files && event.target.files[0]
-                              )
-                            )
-                          }
+                          onChange={(event) => {
+                            const file =
+                              event.target.files && event.target.files[0];
+                            onChange(file);
+                            setSelectedFile(file);
+                          }}
                         />
                         <div className="flex flex-col gap-2 items-center">
                           <VscCloudUpload size="30" />
@@ -170,98 +231,93 @@ const CreateCagegoryDrawer: React.FC<CreateCagegoryDrawerProps> = ({
                   </FormItem>
                 )}
               />
-              <div className="flex md:gap-5 sm:gap-3 sm:flex-row flex-col">
-                <FormField
-                  control={form.control}
-                  name="parentId"
-                  render={({ field }) => (
-                    <FormItem className="flex-1 md:w-auto">
-                      <FormLabel>Parent ID</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select Parent ID" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectGroup>
-                            <SelectLabel>Parent ID</SelectLabel>
-                            {categories?.map((category: any) => (
+
+              <FormField
+                control={form.control}
+                name="parentId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Parent ID</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select Parent ID" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectLabel>Parent ID</SelectLabel>
+                          {categories && categories.length > 0 ? (
+                            categories.map((category: any) => (
                               <SelectItem key={category.id} value={category.id}>
                                 {category.name}
                               </SelectItem>
-                            ))}
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="clientUrl"
-                  render={({ field }) => (
-                    <FormItem className="flex-1 md:w-auto">
-                      <FormLabel>Client URL</FormLabel>
+                            ))
+                          ) : (
+                            <SelectItem value="">
+                              No categories available
+                            </SelectItem>
+                          )}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="isNavigational"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Is Navigational</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
-                        <Input
-                          placeholder="/products/t-shirt"
-                          {...field}
-                          className="w-full"
-                        />
+                        <SelectTrigger>
+                          <SelectValue placeholder="Do You Stored Products to this?" />
+                        </SelectTrigger>
                       </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-              <FormField
-                control={form.control}
-                name="firstTitle"
-                render={({ field }) => (
-                  <FormItem className="flex-1 md:w-auto">
-                    <FormLabel>First Title</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="first title goes here"
-                        {...field}
-                        className="w-full"
-                      />
-                    </FormControl>
+                      <SelectContent>
+                        <SelectItem value="true">✅ Yeah</SelectItem>
+                        <SelectItem value="false">❎ Nope</SelectItem>
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}
               />
+
+              {/* First Title and Second Title fields (unchanged) */}
+
               <FormField
                 control={form.control}
-                name="secondTitle"
+                name="isLeaf"
                 render={({ field }) => (
-                  <FormItem className="flex-1 md:w-auto">
-                    <FormLabel>Second Title</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="second Title goes here"
-                        {...field}
-                        className="w-full"
-                      />
-                    </FormControl>
+                  <FormItem>
+                    <FormLabel>Is Leaf?</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Do You Stored Products to this?" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="true">✅ Yeah</SelectItem>
+                        <SelectItem value="false">❎ Nope</SelectItem>
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}
               />
+
               <FormField
                 control={form.control}
                 name="isOnHomePage"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>On Home?</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
+                    <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Do you want to show this on the home page ?" />
@@ -274,15 +330,21 @@ const CreateCagegoryDrawer: React.FC<CreateCagegoryDrawerProps> = ({
                         </SelectItem>
                       </SelectContent>
                     </Select>
+                    <FormDescription>
+                      Yes means you want to show this category on home page
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
               />
+
               <Button type="submit" className="w-full" disabled={isLoading}>
                 {isLoading ? (
                   <PiSpinnerGapBold className="animate-spin" />
+                ) : mode === "create" ? (
+                  "Create"
                 ) : (
-                  "Save"
+                  "Update"
                 )}
               </Button>
             </form>
@@ -301,4 +363,4 @@ const CreateCagegoryDrawer: React.FC<CreateCagegoryDrawerProps> = ({
   );
 };
 
-export default CreateCagegoryDrawer;
+export default CategoryDrawer;

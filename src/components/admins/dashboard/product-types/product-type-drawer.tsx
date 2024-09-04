@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import {
   Drawer,
@@ -11,72 +13,107 @@ import {
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useCreateAProductTypeMutation } from "@/redux/api/product-types/product-types-api";
+import { toast } from "@/components/ui/use-toast";
+import {
+  useCreateProductTypeMutation,
+  useUpdateProductTypeByIdMutation,
+} from "@/redux/api/product-types/product-types-api";
 import { productTypeSchema } from "@/schemas/admins/product-type-schema";
+import { IReadProductType } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2 } from "lucide-react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { toast } from "@/components/ui/use-toast";
-import { PiSpinnerLight } from "react-icons/pi";
-
-interface CreateproductTypeProps {
+interface ProductTypeDrawerProps {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  productType?: IReadProductType;
 }
 
-const CreateProductType: React.FC<CreateproductTypeProps> = ({
+const ProductTypeDrawer = ({
   open,
   setOpen,
-}) => {
-  const [createAProductType, { isLoading }] = useCreateAProductTypeMutation();
+  productType,
+}: ProductTypeDrawerProps) => {
+  const [createProductType, { isLoading: isCreating }] =
+    useCreateProductTypeMutation();
+  const [updateProductType, { isLoading: isUpdating }] =
+    useUpdateProductTypeByIdMutation();
+
+  const isEditing = !!productType;
+
   const form = useForm<z.infer<typeof productTypeSchema>>({
     resolver: zodResolver(productTypeSchema),
     defaultValues: {
-      name: "",
+      name: productType?.name || "",
     },
   });
 
+  useEffect(() => {
+    if (productType) {
+      form.reset({ name: productType.name });
+    } else {
+      form.reset({ name: "" });
+    }
+  }, [productType, form]);
+
   const onSubmit = async (value: z.infer<typeof productTypeSchema>) => {
     try {
-      const response: any = await createAProductType(value);
-
-      if (!response.data.success) {
-        toast({
-          title: "Error",
-          description: "Failed to create product type",
-          variant: "destructive",
-        });
+      let response;
+      if (isEditing && productType) {
+        response = await updateProductType({
+          id: productType.id,
+          ...value,
+        }).unwrap();
       } else {
+        response = await createProductType(value).unwrap();
+      }
+
+      if (response.success) {
         toast({
           title: "Success",
-          description: "Product type created successfully",
+          description: `Product type ${
+            isEditing ? "updated" : "created"
+          } successfully`,
         });
         setOpen(false);
         form.reset();
+      } else {
+        throw new Error(response.message || "Operation failed");
       }
     } catch (error: any) {
       toast({
         title: "Error",
-        description: `${error.message}`,
+        description:
+          error.message ||
+          `Failed to ${isEditing ? "update" : "create"} product type`,
         variant: "destructive",
       });
     }
   };
+
+  const isLoading = isCreating || isUpdating;
 
   return (
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerContent>
         <div className="mx-auto w-full max-w-sm">
           <DrawerHeader>
-            <DrawerTitle>Product Type</DrawerTitle>
-            <DrawerDescription>Create product type</DrawerDescription>
+            <DrawerTitle>
+              {isEditing ? "Update" : "Create"} Product Type
+            </DrawerTitle>
+            <DrawerDescription>
+              {isEditing ? "Edit the" : "Create a new"} product type
+            </DrawerDescription>
           </DrawerHeader>
           <Form {...form}>
             <form
@@ -95,6 +132,9 @@ const CreateProductType: React.FC<CreateproductTypeProps> = ({
                         {...field}
                       />
                     </FormControl>
+                    <FormDescription className="text-xs">
+                      Each product type must be unique
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -105,9 +145,11 @@ const CreateProductType: React.FC<CreateproductTypeProps> = ({
                 disabled={isLoading}
               >
                 {isLoading ? (
-                  <PiSpinnerLight className="animate-spin" />
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : isEditing ? (
+                  "Update"
                 ) : (
-                  "Submit"
+                  "Create"
                 )}
               </Button>
             </form>
@@ -125,4 +167,4 @@ const CreateProductType: React.FC<CreateproductTypeProps> = ({
   );
 };
 
-export default CreateProductType;
+export default ProductTypeDrawer;

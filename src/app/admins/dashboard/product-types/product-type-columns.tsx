@@ -1,6 +1,6 @@
 "use client";
 
-import UpdateProductType from "@/components/admins/dashboard/product-types/update-product-type";
+import ProductTypeDrawer from "@/components/admins/dashboard/product-types/product-type-drawer";
 import { DataTable } from "@/components/admins/dashboard/products/data-table";
 import { Button } from "@/components/ui/button";
 import {
@@ -9,6 +9,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { IReadProductType } from "@/types";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import { useState } from "react";
@@ -26,12 +27,7 @@ const ProductTypeColumns: React.FC<ProductTypeColumnsProps> = ({
   productTypes,
 }) => {
   const [open, setOpen] = useState(false);
-  const [productId, setProductId] = useState("");
-
-  const handleUpdate = (id: string) => {
-    setOpen(true);
-    setProductId(id);
-  };
+  const [productType, setProductType] = useState<IReadProductType>();
 
   const columns: ColumnDef<ProductType>[] = [
     {
@@ -45,6 +41,10 @@ const ProductTypeColumns: React.FC<ProductTypeColumnsProps> = ({
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       ),
+    },
+    {
+      accessorKey: "id",
+      header: "Type Id",
     },
     {
       id: "actions",
@@ -66,7 +66,10 @@ const ProductTypeColumns: React.FC<ProductTypeColumnsProps> = ({
                     variant="ghost"
                     size="sm"
                     className="w-full"
-                    onClick={() => handleUpdate(id)}
+                    onClick={() => {
+                      setOpen(true);
+                      setProductType(row.original);
+                    }}
                   >
                     Update Product Type
                   </Button>
@@ -82,10 +85,10 @@ const ProductTypeColumns: React.FC<ProductTypeColumnsProps> = ({
   return (
     <div>
       <DataTable columns={columns} data={productTypes} filterColumn="name" />
-      <UpdateProductType
+      <ProductTypeDrawer
         open={open}
         setOpen={setOpen}
-        productTypeId={productId}
+        productType={productType}
       />
     </div>
   );

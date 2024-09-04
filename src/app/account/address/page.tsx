@@ -12,6 +12,7 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { toast } from "@/components/ui/use-toast";
 import { getUserFromLocalStorage } from "@/helpers/jwt";
@@ -27,18 +28,14 @@ import {
 } from "@/redux/api/users/user-api";
 import { profileAddressSchema } from "@/schemas/profile-address-schema";
 import { IUserData } from "@/types";
-import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { BiDotsHorizontalRounded, BiSolidHome } from "react-icons/bi";
-import { FaRegCircleCheck } from "react-icons/fa6";
-import {
-  HiOutlineSparkles,
-  HiOutlineTrash,
-  HiPlusSmall,
-} from "react-icons/hi2";
-import { TbEdit } from "react-icons/tb";
+import { BiDotsHorizontalRounded } from "react-icons/bi";
+import { HiOutlineSparkles, HiPlusSmall } from "react-icons/hi2";
+import { TbHomeCheck, TbHomeEdit, TbHomeX } from "react-icons/tb";
 import { z } from "zod";
+import homeIcon from "../../../images/house_4730076.png";
 
 const Address = () => {
   const router = useRouter();
@@ -47,7 +44,7 @@ const Address = () => {
   const [resetForm, setResetForm] = useState(false);
 
   const [selectedAddress, setSelectedAddress] = useState<any>(null);
-  const [userData, setUserData] = useState<IUserData>();
+  const [userData, setUserData] = useState<IUserData | null>(null);
 
   const [updateSingleUser, { isLoading: isUserUpdating }] =
     useUpdateSingleUserMutation();
@@ -57,22 +54,25 @@ const Address = () => {
     useDeleteAddressMutation();
   const [updateAddress, { isLoading: isAddressUpdating }] =
     useUpdateAddressMutation();
-  const {
-    data: user,
-    isLoading,
-    refetch,
-  } = useGetSingleUserQuery(userData?.userId);
   const [addNewAddress, { isLoading: isAddressAdding }] =
     useAddNewAddressMutation();
 
   useEffect(() => {
-    const currentUserData = getUserFromLocalStorage() as any;
+    const currentUserData = getUserFromLocalStorage() as IUserData | null;
     if (!currentUserData) {
       router.back();
     } else {
       setUserData(currentUserData);
     }
   }, [router]);
+
+  const {
+    data: response,
+    isLoading,
+    refetch,
+  } = useGetSingleUserQuery(userData?.userId ?? "", {
+    skip: !userData?.userId,
+  });
 
   if (isLoading) {
     return <AddressSkeleton />;
@@ -89,58 +89,61 @@ const Address = () => {
   };
 
   const handleSetActiveAddress = async (address: any) => {
-    const result: any = await setActiveAddress({
-      userId: user?.data.id,
-      addressId: address.id,
-    });
+    try {
+      const result = await setActiveAddress({
+        userId: response?.data.id,
+        addressId: address.id,
+      }).unwrap();
 
-    if (result.data.status !== 200) {
+      if (result.status === 200) {
+        toast({
+          title: "Success",
+          description: "Address updated successfully",
+        });
+        refetch();
+      } else {
+        throw new Error("Failed to update address");
+      }
+    } catch (error) {
       toast({
         title: "Action Denied",
         description: "Something went wrong! Please try again",
         variant: "destructive",
       });
-    } else {
-      toast({
-        title: "Success",
-        description: "Address updated successfully",
-      });
-
-      refetch();
     }
   };
 
   const handleAddressDelete = async () => {
-    const result: any = await deleteAddress({
-      userId: user?.data.id,
-      addressId: selectedAddress.id,
-    });
+    try {
+      const result = await deleteAddress({
+        userId: response?.data.id,
+        addressId: selectedAddress.id,
+      }).unwrap();
 
-    if (result.data.message === "Cannot delete the active address.") {
+      if (result.status === 200) {
+        toast({
+          title: "Success",
+          description: "Address deleted successfully",
+        });
+        setDialogOpen(false);
+        refetch();
+      } else {
+        throw new Error(result.message || "Failed to delete address");
+      }
+    } catch (error: any) {
       toast({
         title: "Action Denied",
-        description:
-          "The active address cannot be deleted. Please set another address as active before attempting to delete this one.",
+        description: error.message || "Something went wrong! Please try again.",
         variant: "destructive",
       });
-    } else if (result.data.status !== 200) {
-      toast({
-        title: "Action Denied",
-        description: "Something went wrong! Please try again.",
-        variant: "destructive",
-      });
-    } else {
-      toast({
-        title: "Success",
-        description: "Address deleted successfully",
-      });
-      setDialogOpen(false);
-      refetch();
     }
   };
 
   const handler = async (values: z.infer<typeof profileAddressSchema>) => {
     const requestedData = {
+      recipientName:
+        values.recipientName || selectedAddress?.recipientName || "",
+      phone: values.phone || selectedAddress?.phone || "",
       division: values.division || selectedAddress?.division || "",
       divisionId: values.divisionId,
       district: values.district || selectedAddress?.district || "",
@@ -152,11 +155,16 @@ const Address = () => {
         values.streetAddress || selectedAddress?.streetAddress || "",
     };
 
+    console.log("HELLO =>", requestedData);
+
     if (
+      !requestedData.recipientName ||
+      !requestedData.phone ||
       !requestedData.division ||
       !requestedData.district ||
       !requestedData.upazila ||
-      !requestedData.union
+      !requestedData.union ||
+      !requestedData.streetAddress
     ) {
       toast({
         title: "Error",
@@ -166,35 +174,39 @@ const Address = () => {
       return;
     }
 
-    let result: any;
-    if (selectedAddress) {
-      // Update existing address
-      result = await updateAddress({
-        addressId: selectedAddress.id,
-        ...requestedData,
-      });
-    } else {
-      // Add new address
-      result = await addNewAddress({
-        id: user?.data.id,
-        ...requestedData,
-      });
-      setResetForm(true);
-    }
+    try {
+      let result: any;
+      if (selectedAddress) {
+        // Update existing address
+        result = await updateAddress({
+          addressId: selectedAddress.id,
+          ...requestedData,
+        });
+      } else {
+        // Add new address
+        result = await addNewAddress({
+          id: response.data.id,
+          ...requestedData,
+        });
+        setResetForm(true);
+      }
 
-    if (!result.data.data.id) {
+      if (result?.data.data?.id) {
+        setOpen(false);
+        toast({
+          title: "Success",
+          description: "Your information was updated",
+        });
+        refetch();
+      } else {
+        throw new Error("Failed to update address");
+      }
+    } catch (error) {
       toast({
         title: "Error",
         description: "Something went wrong, please try again",
         variant: "destructive",
       });
-    } else {
-      setOpen(false);
-      toast({
-        title: "Success",
-        description: "Your information was updated",
-      });
-      refetch();
     }
   };
 
@@ -206,7 +218,7 @@ const Address = () => {
           { label: "Account", href: "/account" },
         ]}
         page="Address"
-        className="mb-3"
+        className="my-3"
       />
       <div className="flex justify-between items-start">
         <div>
@@ -215,111 +227,91 @@ const Address = () => {
             See Your Address Information.
           </p>
         </div>
-
-        <Button
-          variant="outline"
-          disabled={user?.data.addresses?.length > 1}
-          className="flex items-center gap-1"
-          onClick={handleAddAddressClick}
-        >
-          <HiPlusSmall />
-          Add address
-        </Button>
       </div>
 
-      {user?.data?.addresses?.length ? (
-        user?.data?.addresses?.map((adrs: any) => (
-          <div key={adrs.address.id} className="relative">
-            {user?.data.activeAddressId === adrs.address.id && (
-              <div className="absolute top-4 right-16 p-1 text-orange-500 bg-orange-50/50 flex gap-1 items-center rounded-md">
-                <BiSolidHome size={18} />
-                <p className="text-sm font-medium tracking-wider">Active</p>
-              </div>
-            )}
-            <div className="border rounded mt-5 p-2">
-              <div className="flex flex-row justify-between items-center mb-4">
-                <h3 className="font-semibold text-lg">Address Book</h3>
+      <Button
+        variant="outline"
+        className="flex items-center gap-1 w-full h-[100px] mt-3 bg-gradient-to-r from-green-50 to-green-100"
+        onClick={handleAddAddressClick}
+      >
+        <HiPlusSmall />
+        Add address
+      </Button>
+
+      {response?.data.addresses?.length ? (
+        response.data.addresses.map((address: any) => (
+          <div key={address.id}>
+            <div className="flex justify-between items-center border rounded mt-5 p-2">
+              <div className="flex gap-4 items-center">
                 <div>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon">
-                        <BiDotsHorizontalRounded size={20} />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent className="w-56">
-                      <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuGroup>
-                        <DropdownMenuItem
-                          disabled={
-                            user?.data.activeAddressId === adrs.address.id ||
-                            isAddressUpdating
-                          }
-                          onClick={() => handleSetActiveAddress(adrs.address)}
-                        >
-                          <FaRegCircleCheck className="mr-2 h-3.5 w-3.5" />
-                          <span>Set Active</span>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          onClick={() => handleEditAddressClick(adrs.address)}
-                        >
-                          <TbEdit className="mr-2 h-4 w-4" />
-                          <span>Update</span>
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem
-                          onClick={() => (
-                            setSelectedAddress(adrs.address),
-                            setDialogOpen(true)
-                          )}
-                        >
-                          <HiOutlineTrash className="mr-2 h-4 w-4" />
-                          <span>Delete</span>
-                        </DropdownMenuItem>
-                      </DropdownMenuGroup>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                  <Image
+                    alt="home-icon"
+                    src={homeIcon}
+                    height={40}
+                    width={40}
+                  />
                 </div>
-              </div>
-              <div className="flex flex-col gap-4">
-                <div>
-                  <p className="font-medium">Division</p>
-                  <div>
-                    <p className="bg-gray-100 py-1 px-2 rounded">
-                      {adrs.address.division}
+                <div className="flex flex-col">
+                  <div className="flex items-center gap-3">
+                    <p className="font-medium">{address.recipientName}</p>
+                    <p className="text-muted-foreground text-sm">
+                      {address.phone}
                     </p>
                   </div>
-                </div>
-                <div>
-                  <p className="font-medium">District</p>
-                  <div>
-                    <p className="bg-gray-100 py-1 px-2 rounded">
-                      {adrs.address.district}
-                    </p>
-                  </div>
-                </div>
-                <div>
-                  <p className="font-medium">Upazila</p>
-                  <div>
-                    <p className="bg-gray-100 py-1 px-2 rounded">
-                      {adrs.address.upazila}
-                    </p>
-                  </div>
-                </div>
-                <div>
-                  <p className="font-medium">Union</p>
-                  <div>
-                    <p className="bg-gray-100 py-1 px-2 rounded">
-                      {adrs.address.union}
-                    </p>
-                  </div>
-                </div>
-                <div>
-                  <p className="font-medium">street Address</p>
-                  <p className="bg-gray-100 py-1 px-2 rounded">
-                    {adrs.address.streetAddress}
+                  <p className="text-muted-foreground text-sm">
+                    {address.streetAddress}
                   </p>
+                  <p className="text-muted-foreground text-sm">
+                    {address.union}, {address.upazila}, {address.district},{" "}
+                    {address.division}
+                  </p>
+                  <div className="flex flex-start gap-2 mt-1">
+                    <p className="text-sm font-medium">{address.label}</p>
+                    {address.isDefault && (
+                      <p className="font-medium text-sm text-rose-600">
+                        Default Shipping & Billing Address
+                      </p>
+                    )}
+                  </div>
                 </div>
+              </div>
+              <div>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="icon">
+                      <BiDotsHorizontalRounded size={20} />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="w-56">
+                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuGroup>
+                      <DropdownMenuItem
+                        disabled={address.isDefault}
+                        onClick={() => handleSetActiveAddress(address)}
+                      >
+                        <TbHomeCheck className="mr-2 h-4 w-4" />
+                        <span>Set Default</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => handleEditAddressClick(address)}
+                      >
+                        <TbHomeEdit className="mr-2 h-4 w-4" />
+                        <span>Update</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem
+                        onClick={() => {
+                          setSelectedAddress(address);
+                          setDialogOpen(true);
+                        }}
+                      >
+                        <TbHomeX className="mr-2 h-4 w-4" />
+                        <span>Delete</span>
+                      </DropdownMenuItem>
+                    </DropdownMenuGroup>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
             </div>
           </div>
@@ -337,7 +329,7 @@ const Address = () => {
       <AddressModal
         addressModalOpen={open}
         setAddressModalOpen={setOpen}
-        currentUser={user}
+        currentUser={response?.data}
         title={selectedAddress ? "Edit your address" : "Add a new address"}
         description={
           selectedAddress
@@ -347,7 +339,12 @@ const Address = () => {
         submitHandler={handler}
         selectedAddress={selectedAddress}
         resetForm={resetForm}
-        isLoading={isUserUpdating || isAddressAdding || isAddressStatusChanging}
+        isLoading={
+          isUserUpdating ||
+          isAddressAdding ||
+          isAddressStatusChanging ||
+          isAddressUpdating
+        }
       />
 
       <AlertDialogComp

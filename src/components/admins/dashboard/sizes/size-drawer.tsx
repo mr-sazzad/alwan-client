@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import {
   Drawer,
@@ -11,6 +13,7 @@ import {
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -18,19 +21,24 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
-import { useRegisterASizeMutation } from "@/redux/api/size/size-api";
+import {
+  useRegisterSizeMutation,
+  useUpdateSizeMutation,
+} from "@/redux/api/size/size-api";
 import { sizeSchema } from "@/schemas/admins/size-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { PiSpinner } from "react-icons/pi";
 import { z } from "zod";
 
-interface CreateSizeProps {
+interface SizeDrawerProps {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  size?: { id: string; name: string };
 }
 
-const CreateSize: React.FC<CreateSizeProps> = ({ open, setOpen }) => {
+const SizeDrawer: React.FC<SizeDrawerProps> = ({ open, setOpen, size }) => {
   const form = useForm<z.infer<typeof sizeSchema>>({
     resolver: zodResolver(sizeSchema),
     defaultValues: {
@@ -38,43 +46,63 @@ const CreateSize: React.FC<CreateSizeProps> = ({ open, setOpen }) => {
     },
   });
 
-  const [registerASize, { isLoading: isSizeCreating }] =
-    useRegisterASizeMutation();
+  const [registerSize, { isLoading: isCreating }] = useRegisterSizeMutation();
+  const [updateSize, { isLoading: isUpdating }] = useUpdateSizeMutation();
+
+  useEffect(() => {
+    if (size) {
+      form.reset({ name: size.name });
+    } else {
+      form.reset({ name: "" });
+    }
+  }, [size, form]);
 
   const onSubmit = async (value: z.infer<typeof sizeSchema>) => {
     try {
-      const response: any = await registerASize(value);
+      let response: any;
+      if (size) {
+        response = await updateSize({ id: size.id, ...value });
+      } else {
+        response = await registerSize(value);
+      }
 
-      if (!response.data.success) {
+      if (!response?.data.success) {
         toast({
           title: "Error",
-          description: "Failed to create size",
+          description: `Failed to ${size ? "update" : "create"} size`,
           variant: "destructive",
         });
       } else {
         toast({
           title: "Success",
-          description: "Size created successfully",
+          description: `Size ${size ? "updated" : "created"} successfully`,
         });
         setOpen(false);
+        form.reset();
       }
     } catch (error: any) {
       toast({
         title: "Error",
-        description: `Failed to create size error: ${error.message}`,
+        description: `Failed to ${size ? "update" : "create"} size: ${
+          error.message
+        }`,
         variant: "destructive",
       });
     }
   };
+
+  const isLoading = isCreating || isUpdating;
 
   return (
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerContent>
         <div className="mx-auto max-w-sm w-full">
           <DrawerHeader>
-            <DrawerTitle>Create Size</DrawerTitle>
+            <DrawerTitle>{size ? "Update Size" : "Create Size"}</DrawerTitle>
             <DrawerDescription>
-              Create a new size for your products.
+              {size
+                ? "Update an existing size."
+                : "Create a new size for your products."}
             </DrawerDescription>
           </DrawerHeader>
 
@@ -90,21 +118,32 @@ const CreateSize: React.FC<CreateSizeProps> = ({ open, setOpen }) => {
                   <FormItem>
                     <FormLabel>Size Name</FormLabel>
                     <FormControl>
-                      <Input placeholder="shadcn" {...field} />
+                      <Input placeholder="Enter size name" {...field} />
                     </FormControl>
+                    <FormDescription className="text-xs">
+                      Each size must be unique
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
               />
 
-              <Button type="submit" className="w-full">
-                Submit
+              <Button type="submit" className="w-full" disabled={isLoading}>
+                {isLoading ? (
+                  <PiSpinner className="animate-spin" />
+                ) : size ? (
+                  "Update"
+                ) : (
+                  "Create"
+                )}
               </Button>
             </form>
           </Form>
           <DrawerFooter>
             <DrawerClose asChild>
-              <Button variant="outline">Cancel</Button>
+              <Button variant="outline" className="w-full">
+                Cancel
+              </Button>
             </DrawerClose>
           </DrawerFooter>
         </div>
@@ -113,4 +152,4 @@ const CreateSize: React.FC<CreateSizeProps> = ({ open, setOpen }) => {
   );
 };
 
-export default CreateSize;
+export default SizeDrawer;

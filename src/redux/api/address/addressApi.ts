@@ -13,33 +13,31 @@ const addressApi = baseApi.injectEndpoints({
     }),
 
     getAllAddresses: build.query({
-      query: ({ id }) => ({
-        url: `/addresses/${id}/addresses`,
+      query: (id) => ({
+        url: `/addresses/${id}`,
         method: "GET",
       }),
-      providesTags: (result, error, id) => [{ type: tagTypes.address, id }],
+      providesTags: [tagTypes.address],
     }),
 
     getActiveAddress: build.query({
-      query: ({ id }) => ({
-        url: `/addresses/user/${id}/active-address`,
+      query: (id) => ({
+        url: `/addresses/${id}/default-address`,
         method: "GET",
       }),
-      providesTags: (result, error, id) => [{ type: tagTypes.address, id }],
+      providesTags: [tagTypes.address],
     }),
 
     setActiveAddress: build.mutation({
       query: ({ userId, addressId }) => ({
-        url: `/addresses/${userId}/set-active-address/${addressId}`,
+        url: `/addresses/${userId}/default-address/${addressId}`,
         method: "PATCH",
       }),
-      invalidatesTags: (result, error, { userId }) => [
-        { type: tagTypes.address, id: userId },
-      ],
+      invalidatesTags: [tagTypes.address],
     }),
 
     updateAddress: build.mutation({
-      query: ({ addressId, data }) => ({
+      query: ({ addressId, ...data }) => ({
         url: `/addresses/${addressId}/update`,
         method: "PATCH",
         data,
@@ -51,7 +49,7 @@ const addressApi = baseApi.injectEndpoints({
 
     deleteAddress: build.mutation({
       query: ({ addressId, userId }) => ({
-        url: `/addresses/${userId}/address/${addressId}/delete`,
+        url: `/addresses/${userId}/${addressId}`,
         method: "DELETE",
       }),
       invalidatesTags: [tagTypes.address],

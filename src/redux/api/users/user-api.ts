@@ -21,7 +21,7 @@ const userApi = baseApi.injectEndpoints({
 
     getSingleUser: build.query({
       query: (id) => ({
-        url: `/users/single-user/${id}`,
+        url: `/users/${id}`,
         method: "GET",
       }),
       providesTags: [tagTypes.user],
@@ -29,16 +29,7 @@ const userApi = baseApi.injectEndpoints({
 
     updateSingleUser: build.mutation({
       query: ({ id, ...data }) => ({
-        url: `/users/single-user/${id}`,
-        method: "PATCH",
-        data,
-      }),
-      invalidatesTags: [tagTypes.user],
-    }),
-
-    updateSingletUser: build.mutation({
-      query: ({ id, ...data }) => ({
-        url: `/users/single-user/${id}`,
+        url: `/users/${id}`,
         method: "PATCH",
         data,
       }),
@@ -47,7 +38,7 @@ const userApi = baseApi.injectEndpoints({
 
     deleteSingleUser: build.mutation({
       query: (id) => ({
-        url: `/users/single-user/${id}`,
+        url: `/users/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: [tagTypes.user],

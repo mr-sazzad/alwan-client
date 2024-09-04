@@ -92,23 +92,23 @@ const AddCarouselDrawer: React.FC<AddCarouselDrawerProps> = ({
                           <p className="ml-2 text-sm text-gray-500">
                             Hold the CTRL button to select multiple images
                           </p>
+
+                          {selectedFiles.length > 0 && (
+                            <div className="rounded flex gap-1 bg-slate-100 py-1 px-2 mt-2">
+                              {selectedFiles.map((file, index) => (
+                                <p
+                                  key={index}
+                                  className="text-gray-600 text-sm font-thin"
+                                >
+                                  {file.name}
+                                </p>
+                              ))}
+                            </div>
+                          )}
                         </div>
                       </div>
                     </FormControl>
                     <FormMessage />
-                    {selectedFiles.length > 0 && (
-                      <div className="rounded-lg flex gap-1 bg-slate-200 py-2 border border-dashed px-4">
-                        <p className="font-medium text-sm">files: </p>
-                        {selectedFiles.map((file, index) => (
-                          <p
-                            key={index}
-                            className="text-gray-400 text-sm font-thin"
-                          >
-                            {file.name + ","}
-                          </p>
-                        ))}
-                      </div>
-                    )}
                   </FormItem>
                 )}
               />

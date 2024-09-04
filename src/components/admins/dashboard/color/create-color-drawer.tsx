@@ -5,7 +5,6 @@ import {
   Drawer,
   DrawerClose,
   DrawerContent,
-  DrawerDescription,
   DrawerFooter,
   DrawerHeader,
   DrawerTitle,
@@ -13,27 +12,36 @@ import {
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { toast } from "@/components/ui/use-toast";
+import {
+  useCreateNewColorMutation,
+  useUpdateColorMutation,
+} from "@/redux/api/color/color-api";
 import { colorSchema } from "@/schemas/admins/color-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { PiSpinner } from "react-icons/pi";
 import { z } from "zod";
 
-interface CreateColorDrawerProps {
+interface ColorDrawerProps {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
+  color?: { id: string; name: string; hexCode: string };
 }
 
-const CreateColorDrawer: React.FC<CreateColorDrawerProps> = ({
-  open,
-  setOpen,
-}) => {
+const ColorDrawer: React.FC<ColorDrawerProps> = ({ open, setOpen, color }) => {
+  const [createNewColor, { isLoading: isCreating }] =
+    useCreateNewColorMutation();
+  const [updateColor, { isLoading: isUpdating }] = useUpdateColorMutation();
+
   const form = useForm<z.infer<typeof colorSchema>>({
     resolver: zodResolver(colorSchema),
     defaultValues: {
@@ -42,20 +50,59 @@ const CreateColorDrawer: React.FC<CreateColorDrawerProps> = ({
     },
   });
 
-  const onSubmit = () => {
-    console.log("onSubmit");
-    // form.reset();
+  useEffect(() => {
+    if (color) {
+      form.reset({
+        name: color.name,
+        hexCode: color.hexCode,
+      });
+    } else {
+      form.reset({
+        name: "",
+        hexCode: "",
+      });
+    }
+  }, [color, form]);
+
+  const onSubmit = async (values: z.infer<typeof colorSchema>) => {
+    let result: any;
+    if (color) {
+      result = await updateColor({ id: color.id, ...values });
+    } else {
+      result = await createNewColor(values);
+    }
+
+    if (!result.data.success) {
+      toast({
+        title: color ? "Update Unsuccessful" : "Creation Unsuccessful",
+        description: `There was an issue ${
+          color ? "updating" : "creating"
+        } the color. Please try again later.`,
+        variant: "destructive",
+      });
+    } else {
+      toast({
+        title: color
+          ? "Color Updated Successfully"
+          : "Color Created Successfully",
+        description: `The color has been ${
+          color ? "updated" : "successfully added"
+        } to your collection.`,
+      });
+
+      setOpen(false);
+      form.reset();
+    }
   };
+
+  const isLoading = isCreating || isUpdating;
 
   return (
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerContent>
         <div className="max-w-sm w-full mx-auto">
           <DrawerHeader>
-            <DrawerTitle>Create Color</DrawerTitle>
-            <DrawerDescription>
-              Create a new color for your products
-            </DrawerDescription>
+            <DrawerTitle>{color ? "Update Color" : "Create Color"}</DrawerTitle>
           </DrawerHeader>
           <Form {...form}>
             <form
@@ -79,34 +126,45 @@ const CreateColorDrawer: React.FC<CreateColorDrawerProps> = ({
                   </FormItem>
                 )}
               />
-              <div className="flex md:gap-5 sm:gap-3 sm:flex-row flex-col">
-                <FormField
-                  control={form.control}
-                  name="hexCode"
-                  render={({ field }) => (
-                    <FormItem className="flex-1 md:w-auto">
-                      <FormLabel>Hex code</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="#000000"
-                          {...field}
-                          className="w-full"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-              <Button type="submit" className="w-full">
-                Save
+              <FormField
+                control={form.control}
+                name="hexCode"
+                render={({ field }) => (
+                  <FormItem className="flex-1 md:w-auto">
+                    <FormLabel>Hex code</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="#000000"
+                        {...field}
+                        className="w-full"
+                      />
+                    </FormControl>
+                    <FormDescription className="text-xs">
+                      Each hex code must be unique
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Button
+                type="submit"
+                className="w-full mt-4"
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <PiSpinner className="animate-spin" />
+                ) : color ? (
+                  "Update"
+                ) : (
+                  "Save"
+                )}
               </Button>
             </form>
           </Form>
 
           <DrawerFooter>
             <DrawerClose>
-              <Button className="w-full" variant="secondary">
+              <Button className="w-full" variant="outline">
                 Cancel
               </Button>
             </DrawerClose>
@@ -117,4 +175,4 @@ const CreateColorDrawer: React.FC<CreateColorDrawerProps> = ({
   );
 };
 
-export default CreateColorDrawer;
+export default ColorDrawer;

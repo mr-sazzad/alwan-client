@@ -1,8 +1,8 @@
 "use client";
 
 import { DataTable } from "@/components/admins/dashboard/products/data-table";
-import DeleteSizeDialog from "@/components/admins/dashboard/sizes/delete-alert-dialog";
-import SizeUpdateDrawer from "@/components/admins/dashboard/sizes/size-update-drawer";
+import SizeDrawer from "@/components/admins/dashboard/sizes/size-drawer";
+import AlertDialogComp from "@/components/alert-dialog/alert-dialog";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -11,36 +11,57 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { toast } from "@/components/ui/use-toast";
+import { useDeleteSizeMutation } from "@/redux/api/size/size-api";
 import { DropdownMenuLabel } from "@radix-ui/react-dropdown-menu";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import { useState } from "react";
 
-export type Sizes = {
+export type Size = {
   id: string;
   name: string;
 };
 
 interface SizeTableColumnsProps {
-  sizes: Sizes[];
+  sizes: Size[];
 }
 
 const SizeTableColumns: React.FC<SizeTableColumnsProps> = ({ sizes }) => {
   const [open, setOpen] = useState(false);
-  const [deleteOpen, setDeleteOpen] = useState(false);
-  const [sizeId, setSizeId] = useState("");
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [size, setSize] = useState<Size>();
 
-  const handleSizeUpdate = (id: string) => {
-    setOpen(true);
-    setSizeId(id);
+  const [deleteSize, { isLoading }] = useDeleteSizeMutation();
+
+  const handleSizeDelete = async () => {
+    try {
+      const response: any = await deleteSize(size?.id);
+
+      if (!response.data.success) {
+        toast({
+          title: "Error",
+          description: "Failed to delete size. Please try again later.",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Success",
+          description: "Size has been deleted successfully.",
+        });
+        setOpen(false);
+      }
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: `Failed to delete size. Error: ${error.message}`,
+        variant: "destructive",
+      });
+      console.error(error);
+    }
   };
 
-  const handleSizeDelete = (id: string) => {
-    setDeleteOpen(true);
-    setSizeId(id);
-  };
-
-  const columns: ColumnDef<Sizes>[] = [
+  const columns: ColumnDef<Size>[] = [
     {
       accessorKey: "name",
       header: ({ column }) => (
@@ -52,6 +73,10 @@ const SizeTableColumns: React.FC<SizeTableColumnsProps> = ({ sizes }) => {
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       ),
+    },
+    {
+      accessorKey: "id",
+      header: "Server ID",
     },
 
     {
@@ -69,12 +94,23 @@ const SizeTableColumns: React.FC<SizeTableColumnsProps> = ({ sizes }) => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                <DropdownMenuItem onClick={() => handleSizeUpdate(id)}>
+                <DropdownMenuLabel className="px-2 font-medium">
+                  Actions
+                </DropdownMenuLabel>
+                <DropdownMenuItem
+                  onClick={() => {
+                    setOpen(true), setSize(row.original);
+                  }}
+                >
                   Update size
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => handleSizeDelete(id)}>
+                <DropdownMenuItem
+                  onClick={() => {
+                    setDialogOpen(true);
+                    setSize(row.original);
+                  }}
+                >
                   Delete size
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -88,12 +124,16 @@ const SizeTableColumns: React.FC<SizeTableColumnsProps> = ({ sizes }) => {
   return (
     <div>
       <DataTable columns={columns} data={sizes} filterColumn="name" />
-      <SizeUpdateDrawer open={open} setOpen={setOpen} sizeId={sizeId} />
+      <SizeDrawer open={open} setOpen={setOpen} size={size} />
 
-      <DeleteSizeDialog
-        open={deleteOpen}
-        setOpen={setDeleteOpen}
-        sizeId={sizeId}
+      <AlertDialogComp
+        open={dialogOpen}
+        setOpen={setDialogOpen}
+        handler={handleSizeDelete}
+        buttonText="Delete"
+        title="Delete Size?"
+        description="Are you sure you want to delete this size? This action cannot be undone."
+        loading={isLoading}
       />
     </div>
   );

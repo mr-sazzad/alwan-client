@@ -77,6 +77,7 @@ export default function Sidebar({
                 : "translate-x-0"
             }`}
           >
+            categories && (
             <CategoryList
               categories={currentCategories}
               onCategoryClick={handleCategoryClick}
@@ -85,6 +86,7 @@ export default function Sidebar({
               onBack={handleBack}
               showBackButton={categoryStack.length > 0}
             />
+            )
           </div>
           <div
             className={`absolute w-full h-full transition-transform duration-300 ease-in-out ${
@@ -95,6 +97,7 @@ export default function Sidebar({
                 : "translate-x-full"
             }`}
           >
+            categories(
             <CategoryList
               categories={currentCategories}
               onCategoryClick={handleCategoryClick}
@@ -103,6 +106,7 @@ export default function Sidebar({
               onBack={handleBack}
               showBackButton={categoryStack.length > 0}
             />
+            )
           </div>
         </div>
       </SheetContent>

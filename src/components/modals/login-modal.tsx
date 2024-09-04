@@ -68,8 +68,8 @@ const LoginModal: React.FC<LoginModalProps> = ({ open, setOpen, handler }) => {
   const onSubmit = async (data: z.infer<typeof loginSchema>) => {
     const res: any = await signInUser(data);
 
-    if (res.data.accessToken) {
-      setToLocalStorage("alwan-user-access-token", res.data.accessToken);
+    if (res?.data.data.accessToken) {
+      setToLocalStorage("alwan-user-access-token", res.data.data.accessToken);
       setOpen(false);
       form.reset();
       toast({

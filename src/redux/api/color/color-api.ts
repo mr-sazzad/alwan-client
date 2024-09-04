@@ -22,26 +22,25 @@ const colorApi = baseApi.injectEndpoints({
 
     getSingleColorById: build.query({
       query: (colorId) => ({
-        url: `/colors/get-single/${colorId}`,
+        url: `/colors/${colorId}`,
         method: "GET",
       }),
       providesTags: [tagTypes.color],
     }),
 
-    updateSingleColor: build.mutation({
+    updateColor: build.mutation({
       query: ({ colorId, ...data }) => ({
-        url: `/colors/update-single/${colorId}`,
+        url: `/colors/${colorId}`,
         method: "PATCH",
         data,
       }),
       invalidatesTags: [tagTypes.color],
     }),
 
-    deleteSingleColor: build.mutation({
-      query: ({ colorId, data }) => ({
-        url: `/colors/remove-single/${colorId}`,
-        method: "PATCH",
-        data,
+    deleteColor: build.mutation({
+      query: (colorId) => ({
+        url: `/colors/${colorId}`,
+        method: "DELETE",
       }),
       invalidatesTags: [tagTypes.color],
     }),
@@ -52,6 +51,6 @@ export const {
   useCreateNewColorMutation,
   useGetAllColorsQuery,
   useGetSingleColorByIdQuery,
-  useUpdateSingleColorMutation,
-  useDeleteSingleColorMutation,
+  useUpdateColorMutation,
+  useDeleteColorMutation,
 } = colorApi;

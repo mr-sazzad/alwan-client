@@ -32,18 +32,20 @@ export interface ILoginRes {
 export interface ICreateCategory {
   name: string;
   file: File;
-  clientUrl: string;
   parentId: string;
   firstTitle: string;
   secondTitle: string;
   isOnHomePage: boolean;
+  isNavigational: boolean;
+  isLeaf: boolean;
 }
 
 export interface IReadCategory {
   id: string;
   name: string;
   imageUrl: string;
-  clientUrl: string;
+  isLeaf: boolean;
+  isNavigational: boolean;
   parentId: string;
   firstTitle: string;
   secondTitle: string;
@@ -105,8 +107,7 @@ export interface SizeVariant {
   stock: number;
   colorId: string;
   sizeId: string;
-  createdAt: string;
-  updatedAt: string;
+  manufacturingCost: number;
 }
 export interface IReadSizeVariant {
   id: string;
@@ -117,6 +118,7 @@ export interface IReadSizeVariant {
   color: IReadColor;
   sizeId: string;
   size: IReadSize;
+  manufacturingCost: number;
   createdAt: string;
   updatedAt: string;
 }
@@ -129,10 +131,12 @@ export interface IProduct {
   features: string[];
   imageUrls: string[];
   categoryId: string;
+  category: IReadCategory;
   productTypeId: string;
   isCouponApplicable: boolean;
   isFreeDeliveryAvailable: boolean;
-  status: "in_stock" | "stock_out";
+  stockStatus: "IN_STOCK" | "OUT_OF_STOCK";
+  statusTag: string;
   sizeVariants: IReadSizeVariant[];
   reviews: IReview[];
   createdAt: string;

@@ -5,14 +5,14 @@ import SearchReviewsDrawer from "@/components/admins/dashboard/reviews/search-re
 import AlwanBreadCrumb from "@/components/breadcrumbs/breadcrumb";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useGetAllCategoriesQuery } from "@/redux/api/categoies/categoriesApi";
+import { useGetCategoriesQuery } from "@/redux/api/categoies/categoriesApi";
 import { IProduct } from "@/types";
 import { useState } from "react";
 
 const Reviews = () => {
   const [selectedProduct, setSelectedProduct] = useState<IProduct | null>(null);
   const { data: categories, isLoading: isCategoriesLoading } =
-    useGetAllCategoriesQuery(undefined);
+    useGetCategoriesQuery(undefined);
 
   const [open, setOpen] = useState(false);
 

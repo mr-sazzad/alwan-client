@@ -21,9 +21,17 @@ const categoryApi = baseApi.injectEndpoints({
       providesTags: [tagTypes.category],
     }),
 
-    getAllCategories: build.query({
+    getCategories: build.query({
       query: () => ({
         url: "/categories",
+        method: "GET",
+      }),
+      providesTags: [tagTypes.category],
+    }),
+
+    getLeafCategories: build.query({
+      query: () => ({
+        url: "/categories/leaf-categories",
         method: "GET",
       }),
       providesTags: [tagTypes.category],
@@ -58,7 +66,8 @@ const categoryApi = baseApi.injectEndpoints({
 
 export const {
   useCreateCategoryMutation,
-  useGetAllCategoriesQuery,
+  useGetCategoriesQuery,
+  useGetLeafCategoriesQuery,
   useGetCategoryQuery,
   useGetParentCategoriesQuery,
   useUpdateCategoryMutation,

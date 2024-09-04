@@ -2,17 +2,17 @@
 
 import PageTitle from "@/components/admins/dashboard/page-titles/page-title";
 import AlwanBreadCrumb from "@/components/breadcrumbs/breadcrumb";
-import CreateCagegoryDrawer from "@/components/categories/create-category-drawer";
+import CategoryDrawer from "@/components/categories/category-drawer";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useGetAllCategoriesQuery } from "@/redux/api/categoies/categoriesApi";
+import { useGetCategoriesQuery } from "@/redux/api/categoies/categoriesApi";
 import { useState } from "react";
 import CategoryTableColumns from "./category-columns";
 
 const Category = () => {
   const [open, setOpen] = useState(false);
 
-  const { data: categories, isLoading } = useGetAllCategoriesQuery(undefined);
+  const { data: categories, isLoading } = useGetCategoriesQuery(undefined);
 
   if (isLoading) {
     return (
@@ -48,14 +48,15 @@ const Category = () => {
       </div>
 
       <div>
-        {categories.data && (
-          <CategoryTableColumns categories={categories.data} />
+        {categories?.data && (
+          <CategoryTableColumns categories={categories?.data} />
         )}
       </div>
-      <CreateCagegoryDrawer
+      <CategoryDrawer
         open={open}
         setOpen={setOpen}
         categories={categories.data}
+        mode="create"
       />
     </div>
   );

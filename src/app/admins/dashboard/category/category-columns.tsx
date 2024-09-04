@@ -1,7 +1,7 @@
 import { DataTable } from "@/components/admins/dashboard/products/data-table";
 import AlertDialogComp from "@/components/alert-dialog/alert-dialog";
 import CategoryDetailsDrawer from "@/components/categories/category-details-drawer";
-import UpdateCategoryDrawer from "@/components/categories/category-update-drawer";
+import CategoryDrawer from "@/components/categories/category-drawer";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -24,7 +24,8 @@ export type Category = {
   id: string;
   name: string;
   parentId: string;
-  clientUrl: string;
+  isLeaf: boolean;
+  isNavigational: boolean;
   parent: {
     id: string;
     name: string;
@@ -89,55 +90,55 @@ const CategoryTableColumns: React.FC<CategoryTableColumnsProps> = ({
         row.original.parent ? row.original.parent.name : "not available",
     },
     {
-      accessorKey: "clientUrl",
-      header: "Client URL",
-      cell: ({ row }) =>
-        row.original.clientUrl ? row.original.clientUrl : "not available",
+      accessorKey: "isLeaf",
+      header: "Is Leaf",
+      cell: ({ row }) => (row.original.isLeaf ? "Yes" : "No"),
+    },
+    {
+      accessorKey: "isNavigational",
+      header: "Is Navigation",
+      cell: ({ row }) => (row.original.isNavigational ? "Yes" : "No"),
     },
     {
       id: "actions",
       enableHiding: false,
       cell: ({ row }) => {
         const id = row.original.id;
+
         return (
-          <div>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="h-8 w-8 p-0">
-                  <span className="sr-only">Open menu</span>
-                  <MoreHorizontal className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                <DropdownMenuItem
-                  onClick={() => handleDetailsClick(id)}
-                  className="cursor-pointer"
-                >
-                  Category Details
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  onClick={() => {
-                    setUpdateDialogOpen(true);
-                    setCategoryId(id);
-                  }}
-                  className="cursor-pointer"
-                >
-                  Update
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => {
-                    setDialogOpen(true);
-                    setCategoryId(id);
-                  }}
-                  className="bg-destructive hover:bg-destructive/70 text-white cursor-pointer"
-                >
-                  Remove
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <span className="sr-only">Open menu</span>
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel className="px-2 font-medium">
+                Actions
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => handleDetailsClick(id)}>
+                Category Details
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => {
+                  setUpdateDialogOpen(true);
+                  setCategoryId(id);
+                }}
+              >
+                Update Category
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => {
+                  setDialogOpen(true);
+                  setCategoryId(id);
+                }}
+              >
+                Remove Category
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         );
       },
     },
@@ -154,11 +155,12 @@ const CategoryTableColumns: React.FC<CategoryTableColumnsProps> = ({
         loading={isCategoryLoading}
       />
 
-      <UpdateCategoryDrawer
+      <CategoryDrawer
         open={updateDialogOpen}
         setOpen={setUpdateDialogOpen}
-        categoryId={categoryId}
         categories={categories}
+        mode="update"
+        categoryId={categoryId}
       />
 
       <AlertDialogComp

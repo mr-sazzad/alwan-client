@@ -18,7 +18,7 @@ export default function Carousel() {
 
   if (isLoading) {
     return (
-      <div className="mt-[90px] w-screen">
+      <div className="mt-[90px] w-full">
         <Skeleton className="w-full h-[300px] md:h-[400px] lg:h-[700px]">
           <div className="w-full h-full flex justify-center items-center">
             <PiSpinner className="animate-spin" />
@@ -43,20 +43,21 @@ export default function Carousel() {
         modules={[Autoplay, EffectFade, Navigation, Pagination]}
         className="w-screen"
       >
-        {response?.data[0].fileUrls.map((url: string, i: number) => (
-          <SwiperSlide key={i} className="w-full">
-            <div className="relative w-full h-[300px] md:h-[500px] lg:h-[700px] max-h-[80vh] bg-green-500">
-              <Image
-                fill
-                src={url}
-                alt={`carouselImage-${i}`}
-                className="object-cover"
-                sizes="100vw"
-                priority={i === 0}
-              />
-            </div>
-          </SwiperSlide>
-        ))}
+        {response?.data[0] &&
+          response?.data[0].fileUrls.map((url: string, i: number) => (
+            <SwiperSlide key={i} className="w-full">
+              <div className="relative w-full h-[300px] md:h-[500px] lg:h-[700px] max-h-[80vh] bg-green-500">
+                <Image
+                  fill
+                  src={url}
+                  alt={`carouselImage-${i}`}
+                  className="object-cover"
+                  sizes="100vw"
+                  priority={i === 0}
+                />
+              </div>
+            </SwiperSlide>
+          ))}
       </Swiper>
     </div>
   );

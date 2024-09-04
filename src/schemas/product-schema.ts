@@ -15,12 +15,13 @@ export const productSchema = z.object({
   features: z.string().min(5, { message: "Feature is required" }),
   categoryId: z.string().min(5, { message: "Category ID is required" }),
   productTypeId: z.string().min(5, { message: "Product Type ID is required" }),
-  status: z
+  stockStatus: z
     .enum(statusEnum)
     .refine((value) => statusEnum.includes(value), {
       message: "must be either 'In stock' or 'Out of stock'",
     })
     .default("IN_STOCK"),
+  statusTag: z.string().optional(),
   isCouponApplicable: z.string().default("No"),
   isFreeDeliveryAvailable: z.string().default("No"),
   sizeVariants: z.array(
@@ -29,6 +30,7 @@ export const productSchema = z.object({
       stock: z.number(),
       colorId: z.string().min(1, { message: "Color ID is required" }),
       sizeId: z.string().min(1, { message: "Size ID is required" }),
+      manufacturingCost: z.number(),
     })
   ),
 });

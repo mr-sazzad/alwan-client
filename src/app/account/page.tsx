@@ -1,21 +1,21 @@
-import { Metadata } from "next";
-
-export const metadata: Metadata = {
-  title: {
-    default: "Alwan",
-    template: "%s | account",
-  },
-  description: "Alwan account page",
-};
+"use client";
 
 const Account = () => {
   return (
-    <div className="flex justify-center items-center w-full h-[70%]">
-      <div className="flex justify-center flex-col gap-2 items-center">
-        <h2 className="text-xl font-semibold">Image</h2>
+    <div className="w-full h-[70%]">
+      <div className="">
+        <h2 className="text-xl font-semibold">{/* <Image src={} /> */}</h2>
         <p className="text-sm text-muted-foreground">
           Please Select A Section First
         </p>
+      </div>
+      <div className="flex md:flex-row flex-col md:justify-between place-items-start">
+        <div className="w-full">
+          <p>address section</p>
+        </div>
+        <div className="w-full">
+          <p>Order section</p>
+        </div>
       </div>
     </div>
   );

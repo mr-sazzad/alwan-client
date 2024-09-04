@@ -117,7 +117,7 @@ const CheckoutPage = () => {
             productId && quantity && size ? [product?.data] : cartProducts
           }
           district={form.getValues("district")}
-          handlePlaceOrder={handlePlaceOrder} // Pass the handlePlaceOrder function
+          handlePlaceOrder={handlePlaceOrder}
           setTotalPrice={setTotalPrice}
           setShippingCost={setShippingCost}
           totalPrice={totalPrice}

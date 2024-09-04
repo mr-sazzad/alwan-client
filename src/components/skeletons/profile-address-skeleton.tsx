@@ -8,7 +8,10 @@ const AddressSkeleton = () => {
       <Skeleton className="h-9 w-[100px]" />
       <Skeleton className="h-7 w-[190px]" />
 
-      <Skeleton className="h-[400px] w-full" />
+      <Skeleton className="h-[100px] w-full" />
+
+      <Skeleton className="h-[100px] w-full" />
+      <Skeleton className="h-[100px] w-full" />
 
       <Skeleton className="h-10 w-full mt-3" />
       <Skeleton className="h-10 w-full" />

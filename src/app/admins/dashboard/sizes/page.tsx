@@ -1,7 +1,7 @@
 "use client";
 
 import PageTitle from "@/components/admins/dashboard/page-titles/page-title";
-import CreateSize from "@/components/admins/dashboard/sizes/create-size";
+import SizeDrawer from "@/components/admins/dashboard/sizes/size-drawer";
 import AlwanBreadCrumb from "@/components/breadcrumbs/breadcrumb";
 import AdminDashboardLoading from "@/components/lodings/admin-dashboard-loding";
 import { Button } from "@/components/ui/button";
@@ -34,7 +34,7 @@ const Size = () => {
         </Button>
       </div>
       <SizeTableColumns sizes={sizes.data} />
-      <CreateSize open={open} setOpen={setOpen} />
+      <SizeDrawer open={open} setOpen={setOpen} />
     </div>
   );
 };
