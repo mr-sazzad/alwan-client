@@ -153,7 +153,7 @@ export interface IUserCartProduct {
   productTypeId: string;
   isCouponApplicable: boolean;
   isFreeDeliveryAvailable: boolean;
-  status: "in_stock" | "stock_out";
+  stockStatus: "IN_STOCK" | "OUT_OF_STOCK";
   sizeVariants: IReadSizeVariant[];
   orderColor: string;
   reviews: any[]; //! i will fix this later
