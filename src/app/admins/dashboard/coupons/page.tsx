@@ -1,20 +1,65 @@
 "use client";
 
-import AddNewCoupon from "@/components/admins/dashboard/coupons/add-new-coupon";
+import CouponForm from "@/components/admins/dashboard/coupons/add-new-coupon";
 import PageTitle from "@/components/admins/dashboard/page-titles/page-title";
 import AlwanBreadCrumb from "@/components/breadcrumbs/breadcrumb";
+import AdminDashboardLoading from "@/components/lodings/admin-dashboard-loding";
 import { Button } from "@/components/ui/button";
-import { useGetAllCouponsQuery } from "@/redux/api/coupon/couponApi";
-// import { ICoupon } from "@/types";
+import { useGetLeafCategoriesQuery } from "@/redux/api/categoies/categoriesApi";
+import {
+  useCreateCouponMutation,
+  useGetCouponsQuery,
+  useUpdateCouponMutation,
+} from "@/redux/api/coupon/couponApi";
+import { useGetAllProductsQuery } from "@/redux/api/products/productsApi";
+import { CouponSchema } from "@/schemas/admins/coupon-schema";
 import { useState } from "react";
+import { z } from "zod";
+import CouponTableColumns from "./coupon-table";
 
 const Coupon = () => {
   const [open, setOpen] = useState(false);
-  const { data: coupons, isLoading } = useGetAllCouponsQuery(undefined);
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [selectedCoupon, setSelectedCoupon] = useState<
+    z.infer<typeof CouponSchema> | undefined
+  >(undefined);
 
-  // if (isLoading) {
-  //   return <AdminDashboardLoading />;
-  // }
+  const { data: response, isLoading } = useGetCouponsQuery(undefined);
+  const { data: categoryRes, isLoading: categoryLoading } =
+    useGetLeafCategoriesQuery(undefined);
+  const { data: productRes, isLoading: productLoading } =
+    useGetAllProductsQuery(undefined);
+  const [createCoupon] = useCreateCouponMutation();
+  const [updateCoupon] = useUpdateCouponMutation();
+
+  if (isLoading || categoryLoading || productLoading) {
+    return <AdminDashboardLoading />;
+  }
+
+  const handleCreateCoupon = () => {
+    setIsUpdating(false);
+    setSelectedCoupon(undefined);
+    setOpen(true);
+  };
+
+  const handleUpdateCoupon = (coupon: z.infer<typeof CouponSchema>) => {
+    setIsUpdating(true);
+    setSelectedCoupon(coupon);
+    setOpen(true);
+  };
+
+  const handleSubmit = async (data: z.infer<typeof CouponSchema>) => {
+    try {
+      if (isUpdating) {
+        await updateCoupon(data).unwrap();
+      } else {
+        await createCoupon(data).unwrap();
+      }
+      setOpen(false);
+    } catch (error) {
+      console.error("Error submitting coupon:", error);
+    }
+  };
 
   return (
     <div>
@@ -26,29 +71,31 @@ const Coupon = () => {
         page="Coupons"
         className="mb-3"
       />
-      <PageTitle title="Coupons" description="Coupons informations" />
+      <PageTitle title="Coupons" description="Coupons information" />
 
       <div className="flex w-full justify-end mt-3">
         <Button
           variant="link"
-          onClick={() => setOpen(true)}
+          onClick={handleCreateCoupon}
           className="flex items-center gap-1"
         >
           + Add New Coupon
         </Button>
       </div>
 
-      {/* <div>
-        {coupons &&
-          coupons.map((coupon: ICoupon) => (
-            <div key={coupon.id}>
-              <div>
-                <p>{coupon.code}</p>
-              </div>
-            </div>
-          ))}
-      </div> */}
-      <AddNewCoupon open={open} setOpen={setOpen} />
+      <CouponForm
+        open={open}
+        setOpen={setOpen}
+        categories={categoryRes.data}
+        products={productRes.data}
+        onSubmit={handleSubmit}
+        isUpdating={isUpdating}
+        couponData={selectedCoupon}
+      />
+      <CouponTableColumns
+        coupons={response.data}
+        onUpdateCoupon={handleUpdateCoupon}
+      />
     </div>
   );
 };

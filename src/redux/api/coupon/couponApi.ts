@@ -3,7 +3,7 @@ import { tagTypes } from "../tag-types";
 
 const couponApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
-    createACoupon: build.mutation({
+    createCoupon: build.mutation({
       query: (data) => ({
         url: "/coupons/create-a-coupon",
         method: "POST",
@@ -12,7 +12,7 @@ const couponApi = baseApi.injectEndpoints({
       invalidatesTags: [tagTypes.coupon],
     }),
 
-    getAllCoupons: build.query({
+    getCoupons: build.query({
       query: () => ({
         url: "/coupons",
         method: "GET",
@@ -20,7 +20,7 @@ const couponApi = baseApi.injectEndpoints({
       providesTags: [tagTypes.coupon],
     }),
 
-    getACouponById: build.query({
+    getCouponById: build.query({
       query: (id) => ({
         url: `/coupons/get-single/${id}`,
         method: "GET",
@@ -28,7 +28,7 @@ const couponApi = baseApi.injectEndpoints({
       providesTags: [tagTypes.coupon],
     }),
 
-    getACouponByCode: build.query({
+    getCouponByCode: build.query({
       query: (code) => ({
         url: `/coupons/get-single-coupon-by-code/${code}`,
         method: "GET",
@@ -36,7 +36,7 @@ const couponApi = baseApi.injectEndpoints({
       providesTags: [tagTypes.coupon],
     }),
 
-    updateACoupon: build.mutation({
+    updateCoupon: build.mutation({
       query: ({ id, ...data }) => ({
         url: `/coupons/update-single/${id}`,
         method: "PATCH",
@@ -45,7 +45,7 @@ const couponApi = baseApi.injectEndpoints({
       invalidatesTags: [tagTypes.coupon],
     }),
 
-    deleteACoupon: build.mutation({
+    deleteCoupon: build.mutation({
       query: ({ id, data }) => ({
         url: `/coupons/remove-single/${id}`,
         method: "PATCH",
@@ -57,10 +57,10 @@ const couponApi = baseApi.injectEndpoints({
 });
 
 export const {
-  useCreateACouponMutation,
-  useGetACouponByIdQuery,
-  useGetACouponByCodeQuery,
-  useGetAllCouponsQuery,
-  useUpdateACouponMutation,
-  useDeleteACouponMutation,
+  useCreateCouponMutation,
+  useGetCouponByIdQuery,
+  useGetCouponByCodeQuery,
+  useGetCouponsQuery,
+  useUpdateCouponMutation,
+  useDeleteCouponMutation,
 } = couponApi;

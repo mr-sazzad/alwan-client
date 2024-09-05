@@ -49,8 +49,6 @@ const transformCategories = (data: Category[]): GroupedCategory[] => {
     }
   });
 
-  console.log("GROUPED CATEGORIES", groupedCategories);
-
   return Object.values(groupedCategories);
 };
 

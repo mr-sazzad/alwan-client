@@ -8,21 +8,21 @@ interface IOption {
 }
 
 interface ReactSelectProps {
-  multiple: boolean;
+  multiple?: boolean;
   title: string;
   options: IOption[];
   defaultValue?: IOption[];
   name: string;
-  closeMenuOnSelect: boolean;
+  closeMenuOnSelect?: boolean;
   placeholder: string;
   handleSelect: (value: string[]) => void;
 }
 
 const Selector: React.FC<ReactSelectProps> = ({
-  multiple,
+  multiple = true,
   title,
   options,
-  closeMenuOnSelect,
+  closeMenuOnSelect = false,
   name,
   placeholder,
   handleSelect,
@@ -30,8 +30,8 @@ const Selector: React.FC<ReactSelectProps> = ({
 }) => {
   const animatedSelect = makeAnimated();
   return (
-    <div className="md:mt-[5px]">
-      <p className="text-sm mb-2">{title}</p>
+    <div>
+      <p className="text-sm mb-2 font-medium">{title}</p>
       <Select
         options={options}
         isMulti={multiple}
@@ -54,12 +54,12 @@ const Selector: React.FC<ReactSelectProps> = ({
         styles={{
           control: (base, state) => ({
             ...base,
-            border: "1px solid #334155",
+            border: "1px solid #ddd",
             opacity: 0.7,
             borderRadius: "6px",
             boxShadow: "none",
             "&:hover": {
-              border: "1px solid #334155",
+              border: "1px solid #ddd",
             },
           }),
         }}
