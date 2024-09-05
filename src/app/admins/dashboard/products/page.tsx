@@ -4,8 +4,10 @@ import { Button } from "@/components/ui/button";
 import { useGetAllProductsQuery } from "@/redux/api/products/productsApi";
 import ProductTableColumns from "./product-columns";
 
+import PageTitle from "@/components/admins/dashboard/page-titles/page-title";
 import { DataTable } from "@/components/admins/dashboard/products/data-table";
 import ProductForm from "@/components/admins/dashboard/products/product-form";
+import AlwanBreadCrumb from "@/components/breadcrumbs/breadcrumb";
 import AdminDashboardLoading from "@/components/lodings/admin-dashboard-loding";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { useState } from "react";
@@ -21,7 +23,17 @@ const Page = () => {
   }
 
   return (
-    <div className="container mx-auto py-10">
+    <div>
+      <AlwanBreadCrumb
+        links={[
+          { label: "Home", href: "/" },
+          { label: "Dashboard", href: "/dashboard" },
+        ]}
+        page="Products"
+        className="mb-3"
+      />
+      <PageTitle title="Products" description="Products information" />
+
       <div className="flex justify-end">
         <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
           <DialogTrigger asChild>

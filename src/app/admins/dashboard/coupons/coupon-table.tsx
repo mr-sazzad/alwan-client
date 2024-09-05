@@ -1,6 +1,7 @@
 "use client";
 
 import { DataTable } from "@/components/admins/dashboard/products/data-table";
+import AlertDialogComp from "@/components/alert-dialog/alert-dialog";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -10,9 +11,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Separator } from "@/components/ui/separator";
+import { toast } from "@/components/ui/use-toast";
+import { useDeleteCouponMutation } from "@/redux/api/coupon/couponApi";
 import { CouponSchema } from "@/schemas/admins/coupon-schema";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
+import { useState } from "react";
 import { z } from "zod";
 
 export type Coupon = z.infer<typeof CouponSchema> & {
@@ -29,6 +33,30 @@ const CouponTableColumns = ({
   coupons,
   onUpdateCoupon,
 }: CouponTableColumnsProps) => {
+  const [couponId, setCouponId] = useState<string>("");
+  const [open, setOpen] = useState<boolean>(false);
+
+  const [deleteCoupon, { isLoading: isDeleting }] = useDeleteCouponMutation();
+
+  const handleCouponDelete = async () => {
+    const result: any = await deleteCoupon(couponId);
+
+    if (!result.data.success) {
+      toast({
+        title: "Error occurred",
+        description: "Failed to delete coupon. Please try again later.",
+        variant: "destructive",
+      });
+    } else {
+      toast({
+        title: "Coupon deleted",
+        description: "Coupon has been deleted successfully.",
+      });
+      setCouponId("");
+      setOpen(false);
+    }
+  };
+
   const columns: ColumnDef<Coupon>[] = [
     {
       accessorKey: "code",
@@ -93,7 +121,9 @@ const CouponTableColumns = ({
               </DropdownMenuItem>
               <Separator />
               <DropdownMenuItem
-                onClick={() => console.log("Delete", coupon.id)}
+                onClick={() => {
+                  setOpen(true), setCouponId(row.original.id);
+                }}
               >
                 Delete Coupon
               </DropdownMenuItem>
@@ -105,9 +135,22 @@ const CouponTableColumns = ({
   ];
 
   return (
-    <div className="px-1 hide-scrollbar">
-      <DataTable columns={columns} data={coupons} filterColumn="code" />
-    </div>
+    <>
+      <div className="px-1 hide-scrollbar">
+        <DataTable columns={columns} data={coupons} filterColumn="code" />
+      </div>
+
+      <AlertDialogComp
+        open={open}
+        setOpen={setOpen}
+        handler={handleCouponDelete}
+        title="Confirm Deletion"
+        description="Are you sure you want to delete this color? This action cannot be undone."
+        buttonText="Remove"
+        className="bg-destructive hover:bg-destructive/70"
+        loading={isDeleting}
+      />
+    </>
   );
 };
 
