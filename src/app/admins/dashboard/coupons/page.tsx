@@ -1,6 +1,6 @@
 "use client";
 
-import CouponForm from "@/components/admins/dashboard/coupons/add-new-coupon";
+import CouponForm from "@/components/admins/dashboard/coupons/coupon-form";
 import PageTitle from "@/components/admins/dashboard/page-titles/page-title";
 import AlwanBreadCrumb from "@/components/breadcrumbs/breadcrumb";
 import AdminDashboardLoading from "@/components/lodings/admin-dashboard-loding";
