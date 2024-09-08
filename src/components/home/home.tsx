@@ -1,16 +1,17 @@
 import { offerItems } from "@/static/offer-items";
-import Carousel from "../carousel";
+import Banner from "../banner";
 import HomeCategories from "../categories/home-categories";
 import MaxWidth from "../max-width";
 import NewArrivals from "../new-arrivals/new-arrivals";
 import Adverticement from "../static/adverticement";
 import WhatWeOffer from "../static/what-we-offer";
+import TextSection from "../text-section/text-section";
 
 const Home = () => {
   return (
     <div>
-      <Carousel />
-      {/* <TextSection /> */}
+      <Banner />
+      <TextSection />
       <MaxWidth>
         <div className="mb-5">
           <HomeCategories />

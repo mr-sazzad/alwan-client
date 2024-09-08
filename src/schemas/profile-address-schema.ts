@@ -12,5 +12,6 @@ export const profileAddressSchema = z.object({
   upazila: z.string(),
   upazilaId: z.string().optional(),
   union: z.string(),
+  unionId: z.string().optional(),
   streetAddress: z.string(),
 });

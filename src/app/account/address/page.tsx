@@ -151,11 +151,10 @@ const Address = () => {
       upazila: values.upazila || selectedAddress?.upazila || "",
       upazilaId: values.upazilaId,
       union: values.union || selectedAddress?.union || "",
+      unionId: values.unionId,
       streetAddress:
         values.streetAddress || selectedAddress?.streetAddress || "",
     };
-
-    console.log("HELLO =>", requestedData);
 
     if (
       !requestedData.recipientName ||
@@ -188,7 +187,6 @@ const Address = () => {
           id: response.data.id,
           ...requestedData,
         });
-        setResetForm(true);
       }
 
       if (result?.data.data?.id) {
@@ -198,6 +196,7 @@ const Address = () => {
           description: "Your information was updated",
         });
         refetch();
+        setResetForm(true);
       } else {
         throw new Error("Failed to update address");
       }
@@ -331,11 +330,6 @@ const Address = () => {
         setAddressModalOpen={setOpen}
         currentUser={response?.data}
         title={selectedAddress ? "Edit your address" : "Add a new address"}
-        description={
-          selectedAddress
-            ? "Please double check your address before updating."
-            : "Please provide your address information to add a new address."
-        }
         submitHandler={handler}
         selectedAddress={selectedAddress}
         resetForm={resetForm}

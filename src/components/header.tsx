@@ -2,20 +2,51 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import blackLogo from "../images/logo-black-40.png";
 import Cart from "./cart/cart";
 import Profile from "./profile/profile-menu";
-
-// icons
 import DesktopMenu from "./sidebar/desktop-menu";
 import MobileSidebar from "./sidebar/mobile-sidebar";
 
+// Throttle function to limit the rate at which a function can fire
+const throttle = (func: Function, limit: number) => {
+  let inThrottle: boolean;
+  return function (this: any, ...args: any[]) {
+    if (!inThrottle) {
+      func.apply(this, args);
+      inThrottle = true;
+      setTimeout(() => (inThrottle = false), limit);
+    }
+  };
+};
+
 const Header = () => {
   const [open, setOpen] = useState(false);
+  const [prevScrollPos, setPrevScrollPos] = useState(0);
+  const [visible, setVisible] = useState(true);
+
+  const handleScroll = useCallback(() => {
+    const currentScrollPos = window.scrollY;
+    setVisible((prevVisible) => {
+      const visible = prevScrollPos > currentScrollPos || currentScrollPos < 10;
+      setPrevScrollPos(currentScrollPos);
+      return visible;
+    });
+  }, [prevScrollPos]);
+
+  useEffect(() => {
+    const throttledHandleScroll = throttle(handleScroll, 100);
+    window.addEventListener("scroll", throttledHandleScroll);
+    return () => window.removeEventListener("scroll", throttledHandleScroll);
+  }, [handleScroll]);
 
   return (
-    <nav className="h-[90px] md:px-14 sm:px-10 px-5 w-full fixed top-0 z-30 backdrop-blur-[8px] border-b border-gray-50 bg-gray-50/30 dark:bg-gray-50/10">
+    <nav
+      className={`h-[90px] md:px-14 sm:px-10 px-5 w-full fixed top-0 z-30 bg-white dark:bg-gray-900 transition-transform duration-300 ${
+        visible ? "translate-y-0" : "-translate-y-full"
+      }`}
+    >
       <div className="flex justify-between items-center relative h-full">
         <div>
           <Link href="/">

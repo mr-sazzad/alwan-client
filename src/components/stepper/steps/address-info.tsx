@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import {
   FormControl,
   FormField,
@@ -5,6 +6,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -14,7 +16,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { FormValues } from "@/types";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo } from "react";
 import { useFormContext } from "react-hook-form";
 import districtData from "../../../../public/address/district.json";
 import divisionData from "../../../../public/address/division.json";
@@ -26,6 +28,20 @@ interface AddressInfoProps {
   setSelectedDistrictName: (name: string) => void;
   setSelectedUpazilaName: (name: string) => void;
   setSelectedUnionName: (name: string) => void;
+  isLoggedIn: boolean;
+  userAddresses: Address[];
+  defaultAddress: Address | null;
+}
+
+interface Address {
+  id: string;
+  recipientName: string;
+  phone: string;
+  divisionId: string;
+  districtId: string;
+  upazilaId: string;
+  unionId: string;
+  streetAddress: string;
 }
 
 interface LocationData {
@@ -41,77 +57,119 @@ const AddressInfo: React.FC<AddressInfoProps> = ({
   setSelectedDistrictName,
   setSelectedUpazilaName,
   setSelectedUnionName,
+  isLoggedIn,
+  userAddresses,
+  defaultAddress,
 }) => {
-  const { control, setValue, watch } = useFormContext<FormValues>();
-  const [selectedDivision, setSelectedDivision] = useState("");
-  const [selectedDistrict, setSelectedDistrict] = useState("");
-  const [selectedUpazila, setSelectedUpazila] = useState("");
-  const [filteredDistricts, setFilteredDistricts] = useState<LocationData[]>(
-    []
-  );
-  const [filteredUpazilas, setFilteredUpazilas] = useState<LocationData[]>([]);
-  const [filteredUnions, setFilteredUnions] = useState<LocationData[]>([]);
+  const { control, setValue, watch, trigger } = useFormContext<FormValues>();
 
   const watchedDivision = watch("division");
   const watchedDistrict = watch("district");
   const watchedUpazila = watch("upazila");
   const watchedUnion = watch("union");
   const watchedStreetAddress = watch("streetAddress");
+  const watchedRecipientName = watch("recipientName");
+  const watchedPhone = watch("phone");
 
   useEffect(() => {
-    if (watchedDivision) {
-      const division = divisionData.find((div) => div.id === watchedDivision);
-      if (division) {
-        setSelectedDivision(watchedDivision);
-        setSelectedDivisionName(division.name);
-        setFilteredDistricts(
-          districtData.filter(
-            (district) => district.division_id === watchedDivision
-          )
-        );
-      }
+    if (isLoggedIn && defaultAddress) {
+      setValue("recipientName", defaultAddress.recipientName);
+      setValue("phone", defaultAddress.phone);
+      setValue("division", defaultAddress.divisionId);
+      setValue("district", defaultAddress.districtId);
+      setValue("upazila", defaultAddress.upazilaId);
+      setValue("union", defaultAddress.unionId);
+      setValue("streetAddress", defaultAddress.streetAddress);
+    }
+  }, [isLoggedIn, defaultAddress, setValue]);
+
+  const filteredDistricts = useMemo(
+    () =>
+      districtData.filter(
+        (district) => district.division_id === watchedDivision
+      ),
+    [watchedDivision]
+  );
+
+  const filteredUpazilas = useMemo(
+    () =>
+      upazilaData.filter((upazila) => upazila.district_id === watchedDistrict),
+    [watchedDistrict]
+  );
+
+  const filteredUnions = useMemo(
+    () => unionData.filter((union) => union.upazilla_id === watchedUpazila),
+    [watchedUpazila]
+  );
+
+  useEffect(() => {
+    const division = divisionData.find((div) => div.id === watchedDivision);
+    if (division) {
+      setSelectedDivisionName(division.name);
     }
   }, [watchedDivision, setSelectedDivisionName]);
 
   useEffect(() => {
-    if (watchedDistrict) {
-      const district = districtData.find((dist) => dist.id === watchedDistrict);
-      if (district) {
-        setSelectedDistrict(watchedDistrict);
-        setSelectedDistrictName(district.name);
-        setFilteredUpazilas(
-          upazilaData.filter(
-            (upazila) => upazila.district_id === watchedDistrict
-          )
-        );
-      }
+    const district = districtData.find((dist) => dist.id === watchedDistrict);
+    if (district) {
+      setSelectedDistrictName(district.name);
     }
   }, [watchedDistrict, setSelectedDistrictName]);
 
   useEffect(() => {
-    if (watchedUpazila) {
-      const upazila = upazilaData.find((upz) => upz.id === watchedUpazila);
-      if (upazila) {
-        setSelectedUpazila(watchedUpazila);
-        setSelectedUpazilaName(upazila.name);
-        setFilteredUnions(
-          unionData.filter((union) => union.upazilla_id === watchedUpazila)
-        );
-      }
+    const upazila = upazilaData.find((upz) => upz.id === watchedUpazila);
+    if (upazila) {
+      setSelectedUpazilaName(upazila.name);
     }
   }, [watchedUpazila, setSelectedUpazilaName]);
 
   useEffect(() => {
-    if (watchedUnion) {
-      const union = unionData.find((un) => un.id === watchedUnion);
-      if (union) {
-        setSelectedUnionName(union.name);
-      }
+    const union = unionData.find((un) => un.id === watchedUnion);
+    if (union) {
+      setSelectedUnionName(union.name);
     }
   }, [watchedUnion, setSelectedUnionName]);
 
+  const isFormValid = () => {
+    return (
+      watchedRecipientName &&
+      watchedPhone &&
+      watchedDivision &&
+      watchedDistrict &&
+      watchedUpazila &&
+      watchedUnion &&
+      watchedStreetAddress
+    );
+  };
+
   return (
     <div className="space-y-4">
+      <FormField
+        control={control}
+        name="recipientName"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Recipient Name</FormLabel>
+            <FormControl>
+              <Input placeholder="Enter recipient name" {...field} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+      <FormField
+        control={control}
+        name="phone"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Phone Number</FormLabel>
+            <FormControl>
+              <Input placeholder="Enter phone number" {...field} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
       <FormField
         control={control}
         name="division"
@@ -136,7 +194,7 @@ const AddressInfo: React.FC<AddressInfoProps> = ({
           </FormItem>
         )}
       />
-      {selectedDivision && (
+      {watchedDivision && (
         <FormField
           control={control}
           name="district"
@@ -162,7 +220,7 @@ const AddressInfo: React.FC<AddressInfoProps> = ({
           )}
         />
       )}
-      {selectedDistrict && (
+      {watchedDistrict && (
         <FormField
           control={control}
           name="upazila"
@@ -188,7 +246,7 @@ const AddressInfo: React.FC<AddressInfoProps> = ({
           )}
         />
       )}
-      {selectedUpazila && (
+      {watchedUpazila && (
         <FormField
           control={control}
           name="union"
@@ -231,6 +289,13 @@ const AddressInfo: React.FC<AddressInfoProps> = ({
           </FormItem>
         )}
       />
+      <Button
+        onClick={() => trigger()}
+        disabled={!isFormValid()}
+        className="w-full"
+      >
+        Continue
+      </Button>
     </div>
   );
 };

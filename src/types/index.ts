@@ -204,8 +204,21 @@ export interface IUserData {
 }
 
 export interface IUserAddress {
-  shippingDistrict: string;
-  shippingAddress: string;
+  id: string;
+  isDefault: boolean;
+  label: "HOME" | "OFFICE";
+  recipientName: string;
+  phone: string;
+  altPhone?: string;
+  division: string;
+  divisionId: string;
+  district: string;
+  districtId: string;
+  upazila: string;
+  upazilaId: string;
+  union: string;
+  unionId: string;
+  streetAddress: string;
 }
 
 export interface IOrderItem {
@@ -318,7 +331,7 @@ export interface IUnion {
 }
 
 export interface FormValues {
-  username: string;
+  recipientName: string;
   email: string;
   phone: string;
   altPhone: string;

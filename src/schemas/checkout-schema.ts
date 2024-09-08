@@ -1,16 +1,13 @@
 import { z } from "zod";
 
 export const checkOutSchema = z.object({
-  username: z.string().min(1, { message: "Please enter your name" }),
+  recipientName: z.string().min(1, { message: "Please enter your name" }),
   email: z.string().email({ message: "Please enter a valid email address" }),
   phone: z
     .string()
     .min(11, { message: "Please enter a valid phone number" })
     .startsWith("01", { message: "Please enter a valid phone number" }),
-  altPhone: z
-    .string()
-    .min(11, { message: "Please enter a valid phone number" })
-    .startsWith("01", { message: "Please enter a valid phone number" }),
+  altPhone: z.string().optional(),
   division: z
     .string()
     .min(1, { message: "Please fill the division carefully" }),

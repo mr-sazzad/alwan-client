@@ -1,3 +1,4 @@
+import { toast } from "@/components/ui/use-toast";
 import { IUserCartProduct, OrderData } from "@/types";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import { UseFormReturn } from "react-hook-form";
@@ -12,11 +13,6 @@ type UsePlaceOrderParams = {
   size?: string;
   cartProducts: IUserCartProduct[];
   createAOrder: (orderData: OrderData) => Promise<any>;
-  toast: (options: {
-    title: string;
-    description: string;
-    variant: "destructive" | "default";
-  }) => void;
   router: AppRouterInstance;
   setLoading: (loading: boolean) => void;
 };
@@ -31,7 +27,6 @@ export const usePlaceOrder = ({
   size,
   cartProducts,
   createAOrder,
-  toast,
   router,
   setLoading,
 }: UsePlaceOrderParams) => {

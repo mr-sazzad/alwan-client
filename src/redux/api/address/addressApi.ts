@@ -20,9 +20,9 @@ const addressApi = baseApi.injectEndpoints({
       providesTags: [tagTypes.address],
     }),
 
-    getActiveAddress: build.query({
-      query: (id) => ({
-        url: `/addresses/${id}/default-address`,
+    getDefaultAddress: build.query({
+      query: (userId) => ({
+        url: `/addresses/${userId}/default-address`,
         method: "GET",
       }),
       providesTags: [tagTypes.address],
@@ -60,7 +60,7 @@ const addressApi = baseApi.injectEndpoints({
 export const {
   useAddNewAddressMutation,
   useGetAllAddressesQuery,
-  useGetActiveAddressQuery,
+  useGetDefaultAddressQuery,
   useSetActiveAddressMutation,
   useUpdateAddressMutation,
   useDeleteAddressMutation,

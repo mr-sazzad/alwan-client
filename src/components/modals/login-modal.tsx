@@ -20,17 +20,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../ui/dialog";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "../ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel } from "../ui/form";
 import { Input } from "../ui/input";
 import { Separator } from "../ui/separator";
 import { toast } from "../ui/use-toast";
+import ForgorPassWordDrawer from "./forgot-pass-drawer";
 
 interface LoginModalProps {
   open: boolean;
@@ -39,6 +33,7 @@ interface LoginModalProps {
 }
 
 const LoginModal: React.FC<LoginModalProps> = ({ open, setOpen, handler }) => {
+  const [isOpen, setIsOpen] = useState(false);
   const [signInUser, { isLoading }] = useSignInUserMutation();
   // const { data: user, isLoading } = useLoginWithGoogleQuery();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -108,7 +103,6 @@ const LoginModal: React.FC<LoginModalProps> = ({ open, setOpen, handler }) => {
                     <FormControl>
                       <Input placeholder="example@gmail.com" {...field} />
                     </FormControl>
-                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -121,10 +115,16 @@ const LoginModal: React.FC<LoginModalProps> = ({ open, setOpen, handler }) => {
                     <FormControl>
                       <Input type="password" placeholder="******" {...field} />
                     </FormControl>
-                    <FormMessage />
                   </FormItem>
                 )}
               />
+              <Button
+                variant="link"
+                className="text-xs font-normal px-1"
+                onClick={() => setIsOpen(true)}
+              >
+                Forgot Password?
+              </Button>
               <DialogFooter>
                 <Button type="submit" className="mt-4 w-full">
                   {isLoading ? (
@@ -157,6 +157,11 @@ const LoginModal: React.FC<LoginModalProps> = ({ open, setOpen, handler }) => {
           </div>
         </DialogContent>
       </Dialog>
+
+      <ForgorPassWordDrawer
+        open={isOpen}
+        setOpen={setIsOpen}
+      ></ForgorPassWordDrawer>
     </div>
   );
 };

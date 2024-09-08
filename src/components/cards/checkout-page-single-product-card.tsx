@@ -1,11 +1,16 @@
 "use client";
 
-import { IProduct } from "@/types";
-import { useState } from "react";
+import {
+  decreaseProductQty,
+  increaseProductQty,
+} from "@/redux/api/cart/cartSlice";
+import { IUserCartProduct } from "@/types";
+import { useDispatch } from "react-redux";
+import { Button } from "../ui/button";
 import ImageSlider from "./image-slider";
 
 interface CheckoutPageSingleProductCardProps {
-  product: IProduct;
+  product: IUserCartProduct;
   quantity: string;
   size: string;
 }
@@ -13,63 +18,80 @@ interface CheckoutPageSingleProductCardProps {
 const CheckoutPageSingleProductCard: React.FC<
   CheckoutPageSingleProductCardProps
 > = ({ product, quantity, size }) => {
-  const [loading, setLoading] = useState(false);
-
-  // console.log("PRODUCT FROM CHECKOUT SINGLE PRODUCT CARD PAGE =>", product);
-
   const qty = Number(quantity);
-
-  const handleProductDelete = () => {
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-    }, 300);
-  };
+  const dispatch = useDispatch();
 
   const selectedSizeVariant = product?.sizeVariants?.find(
     (variant) => variant.size.name.toUpperCase() === size.toUpperCase()
   );
 
+  const handleIncreaseQty = () => {
+    dispatch(
+      increaseProductQty({
+        id: product.id,
+        size: product.orderSize,
+        color: product.orderColor,
+      })
+    );
+  };
+
+  const handleDecreaseQty = () => {
+    dispatch(
+      decreaseProductQty({
+        id: product.id,
+        size: product.orderSize,
+        color: product.orderColor,
+      })
+    );
+  };
+
   return (
-    <div className="flex flex-col gap-2 w-full items-start justify-between h-full">
-      <div className="w-full">
-        <div className="flex flex-row gap-5 justify-between items-center w-full">
-          <div className="flex flex-row gap-4 flex-1">
-            <div className="relative w-[100px] h-[100px]">
-              <ImageSlider urls={product.imageUrls} />
-            </div>
-            <div>
-              <p className="text-muted-foreground font-medium">
-                {product.name.length > 23
-                  ? product.name.slice(0, 20) + "..."
-                  : product.name}
+    <div className="w-full">
+      <div className="flex flex-row gap-5 justify-between items-center w-full">
+        <div className="flex flex-row gap-4 w-full">
+          <div className="relative w-[100px] h-[100px]">
+            <ImageSlider urls={product.imageUrls} />
+          </div>
+          <div className="flex flex-col gap-3 w-full">
+            <p className="text-muted-foreground">
+              {product.name.length > 27
+                ? product.name.slice(0, 25) + "..."
+                : product.name}
+            </p>
+
+            <div className="flex gap-1 items-end">
+              <p className="text-sm font-medium text-muted-foreground">
+                color family: {product.orderColor}, Size: {product.orderSize}
               </p>
+            </div>
 
-              <div className="flex gap-2 items-end">
-                <div className="flex gap-1 items-center text-muted-foreground font-medium">
+            <div className="flex justify-between items-center">
+              <div className="flex gap-1 items-center font-medium">
+                <span className="bg-gradient-to-r from-purple-500 to-pink-500 text-transparent bg-clip-text">
                   TK.
-                  <p>
-                    {selectedSizeVariant?.price ||
-                      product.sizeVariants[0].price}
-                  </p>
-                </div>
+                </span>
+                <p className="bg-gradient-to-r from-purple-500 to-pink-500 text-transparent bg-clip-text">
+                  {selectedSizeVariant?.price || product.sizeVariants[0].price}
+                </p>
               </div>
-              <div className="flex gap-1 items-end">
-                <p className="text-sm font-medium">{size.toUpperCase()}</p>
-              </div>
-              <div className="flex gap-2">
-                <div className="flex gap-1 items-center text-sm text-muted-foreground">
-                  <p>{qty > 1 ? `${quantity} pcs` : `${quantity} pic`}</p>
-                </div>
-
-                <div className="flex gap-1 items-center text-sm text-muted-foreground">
-                  <div
-                    className="h-4 w-4 rounded-full"
-                    style={{
-                      backgroundColor: selectedSizeVariant?.color.hexCode,
-                    }}
-                  />
-                </div>
+              <div className="flex gap-1 items-center border rounded-md overflow-hidden">
+                <Button
+                  className="px-3 py-0 my-0"
+                  size="cc"
+                  variant="secondary"
+                  onClick={handleDecreaseQty}
+                >
+                  -
+                </Button>
+                <p className="px-2">{product.orderQty}</p>
+                <Button
+                  className="px-3 py-0 my-0"
+                  size="cc"
+                  variant="secondary"
+                  onClick={handleIncreaseQty}
+                >
+                  +
+                </Button>
               </div>
             </div>
           </div>
