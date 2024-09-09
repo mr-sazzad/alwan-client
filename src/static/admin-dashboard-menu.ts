@@ -1,6 +1,7 @@
 import { usePathname } from "next/navigation";
 import { useMemo } from "react";
 import { BiCategoryAlt } from "react-icons/bi";
+import { BsBodyText } from "react-icons/bs";
 import { GiExpense, GiProfit } from "react-icons/gi";
 import { GoCommentDiscussion } from "react-icons/go";
 import { LiaTshirtSolid } from "react-icons/lia";
@@ -119,6 +120,13 @@ export const useAdminDashboardMenu = () => {
         href: "/admins/dashboard/sizes",
         icon: RxSize,
         active: pathname.includes("/admins/dashboard/sizes"),
+      },
+      {
+        id: 15,
+        title: "Home Text",
+        href: "/admins/dashboard/home-text",
+        icon: BsBodyText,
+        active: pathname.includes("/admins/dashboard/home-text"),
       },
     ],
     [pathname]

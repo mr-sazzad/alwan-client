@@ -12,6 +12,7 @@ export enum tagTypes {
   carousel = "carousel",
   productType = "productType",
   color = "color",
+  homeText = "homeText",
 }
 
 export const tagTypeLists = [
@@ -29,4 +30,5 @@ export const tagTypeLists = [
   tagTypes.carousel,
   tagTypes.productType,
   tagTypes.color,
+  tagTypes.homeText,
 ];

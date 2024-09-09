@@ -22,15 +22,20 @@ const TextSection = () => {
 
   const homeText = response?.data[0];
 
+  console.log("HHH", homeText);
+
   return (
     <div>
       {homeText && (
         <div className="flex flex-col w-full justify-center items-center mt-10">
-          <h1 className="text-4xl font-bold uppercase mb-1">
+          <h1 className="text-4xl font-bold uppercase mb-2">
             {homeText.title}
           </h1>
           {homeText.text.map((txt: string, i: number) => (
-            <p key={i} className="text-center">
+            <p
+              key={i}
+              className="text-center md:text-base text-sm text-muted-foreground "
+            >
               {txt}
             </p>
           ))}
@@ -39,8 +44,8 @@ const TextSection = () => {
             className="rounded-full text-[17px] font-medium capitalize group transition-all duration-300 mt-3"
             asChild
           >
-            {homeText.href && (
-              <Link href={homeText.href}>
+            {homeText.categoryId && (
+              <Link href={`categories/${homeText.categoryId}`}>
                 {homeText.buttonText}
                 <LuArrowUpRight
                   size={20}

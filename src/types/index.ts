@@ -284,17 +284,32 @@ export interface ProductSubCategory {
   parentId: string;
 }
 
+export interface HomePageText {
+  id: string;
+  title: string;
+  text: string[];
+  buttonText: string;
+  categoryId: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface Category {
   id: string;
   name: string;
+  slug: string;
   imageUrl: string | null;
   parentId: string | null;
+  isNavigational: boolean;
+  isLeaf: boolean;
+  firstTitle: string;
+  secondTitle: string;
+  isOnHomePage: boolean;
+  parent?: Category | null;
+  subCategories?: Category[];
+  homePageTexts: HomePageText[];
   createdAt: string;
   updatedAt: string;
-  parent?: Category | null;
-  clientUrl: string;
-  description: string | null;
-  subCategories?: Category[];
 }
 
 // Addresses

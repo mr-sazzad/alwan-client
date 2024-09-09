@@ -6,6 +6,7 @@ import { useState } from "react";
 import { HiOutlineMenuAlt1 } from "react-icons/hi";
 import { Button } from "../ui/button";
 import { Skeleton } from "../ui/skeleton";
+import Sidebar from "./sidebar";
 
 export default function SheetComponent() {
   const [open, setOpen] = useState(false);
@@ -56,14 +57,14 @@ export default function SheetComponent() {
         <HiOutlineMenuAlt1 size={20} />
       </Button>
 
-      {/* <Sidebar
+      <Sidebar
         open={open}
         setOpen={setOpen}
         categories={convertedCategories}
         onBack={handleBack}
         onCategorySelect={handleCategorySelect}
         categoryStack={categoryStack}
-      /> */}
+      />
     </>
   );
 }
