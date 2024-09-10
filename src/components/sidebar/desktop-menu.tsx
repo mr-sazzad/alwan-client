@@ -32,7 +32,7 @@ const DesktopMenu: React.FC = () => {
   const categories = response?.data && transformCategories(response?.data);
 
   return (
-    <NavigationMenu>
+    <NavigationMenu className="relative z-10">
       <NavigationMenuList>
         {categories &&
           categories.map((parentCategory: any) => (
@@ -40,24 +40,25 @@ const DesktopMenu: React.FC = () => {
               <NavigationMenuTrigger className="bg-transparent hover:bg-transparent text-lg font-medium">
                 {parentCategory.name}
               </NavigationMenuTrigger>
-              <NavigationMenuContent className="drop-shadow-none rounded-none">
-                <div className="p-4 flex flex-row gap-7 justify-start relative w-screen px-[150px] rounded-none">
-                  <div className="flex flex-row">
+
+              <NavigationMenuContent>
+                <div className="ml-[150px] w-screen p-4">
+                  <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3 mt-14 mb-8">
                     {parentCategory.children.map((childCategory: any) => (
-                      <div key={childCategory.id}>
-                        {childCategory.clientUrl ? (
+                      <div key={childCategory.id} className="space-y-2">
+                        {childCategory.isLeaf ? (
                           <Link
                             href={`/categories/${childCategory.id}`}
-                            className="font-medium pt-5 p-4 text-sm"
+                            className="font-medium text-sm block text-muted-foreground hover:text-black"
                           >
                             {childCategory.name}
                           </Link>
                         ) : (
-                          <p className="text-sm font-medium pt-5 p-4 cursor-pointer hover:text-muted-foreground">
+                          <p className="font-medium text-sm cursor-default">
                             {childCategory.name}
                           </p>
                         )}
-                        <ul className="flex flex-col gap-3 sm:px-3 mx-auto px-4">
+                        <ul className="space-y-1 text-sm">
                           {childCategory.children?.map((subCategory: any) => (
                             <ListItem
                               key={subCategory.id}
@@ -90,15 +91,12 @@ const ListItem = React.forwardRef<
         <a
           ref={ref}
           className={cn(
-            "block select-none space-y-1 leading-none no-underline py-3 outline-none group",
+            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
             className
           )}
           {...props}
         >
-          <div className="relative text-sm font-medium leading-none text-muted-foreground group-hover:text-black pb-1">
-            {title}
-            <span className="absolute bottom-0 left-0 w-full h-0.5 bg-black transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-in-out origin-left"></span>
-          </div>
+          <div className="text-sm font-medium leading-none">{title}</div>
           <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
             {children}
           </p>

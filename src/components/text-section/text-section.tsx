@@ -22,19 +22,17 @@ const TextSection = () => {
 
   const homeText = response?.data[0];
 
-  console.log("HHH", homeText);
-
   return (
     <div>
       {homeText && (
         <div className="flex flex-col w-full justify-center items-center mt-10">
-          <h1 className="text-4xl font-bold uppercase mb-2">
+          <h1 className="text-4xl font-extrabold uppercase mb-2 text-center">
             {homeText.title}
           </h1>
           {homeText.text.map((txt: string, i: number) => (
             <p
               key={i}
-              className="text-center md:text-base text-sm text-muted-foreground "
+              className="text-center md:text-base text-sm text-muted-foreground w-full"
             >
               {txt}
             </p>

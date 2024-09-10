@@ -54,7 +54,7 @@ const Header = () => {
           </Link>
         </div>
 
-        <div className="hidden md:flex justify-center">
+        <div className="hidden md:flex justify-center w-full">
           <DesktopMenu />
         </div>
 

@@ -1,49 +1,130 @@
-import Image from "next/image";
-import Link from "next/link";
+"use client";
 
-import footerLogo from "../../images/footer-logo.png";
+import Link from "next/link";
+import { useState } from "react";
+import { PiGlobeHemisphereEast } from "react-icons/pi";
+import FeedbackDialog from "../modals/feedback-dialog";
 
 const Footer = () => {
-  return (
-    <div className="w-full mt-8 py-16 border-t">
-      <div className="flex sm:flex-row flex-col justify-around gap-3 w-full md:px-10 px-5 mb-2">
-        <div className="flex-1 flex flex-col gap-5 md:text-start text-center">
-          <Image
-            src={footerLogo}
-            alt="footer-logo"
-            width={1517}
-            height={292}
-            className="flex justify-start"
-          />
-          <p>+880 9606999695</p>
-        </div>
-        <div className="flex flex-col gap-4 flex-1">
-          <h3 className="text-xl font-semibold uppercase md:text-start text-center">
-            Information
-          </h3>
-          <div className="flex flex-col gap-1">
-            <Link href="/privacy-policy">Privacy Policy</Link>
-            <Link href="/faqs">FAQs</Link>
-          </div>
-        </div>
+  const [open, setOpen] = useState(false);
 
-        <div className="flex flex-col gap-4 flex-1">
-          <h3 className="text-xl font-semibold uppercase md:text-start text-center">
-            Contract Info
-          </h3>
-          <div className="flex flex-col gap-1">
-            <p>Gopalganj Sadar, Dhaka, Bangladesh</p>
-            <p>alwan.bd@gmail.com</p>
-            <div className="flex gap-2">
-              <p>01613980323</p>
-              <p className="text-gray-500">|</p>
-              <p>01862911593</p>
+  return (
+    <>
+      <footer className="w-full mt-8 py-16 bg-gray-50 border-t">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-12">
+            <div className="flex flex-col gap-4">
+              <h3 className="font-semibold text-lg uppercase">Resources</h3>
+              <div className="flex flex-col gap-2 text-sm text-gray-600">
+                <button
+                  className="hover:text-gray-900 transition-colors text-start"
+                  onClick={() => setOpen(true)}
+                >
+                  Site Feedback
+                </button>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-4">
+              <h3 className="font-semibold text-lg uppercase">Help</h3>
+              <div className="flex flex-col gap-2 text-sm text-gray-600">
+                <Link
+                  href="/returns"
+                  className="hover:text-gray-900 transition-colors"
+                >
+                  Returns
+                </Link>
+                <Link
+                  href="/order-status"
+                  className="hover:text-gray-900 transition-colors"
+                >
+                  Order Status
+                </Link>
+                <Link
+                  href="/shipping"
+                  className="hover:text-gray-900 transition-colors"
+                >
+                  Shipping and Delivery
+                </Link>
+                <Link
+                  href="/contact"
+                  className="hover:text-gray-900 transition-colors"
+                >
+                  Contact Us
+                </Link>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-4">
+              <h3 className="font-semibold text-lg uppercase">Company</h3>
+              <div className="flex flex-col gap-2 text-sm text-gray-600">
+                <Link
+                  href="/about"
+                  className="hover:text-gray-900 transition-colors"
+                >
+                  About Alwan
+                </Link>
+                <Link
+                  href="/sustainability"
+                  className="hover:text-gray-900 transition-colors"
+                >
+                  Sustainability
+                </Link>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-4">
+              <h3 className="font-semibold text-lg uppercase">
+                Terms & Conditions
+              </h3>
+              <div className="flex flex-col gap-2 text-sm text-gray-600">
+                <Link
+                  href="/terms"
+                  className="hover:text-gray-900 transition-colors"
+                >
+                  Terms & conditions
+                </Link>
+                <Link
+                  href="/faqs"
+                  className="hover:text-gray-900 transition-colors"
+                >
+                  FAQs
+                </Link>
+                <Link
+                  href="/terms-of-use"
+                  className="hover:text-gray-900 transition-colors"
+                >
+                  Terms of use
+                </Link>
+                <Link
+                  href="/privacy-policy"
+                  className="hover:text-gray-900 transition-colors"
+                >
+                  Privacy policy
+                </Link>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-4">
+              <h3 className="font-semibold text-lg uppercase">Location</h3>
+              <div className="flex items-center gap-2 text-gray-600">
+                <PiGlobeHemisphereEast className="text-xl" />
+                <span>Bangladesh</span>
+              </div>
             </div>
           </div>
+
+          <div className="border-t pt-8 text-center text-sm text-gray-600">
+            <p>
+              &copy; {new Date().getFullYear()} Alwan Ideal Lifestyle. All
+              rights reserved.
+            </p>
+          </div>
         </div>
-      </div>
-      <p className="text-center py-1">All rights reserved @Alwan clothing</p>
-    </div>
+      </footer>
+
+      <FeedbackDialog open={open} setOpen={setOpen} />
+    </>
   );
 };
 
