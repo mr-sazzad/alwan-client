@@ -1,42 +1,42 @@
 "use client";
 
+import { Heart, Loader2 } from "lucide-react";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import { IoIosCheckmarkCircleOutline } from "react-icons/io";
+import { IoCheckmarkCircleOutline } from "react-icons/io5";
+import { useDispatch } from "react-redux";
+
 import DetailsPageImageSlider from "@/components/cards/details-page-slider";
 import MaxWidth from "@/components/max-width";
+import NotificationDialog from "@/components/modals/notify-dialog";
 import ProductDetailsPageSkeleton from "@/components/skeletons/product-details-skeleton";
 import ReviewAndInfoTab from "@/components/tabs/review-and-info-tab";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
 import { addProductToCart } from "@/redux/api/cart/cartSlice";
 import { useGetSingleProductQuery } from "@/redux/api/products/productsApi";
-import { IProduct } from "@/types";
-import { useParams, useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
-import { IoIosCheckmarkCircleOutline } from "react-icons/io";
-import { IoCheckmarkCircleOutline } from "react-icons/io5";
-import { TbLoader } from "react-icons/tb";
-import { useDispatch } from "react-redux";
+import { IReadSizeVariant } from "@/types";
 
 const ProductDetailsPage = () => {
   const router = useRouter();
   const { product_id } = useParams();
   const dispatch = useDispatch();
-  const { data: product, isLoading } = useGetSingleProductQuery(product_id);
-
-  const [selectedSizeVariant, setSelectedSizeVariant] = useState<any | null>(
-    null
+  const { data: product, isLoading } = useGetSingleProductQuery(
+    product_id as string
   );
 
+  const [selectedSizeVariant, setSelectedSizeVariant] =
+    useState<IReadSizeVariant | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [qty, setQty] = useState(0);
+  const [isNotificationDialogOpen, setIsNotificationDialogOpen] =
+    useState(false);
 
   const availableQuantities = useRef(0);
 
   useEffect(() => {
-    if (
-      product &&
-      product.data.sizeVariants &&
-      product.data.sizeVariants.length > 0
-    ) {
+    if (product?.data.sizeVariants && product.data.sizeVariants.length > 0) {
       const initialSizeVariant = product.data.sizeVariants[0];
       setSelectedSizeVariant(initialSizeVariant);
       availableQuantities.current = initialSizeVariant.stock;
@@ -55,27 +55,19 @@ const ProductDetailsPage = () => {
     return <ProductDetailsPageSkeleton />;
   }
 
-  const handleQtyIncrease = () => {
+  const handleQtyChange = (increment: boolean) => {
     setQty((prev) => {
-      const maxQty = availableQuantities.current;
-      return prev < maxQty ? prev + 1 : prev;
+      const newQty = increment ? prev + 1 : prev - 1;
+      return Math.max(1, Math.min(newQty, availableQuantities.current));
     });
   };
 
-  const handleQtyDecrease = () => {
-    setQty((prev) => (prev > 1 ? prev - 1 : prev));
-  };
-
-  const handleSelectSizeVariant = (sizeVariant: any) => {
+  const handleSelectSizeVariant = (sizeVariant: IReadSizeVariant) => {
     setSelectedSizeVariant(sizeVariant);
-    if (sizeVariant) {
-      availableQuantities.current = sizeVariant.stock;
-      setQty(sizeVariant.stock > 0 ? 1 : 0);
-    }
   };
 
-  const handleAddToCart = (product: IProduct) => {
-    if (!selectedSizeVariant) {
+  const handleAddToCart = () => {
+    if (!selectedSizeVariant || !product) {
       toast({
         variant: "destructive",
         title: "Error",
@@ -86,7 +78,7 @@ const ProductDetailsPage = () => {
 
     dispatch(
       addProductToCart({
-        ...product,
+        ...product.data,
         orderSize: selectedSizeVariant.size.name,
         orderQty: qty,
         orderColor: selectedSizeVariant.color.name,
@@ -99,8 +91,8 @@ const ProductDetailsPage = () => {
     });
   };
 
-  const handleBuyNow = (product: any) => {
-    if (!selectedSizeVariant) {
+  const handleBuyNow = () => {
+    if (!selectedSizeVariant || !product) {
       toast({
         variant: "destructive",
         title: "Error",
@@ -115,11 +107,24 @@ const ProductDetailsPage = () => {
     setLoading(false);
   };
 
+  const handleFavorite = () => {
+    // Implement favorite functionality here
+    toast({
+      title: "Added to Favorites",
+      description: "This product has been added to your favorites.",
+    });
+  };
+
+  const isComingSoon = product?.data.statusTag === "coming soon";
+
   return (
-    <MaxWidth className="flex justify-center w-full">
-      <div className="mt-[90px] md:max-w-5xl w-full">
+    <MaxWidth className="flex flex-col items-center w-full">
+      <div className="mt-[100px] md:max-w-5xl w-full flex flex-col lg:gap-20 md:gap-16 gap-10">
         <div className="flex flex-col md:flex-row gap-5 relative w-full h-fit">
           <div className="md:hidden my-4 ml-5">
+            {isComingSoon && (
+              <p className="text-xs font-medium text-[#9E3500]"> Coming Soon</p>
+            )}
             <h2 className="text-lg font-medium capitalize">
               {product?.data.name}
             </h2>
@@ -133,32 +138,38 @@ const ProductDetailsPage = () => {
           {/* Image Slider */}
           <div className="flex justify-center items-center lg:h-[450px] lg:w-[450px] md:w-[320px] md:h-[320px] w-full relative flex-1 h-fit">
             {product?.data.imageUrls && (
-              <DetailsPageImageSlider urls={product?.data.imageUrls} />
+              <DetailsPageImageSlider urls={product.data.imageUrls} />
             )}
           </div>
 
           {/* Product Details */}
           <div className="flex-1 w-full h-full">
             <div className="hidden md:block">
+              {isComingSoon && (
+                <p className="text-xs font-medium text-[#9E3500]">
+                  Coming Soon
+                </p>
+              )}
               <h2 className="text-lg font-medium capitalize">
                 {product?.data.name}
               </h2>
               <p className="text-sm font-medium capitalize">
                 {product?.data.category.name}
               </p>
+
               <p className="md:mt-5 text-xl font-semibold">
                 TK. {selectedSizeVariant?.price}
               </p>
             </div>
 
             <div className="mt-3">
-              <p className="font-semibold">Select Size:</p>
+              <p className="font-medium">Select Size:</p>
               <div className="flex justify-between items-center gap-1 mt-2 w-full">
                 {product?.data.sizeVariants &&
                   product.data.sizeVariants.map(
-                    (sizeVariant: any, i: number) => (
+                    (sizeVariant: IReadSizeVariant) => (
                       <Button
-                        key={i}
+                        key={sizeVariant.id}
                         className="uppercase mr-1 px-6 w-full"
                         variant={
                           selectedSizeVariant?.id === sizeVariant.id
@@ -184,53 +195,78 @@ const ProductDetailsPage = () => {
 
             {/* quantity */}
             <div className="flex flex-col gap-2 mt-2">
-              <div className="flex gap-2 justify-between items-center border border-gray-200 rounded-full overflow-hidden h-10 w-full py-0.5">
-                <Button
-                  className="cursor-pointer p-1 flex-1 text-xl"
-                  onClick={handleQtyDecrease}
-                  variant="secondary"
-                >
-                  -
-                </Button>
-                <p className="flex-1 flex justify-center">{qty}</p>
-                <Button
-                  className="cursor-pointer p-1 flex-1 text-xl"
-                  onClick={handleQtyIncrease}
-                  variant="secondary"
-                >
-                  +
-                </Button>
-              </div>
+              {!isComingSoon && (
+                <div className="flex gap-2 justify-between items-center border border-gray-200 rounded-full overflow-hidden h-10 w-full py-0.5">
+                  <Button
+                    className="cursor-pointer p-1 flex-1 text-xl"
+                    onClick={() => handleQtyChange(false)}
+                    variant="secondary"
+                  >
+                    -
+                  </Button>
+                  <p className="flex-1 flex justify-center">{qty}</p>
+                  <Button
+                    className="cursor-pointer p-1 flex-1 text-xl"
+                    onClick={() => handleQtyChange(true)}
+                    variant="secondary"
+                  >
+                    +
+                  </Button>
+                </div>
+              )}
 
-              {/* add to cart button */}
-              <Button
-                className="px-6 flex gap-2 items-center rounded-full font-medium"
-                variant="outline"
-                onClick={() => handleAddToCart(product.data)}
-                disabled={!qty}
-                size="lg"
-              >
-                Add To Bag
-              </Button>
+              {isComingSoon ? (
+                <>
+                  <Button
+                    className="px-6 flex gap-2 items-center rounded-full font-medium"
+                    onClick={() => setIsNotificationDialogOpen(true)}
+                    size="lg"
+                  >
+                    Notify Me
+                  </Button>
+                  <Button
+                    className="px-6 flex gap-2 items-center rounded-full font-medium"
+                    variant="outline"
+                    onClick={handleFavorite}
+                    size="lg"
+                  >
+                    <Heart className="mr-2 h-4 w-4" />
+                    Favorite
+                  </Button>
+                </>
+              ) : (
+                <>
+                  {/* add to cart button */}
+                  <Button
+                    className="px-6 flex gap-2 items-center rounded-full font-medium"
+                    variant="outline"
+                    onClick={handleAddToCart}
+                    disabled={!qty}
+                    size="lg"
+                  >
+                    Add To Bag
+                  </Button>
 
-              {/* buy now button */}
-              <Button
-                className="px-6 flex gap-2 items-center rounded-full font-medium"
-                onClick={() => handleBuyNow(product)}
-                disabled={!qty}
-                size="lg"
-              >
-                {loading ? (
-                  <TbLoader size={16} className="animate-spin" />
-                ) : (
-                  "Buy It Now"
-                )}
-              </Button>
+                  {/* buy now button */}
+                  <Button
+                    className="px-6 flex gap-2 items-center rounded-full font-medium"
+                    onClick={handleBuyNow}
+                    disabled={!qty}
+                    size="lg"
+                  >
+                    {loading ? (
+                      <Loader2 size={16} className="animate-spin" />
+                    ) : (
+                      "Buy It Now"
+                    )}
+                  </Button>
+                </>
+              )}
             </div>
 
             {/* description */}
             <div className="mt-5">
-              {product.data.description &&
+              {product?.data.description &&
                 product.data.description.map((desc: string, i: number) => (
                   <ul key={i} className="mt-1 flex flex-col gap-2">
                     <li>
@@ -245,15 +281,15 @@ const ProductDetailsPage = () => {
             {/* features */}
             <div>
               <p className="text-lg font-semibold mt-3">Specifications:</p>
-              {product.data.features &&
+              {product?.data.features &&
                 product.data.features.map((info: string, i: number) => (
                   <ul key={i} className="flex flex-col gap-3">
                     <li className="flex items-center gap-1">
                       <IoIosCheckmarkCircleOutline
                         size={14}
-                        className="text-green-500"
+                        className="text-muted-foreground"
                       />
-                      <p className="sm:text-base text-sm text-muted-foreground">
+                      <p className="sm:text-base text-sm text-muted-foreground font-light">
                         {info}
                       </p>
                     </li>
@@ -264,10 +300,17 @@ const ProductDetailsPage = () => {
         </div>
 
         {/* Tabs Section */}
-        <div className="mt-16 md:mt-10 w-full">
+        <div className="w-full">
           <ReviewAndInfoTab />
         </div>
       </div>
+
+      <NotificationDialog
+        open={isNotificationDialogOpen}
+        setOpen={setIsNotificationDialogOpen}
+        productId={product?.data.id}
+        productName={product?.data.name}
+      />
     </MaxWidth>
   );
 };

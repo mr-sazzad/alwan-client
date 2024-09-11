@@ -49,7 +49,6 @@ const SearchReviewsDrawer: React.FC<SearchReviewsDrawerProps> = ({
   };
 
   if (!isProductsLoading) {
-    console.log("Products =>", products);
   }
 
   return (

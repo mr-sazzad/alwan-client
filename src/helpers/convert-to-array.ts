@@ -4,7 +4,6 @@ export const convertToArray = (isNumber: boolean, fullString: string) => {
     convertedArray = fullString
       .split(",")
       .map((item: string) => parseFloat(item.trim()));
-    console.log(convertedArray);
   } else {
     convertedArray = fullString.split(",").map((item: string) => item.trim());
   }

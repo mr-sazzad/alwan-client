@@ -76,7 +76,6 @@ const CategoryDrawer: React.FC<CategoryDrawerProps> = ({
   });
 
   useEffect(() => {
-    console.log("Category data:", response?.data);
     if (mode === "create") {
       form.reset({
         name: "",

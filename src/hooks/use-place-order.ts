@@ -84,8 +84,6 @@ export const usePlaceOrder = ({
       email: currentUser ? undefined : email,
     };
 
-    console.log("ORDER DATA", orderData);
-
     // Determine order items based on single product or cart
     if (productId && quantity) {
       orderData.items.push({

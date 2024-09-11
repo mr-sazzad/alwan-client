@@ -5,196 +5,184 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Mail } from "lucide-react";
+import Link from "next/link";
 
-const PrivacyPolicy = () => {
+const PrivacyPolicyPage = () => {
   return (
-    <MaxWidth>
-      <div className="mt-[100px] flex md:flex-row flex-col gap-5 md:px-[120px] px-3">
-        <div className="flex-1">
-          <h2 className="md:text-2xl text-xl md:font-semibold font-medium">
-            Privacy Policy
-          </h2>
-          <p className="text-sm mb-5 text-muted-foreground">
-            alwan ideal lifestyle
-          </p>
-          <p>
-            We are committed to protecting your privacy and ensuring the
-            security of your personal information. This Privacy Policy outlines
-            how we collect, use, disclose, and protect the information you
-            provide to us when you use our website or interact with our brand.
-            We collect personal information to provide and improve our services,
-            respond to your inquiries, and communicate with you about our
-            offerings. We implement a variety of security measures to maintain
-            the safety of your personal information. Your information is only
-            accessible to a limited number of authorized personnel who are
-            required to keep the information confidential. We do not sell,
-            trade, or otherwise transfer your personal information to outside
-            parties without your consent, except as required by law. By using
-            our website, you consent to the terms of this Privacy Policy. We may
-            update this policy from time to time, and any changes will be posted
-            on this page. We encourage you to review our Privacy Policy
-            periodically to stay informed about how we are protecting your
-            information. If you have any questions or concerns about our Privacy
-            Policy, please contact us.
-          </p>
-        </div>
-        <div className="flex-1">
-          <Accordion type="single" collapsible className="w-full">
-            <AccordionItem value="item-1">
-              <AccordionTrigger className="text-lg font-medium">
-                1. Information We Collect:
-              </AccordionTrigger>
-              <AccordionContent>
-                <strong>Personal Information:</strong>
-                <p className="mb-3">
-                  When you make a purchase, register for an account, sign up for
-                  our newsletter, or interact with us in any way, we may collect
-                  personal information such as your name, email address,
-                  shipping address, phone number, and payment details.
-                </p>
-                <strong>Cookies:</strong>
-                <p>
-                  We use cookies and similar tracking technologies to enhance
-                  your browsing experience, analyze website traffic, and
-                  personalize content and advertisements.
-                </p>
-              </AccordionContent>
-            </AccordionItem>
-            <AccordionItem value="item-2">
-              <AccordionTrigger className="text-lg font-medium">
-                2. How We Use Your Information
-              </AccordionTrigger>
-              <AccordionContent>
-                <p className="mb-3">
-                  <strong>To Process Orders:</strong> We use your personal
-                  information to process and fulfill your orders, communicate
-                  with you about your purchases, and provide customer support.
-                </p>
+    <MaxWidth className="mt-[110px] mb-16">
+      <h1 className="md:text-3xl sm:text-2xl text-xl font-bold md:text-start text-center mb-4">
+        Privacy Policy
+      </h1>
+      <p className="text-sm md:text-base md:text-start text-center text-muted-foreground mb-8">
+        At Alwan Ideal, we are committed to protecting your privacy and ensuring
+        the security of your personal information.
+      </p>
 
-                <p className="mb-3">
-                  <strong>Marketing Communication:</strong> With your consent,
-                  we may send you promotional emails about new products, special
-                  offers, and other updates related to our brand.
-                </p>
-                <p className="mb-3">
-                  <strong>Improving Our Services:</strong> We analyze usage data
-                  to improve our website, products, and services, and to tailor
-                  our marketing efforts to your preferences.{" "}
-                </p>
-                <p>
-                  <strong>Legal Compliance:</strong>We may use your information
-                  to comply with legal obligations, enforce our terms and
-                  policies, and protect the rights, property, or safety of ALWAN
-                  and our customers.
-                </p>
-              </AccordionContent>
-            </AccordionItem>
-            <AccordionItem value="item-3">
-              <AccordionTrigger className="text-lg font-medium">
-                3. Data Sharing and Disclosure
-              </AccordionTrigger>
-              <AccordionContent>
-                <p className="mb-3">
-                  <strong>Third-Party Service Providers:</strong> We may share
-                  your information with trusted third-party service providers
-                  who assist us in operating our website, processing payments,
-                  and delivering products to you.
-                </p>
-                <p className="mb-3">
-                  <strong>Legal Requirements:</strong> We may disclose your
-                  information in response to legal requests or to comply with
-                  applicable laws, regulations, or court orders.
-                </p>
-                <p>
-                  <strong>Business Transfers:</strong> If ALWAN is involved in a
-                  merger, acquisition, or sale of assets, your information may
-                  be transferred as part of the transaction. We will notify you
-                  via email or prominent notice on our website if your
-                  information becomes subject to a different privacy policy.
-                </p>
-              </AccordionContent>
-            </AccordionItem>
-            <AccordionItem value="item-4">
-              <AccordionTrigger className="text-lg font-medium">
-                4. Data Security
-              </AccordionTrigger>
-              <AccordionContent>
-                <p className="mb-3">
-                  We implement industry-standard security measures to protect
-                  your personal information from unauthorized access,
-                  alteration, disclosure, or destruction.
-                </p>
-                <p>
-                  However, please note that no method of transmission over the
-                  internet or electronic storage is 100% secure, and we cannot
-                  guarantee the absolute security of your data.
-                </p>
-              </AccordionContent>
-            </AccordionItem>
-            <AccordionItem value="item-5">
-              <AccordionTrigger className="text-lg font-medium">
-                {" "}
-                5. Your Privacy Choices
-              </AccordionTrigger>
-              <AccordionContent>
-                <p className="mb-3">
-                  You have the right to access, update, or delete your personal
-                  information at any time. You can manage your account settings
-                  and communication preferences through your account dashboard
-                  or by contacting us directly.
-                </p>
-                <p>
-                  You may opt out of receiving marketing communications from us
-                  by following the unsubscribe instructions provided in our
-                  emails or by contacting us.
-                </p>
-              </AccordionContent>
-            </AccordionItem>
-            <AccordionItem value="item-6">
-              <AccordionTrigger className="text-lg font-medium">
-                6. Children&apos;s Privacy
-              </AccordionTrigger>
-              <AccordionContent>
-                <p>
-                  Our website and services are not directed to children under
-                  the age of 13. We do not knowingly collect personal
-                  information from children. If you believe that we have
-                  inadvertently collected information from a child, please
-                  contact us immediately.
-                </p>
-              </AccordionContent>
-            </AccordionItem>
-            <AccordionItem value="item-7">
-              <AccordionTrigger className="text-lg font-medium">
-                7. Changes to This Privacy Policy
-              </AccordionTrigger>
-              <AccordionContent>
-                <p>
-                  We reserve the right to update or modify this Privacy Policy
-                  at any time. Any changes will be effective immediately upon
-                  posting the updated policy on our website. We encourage you to
-                  review this policy periodically for any updates.
-                </p>
-              </AccordionContent>
-            </AccordionItem>
-            <AccordionItem value="item-8">
-              <AccordionTrigger className="text-lg font-medium">
-                {" "}
-                8. Contact Us
-              </AccordionTrigger>
-              <AccordionContent>
-                <p>
-                  If you have any questions, concerns, or requests regarding
-                  this Privacy Policy or our privacy practices, please contact
-                  us at alwan.bd@gmail.com.
-                </p>
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
-        </div>
-      </div>
+      <Card className="mb-8">
+        <CardContent className="pt-6">
+          <p className="text-sm text-muted-foreground mb-4">
+            This Privacy Policy outlines how we collect, use, disclose, and
+            safeguard your information when you visit our website or make a
+            purchase from Alwan Ideal. Please read this privacy policy
+            carefully. If you do not agree with the terms of this privacy
+            policy, please do not access the site.
+          </p>
+        </CardContent>
+      </Card>
+
+      <Accordion type="single" collapsible className="w-full mb-12">
+        <AccordionItem value="section-1">
+          <AccordionTrigger>1. Information We Collect</AccordionTrigger>
+          <AccordionContent>
+            <p>
+              We collect personal information that you voluntarily provide to us
+              when you:
+            </p>
+            <ul className="list-disc list-inside mt-2 space-y-1">
+              <li>Register on the website</li>
+              <li>Place an order</li>
+              <li>Subscribe to our newsletter</li>
+              <li>Participate in a survey or contest</li>
+              <li>Contact us for customer support</li>
+            </ul>
+            <p className="mt-2">
+              This information may include your name, email address, phone
+              number, and billing/shipping address.
+            </p>
+          </AccordionContent>
+        </AccordionItem>
+        <AccordionItem value="section-2">
+          <AccordionTrigger>2. How We Use Your Information</AccordionTrigger>
+          <AccordionContent>
+            <p>We use the information we collect to:</p>
+            <ul className="list-disc list-inside mt-2 space-y-1">
+              <li>Process and fulfill your orders</li>
+              <li>
+                Communicate with you about your orders, products, and services
+              </li>
+              <li>Provide customer support</li>
+              <li>
+                Send you marketing communications (if you&apos;ve opted in)
+              </li>
+              <li>Improve our website and product offerings</li>
+              <li>Comply with legal obligations</li>
+            </ul>
+          </AccordionContent>
+        </AccordionItem>
+        <AccordionItem value="section-3">
+          <AccordionTrigger>
+            3. Information Sharing and Disclosure
+          </AccordionTrigger>
+          <AccordionContent>
+            <p>We may share your personal information with:</p>
+            <ul className="list-disc list-inside mt-2 space-y-1">
+              <li>
+                Service providers who assist us in operating our website and
+                conducting our business
+              </li>
+              <li>
+                Law enforcement or government agencies when required by law
+              </li>
+              <li>
+                Other parties in connection with a company transaction, such as
+                a merger or sale of assets
+              </li>
+            </ul>
+            <p className="mt-2">
+              We do not sell or rent your personal information to third parties
+              for their marketing purposes.
+            </p>
+          </AccordionContent>
+        </AccordionItem>
+        <AccordionItem value="section-4">
+          <AccordionTrigger>4. Data Security</AccordionTrigger>
+          <AccordionContent>
+            <p>
+              We implement a variety of security measures to maintain the safety
+              of your personal information, including:
+            </p>
+            <ul className="list-disc list-inside mt-2 space-y-1">
+              <li>
+                Using secure socket layer (SSL) technology for data transmission
+              </li>
+              <li>Encrypting sensitive information</li>
+              <li>Regularly updating our security practices</li>
+              <li>
+                Restricting access to personal information to employees on a
+                need-to-know basis
+              </li>
+            </ul>
+          </AccordionContent>
+        </AccordionItem>
+        <AccordionItem value="section-5">
+          <AccordionTrigger>
+            5. Cookies and Tracking Technologies
+          </AccordionTrigger>
+          <AccordionContent>
+            <p>
+              We use cookies and similar tracking technologies to track activity
+              on our website and hold certain information. You can instruct your
+              browser to refuse all cookies or to indicate when a cookie is
+              being sent.
+            </p>
+          </AccordionContent>
+        </AccordionItem>
+        <AccordionItem value="section-6">
+          <AccordionTrigger>6. Your Rights</AccordionTrigger>
+          <AccordionContent>
+            <p>You have the right to:</p>
+            <ul className="list-disc list-inside mt-2 space-y-1">
+              <li>Access and receive a copy of your personal information</li>
+              <li>Rectify or update your personal information</li>
+              <li>Request deletion of your personal information</li>
+              <li>Object to the processing of your personal information</li>
+              <li>
+                Request restrictions on the processing of your personal
+                information
+              </li>
+            </ul>
+          </AccordionContent>
+        </AccordionItem>
+        <AccordionItem value="section-7">
+          <AccordionTrigger>7. Changes to This Privacy Policy</AccordionTrigger>
+          <AccordionContent>
+            <p>
+              We may update our Privacy Policy from time to time. We will notify
+              you of any changes by posting the new Privacy Policy on this page
+              and updating the &quot;Last Updated&quot; date.
+            </p>
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-xl font-semibold">
+            Contact Us About Privacy
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-sm text-muted-foreground mb-4">
+            If you have any questions or concerns about our Privacy Policy,
+            please don&apos;t hesitate to contact us.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 items-center">
+            <Link href="/contact" passHref>
+              <Button className="w-full sm:w-auto">
+                <Mail className="mr-2 h-4 w-4" /> Contact Us
+              </Button>
+            </Link>
+          </div>
+          <p className="text-xs text-muted-foreground mt-4">
+            Alternatively, you can email us directly at: alwan.bd@gmail.com
+          </p>
+        </CardContent>
+      </Card>
     </MaxWidth>
   );
 };
 
-export default PrivacyPolicy;
+export default PrivacyPolicyPage;

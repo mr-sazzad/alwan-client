@@ -54,8 +54,6 @@ const FeedbackDialog: React.FC<FeedbackDialogProps> = ({ open, setOpen }) => {
     try {
       const result: any = await addFeedback(values);
 
-      console.log(result);
-
       if (!result.data.data.id) {
         toast({
           title: "Feedback Submission",

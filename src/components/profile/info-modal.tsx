@@ -62,11 +62,7 @@ const InfoModal: React.FC<IInfoModalProps> = ({
     }
   }, [user, form]);
 
-  console.log("USER FROM PROFILE =>", user);
-
   const onSubmit = async (values: z.infer<typeof profileInfoSchema>) => {
-    console.log("VALUES FROM PROFILE =>", values);
-
     const requestedData = {
       username: values.username || user?.data.username,
       email: user.email || values.email,

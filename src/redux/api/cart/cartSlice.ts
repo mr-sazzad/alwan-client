@@ -40,13 +40,8 @@ const cartSlice = createSlice({
       );
 
       if (existingProduct) {
-        console.log("HELLO I AM HERE");
         existingProduct.orderQty += 1;
       } else {
-        console.log(
-          "STATE PAYLOAD",
-          JSON.parse(JSON.stringify(action.payload))
-        );
         state.products.push(action.payload);
       }
 

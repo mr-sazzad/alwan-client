@@ -23,8 +23,6 @@ const ProfileProcessingOrderItem: React.FC<
     // order cancel handler goes here
   };
 
-  console.log("ITEMS FROM PROFILE PROCESSING ORDER ITEM => ", items);
-
   return (
     <div>
       {items?.map((item) => (

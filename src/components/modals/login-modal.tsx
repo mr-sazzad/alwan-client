@@ -1,56 +1,55 @@
 "use client";
 
-import { getUserFromLocalStorage } from "@/helpers/jwt";
-import { setToLocalStorage } from "@/helpers/local-storage";
-import { useSignInUserMutation } from "@/redux/api/auth/auth-api";
-import { loginSchema } from "@/schemas/login-schemas";
-import { zodResolver } from "@hookform/resolvers/zod";
-import Cookies from "js-cookie";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { FcGoogle } from "react-icons/fc";
-import { RiLoaderLine } from "react-icons/ri";
-import { z } from "zod";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "../ui/dialog";
-import { Form, FormControl, FormField, FormItem, FormLabel } from "../ui/form";
-import { Input } from "../ui/input";
-import { Separator } from "../ui/separator";
-import { toast } from "../ui/use-toast";
-import ForgorPassWordDrawer from "./forgot-pass-drawer";
+} from "@/components/ui/dialog";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
+import { useToast } from "@/components/ui/use-toast";
+import {
+  getFromLocalStorage,
+  setToLocalStorage,
+} from "@/helpers/local-storage";
+import { useSignInUserMutation } from "@/redux/api/auth/auth-api";
+import { loginSchema } from "@/schemas/login-schemas";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { FcGoogle } from "react-icons/fc";
+import { z } from "zod";
+import ForgotPasswordDrawer from "./forgot-pass-drawer";
 
 interface LoginModalProps {
   open: boolean;
-  setOpen: Dispatch<SetStateAction<boolean>>;
+  setOpen: (open: boolean) => void;
   handler: () => void;
 }
 
-const LoginModal: React.FC<LoginModalProps> = ({ open, setOpen, handler }) => {
-  const [isOpen, setIsOpen] = useState(false);
+export default function LoginModal({
+  open,
+  setOpen,
+  handler,
+}: LoginModalProps) {
+  const [isPasswordResetOpen, setIsPasswordResetOpen] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [isResetButtonDisabled, setIsResetButtonDisabled] = useState(false);
+  const [resetTimer, setResetTimer] = useState(0);
   const [signInUser, { isLoading }] = useSignInUserMutation();
-  // const { data: user, isLoading } = useLoginWithGoogleQuery();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-
-  useEffect(() => {
-    const checkAuthentication = () => {
-      const user = getUserFromLocalStorage();
-      setIsAuthenticated(!!user);
-    };
-
-    checkAuthentication();
-  }, []);
-
-  //! accessToken from cookie
-  // const accessToken = Cookies.get("accessToken") as string;
-
-  // console.log("Access token =>", accessToken);
+  const { toast } = useToast();
 
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
@@ -60,49 +59,95 @@ const LoginModal: React.FC<LoginModalProps> = ({ open, setOpen, handler }) => {
     },
   });
 
-  const onSubmit = async (data: z.infer<typeof loginSchema>) => {
-    const res: any = await signInUser(data);
+  useEffect(() => {
+    const lastResetTime = getFromLocalStorage("lastPasswordResetTime");
+    if (lastResetTime) {
+      const timeDiff = Date.now() - parseInt(lastResetTime);
+      if (timeDiff < 60000) {
+        setIsResetButtonDisabled(true);
+        const remainingTime = Math.ceil((60000 - timeDiff) / 1000);
+        setResetTimer(remainingTime);
+      } else {
+        setIsResetButtonDisabled(false);
+        setResetTimer(0);
+      }
+    }
+  }, []);
 
-    if (res?.data.data.accessToken) {
-      setToLocalStorage("alwan-user-access-token", res.data.data.accessToken);
-      setOpen(false);
-      form.reset();
-      toast({
-        title: "Login alert",
-        description: "Congratulations you are now logged in",
-      });
-    } else {
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (isResetButtonDisabled && resetTimer > 0) {
+      interval = setInterval(() => {
+        setResetTimer((prevTimer) => {
+          const newTimer = prevTimer - 1;
+          if (newTimer <= 0) {
+            setIsResetButtonDisabled(false);
+            clearInterval(interval);
+            return 0;
+          }
+          return newTimer;
+        });
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [isResetButtonDisabled, resetTimer]);
+
+  const onSubmit = async (data: z.infer<typeof loginSchema>) => {
+    try {
+      const res = await signInUser(data).unwrap();
+      if (res?.data?.accessToken) {
+        setToLocalStorage("alwan-user-access-token", res.data.accessToken);
+        setOpen(false);
+        form.reset();
+        toast({
+          title: "Login Successful",
+          description: "You are now logged in",
+        });
+      }
+    } catch (error) {
       toast({
         variant: "destructive",
         title: "Login Error",
-        description: "Something went wrong Please try again",
+        description: "Invalid credentials. Please try again.",
       });
     }
   };
 
-  const accessToken = Cookies.get("accessToken") as string;
-  console.log("Access token =>", accessToken);
+  const togglePasswordVisibility = () => setShowPassword(!showPassword);
+
+  const handleForgotPasswordClick = () => {
+    setIsPasswordResetOpen(true);
+  };
+
+  const handleResetSent = () => {
+    setIsResetButtonDisabled(true);
+    setResetTimer(60);
+    const currentTime = Date.now();
+    setToLocalStorage("lastPasswordResetTime", currentTime.toString());
+  };
 
   return (
-    <div>
+    <>
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="md:max-w-[500px] sm:max-w-[425px] rounded">
+        <DialogContent className="sm:max-w-[425px] md:max-w-lg rounded">
           <DialogHeader>
-            <DialogTitle className="text-xl">Log In</DialogTitle>
-            <DialogDescription>Sign in to your account.</DialogDescription>
+            <DialogTitle className="text-2xl font-medium">Log In</DialogTitle>
+            <DialogDescription className="text-base">
+              Sign in to your account to continue.
+            </DialogDescription>
           </DialogHeader>
-          {/* FORM */}
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <FormField
                 control={form.control}
                 name="email"
                 render={({ field }) => (
-                  <FormItem className="mb-5">
+                  <FormItem>
                     <FormLabel>Email</FormLabel>
                     <FormControl>
                       <Input placeholder="example@gmail.com" {...field} />
                     </FormControl>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -113,57 +158,101 @@ const LoginModal: React.FC<LoginModalProps> = ({ open, setOpen, handler }) => {
                   <FormItem>
                     <FormLabel>Password</FormLabel>
                     <FormControl>
-                      <Input type="password" placeholder="******" {...field} />
+                      <div className="relative">
+                        <Input
+                          type={showPassword ? "text" : "password"}
+                          placeholder="••••••"
+                          {...field}
+                        />
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                          onClick={togglePasswordVisibility}
+                          aria-label={
+                            showPassword ? "Hide password" : "Show password"
+                          }
+                        >
+                          {showPassword ? (
+                            <EyeOff className="h-4 w-4 text-gray-500" />
+                          ) : (
+                            <Eye className="h-4 w-4 text-gray-500" />
+                          )}
+                        </Button>
+                      </div>
                     </FormControl>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
               <Button
+                type="button"
                 variant="link"
-                className="text-xs font-normal px-1"
-                onClick={() => setIsOpen(true)}
+                className="px-0 font-normal text-xs"
+                onClick={handleForgotPasswordClick}
+                disabled={isResetButtonDisabled}
               >
-                Forgot Password?
+                {isResetButtonDisabled
+                  ? `Forgot Password? (${resetTimer}s)`
+                  : "Forgot Password?"}
               </Button>
-              <DialogFooter>
-                <Button type="submit" className="mt-4 w-full">
-                  {isLoading ? (
-                    <RiLoaderLine className="animate-spin h-5 w-5" />
-                  ) : (
-                    "Log In"
-                  )}
-                </Button>
-              </DialogFooter>
+              <div className="text-xs text-muted-foreground">
+                By continuing, I agree to Alwan&apos;s{" "}
+                <a
+                  href="/privacy-policy"
+                  className="underline hover:text-primary"
+                >
+                  Privacy Policy
+                </a>{" "}
+                and{" "}
+                <a
+                  href="/terms-of-use"
+                  className="underline hover:text-primary"
+                >
+                  Terms of Use
+                </a>
+                .
+              </div>
+              <Button type="submit" className="w-full" disabled={isLoading}>
+                {isLoading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Logging in...
+                  </>
+                ) : (
+                  "Log In"
+                )}
+              </Button>
             </form>
           </Form>
-          <div className="flex flex-col gap-5 w-full">
-            {/* GOOGLE LOGIN PART */}
-            <div className="flex gap-2 items-center w-full">
-              <Separator orientation="horizontal" className="flex-1" />
-              <span className="text-sm text-muted-foreground">OR</span>
-              <Separator orientation="horizontal" className="flex-1" />
+          <div className="relative my-4">
+            <div className="absolute inset-0 flex items-center">
+              <Separator className="w-full" />
             </div>
-            <div className="w-full">
-              <Button
-                className="w-full flex gap-2"
-                variant="outline"
-                type="submit"
-                onClick={handler}
-              >
-                <FcGoogle />
-                <span className="text-slate-500">Sign In With Google</span>
-              </Button>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-background px-2 text-muted-foreground">
+                Or continue with
+              </span>
             </div>
           </div>
+          <Button
+            variant="outline"
+            type="button"
+            className="w-full"
+            onClick={handler}
+          >
+            <FcGoogle className="mr-2 h-4 w-4" />
+            Sign In With Google
+          </Button>
         </DialogContent>
       </Dialog>
 
-      <ForgorPassWordDrawer
-        open={isOpen}
-        setOpen={setIsOpen}
-      ></ForgorPassWordDrawer>
-    </div>
+      <ForgotPasswordDrawer
+        open={isPasswordResetOpen}
+        setOpen={setIsPasswordResetOpen}
+        onResetSent={handleResetSent}
+      />
+    </>
   );
-};
-
-export default LoginModal;
+}

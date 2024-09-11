@@ -37,8 +37,6 @@ const SearchDialog: React.FC<ISearchDialogProps> = ({
     );
   }, [products, searchTerm]);
 
-  console.log("PRODUCTS =>", products);
-
   const handleGoToDetailsPage = (id: string) => {
     setSearchTerm("");
     router.push(`/products/${id}`);

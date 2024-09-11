@@ -27,12 +27,14 @@ export default function ShippingPage() {
   return (
     <MaxWidth className="mt-[100px]">
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-4xl font-bold mb-6">Shipping Information</h1>
-        <p className="text-lg mb-8">
-          At Alwan, we&apos;npx shadcn@latest add badge re committed to
-          delivering tranquility and mindfulness to your doorstep across
-          Bangladesh. Our shipping process is designed to be as smooth and
-          stress-free as your journey to inner peace.
+        <h1 className="text-4xl font-bold mb-6 text-center">
+          Shipping Information
+        </h1>
+        <p className="text-lg mb-8 text-center text-muted-foreground">
+          At Alwan, we&apos;re committed to delivering tranquility and
+          mindfulness to your doorstep across Bangladesh. Our shipping process
+          is designed to be as smooth and stress-free as your journey to inner
+          peace.
         </p>
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mb-12">
