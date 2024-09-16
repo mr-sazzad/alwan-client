@@ -31,7 +31,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 
-import { checkOutSchema } from "@/schemas/checkout-schema";
+import { addressSchema } from "@/schemas/address-schema";
 import { FormValues, IDistrict, IDivision, IUnion, IUpazila } from "@/types";
 
 import districtData from "../../../public/address/district.json";
@@ -40,7 +40,7 @@ import unionData from "../../../public/address/union.json";
 import upazilaData from "../../../public/address/upazila.json";
 import { getNameById } from "../utils/get-name-by-id";
 
-interface IAddressModalProps {
+interface IAddressDialogProps {
   addressModalOpen: boolean;
   setAddressModalOpen: (open: boolean) => void;
   currentUser: any;
@@ -51,7 +51,7 @@ interface IAddressModalProps {
   resetForm: boolean;
 }
 
-const AddressModal: React.FC<IAddressModalProps> = ({
+const AddressDialog: React.FC<IAddressDialogProps> = ({
   addressModalOpen,
   setAddressModalOpen,
   currentUser,
@@ -66,7 +66,7 @@ const AddressModal: React.FC<IAddressModalProps> = ({
   const [filteredUnions, setFilteredUnions] = useState<IUnion[]>([]);
 
   const form = useForm<FormValues>({
-    resolver: zodResolver(checkOutSchema),
+    resolver: zodResolver(addressSchema),
     defaultValues: {
       recipientName: "",
       email: "",
@@ -77,7 +77,6 @@ const AddressModal: React.FC<IAddressModalProps> = ({
       upazila: "",
       union: "",
       streetAddress: "",
-      orderNote: "",
     },
   });
 
@@ -91,9 +90,8 @@ const AddressModal: React.FC<IAddressModalProps> = ({
         division: selectedAddress.divisionId,
         district: selectedAddress.districtId,
         upazila: selectedAddress.upazilaId,
-        union: selectedAddress.union,
+        union: selectedAddress.unionId,
         streetAddress: selectedAddress.streetAddress,
-        orderNote: "",
       });
 
       const districts = districtData.filter(
@@ -117,15 +115,20 @@ const AddressModal: React.FC<IAddressModalProps> = ({
     const finalValues: FormValues = {
       ...values,
       division: getNameById(values.division, divisionData) || "",
+      divisionId: values.division,
       district: getNameById(values.district, districtData) || "",
+      districtId: values.district,
       upazila: getNameById(values.upazila, upazilaData) || "",
+      upazilaId: values.upazila,
       union: getNameById(values.union, unionData) || "",
+      unionId: values.union,
     };
 
     submitHandler(finalValues);
 
     if (resetForm) {
       form.reset();
+      console.log("Form reset");
     }
   };
 
@@ -136,7 +139,12 @@ const AddressModal: React.FC<IAddressModalProps> = ({
           <DialogTitle>{title}</DialogTitle>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form
+            onSubmit={form.handleSubmit(onSubmit, (errors) => {
+              console.log("Form validation errors:", errors);
+            })}
+            className="space-y-4"
+          >
             <FormField
               control={form.control}
               name="recipientName"
@@ -342,23 +350,14 @@ const AddressModal: React.FC<IAddressModalProps> = ({
               )}
             />
 
-            <FormField
-              control={form.control}
-              name="orderNote"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Order Note</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="Any special instructions for your order"
-                      {...field}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-
-            <Button type="submit" className="w-full" disabled={isLoading}>
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={isLoading}
+              onClick={() =>
+                console.log("Form state before submission:", form.getValues())
+              }
+            >
               {isLoading ? (
                 <>
                   <PiSpinner className="mr-2 h-4 w-4 animate-spin" />
@@ -375,4 +374,4 @@ const AddressModal: React.FC<IAddressModalProps> = ({
   );
 };
 
-export default AddressModal;
+export default AddressDialog;

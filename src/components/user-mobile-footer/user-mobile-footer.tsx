@@ -4,13 +4,13 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import Cart from "../cart/cart";
+import Favorite from "../favorite/favorite";
 import SearchDialog from "../search/search-dialog";
-import Wishlist from "../wishlist/wishlist";
 
 const UserMobileFooter = () => {
   const [searchDialogOpen, setSearchDialogOpen] = useState(false);
   const [cartModelOpen, setCartModelOpen] = useState(false);
-  const [wishlistModelOpen, setWishlistModelOpen] = useState(false);
+  const [favoriteModelOpen, setFavoriteModelOpen] = useState(false);
 
   // pathname
   const pathname = usePathname();
@@ -19,12 +19,12 @@ const UserMobileFooter = () => {
     setSearchDialogOpen(true);
   };
   const handleCartModal = () => {
-    setWishlistModelOpen(false);
+    setFavoriteModelOpen(false);
     setCartModelOpen(true);
   };
   const handleWishlistModal = () => {
     setCartModelOpen(false);
-    setWishlistModelOpen(true);
+    setFavoriteModelOpen(true);
   };
 
   const userMobileMenu = useUserMobileMenu({
@@ -84,7 +84,7 @@ const UserMobileFooter = () => {
         <Cart cartOpen={cartModelOpen} setCartOpen={setCartModelOpen} />
       </div>
       <div className="hidden">
-        <Wishlist open={wishlistModelOpen} setOpen={setWishlistModelOpen} />
+        <Favorite open={favoriteModelOpen} setOpen={setFavoriteModelOpen} />
       </div>
     </div>
   );

@@ -35,7 +35,7 @@ const DesktopMenu: React.FC = () => {
     <NavigationMenu className="relative z-10">
       <NavigationMenuList>
         {categories &&
-          categories.map((parentCategory: any) => (
+          categories?.map((parentCategory: any) => (
             <NavigationMenuItem key={parentCategory.id}>
               <NavigationMenuTrigger className="bg-transparent hover:bg-transparent text-lg font-medium">
                 {parentCategory.name}

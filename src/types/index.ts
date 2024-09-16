@@ -351,9 +351,12 @@ export interface FormValues {
   phone: string;
   altPhone: string;
   division: string;
+  divisionId: string;
   district: string;
+  districtId: string;
   upazila: string;
+  upazilaId: string;
   union: string;
+  unionId: string;
   streetAddress: string;
-  orderNote?: string;
 }

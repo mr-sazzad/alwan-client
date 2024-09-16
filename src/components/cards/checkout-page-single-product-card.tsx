@@ -52,8 +52,8 @@ const CheckoutPageSingleProductCard: React.FC<
           <div className="relative w-[100px] h-[100px]">
             <ImageSlider urls={product.imageUrls} />
           </div>
-          <div className="flex flex-col gap-3 w-full">
-            <p className="text-muted-foreground">
+          <div className="flex flex-col gap-2 w-full">
+            <p className="text-muted-foreground text-lg">
               {product.name.length > 27
                 ? product.name.slice(0, 25) + "..."
                 : product.name}
@@ -66,11 +66,9 @@ const CheckoutPageSingleProductCard: React.FC<
             </div>
 
             <div className="flex justify-between items-center">
-              <div className="flex gap-1 items-center font-medium">
-                <span className="bg-gradient-to-r from-purple-500 to-pink-500 text-transparent bg-clip-text">
-                  TK.
-                </span>
-                <p className="bg-gradient-to-r from-purple-500 to-pink-500 text-transparent bg-clip-text">
+              <div className="flex gap-1 items-center font-medium text-lg">
+                <span className="bg-clip-text">TK.</span>
+                <p className="bg-clip-text">
                   {selectedSizeVariant?.price || product.sizeVariants[0].price}
                 </p>
               </div>

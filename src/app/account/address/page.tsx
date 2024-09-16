@@ -2,7 +2,7 @@
 
 import AlertDialogComp from "@/components/alert-dialog/alert-dialog";
 import AlwanBreadCrumb from "@/components/breadcrumbs/breadcrumb";
-import AddressModal from "@/components/profile/address-update-modal";
+import AddressDialog from "@/components/profile/address-dialog";
 import AddressSkeleton from "@/components/skeletons/profile-address-skeleton";
 import { Button } from "@/components/ui/button";
 import {
@@ -325,7 +325,7 @@ const Address = () => {
         </div>
       )}
 
-      <AddressModal
+      <AddressDialog
         addressModalOpen={open}
         setAddressModalOpen={setOpen}
         currentUser={response?.data}
@@ -346,10 +346,9 @@ const Address = () => {
         setOpen={setDialogOpen}
         title="Are you absolutely sure?"
         description="This action cannot be undone. This will permanently delete your address and remove data from our servers."
-        buttonText="continue"
+        buttonText="Continue"
         handler={handleAddressDelete}
         loading={isAddressDeleting}
-        className="bg-destructive hover:bg-destructive/80"
       />
     </>
   );

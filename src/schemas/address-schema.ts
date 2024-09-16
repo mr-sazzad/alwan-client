@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const checkOutSchema = z.object({
+export const addressSchema = z.object({
   recipientName: z.string().min(1, { message: "Please enter your name" }),
   email: z.string().email({ message: "Please enter a valid email address" }),
   phone: z
@@ -19,5 +19,4 @@ export const checkOutSchema = z.object({
   streetAddress: z
     .string()
     .min(3, { message: "Please fill the address carefully" }),
-  orderNote: z.string().optional(),
 });

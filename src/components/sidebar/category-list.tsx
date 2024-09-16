@@ -48,31 +48,32 @@ export function CategoryList({
         <h2 className="text-2xl font-medium mb-6 px-4">{parentCategoryName}</h2>
         <div className="flex-grow overflow-y-auto">
           <ul className="list-none p-0 px-4 py-2 space-y-4">
-            {categories.map((category) => (
-              <li
-                key={category.id}
-                className={`cursor-pointer text-lg font-medium ${
-                  category.subCategories ? "relative pr-12" : ""
-                }`}
-                onClick={() => onCategoryClick(category)}
-              >
-                <p
-                  className={`w-full transition-colors duration-200 hover:text-primary ${
-                    isFirstPage
-                      ? "text-foreground text-2xl"
-                      : "text-muted-foreground"
+            {categories &&
+              categories.map((category) => (
+                <li
+                  key={category.id}
+                  className={`cursor-pointer text-lg font-medium ${
+                    category.subCategories ? "relative pr-12" : ""
                   }`}
+                  onClick={() => onCategoryClick(category)}
                 >
-                  {category.name}
-                </p>
-                {category.subCategories &&
-                  category.subCategories.length > 0 && (
-                    <div className="absolute right-4 top-1/2 transform -translate-y-1/2 transition-transform duration-200 group-hover:translate-x-1">
-                      <IoIosArrowForward aria-hidden="true" size={20} />
-                    </div>
-                  )}
-              </li>
-            ))}
+                  <p
+                    className={`w-full transition-colors duration-200 hover:text-primary ${
+                      isFirstPage
+                        ? "text-foreground text-2xl"
+                        : "text-muted-foreground"
+                    }`}
+                  >
+                    {category.name}
+                  </p>
+                  {category.subCategories &&
+                    category.subCategories.length > 0 && (
+                      <div className="absolute right-4 top-1/2 transform -translate-y-1/2 transition-transform duration-200 group-hover:translate-x-1">
+                        <IoIosArrowForward aria-hidden="true" size={20} />
+                      </div>
+                    )}
+                </li>
+              ))}
           </ul>
         </div>
         {isFirstPage && (

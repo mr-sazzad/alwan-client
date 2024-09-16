@@ -34,7 +34,7 @@ export const usePlaceOrder = ({
     setLoading(true);
 
     const {
-      username,
+      recipientName,
       email,
       phone,
       division,
@@ -46,9 +46,22 @@ export const usePlaceOrder = ({
       orderNote,
     } = form.getValues();
 
+    console.log(
+      recipientName,
+      email,
+      phone,
+      district,
+      upazila,
+      union,
+      streetAddress,
+      altPhone,
+      orderNote,
+      "HHHHHHH"
+    );
+
     // Validate required fields
     if (
-      !username ||
+      !recipientName ||
       !email ||
       !phone ||
       !division ||
@@ -58,7 +71,6 @@ export const usePlaceOrder = ({
       !streetAddress
     ) {
       toast({
-        variant: "destructive",
         title: "Error",
         description: "Please fill out your delivery information first",
       });
@@ -80,9 +92,11 @@ export const usePlaceOrder = ({
       shippingCost,
       items: [],
       userId: currentUser?.userId,
-      userName: currentUser ? undefined : username,
+      userName: currentUser ? undefined : recipientName,
       email: currentUser ? undefined : email,
     };
+
+    console.log(orderData, "ORDER DATA FROM USE PLACE ORDER");
 
     // Determine order items based on single product or cart
     if (productId && quantity) {

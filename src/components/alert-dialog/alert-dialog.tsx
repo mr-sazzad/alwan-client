@@ -38,14 +38,18 @@ const AlertDialogComp: React.FC<AlertDialogCompProps> = ({
     <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogContent className="rounded">
         <AlertDialogHeader>
-          <AlertDialogTitle>{title}</AlertDialogTitle>
+          <AlertDialogTitle className="text-lg font-medium">
+            {title}
+          </AlertDialogTitle>
           <AlertDialogDescription>{description}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={loading}>Cancel</AlertDialogCancel>
+          <AlertDialogCancel disabled={loading} className="text-lg font-normal">
+            Cancel
+          </AlertDialogCancel>
           <AlertDialogAction
             onClick={handler}
-            className={className}
+            className={`text-lg font-normal ${className}`}
             disabled={loading}
           >
             {loading ? <RiLoaderLine className="animate-spin" /> : buttonText}

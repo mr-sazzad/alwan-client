@@ -42,9 +42,9 @@ const ProductDetailsPageSkeleton = () => {
                 <Skeleton className="w-[24%] h-4" />
               </div>
               <div className="mt-2">
-                <Skeleton className="w-full h-10 mb-2 rounded-full" />
-                <Skeleton className="w-full h-10 mb-1 rounded-full" />
-                <Skeleton className="w-full h-10 rounded-full" />
+                <Skeleton className="w-full h-10 mb-2 rounded" />
+                <Skeleton className="w-full h-10 mb-1 rounded" />
+                <Skeleton className="w-full h-10 rounded" />
               </div>
               <div className="mt-4">
                 <Skeleton className="w-[200px] h-4 mb-1" />

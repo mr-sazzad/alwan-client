@@ -14,6 +14,7 @@ import {
   FormField,
   FormItem,
   FormLabel,
+  FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
@@ -26,6 +27,7 @@ import {
 import { signUpSchema } from "@/schemas/signup-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { FcGoogle } from "react-icons/fc";
@@ -47,6 +49,7 @@ export default function SignUpModal({
   const [showPasswords, setShowPasswords] = useState(false);
   const [signUpUser] = useSignUpUserMutation();
   const [signInUser] = useSignInUserMutation();
+  const router = useRouter();
 
   const form = useForm<SignUpFormData>({
     resolver: zodResolver(signUpSchema),
@@ -58,6 +61,7 @@ export default function SignUpModal({
   });
 
   const onSubmit = async (data: SignUpFormData) => {
+    console.log(data);
     if (data.password !== data.retypePassword) {
       form.setError("retypePassword", {
         type: "manual",
@@ -89,6 +93,7 @@ export default function SignUpModal({
 
       form.reset();
       setSignUpOpen(false);
+      router.push("/");
 
       toast({
         title: "Sign Up Successful",
@@ -179,6 +184,7 @@ export default function SignUpModal({
                       {...field}
                     />
                   </FormControl>
+                  <FormMessage />
                 </FormItem>
               )}
             />

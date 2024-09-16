@@ -63,7 +63,9 @@ const Profile = () => {
           <DropdownMenuContent className="w-[300px]">
             {currentUser ? (
               <>
-                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                <DropdownMenuLabel className="text-lg font-medium">
+                  My Account
+                </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem>
                   <Link
@@ -90,7 +92,7 @@ const Profile = () => {
                   onSelect={() => setOpen(true)}
                 >
                   <div>
-                    <h2 className="text-lg font-semibold">Login First</h2>
+                    <h2 className="text-lg font-medium mb-2">Login First</h2>
                     <p className="text-sm text-muted-foreground">
                       Experience seamless access to your account with our secure
                       login.
@@ -103,7 +105,7 @@ const Profile = () => {
                   onSelect={() => setOpen(true)}
                 >
                   <div className="py-1 flex items-center gap-2">
-                    <FiUserCheck size={16} />{" "}
+                    <FiUserCheck size={18} />{" "}
                     <p className="text-lg font-medium">Sign In</p>
                   </div>
                 </DropdownMenuItem>
@@ -113,7 +115,7 @@ const Profile = () => {
                   onSelect={() => setSignUpOpen(true)}
                 >
                   <div className="py-1 flex items-center gap-2">
-                    <FiUserPlus size={16} />{" "}
+                    <FiUserPlus size={18} />{" "}
                     <p className="text-lg font-medium">Sign Up</p>
                   </div>
                 </DropdownMenuItem>
@@ -136,12 +138,10 @@ const Profile = () => {
       <AlertDialogComp
         open={signOutDialogOpen}
         setOpen={setSignOutDialogOpen}
-        title="Sign out Warning"
-        description="Before logging out, please confirm:
-        Press 'Yes' if sure."
+        title="Confirm Sign Out"
+        description="Are you sure you want to sign out? You'll need to sign in again to access your account."
         handler={handleUserSignout}
-        className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-        buttonText="Yes, Sign Out"
+        buttonText="Sign Out"
       />
     </>
   );

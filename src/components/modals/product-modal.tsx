@@ -15,18 +15,18 @@ import "swiper/css";
 import "swiper/css/pagination";
 import { toast } from "../ui/use-toast";
 
-import { addProduct } from "@/redux/api/wishlist/wishlistSlice";
 import { RootState } from "@/redux/store";
 import { IProduct, IReadSizeVariant } from "@/types";
 import { useDispatch, useSelector } from "react-redux";
 
 // icons
 import { addProductToCart } from "@/redux/api/cart/cartSlice";
-import { BsCartCheck, BsCheck2Circle } from "react-icons/bs";
+import { addProductToFavorite } from "@/redux/api/favorite/favoriteSlice";
+import { Heart, ShoppingCart } from "lucide-react";
+import { BsCheck2Circle } from "react-icons/bs";
 import { HiMinusSm, HiPlusSm } from "react-icons/hi";
 import { IoMdAlarm } from "react-icons/io";
 import { PiSpinnerBold } from "react-icons/pi";
-import { RiHeart2Fill, RiHeart2Line } from "react-icons/ri";
 
 interface ProductModalProps {
   open: boolean;
@@ -47,9 +47,10 @@ const ProductModal: React.FC<ProductModalProps> = ({
   const [buttonLoading, SetButtonLoading] = useState(false);
   const [isPlusHovered, setIsPlusHovered] = useState(false);
   const [isMinusHovered, setIsMinusHovered] = useState(false);
-  const [isInWishlist, setIsInWishlist] = useState(false);
+  const [isInFavorite, setIsInFavorite] = useState(false);
   const [selectedVariant, setSelectedVariant] =
     useState<IReadSizeVariant | null>(null);
+  const favorites = useSelector((state: RootState) => state.favorite.products);
 
   const handleSizeClick = (variant: IReadSizeVariant) => {
     setSelectedVariant(variant);
@@ -58,8 +59,8 @@ const ProductModal: React.FC<ProductModalProps> = ({
 
   const dispatch = useDispatch();
 
-  const wishlistProducts = useSelector(
-    (state: RootState) => state.wishlist.products
+  const favoriteProducts = useSelector(
+    (state: RootState) => state.favorite.products
   );
 
   useEffect(() => {
@@ -81,13 +82,28 @@ const ProductModal: React.FC<ProductModalProps> = ({
   }, [product.sizeVariants, selectedVariant]);
 
   useEffect(() => {
-    setIsInWishlist(
-      wishlistProducts.some((item: IProduct) => item.id === product.id)
+    setIsInFavorite(
+      favoriteProducts.some((item: IProduct) => item.id === product.id)
     );
-  }, [wishlistProducts, product.id]);
+  }, [favoriteProducts, product.id]);
 
   const handleAddToWishlist = (product: IProduct) => {
-    dispatch(addProduct(product));
+    if (product) {
+      dispatch(addProductToFavorite(product));
+
+      const isProductInFavorites = favorites.some(
+        (fav) => fav.id === product.id
+      );
+
+      toast({
+        title: isProductInFavorites
+          ? "Removed from Favorites"
+          : "Added to Favorites",
+        description: isProductInFavorites
+          ? "This product has been removed from your favorites."
+          : "This product has been added to your favorites.",
+      });
+    }
   };
 
   const handlePlusMouseEnter = () => {
@@ -142,7 +158,6 @@ const ProductModal: React.FC<ProductModalProps> = ({
       }&quantity=${quantity}&size=${selectedSize.toLowerCase()}`;
       router.push(`/checkout${queryString}`);
     } else if (actionType === "cart") {
-      // Add to Cart action
       dispatch(
         addProductToCart({
           ...product,
@@ -169,7 +184,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="md:max-w-[750px] w-11/12 rounded">
           <DialogHeader>
-            <DialogTitle>
+            <DialogTitle className="font-medium">
               {actionType === "buy" ? "Order This Item" : "Add To Bag"}
             </DialogTitle>
             <DialogDescription>
@@ -196,10 +211,10 @@ const ProductModal: React.FC<ProductModalProps> = ({
               </div>
 
               <div>
-                <h2 className="md:text-xl font-semibold text-lg text-start capitalize">
+                <h2 className="md:text-xl font-medium text-lg text-start capitalize">
                   {product.name}
                 </h2>
-                <div className="flex justify-between items-center">
+                <div className="flex items-center mt-2">
                   <div className="flex-1">
                     {selectedVariant && (
                       <p className="text-lg font-medium text-muted-foreground">
@@ -207,9 +222,10 @@ const ProductModal: React.FC<ProductModalProps> = ({
                       </p>
                     )}
                   </div>
-                  <div className="flex gap-2 mt-2 flex-1">
+
+                  <div className="flex flex-1">
                     {selectedVariant && (
-                      <div className="mt-2 flex items-center gap-2">
+                      <div className="flex items-center gap-1">
                         <div
                           className="w-4 h-4 rounded"
                           style={{
@@ -286,14 +302,14 @@ const ProductModal: React.FC<ProductModalProps> = ({
                   {buttonLoading ? (
                     <PiSpinnerBold className="animate-spin" />
                   ) : (
-                    <div className="flex-1 flex gap-2 items-center justify-center">
+                    <div className="flex-1 flex items-center justify-center">
                       {actionType === "buy" ? (
-                        <BsCheck2Circle />
+                        <BsCheck2Circle className="mr-2 h-4 w-4" />
                       ) : (
-                        <BsCartCheck />
+                        <ShoppingCart className="mr-2 h-4 w-4" />
                       )}
-                      <p>
-                        {actionType === "buy" ? "Place Order" : "Add To Cart"}
+                      <p className="text-lg font-medium">
+                        {actionType === "buy" ? "Place Order" : "Add To Bag"}
                       </p>
                     </div>
                   )}
@@ -301,20 +317,15 @@ const ProductModal: React.FC<ProductModalProps> = ({
                 <Button
                   onClick={() => handleAddToWishlist(product)}
                   className="flex-1 flex gap-2 items-center justify-center"
-                  disabled={isInWishlist}
                   variant="outline"
                 >
-                  <div>
-                    {isInWishlist ? (
-                      <div className="flex items-center gap-2">
-                        <RiHeart2Fill className="text-rose-500" />
-                        <p>Added</p>
-                      </div>
-                    ) : (
-                      <div className="flex items-center gap-2">
-                        <RiHeart2Line /> <p>Add To Favorite</p>
-                      </div>
-                    )}
+                  <div className="flex justify-center items-center text-lg">
+                    <Heart
+                      className="mr-2 h-4 w-4"
+                      fill={isInFavorite ? "currentColor" : "none"}
+                      stroke={isInFavorite ? "none" : "currentColor"}
+                    />
+                    <p>{isInFavorite ? "Remove" : "Favorite"}</p>
                   </div>
                 </Button>
               </div>

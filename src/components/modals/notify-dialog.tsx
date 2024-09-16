@@ -63,6 +63,7 @@ export default function NotificationDialog({
           variant: "default",
         });
         setOpen(false);
+        form.reset();
       } else {
         toast({
           title: "Subscription Failed",
@@ -99,7 +100,7 @@ export default function NotificationDialog({
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email address</FormLabel>
+                  <FormLabel>Email</FormLabel>
                   <FormControl>
                     <Input
                       type="email"

@@ -1,11 +1,11 @@
 "use client";
 
-import { Heart, Loader2 } from "lucide-react";
+import { Bell, Heart, Loader2, ShoppingCart } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { IoIosCheckmarkCircleOutline } from "react-icons/io";
 import { IoCheckmarkCircleOutline } from "react-icons/io5";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import DetailsPageImageSlider from "@/components/cards/details-page-slider";
 import MaxWidth from "@/components/max-width";
@@ -15,25 +15,27 @@ import ReviewAndInfoTab from "@/components/tabs/review-and-info-tab";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
 import { addProductToCart } from "@/redux/api/cart/cartSlice";
+import { addProductToFavorite } from "@/redux/api/favorite/favoriteSlice";
 import { useGetSingleProductQuery } from "@/redux/api/products/productsApi";
+import { AppDispatch, RootState } from "@/redux/store";
 import { IReadSizeVariant } from "@/types";
 
-const ProductDetailsPage = () => {
+const ProductDetailsPage: React.FC = () => {
   const router = useRouter();
-  const { product_id } = useParams();
-  const dispatch = useDispatch();
-  const { data: product, isLoading } = useGetSingleProductQuery(
-    product_id as string
-  );
+  const { product_id } = useParams() as { product_id: string };
+  const dispatch = useDispatch<AppDispatch>();
+  const favorites = useSelector((state: RootState) => state.favorite.products);
+
+  const { data: product, isLoading } = useGetSingleProductQuery(product_id);
 
   const [selectedSizeVariant, setSelectedSizeVariant] =
     useState<IReadSizeVariant | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
-  const [qty, setQty] = useState(0);
+  const [qty, setQty] = useState<number>(0);
   const [isNotificationDialogOpen, setIsNotificationDialogOpen] =
-    useState(false);
+    useState<boolean>(false);
 
-  const availableQuantities = useRef(0);
+  const availableQuantities = useRef<number>(0);
 
   useEffect(() => {
     if (product?.data.sizeVariants && product.data.sizeVariants.length > 0) {
@@ -55,18 +57,18 @@ const ProductDetailsPage = () => {
     return <ProductDetailsPageSkeleton />;
   }
 
-  const handleQtyChange = (increment: boolean) => {
+  const handleQtyChange = (increment: boolean): void => {
     setQty((prev) => {
       const newQty = increment ? prev + 1 : prev - 1;
       return Math.max(1, Math.min(newQty, availableQuantities.current));
     });
   };
 
-  const handleSelectSizeVariant = (sizeVariant: IReadSizeVariant) => {
+  const handleSelectSizeVariant = (sizeVariant: IReadSizeVariant): void => {
     setSelectedSizeVariant(sizeVariant);
   };
 
-  const handleAddToCart = () => {
+  const handleAddToCart = (): void => {
     if (!selectedSizeVariant || !product) {
       toast({
         variant: "destructive",
@@ -91,7 +93,7 @@ const ProductDetailsPage = () => {
     });
   };
 
-  const handleBuyNow = () => {
+  const handleBuyNow = (): void => {
     if (!selectedSizeVariant || !product) {
       toast({
         variant: "destructive",
@@ -102,20 +104,32 @@ const ProductDetailsPage = () => {
     }
 
     setLoading(true);
-    const queryString = `?productId=${product.data.id}&quantity=${qty}&size=${selectedSizeVariant.size.name}`;
+    const queryString = `?productId=${product.data.id}&quantity=${qty}&sizeId=${selectedSizeVariant.size.id}&colorId=${selectedSizeVariant.colorId}`;
     router.push(`/checkout${queryString}`);
     setLoading(false);
   };
 
-  const handleFavorite = () => {
-    // Implement favorite functionality here
-    toast({
-      title: "Added to Favorites",
-      description: "This product has been added to your favorites.",
-    });
+  const handleFavorite = (): void => {
+    if (product) {
+      dispatch(addProductToFavorite(product));
+
+      const isProductInFavorites = favorites.some(
+        (fav) => fav.id === product.id
+      );
+
+      toast({
+        title: isProductInFavorites
+          ? "Removed from Favorites"
+          : "Added to Favorites",
+        description: isProductInFavorites
+          ? "This product has been removed from your favorites."
+          : "This product has been added to your favorites.",
+      });
+    }
   };
 
   const isComingSoon = product?.data.statusTag === "coming soon";
+  const isProductInFavorites = favorites.some((fav) => fav.id === product.id);
 
   return (
     <MaxWidth className="flex flex-col items-center w-full">
@@ -123,7 +137,7 @@ const ProductDetailsPage = () => {
         <div className="flex flex-col md:flex-row gap-5 relative w-full h-fit">
           <div className="md:hidden my-4 ml-5">
             {isComingSoon && (
-              <p className="text-xs font-medium text-[#9E3500]"> Coming Soon</p>
+              <p className="text-xs font-medium text-[#9E3500]">Coming Soon</p>
             )}
             <h2 className="text-lg font-medium capitalize">
               {product?.data.name}
@@ -156,7 +170,6 @@ const ProductDetailsPage = () => {
               <p className="text-sm font-medium capitalize">
                 {product?.data.category.name}
               </p>
-
               <p className="md:mt-5 text-xl font-semibold">
                 TK. {selectedSizeVariant?.price}
               </p>
@@ -194,9 +207,9 @@ const ProductDetailsPage = () => {
             </div>
 
             {/* quantity */}
-            <div className="flex flex-col gap-2 mt-2">
+            <div className="flex flex-col gap-2 mt-3">
               {!isComingSoon && (
-                <div className="flex gap-2 justify-between items-center border border-gray-200 rounded-full overflow-hidden h-10 w-full py-0.5">
+                <div className="flex gap-2 justify-between items-center border border-gray-200 overflow-hidden h-10 w-full py-0.5">
                   <Button
                     className="cursor-pointer p-1 flex-1 text-xl"
                     onClick={() => handleQtyChange(false)}
@@ -218,38 +231,64 @@ const ProductDetailsPage = () => {
               {isComingSoon ? (
                 <>
                   <Button
-                    className="px-6 flex gap-2 items-center rounded-full font-medium"
+                    className="px-6 flex items-center font-medium text-lg"
                     onClick={() => setIsNotificationDialogOpen(true)}
                     size="lg"
                   >
-                    Notify Me
+                    <Bell className="mr-2 h-4 w-4" /> <p>Notify Me</p>
                   </Button>
                   <Button
-                    className="px-6 flex gap-2 items-center rounded-full font-medium"
+                    className="px-6 flex items-center font-medium"
                     variant="outline"
                     onClick={handleFavorite}
                     size="lg"
                   >
-                    <Heart className="mr-2 h-4 w-4" />
-                    Favorite
+                    <div className="flex justify-center items-center text-lg">
+                      <Heart
+                        className="mr-2 h-4 w-4"
+                        fill={isProductInFavorites ? "currentColor" : "none"}
+                        stroke={isProductInFavorites ? "none" : "currentColor"}
+                      />
+                      <p>{isProductInFavorites ? "Remove" : "Favorite"}</p>
+                    </div>
                   </Button>
                 </>
               ) : (
                 <>
                   {/* add to cart button */}
-                  <Button
-                    className="px-6 flex gap-2 items-center rounded-full font-medium"
-                    variant="outline"
-                    onClick={handleAddToCart}
-                    disabled={!qty}
-                    size="lg"
-                  >
-                    Add To Bag
-                  </Button>
+                  <div className="flex w-full gap-2">
+                    <Button
+                      className="px-6 flex items-center font-medium text-lg w-full"
+                      variant="outline"
+                      onClick={handleAddToCart}
+                      disabled={!qty}
+                      size="lg"
+                    >
+                      <ShoppingCart className="mr-2 w-4 h-4" />{" "}
+                      <p>Add To Bag</p>
+                    </Button>
+                    <Button
+                      className="px-6 flex items-center font-medium w-full"
+                      variant="outline"
+                      onClick={handleFavorite}
+                      size="lg"
+                    >
+                      <div className="flex justify-center items-center text-lg">
+                        <Heart
+                          className="mr-2 h-4 w-4"
+                          fill={isProductInFavorites ? "currentColor" : "none"}
+                          stroke={
+                            isProductInFavorites ? "none" : "currentColor"
+                          }
+                        />
+                        <p>{isProductInFavorites ? "Remove" : "Favorite"}</p>
+                      </div>
+                    </Button>
+                  </div>
 
                   {/* buy now button */}
                   <Button
-                    className="px-6 flex gap-2 items-center rounded-full font-medium"
+                    className="px-6 flex gap-2 items-center font-medium text-lg"
                     onClick={handleBuyNow}
                     disabled={!qty}
                     size="lg"

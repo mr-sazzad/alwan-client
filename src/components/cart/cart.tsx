@@ -22,7 +22,6 @@ import {
   Sheet,
   SheetContent,
   SheetDescription,
-  SheetFooter,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
@@ -75,7 +74,7 @@ const Cart: React.FC<ICartProps> = ({ cartOpen, setCartOpen }) => {
         </SheetTrigger>
         <SheetContent className="flex flex-col justify-between">
           <SheetHeader>
-            <SheetTitle>Cart</SheetTitle>
+            <SheetTitle className="text-lg font-medium">Cart</SheetTitle>
             <SheetDescription>Here&lsquo;s your cart items</SheetDescription>
           </SheetHeader>
           <>
@@ -173,18 +172,22 @@ const Cart: React.FC<ICartProps> = ({ cartOpen, setCartOpen }) => {
               </div>
             )}
           </>
-          <SheetFooter>
-            <Button className="mt-1 w-full" disabled={cartProducts.length < 1}>
-              <Link href="/checkout">Checkout</Link>
-            </Button>
+          <div className="flex flex-col gap-2 w-full">
             <Button
-              className="mt-1 w-full"
-              variant="destructive"
+              className="w-full text-lg font-light"
+              variant="outline"
               disabled={cartProducts.length < 1}
               onClick={() => setEraseModalOpen(true)}
             >
               Erase all
             </Button>
+
+            <Button className="w-full" disabled={cartProducts.length < 1}>
+              <Link href="/checkout" className="text-lg font-light">
+                Checkout
+              </Link>
+            </Button>
+
             <AlertDialogComp
               open={eraseModalOpen}
               setOpen={setEraseModalOpen}
@@ -194,7 +197,7 @@ const Cart: React.FC<ICartProps> = ({ cartOpen, setCartOpen }) => {
               buttonText="Yes, Clear"
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             />
-          </SheetFooter>
+          </div>
         </SheetContent>
       </Sheet>
     </>

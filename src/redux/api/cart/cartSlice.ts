@@ -30,7 +30,7 @@ const cartSlice = createSlice({
 
     addProductToCart: (state, action: PayloadAction<IUserCartProduct>) => {
       const { id } = action.payload;
-      const { orderSize, orderQty, orderColor } = action.payload;
+      const { orderSize, orderColor } = action.payload;
 
       const existingProduct = state.products.find(
         (product) =>

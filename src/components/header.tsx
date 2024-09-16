@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import blackLogo from "../images/logo-black-40.png";
 import Cart from "./cart/cart";
+import Favorite from "./favorite/favorite";
 import Profile from "./profile/profile-menu";
 import DesktopMenu from "./sidebar/desktop-menu";
 import MobileSidebar from "./sidebar/mobile-sidebar";
@@ -23,6 +24,7 @@ const throttle = (func: Function, limit: number) => {
 
 const Header = () => {
   const [open, setOpen] = useState(false);
+  const [favoriteOpen, setFavoriteOpen] = useState(false);
   const [prevScrollPos, setPrevScrollPos] = useState(0);
   const [visible, setVisible] = useState(true);
 
@@ -43,7 +45,7 @@ const Header = () => {
 
   return (
     <nav
-      className={`h-[90px] md:px-14 sm:px-10 px-5 w-full fixed top-0 z-30 bg-white dark:bg-gray-900 transition-transform duration-300 ${
+      className={`h-[90px] md:px-14 sm:px-10 px-5 w-full fixed top-0 z-30 bg-white  transition-transform duration-300 border-b ${
         visible ? "translate-y-0" : "-translate-y-full"
       }`}
     >
@@ -65,6 +67,10 @@ const Header = () => {
           </div>
           <div className="hidden md:flex">
             <Cart cartOpen={open} setCartOpen={setOpen} />
+          </div>
+
+          <div className="hidden md:flex">
+            <Favorite open={favoriteOpen} setOpen={setFavoriteOpen} />
           </div>
         </menu>
       </div>

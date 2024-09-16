@@ -21,10 +21,10 @@ import { TbHeartX } from "react-icons/tb";
 import AlertDialogComp from "../alert-dialog/alert-dialog";
 
 import {
-  clearWishlist,
-  deleteProduct,
-  setWishlist,
-} from "@/redux/api/wishlist/wishlistSlice";
+  clearFavorites,
+  removeProductFromFavorite,
+  setFavorites,
+} from "@/redux/api/favorite/favoriteSlice";
 import { RootState } from "@/redux/store";
 import { IProduct } from "@/types";
 import Link from "next/link";
@@ -35,37 +35,37 @@ interface IWishlist {
   setOpen: Dispatch<SetStateAction<boolean>>;
 }
 
-const Wishlist: React.FC<IWishlist> = ({ open, setOpen }) => {
+const Favorite: React.FC<IWishlist> = ({ open, setOpen }) => {
   const dispatch = useDispatch();
   const wishlistProducts = useSelector(
-    (state: RootState) => state.wishlist.products
+    (state: RootState) => state.favorite.products
   );
   const [eraseModalOpen, setEraseModalOpen] = useState(false);
 
   useEffect(() => {
     const handleStorageChange = (event: StorageEvent) => {
-      if (event.key === "alwan_user_wishlist_items") {
-        const wishlistItems = event.newValue ? JSON.parse(event.newValue) : [];
-        dispatch(setWishlist(wishlistItems));
+      if (event.key === "alwan_user_favorite_items") {
+        const favoriteItems = event.newValue ? JSON.parse(event.newValue) : [];
+        dispatch(setFavorites(favoriteItems));
       }
     };
 
     window.addEventListener("storage", handleStorageChange);
 
-    const wishlistItems = localStorage.getItem("alwan_user_wishlist_items");
-    dispatch(setWishlist(wishlistItems ? JSON.parse(wishlistItems) : []));
+    const wishlistItems = localStorage.getItem("alwan_user_favorite_items");
+    dispatch(setFavorites(wishlistItems ? JSON.parse(wishlistItems) : []));
 
     return () => {
       window.removeEventListener("storage", handleStorageChange);
     };
   }, [dispatch]);
 
-  const handleProductDelete = (productId: string) => {
-    dispatch(deleteProduct({ id: productId }));
+  const handleProductDelete = (product: IProduct) => {
+    dispatch(removeProductFromFavorite(product.id));
   };
 
   const handleCartClear = () => {
-    dispatch(clearWishlist());
+    dispatch(clearFavorites());
     toast({
       title: "Success Alert",
       description: "Wishlist products cleared successfully",
@@ -76,15 +76,15 @@ const Wishlist: React.FC<IWishlist> = ({ open, setOpen }) => {
     <>
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetTrigger asChild>
-          <Button variant="outline">
-            <IoBagHandleOutline />
+          <Button variant="link">
+            <IoBagHandleOutline size={20} />
           </Button>
         </SheetTrigger>
         <SheetContent className="flex flex-col justify-between">
           <SheetHeader>
-            <SheetTitle>Wishlist</SheetTitle>
+            <SheetTitle className="text-lg font-medium">Favorite</SheetTitle>
             <SheetDescription>
-              Here&lsquo;s your wishlist items
+              Here&lsquo;s your favorite items
             </SheetDescription>
           </SheetHeader>
           <div className="h-full">
@@ -124,7 +124,7 @@ const Wishlist: React.FC<IWishlist> = ({ open, setOpen }) => {
                         variant="outline"
                         size="sm"
                         className="rounded-full flex justify-center items-center py-0 px-[10px]"
-                        onClick={() => handleProductDelete(product.id)}
+                        onClick={() => handleProductDelete(product)}
                       >
                         <PiTrashLight size={16} />
                       </Button>
@@ -137,7 +137,7 @@ const Wishlist: React.FC<IWishlist> = ({ open, setOpen }) => {
                     onClick={() => setEraseModalOpen(true)}
                     disabled={wishlistProducts.length < 1}
                   >
-                    Clear Wishlist
+                    Clear Favorite
                   </Button>
                   <Button variant="outline" onClick={() => setOpen(false)}>
                     Close
@@ -148,13 +148,12 @@ const Wishlist: React.FC<IWishlist> = ({ open, setOpen }) => {
               <div className="flex flex-col gap-3 items-center justify-between mt-5 h-full">
                 <div className="flex flex-col gap-1 items-center h-full justify-center">
                   <TbHeartX className="text-muted-foreground text-[30px]" />
-                  <p className="text-muted-foreground text-lg font-semibold">
-                    Your Wishlist Is Empty
+                  <p className="text-muted-foreground text-lg font-medium">
+                    Empty Favorite
                   </p>
                 </div>
                 <Button
-                  variant="destructive"
-                  className="w-full"
+                  className="w-full text-lg font-normal"
                   onClick={() => setOpen(false)}
                 >
                   Close
@@ -180,4 +179,4 @@ const Wishlist: React.FC<IWishlist> = ({ open, setOpen }) => {
   );
 };
 
-export default Wishlist;
+export default Favorite;
