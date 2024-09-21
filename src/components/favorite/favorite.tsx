@@ -29,6 +29,7 @@ import { RootState } from "@/redux/store";
 import { IProduct } from "@/types";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
+import { Heart } from "lucide-react";
 
 interface IWishlist {
   open: boolean;
@@ -76,8 +77,8 @@ const Favorite: React.FC<IWishlist> = ({ open, setOpen }) => {
     <>
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetTrigger asChild>
-          <Button variant="link">
-            <IoBagHandleOutline size={20} />
+          <Button variant="ghost" size="icon" className="rounded-full flex justify-center items-center">
+            <Heart size={20} />
           </Button>
         </SheetTrigger>
         <SheetContent className="flex flex-col justify-between">

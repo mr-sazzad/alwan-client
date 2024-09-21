@@ -77,9 +77,9 @@ const FeedbackDialog: React.FC<FeedbackDialogProps> = ({ open, setOpen }) => {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent className="sm:max-w-lg rounded">
         <DialogHeader>
-          <DialogTitle className="mb-2">Leave Feedback</DialogTitle>
+          <DialogTitle className="mb-2 font-medium text-xl">Leave Feedback</DialogTitle>
           <DialogDescription>
             We&apos;d love to hear what went well or how we can improve the
             product experience.

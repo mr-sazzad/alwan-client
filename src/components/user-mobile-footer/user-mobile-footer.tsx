@@ -5,19 +5,14 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import Cart from "../cart/cart";
 import Favorite from "../favorite/favorite";
-import SearchDialog from "../search/search-dialog";
 
 const UserMobileFooter = () => {
-  const [searchDialogOpen, setSearchDialogOpen] = useState(false);
   const [cartModelOpen, setCartModelOpen] = useState(false);
   const [favoriteModelOpen, setFavoriteModelOpen] = useState(false);
 
   // pathname
   const pathname = usePathname();
 
-  const handleSearchModal = () => {
-    setSearchDialogOpen(true);
-  };
   const handleCartModal = () => {
     setFavoriteModelOpen(false);
     setCartModelOpen(true);
@@ -28,7 +23,6 @@ const UserMobileFooter = () => {
   };
 
   const userMobileMenu = useUserMobileMenu({
-    handleSearchModel: handleSearchModal,
     handleCartModal: handleCartModal,
     handleWishlistModal: handleWishlistModal,
   });
@@ -36,15 +30,15 @@ const UserMobileFooter = () => {
   return (
     <div className="fixed bottom-2 right-2 left-2 z-10 w-full">
       <div
-        className={`max-w-[300px] mx-auto flex justify-center ${
+        className={`max-w-[180px] mx-auto flex justify-center ${
           pathname.startsWith("/admins/dashboard") ? "hidden" : ""
         }`}
       >
-        <div className="flex flex-row gap-1 h-[50px] w-full justify-between backdrop-blur bg-black/30 dark:bg-white/10 rounded-full">
+        <div className="flex flex-row gap-1 h-[47px] w-full justify-between bg-white rounded-full">
           {userMobileMenu.map((menu) => (
             <div
               key={menu.id}
-              className={`w-full flex justify-center items-center cursor-pointer hover:bg-gray-100/30 dark:text-black hover:text-lg transition duration-100 ${
+              className={`w-full flex justify-center items-center cursor-pointer hover:text-lg transition duration-100 ${
                 menu.className ?? ""
               }`}
               onClick={menu.onClick}
@@ -53,11 +47,11 @@ const UserMobileFooter = () => {
                 {menu.href ? (
                   <Link
                     href={menu.href}
-                    className="w-full h-full flex justify-center items-center group"
+                    className="w-full h-full flex justify-center items-center"
                   >
                     <menu.icon
                       size={22}
-                      className="font-extrabold text-muted-foreground group-hover:text-black"
+                      className="font-extrabold"
                     />
                   </Link>
                 ) : (
@@ -67,7 +61,7 @@ const UserMobileFooter = () => {
                   >
                     <menu.icon
                       size={22}
-                      className="font-extrabold text-muted-foreground group-hover:text-black"
+                      className="font-extrabold"
                     />
                   </div>
                 )}
@@ -76,10 +70,6 @@ const UserMobileFooter = () => {
           ))}
         </div>
       </div>
-      <SearchDialog
-        searchDialogOpen={searchDialogOpen}
-        setSearchDialogOpen={setSearchDialogOpen}
-      />
       <div className="hidden">
         <Cart cartOpen={cartModelOpen} setCartOpen={setCartModelOpen} />
       </div>
