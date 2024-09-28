@@ -47,6 +47,7 @@ export default function CheckoutPage() {
   const [loading, setLoading] = useState<boolean>(false);
   const [addressModalOpen, setAddressModalOpen] = useState<boolean>(false);
   const [guestAddress, setGuestAddress] = useState<FormValues | null>(null);
+  const [addressToShow, setAddressToShow] = useState<FormValues | null>(null);
 
   const cartProducts = useSelector((state: RootState) => state.cart.products);
 
@@ -68,7 +69,6 @@ export default function CheckoutPage() {
   const { data: userRes, isLoading: isUserLoading } = useGetSingleUserQuery(
     currentUser?.userId
   );
-
   const { data: sizeRes, isLoading: isSizeLoading } =
     useGetSingleSizeQuery(sizeId);
   const { data: productRes, isLoading: isProductLoading } =
@@ -89,26 +89,37 @@ export default function CheckoutPage() {
   }, [form]);
 
   useEffect(() => {
-    if (userRes?.data) {
-      form.reset({
-        recipientName: userRes.data.username,
-        email: userRes.data.email,
-        phone: userRes.data.phone,
-        altPhone: userRes.data.altPhone,
-        division: userRes.data.divisionId,
-        district: userRes.data.districtId,
-        upazila: userRes.data.upazilaId,
-        union: userRes.data.unionId,
-        streetAddress: userRes.data.streetAddress,
-      });
-    }
-  }, [userRes, form]);
-
-  useEffect(() => {
     if (!productId && cartProducts.length === 0) {
       router.back();
     }
   }, [productId, cartProducts, router]);
+
+  useEffect(() => {
+    const addresses = userRes?.data?.addresses || [];
+    const defaultAddress = addresses.find(
+      (address: IUserAddress) => address.isDefault
+    );
+
+    const newAddressToShow = currentUser
+      ? defaultAddress || addresses[0]
+      : guestAddress;
+
+    setAddressToShow(newAddressToShow);
+
+    if (newAddressToShow) {
+      form.reset({
+        recipientName: newAddressToShow.recipientName,
+        email: newAddressToShow.email || currentUser?.email || "",
+        phone: newAddressToShow.phone,
+        altPhone: newAddressToShow.altPhone || "",
+        division: newAddressToShow.division,
+        district: newAddressToShow.district,
+        upazila: newAddressToShow.upazila,
+        union: newAddressToShow.union,
+        streetAddress: newAddressToShow.streetAddress,
+      });
+    }
+  }, [userRes, currentUser, guestAddress, form]);
 
   const handlePlaceOrder = usePlaceOrder({
     form,
@@ -117,7 +128,8 @@ export default function CheckoutPage() {
     currentUser,
     productId,
     quantity: quantity ? Number(quantity) : undefined,
-    size: sizeRes?.data?.name,
+    sizeId: sizeRes?.data?.id,
+    colorId: colorRes?.data?.id,
     cartProducts,
     createAOrder,
     router,
@@ -131,6 +143,7 @@ export default function CheckoutPage() {
       setGuestAddress(values);
       localStorage.setItem(GUEST_ADDRESS_KEY, JSON.stringify(values));
     }
+    form.reset(values);
     setAddressModalOpen(false);
   };
 
@@ -145,14 +158,6 @@ export default function CheckoutPage() {
   if (isUserLoading || isSizeLoading || isProductLoading || isColorLoading) {
     return <Loading />;
   }
-
-  const addresses = userRes?.data?.addresses || [];
-  const defaultAddress = addresses.find(
-    (address: IUserAddress) => address.isDefault
-  );
-  const addressToShow = currentUser
-    ? defaultAddress || addresses[0]
-    : guestAddress;
 
   const productsToShow: IUserCartProduct[] =
     productId && productRes?.data

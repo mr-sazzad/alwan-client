@@ -10,7 +10,8 @@ type UsePlaceOrderParams = {
   currentUser: { userId: string } | null;
   productId?: string;
   quantity?: number;
-  size?: string;
+  sizeId?: string;
+  colorId?: string;
   cartProducts: IUserCartProduct[];
   createAOrder: (orderData: OrderData) => Promise<any>;
   router: AppRouterInstance;
@@ -24,7 +25,8 @@ export const usePlaceOrder = ({
   currentUser,
   productId,
   quantity,
-  size,
+  sizeId,
+  colorId,
   cartProducts,
   createAOrder,
   router,
@@ -80,20 +82,22 @@ export const usePlaceOrder = ({
 
     // Prepare order data
     const orderData: OrderData = {
-      division,
-      district,
-      upazila,
-      union,
-      streetAddress,
+      userName: recipientName,
+      email,
       phone,
+      address: {
+        division,
+        district,
+        upazila,
+        union,
+        streetAddress,
+      },
       altPhone,
-      totalCost: totalPrice,
       orderNote,
+      totalCost: totalPrice,
       shippingCost,
       items: [],
       userId: currentUser?.userId,
-      userName: currentUser ? undefined : recipientName,
-      email: currentUser ? undefined : email,
     };
 
     console.log(orderData, "ORDER DATA FROM USE PLACE ORDER");
@@ -103,13 +107,15 @@ export const usePlaceOrder = ({
       orderData.items.push({
         productId,
         quantity: Number(quantity),
-        size: size as string,
+        sizeId: sizeId as string,
+        colorId: colorId as string,
       });
     } else {
       orderData.items = cartProducts.map((product) => ({
         productId: product.id,
-        size: product.orderSize,
+        sizeId: product.orderSizeId,
         quantity: product.orderQty,
+        colorId: product.orderColorId,
       }));
     }
 

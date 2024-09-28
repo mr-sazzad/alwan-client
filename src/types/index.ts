@@ -156,8 +156,10 @@ export interface IUserCartProduct {
   stockStatus: "IN_STOCK" | "OUT_OF_STOCK";
   sizeVariants: IReadSizeVariant[];
   orderColor: string;
-  reviews: any[]; //! i will fix this later
+  orderColorId: string;
+  reviews: any[];
   orderSize: string;
+  orderSizeId: string;
   orderQty: number;
   orderHexCode: string;
   createdAt: string;
@@ -175,19 +177,22 @@ export interface IReview {
 
 export interface OrderItem {
   productId: string;
-  size: string;
   quantity: number;
+  sizeId: string;
+  colorId: string;
 }
 
 export interface OrderData {
   userId?: string;
   userName?: string;
   email?: string;
-  division?: string;
-  district?: string;
-  upazila?: string;
-  union?: string;
-  streetAddress?: string;
+  address: {
+    division?: string;
+    district?: string;
+    upazila?: string;
+    union?: string;
+    streetAddress?: string;
+  };
   phone: string;
   altPhone?: string;
   totalCost: number;

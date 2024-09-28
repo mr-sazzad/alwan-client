@@ -23,7 +23,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { addProductToCart } from "@/redux/api/cart/cartSlice";
 import { addProductToFavorite } from "@/redux/api/favorite/favoriteSlice";
 import { Heart, ShoppingCart } from "lucide-react";
-import { BsCheck2Circle } from "react-icons/bs";
 import { HiMinusSm, HiPlusSm } from "react-icons/hi";
 import { IoMdAlarm } from "react-icons/io";
 import { PiSpinnerBold } from "react-icons/pi";
@@ -151,28 +150,22 @@ const ProductModal: React.FC<ProductModalProps> = ({
       SetButtonLoading(false);
       return;
     }
-
-    if (actionType === "buy") {
-      const queryString = `?productId=${
-        product.id
-      }&quantity=${quantity}&size=${selectedSize.toLowerCase()}`;
-      router.push(`/checkout${queryString}`);
-    } else if (actionType === "cart") {
-      dispatch(
-        addProductToCart({
-          ...product,
-          orderSize: selectedSize,
-          orderQty: quantity,
-          orderColor: selectedVariant?.color.name,
-          orderHexCode: selectedVariant.color.hexCode,
-        })
-      );
-      setOpen(false);
-      toast({
-        title: "Added to Cart",
-        description: `${product.name} has been added to your cart.`,
-      });
-    }
+    dispatch(
+      addProductToCart({
+        ...product,
+        orderSize: selectedSize,
+        orderSizeId: selectedSize,
+        orderQty: quantity,
+        orderColor: selectedVariant?.color.name,
+        orderColorId: selectedVariant?.color.id,
+        orderHexCode: selectedVariant.color.hexCode,
+      })
+    );
+    setOpen(false);
+    toast({
+      title: "Added to Cart",
+      description: `${product.name} has been added to your cart.`,
+    });
 
     SetButtonLoading(false);
   };
@@ -303,11 +296,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
                     <PiSpinnerBold className="animate-spin" />
                   ) : (
                     <div className="flex-1 flex items-center justify-center">
-                      {actionType === "buy" ? (
-                        <BsCheck2Circle className="mr-2 h-4 w-4" />
-                      ) : (
-                        <ShoppingCart className="mr-2 h-4 w-4" />
-                      )}
+                      <ShoppingCart className="mr-2 h-4 w-4" />
                       <p className="text-lg font-medium">
                         {actionType === "buy" ? "Place Order" : "Add To Bag"}
                       </p>
