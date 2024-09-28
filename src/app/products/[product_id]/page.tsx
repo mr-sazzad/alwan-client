@@ -6,7 +6,6 @@ import { useEffect, useRef, useState } from "react";
 import { IoIosCheckmarkCircleOutline } from "react-icons/io";
 import { IoCheckmarkCircleOutline } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
-
 import DetailsPageImageSlider from "@/components/cards/details-page-slider";
 import MaxWidth from "@/components/max-width";
 import NotificationDialog from "@/components/modals/notify-dialog";
@@ -19,6 +18,7 @@ import { addProductToFavorite } from "@/redux/api/favorite/favoriteSlice";
 import { useGetSingleProductQuery } from "@/redux/api/products/productsApi";
 import { AppDispatch, RootState } from "@/redux/store";
 import { IReadSizeVariant } from "@/types";
+import ProductFeatures from "@/components/modals/product-features";
 
 const ProductDetailsPage: React.FC = () => {
   const router = useRouter();
@@ -34,6 +34,7 @@ const ProductDetailsPage: React.FC = () => {
   const [qty, setQty] = useState<number>(0);
   const [isNotificationDialogOpen, setIsNotificationDialogOpen] =
     useState<boolean>(false);
+  const [featuresOpen, setFeaturesOpen] = useState<boolean>(false);
 
   const availableQuantities = useRef<number>(0);
 
@@ -319,21 +320,7 @@ const ProductDetailsPage: React.FC = () => {
 
             {/* features */}
             <div>
-              <p className="text-lg font-semibold mt-3">Specifications:</p>
-              {product?.data.features &&
-                product.data.features.map((info: string, i: number) => (
-                  <ul key={i} className="flex flex-col gap-3">
-                    <li className="flex items-center gap-1">
-                      <IoIosCheckmarkCircleOutline
-                        size={14}
-                        className="text-muted-foreground"
-                      />
-                      <p className="sm:text-base text-sm text-muted-foreground font-light">
-                        {info}
-                      </p>
-                    </li>
-                  </ul>
-                ))}
+              <Button variant="link" className="px-0 text-lg" onClick={() => setFeaturesOpen(true)}>View Product Features</Button>
             </div>
           </div>
         </div>
@@ -350,6 +337,7 @@ const ProductDetailsPage: React.FC = () => {
         productId={product?.data.id}
         productName={product?.data.name}
       />
+      <ProductFeatures open={featuresOpen} setOpen={setFeaturesOpen} product={product.data} />
     </MaxWidth>
   );
 };

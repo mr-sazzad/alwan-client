@@ -35,12 +35,13 @@ const extendedFilterSchema = filterSchema.extend({
 });
 
 interface MobileFilterProps {
+  categoryId: string;
   colorsFromServer: {
     data: IReadColor[];
   };
 }
 
-const MobileFilter: React.FC<MobileFilterProps> = ({ colorsFromServer }) => {
+const MobileFilter: React.FC<MobileFilterProps> = ({ categoryId, colorsFromServer }) => {
   const router = useRouter();
 
   const form = useForm<z.infer<typeof extendedFilterSchema>>({
@@ -72,10 +73,10 @@ const MobileFilter: React.FC<MobileFilterProps> = ({ colorsFromServer }) => {
 
     const queryString = queryParams.toString();
     router.replace(
-      `/products${queryString ? `?${queryString}` : ""}`,
+      `/categories/${categoryId}/${queryString ? `?${queryString}` : ""}`,
       undefined
     );
-  }, [form, router]);
+  }, [form, categoryId, router]);
 
   useEffect(() => {
     const subscription = watch(() => {

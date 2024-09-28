@@ -27,7 +27,7 @@ const ProductCard: React.FC<IProduct> = (product) => {
 
   return (
     <>
-      <div className="p-2 xl:w-1/4 lg:w-1/3 md:w-1/2 w-1/2 flex flex-col justify-between border border-transparent hover:rounded hover:border-gray-200">
+      <div className="p-2 lg:w-1/3 md:w-1/2 w-1/2 flex flex-col justify-between border border-transparent hover:rounded hover:border-gray-200">
         <div className="overflow-hidden">
           <Link
             href={`/products/${product.id}`}

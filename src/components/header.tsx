@@ -9,8 +9,10 @@ import Favorite from "./favorite/favorite";
 import Profile from "./profile/profile-menu";
 import DesktopMenu from "./sidebar/desktop-menu";
 import MobileSidebar from "./sidebar/mobile-sidebar";
+import { Button } from "@/components/ui/button";
+import { FiSearch } from "react-icons/fi";
+import FullWidthSearch from "./search/search";
 
-// Throttle function to limit the rate at which a function can fire
 const throttle = (func: Function, limit: number) => {
   let inThrottle: boolean;
   return function (this: any, ...args: any[]) {
@@ -22,11 +24,12 @@ const throttle = (func: Function, limit: number) => {
   };
 };
 
-const Header = () => {
+export default function Header() {
   const [open, setOpen] = useState(false);
   const [favoriteOpen, setFavoriteOpen] = useState(false);
   const [prevScrollPos, setPrevScrollPos] = useState(0);
   const [visible, setVisible] = useState(true);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   const handleScroll = useCallback(() => {
     const currentScrollPos = window.scrollY;
@@ -44,38 +47,52 @@ const Header = () => {
   }, [handleScroll]);
 
   return (
-    <nav
-      className={`h-[90px] md:px-14 sm:px-10 px-5 w-full fixed top-0 z-30 bg-white  transition-transform duration-300 border-b ${
-        visible ? "translate-y-0" : "-translate-y-full"
-      }`}
-    >
-      <div className="flex justify-between items-center relative h-full">
-        <div>
-          <Link href="/">
-            <Image src={blackLogo} alt="main-logo" height={40} width={40} />
-          </Link>
+    <>
+      <nav
+        className={`h-[90px] md:px-14 sm:px-10 px-5 w-full fixed top-0 z-30 bg-white transition-transform duration-200 border-b ${
+          visible ? "translate-y-0" : "-translate-y-full"
+        }`}
+      >
+        <div className="flex justify-between items-center relative h-full">
+          <div>
+            <Link href="/">
+              <Image src={blackLogo} alt="main-logo" height={40} width={40} />
+            </Link>
+          </div>
+
+          <div className="hidden md:flex justify-center w-full">
+            <DesktopMenu />
+          </div>
+
+          <menu className="items-center flex justify-end">
+            <div className="mr-2">
+              <Profile />
+            </div>
+            <div className="flex items-center">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="mr-2"
+                onClick={() => setIsSearchOpen(true)}
+                aria-label="Open search"
+              >
+                <FiSearch size={20} />
+              </Button>
+              <div className="md:hidden">
+                <MobileSidebar />
+              </div>
+            </div>
+
+            <div className="hidden md:flex">
+              <Favorite open={favoriteOpen} setOpen={setFavoriteOpen} />
+              <div>
+                <Cart cartOpen={open} setCartOpen={setOpen} />
+              </div>
+            </div>
+          </menu>
         </div>
-
-        <div className="hidden md:flex justify-center w-full">
-          <DesktopMenu />
-        </div>
-
-        <menu className="items-center gap-3 flex justify-end">
-          <Profile />
-          <div className="md:hidden flex">
-            <MobileSidebar />
-          </div>
-          <div className="hidden md:flex">
-            <Cart cartOpen={open} setCartOpen={setOpen} />
-          </div>
-
-          <div className="hidden md:flex">
-            <Favorite open={favoriteOpen} setOpen={setFavoriteOpen} />
-          </div>
-        </menu>
-      </div>
-    </nav>
+      </nav>
+      <FullWidthSearch isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
+    </>
   );
-};
-
-export default Header;
+}

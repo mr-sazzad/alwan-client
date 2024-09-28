@@ -12,7 +12,7 @@ import Link from "next/link";
 import { Dispatch, SetStateAction, useState } from "react";
 import { FiTrash2 } from "react-icons/fi";
 import { HiMinusSm, HiPlusSm } from "react-icons/hi";
-import { IoBagHandleOutline } from "react-icons/io5";
+import { IoBagHandleOutline, IoBagOutline } from "react-icons/io5";
 import { TbShoppingBagX } from "react-icons/tb";
 import { useDispatch, useSelector } from "react-redux";
 import AlertDialogComp from "../alert-dialog/alert-dialog";
@@ -68,8 +68,8 @@ const Cart: React.FC<ICartProps> = ({ cartOpen, setCartOpen }) => {
     <>
       <Sheet open={cartOpen} onOpenChange={setCartOpen}>
         <SheetTrigger asChild>
-          <Button variant="link">
-            <IoBagHandleOutline size={20} />
+          <Button variant="ghost" size="icon" className="rounded-full">
+            <IoBagOutline size={20} />
           </Button>
         </SheetTrigger>
         <SheetContent className="flex flex-col justify-between">

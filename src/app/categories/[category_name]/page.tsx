@@ -5,6 +5,7 @@ import Filter from "@/components/products/desktop-filter";
 import EmptyProductsPage from "@/components/products/EmptyProductsPage";
 import MobileFilter from "@/components/products/mobile-filter";
 import ProductsSkeleton from "@/components/skeletons/products-skeleton";
+import { Separator } from "@/components/ui/separator";
 import { useGetCategoryQuery } from "@/redux/api/categoies/categoriesApi";
 import { useGetAllColorsQuery } from "@/redux/api/color/color-api";
 import { useGetCategoryProductsQuery } from "@/redux/api/products/productsApi";
@@ -12,7 +13,11 @@ import { IProduct } from "@/types";
 import { useParams, useSearchParams } from "next/navigation";
 
 const CagegoryProducts = () => {
-  const { category_name } = useParams();
+  const params = useParams();
+  const category_name = Array.isArray(params.category_name) 
+    ? params.category_name[0] 
+    : params.category_name || "";
+
   const { data: productRes, isLoading } =
     useGetCategoryProductsQuery(category_name);
   const { data: response, isLoading: isCategoryLoading } =
@@ -69,22 +74,22 @@ const CagegoryProducts = () => {
   const filteredProducts = filterProducts(productRes?.data.products);
 
   return (
-    <MaxWidth className="mt-[100px]">
-      <h1 className="text-lg font-semibold ml-6 mb-6">{response?.data.name}</h1>
+    <MaxWidth className="mt-[100px] md:px-14 sm:px-10 px-5">
+      <h1 className="md:text-2xl sm:text-xl text-lg font-medium mb-6 capitalize">{response?.data.name}</h1>
       <div className="flex flex-col md:flex-row gap-3 relative w-full">
         {/* Desktop Filter (Fixed Position) */}
-        <div className="md:w-[190px] w-full">
-          <div className="md:min-w-[190px] md:border-r md:sticky md:top-[90px] hidden md:flex self-start h-screen">
-            <Filter colorsFromServer={colors} />
+        <div className="md:min-w-[240px]">
+          <div className="w-full md:border-r md:sticky md:top-[90px] hidden md:flex self-start h-screen">
+            <Filter colorsFromServer={colors} categoryId={category_name} />
           </div>
-          <div className="md:hidden mt-5 flex justify-between px-4">
+          <div className="md:hidden mt-5 flex justify-between items-center">
             <h2 className="text-muted-foreground">
               {productRes?.data.products.length < 10
                 ? `${productRes.data.products.length}`
                 : productRes.data.products.length}{" "}
               {productRes?.data.products.length === 1 ? "Result" : "Results"}
             </h2>
-            <MobileFilter colorsFromServer={colors} />
+            <MobileFilter colorsFromServer={colors} categoryId={category_name} />
           </div>
         </div>
 

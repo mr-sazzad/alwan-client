@@ -14,7 +14,7 @@ const EmptyProductsPage = () => {
         height={100}
         width={100}
       />
-      <h2 className="text-xl font-semibold mb-2">Not Found</h2>
+      <h2 className="text-xl font-medium mb-2">Not Found</h2>
       <p className="text-center text-gray-600 mb-2">
         We can&apos;t find any products matching your filters.
       </p>
@@ -23,7 +23,7 @@ const EmptyProductsPage = () => {
       </p>
 
       <Button variant="link" asChild>
-        <Link href="/">Back to home</Link>
+        <Link href="/">Reset Filters</Link>
       </Button>
     </div>
   );

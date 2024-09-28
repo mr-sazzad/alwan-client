@@ -14,7 +14,7 @@ const Footer = () => {
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-12">
             <div className="flex flex-col gap-4">
-              <h3 className="font-semibold text-lg uppercase">Resources</h3>
+              <h3 className="font-medium text-lg uppercase">Resources</h3>
               <div className="flex flex-col gap-2 text-sm text-gray-600">
                 <button
                   className="hover:text-gray-900 transition-colors text-start"
@@ -26,7 +26,7 @@ const Footer = () => {
             </div>
 
             <div className="flex flex-col gap-4">
-              <h3 className="font-semibold text-lg uppercase">Help</h3>
+              <h3 className="font-medium text-lg uppercase">Help</h3>
               <div className="flex flex-col gap-2 text-sm text-gray-600">
                 <Link
                   href="/returns"
@@ -56,7 +56,7 @@ const Footer = () => {
             </div>
 
             <div className="flex flex-col gap-4">
-              <h3 className="font-semibold text-lg uppercase">Company</h3>
+              <h3 className="font-medium text-lg uppercase">Company</h3>
               <div className="flex flex-col gap-2 text-sm text-gray-600">
                 <Link
                   href="/about"
@@ -74,7 +74,7 @@ const Footer = () => {
             </div>
 
             <div className="flex flex-col gap-4">
-              <h3 className="font-semibold text-lg uppercase">
+              <h3 className="font-medium text-lg uppercase">
                 Terms & Conditions
               </h3>
               <div className="flex flex-col gap-2 text-sm text-gray-600">
@@ -106,7 +106,7 @@ const Footer = () => {
             </div>
 
             <div className="flex flex-col gap-4">
-              <h3 className="font-semibold text-lg uppercase">Location</h3>
+              <h3 className="font-medium text-lg uppercase">Location</h3>
               <div className="flex items-center gap-2 text-gray-600">
                 <PiGlobeHemisphereEast className="text-xl" />
                 <span>Bangladesh</span>

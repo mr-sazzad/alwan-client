@@ -80,7 +80,7 @@ export function CategoryList({
           <div className="mt-16">
             <Card>
               <CardContent className="p-4">
-                <h3 className="text-lg font-semibold mb-2">
+                <h3 className="text-lg font-medium mb-2">
                   Unlock More Benefits!
                 </h3>
                 <p className="text-sm text-muted-foreground mb-4">

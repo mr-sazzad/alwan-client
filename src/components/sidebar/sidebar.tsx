@@ -80,7 +80,7 @@ export default function Sidebar({
                   opacity: 0,
                 }),
               }}
-              transition={{ duration: 0.3, ease: "easeInOut" }}
+              transition={{ duration: 0.2, ease: "easeInOut" }}
               className="absolute w-full h-full"
             >
               <CategoryList

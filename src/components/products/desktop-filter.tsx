@@ -21,12 +21,14 @@ import {
 import { ConvertedColors } from "../utils/convert-color";
 
 interface IFilterProps {
+  categoryId: string,
   colorsFromServer: {
     data: IReadColor[];
   };
+  
 }
 
-const Filter: React.FC<IFilterProps> = ({ colorsFromServer }) => {
+const Filter: React.FC<IFilterProps> = ({ colorsFromServer, categoryId }) => {
   const router = useRouter();
 
   const form = useForm<z.infer<typeof filterSchema>>({
@@ -53,10 +55,10 @@ const Filter: React.FC<IFilterProps> = ({ colorsFromServer }) => {
 
     const queryString = queryParams.toString();
     router.replace(
-      `/products${queryString ? `?${queryString}` : ""}`,
+      `/categories/${categoryId}/${queryString ? `?${queryString}` : ""}`,
       undefined
     );
-  }, [form, router]);
+  }, [form, categoryId, router]);
 
   useEffect(() => {
     const subscription = watch(() => {
@@ -69,7 +71,7 @@ const Filter: React.FC<IFilterProps> = ({ colorsFromServer }) => {
 
   return (
     <div>
-      <h2 className="text-lg font-semibold py-5">Filter by</h2>
+      <h2 className="text-lg font-medium py-5">Filter by</h2>
       <Form {...form}>
         <form className="space-y-8">
           <FormField
@@ -124,9 +126,6 @@ const Filter: React.FC<IFilterProps> = ({ colorsFromServer }) => {
               <FormItem>
                 <div className="mb-4">
                   <FormLabel className="text-base">Price</FormLabel>
-                  <FormDescription>
-                    Select your affordable price.
-                  </FormDescription>
                 </div>
                 {prices.map((item) => (
                   <FormField
