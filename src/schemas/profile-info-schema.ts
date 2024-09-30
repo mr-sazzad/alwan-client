@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const profileInfoSchema = z.object({
-  username: z.string().min(3, { message: "Name field is required" }),
+  userName: z.string().min(3, { message: "Name field is required" }),
   phone: z
     .string()
     .min(11, { message: "Phone field must contain at least 11 character(s)" }),

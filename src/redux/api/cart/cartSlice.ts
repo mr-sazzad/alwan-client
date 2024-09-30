@@ -29,8 +29,8 @@ const cartSlice = createSlice({
     },
 
     addProductToCart: (state, action: PayloadAction<IUserCartProduct>) => {
-      const { id } = action.payload;
-      const { orderSize, orderColor } = action.payload;
+      const { id, orderSize, orderColor, orderColorId, orderSizeId } =
+        action.payload;
 
       const existingProduct = state.products.find(
         (product) =>
@@ -42,7 +42,11 @@ const cartSlice = createSlice({
       if (existingProduct) {
         existingProduct.orderQty += 1;
       } else {
-        state.products.push(action.payload);
+        state.products.push({
+          ...action.payload,
+          orderColorId,
+          orderSizeId,
+        });
       }
 
       setToLocalStorage(

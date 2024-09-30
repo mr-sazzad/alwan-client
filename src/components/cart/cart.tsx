@@ -12,7 +12,7 @@ import Link from "next/link";
 import { Dispatch, SetStateAction, useState } from "react";
 import { FiTrash2 } from "react-icons/fi";
 import { HiMinusSm, HiPlusSm } from "react-icons/hi";
-import { IoBagHandleOutline, IoBagOutline } from "react-icons/io5";
+import { IoBagOutline } from "react-icons/io5";
 import { TbShoppingBagX } from "react-icons/tb";
 import { useDispatch, useSelector } from "react-redux";
 import AlertDialogComp from "../alert-dialog/alert-dialog";
@@ -93,12 +93,12 @@ const Cart: React.FC<ICartProps> = ({ cartOpen, setCartOpen }) => {
                         <div className="w-[60%] flex flex-col gap-2">
                           <SmallName
                             name={product.name}
-                            className="text-sm font-medium text-muted-foreground"
+                            className="font-medium text-muted-foreground"
                           />
                           <div className="flex gap-[30%] items-center">
-                            <p className="font-semibold">{`${product.orderSize}`}</p>
+                            <p className="font-medium">{`${product.orderSize}`}</p>
                             <div
-                              className={`w-4 h-4 rounded-full`}
+                              className={`w-3 h-3 rounded ring ring-green-200`}
                               style={{ backgroundColor: product.orderHexCode }}
                             />
                           </div>
@@ -164,8 +164,8 @@ const Cart: React.FC<ICartProps> = ({ cartOpen, setCartOpen }) => {
                 <div className="flex justify-center items-center">
                   <div className="flex flex-col gap-3 items-center justify-center mt-5">
                     <TbShoppingBagX className="text-muted-foreground text-[30px]" />
-                    <p className="text-muted-foreground text-lg font-semibold">
-                      Your Cart Is Empty
+                    <p className="text-muted-foreground text-lg font-medium">
+                      Empty Cart
                     </p>
                   </div>
                 </div>
@@ -191,11 +191,10 @@ const Cart: React.FC<ICartProps> = ({ cartOpen, setCartOpen }) => {
             <AlertDialogComp
               open={eraseModalOpen}
               setOpen={setEraseModalOpen}
-              title="Remove Cart"
-              description="Do you want to remove all products from your cart?"
+              title="Clear Shopping Cart"
+              description="Are you sure you want to remove all items from your shopping cart? This action cannot be undone."
               handler={handleCartClear}
-              buttonText="Yes, Clear"
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              buttonText="Yes, Clear Cart"
             />
           </div>
         </SheetContent>

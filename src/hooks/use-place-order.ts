@@ -48,19 +48,6 @@ export const usePlaceOrder = ({
       orderNote,
     } = form.getValues();
 
-    console.log(
-      recipientName,
-      email,
-      phone,
-      district,
-      upazila,
-      union,
-      streetAddress,
-      altPhone,
-      orderNote,
-      "HHHHHHH"
-    );
-
     // Validate required fields
     if (
       !recipientName ||
@@ -100,7 +87,7 @@ export const usePlaceOrder = ({
       userId: currentUser?.userId,
     };
 
-    console.log(orderData, "ORDER DATA FROM USE PLACE ORDER");
+    console.log(" 🛒 🛒 🛒 Cart Products =>", cartProducts);
 
     // Determine order items based on single product or cart
     if (productId && quantity) {
@@ -118,6 +105,8 @@ export const usePlaceOrder = ({
         colorId: product.orderColorId,
       }));
     }
+
+    console.log(orderData, "ORDER DATA FROM USE PLACE ORDER");
 
     // Create order
     try {

@@ -1,6 +1,6 @@
+import { IMeta } from "@/types";
 import type { BaseQueryFn } from "@reduxjs/toolkit/query";
 import type { AxiosError, AxiosRequestConfig } from "axios";
-import { IMeta } from "@/types";
 import { instance as axiosInstance } from "./axios-instance";
 
 const axiosBaseQuery =
@@ -29,7 +29,9 @@ const axiosBaseQuery =
         params,
         withCredentials: true,
         headers: {
-          "Content-Type": contentType || "application/json",
+          ...(contentType && contentType !== "multipart/form-data"
+            ? { "Content-Type": contentType }
+            : {}),
         },
       });
       return result;

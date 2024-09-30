@@ -1,14 +1,9 @@
 "use client";
 
-import { Bell, Heart, Loader2, ShoppingCart } from "lucide-react";
-import { useParams, useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
-import { IoIosCheckmarkCircleOutline } from "react-icons/io";
-import { IoCheckmarkCircleOutline } from "react-icons/io5";
-import { useDispatch, useSelector } from "react-redux";
 import DetailsPageImageSlider from "@/components/cards/details-page-slider";
 import MaxWidth from "@/components/max-width";
 import NotificationDialog from "@/components/modals/notify-dialog";
+import ProductFeatures from "@/components/modals/product-features";
 import ProductDetailsPageSkeleton from "@/components/skeletons/product-details-skeleton";
 import ReviewAndInfoTab from "@/components/tabs/review-and-info-tab";
 import { Button } from "@/components/ui/button";
@@ -18,7 +13,11 @@ import { addProductToFavorite } from "@/redux/api/favorite/favoriteSlice";
 import { useGetSingleProductQuery } from "@/redux/api/products/productsApi";
 import { AppDispatch, RootState } from "@/redux/store";
 import { IReadSizeVariant } from "@/types";
-import ProductFeatures from "@/components/modals/product-features";
+import { Bell, Heart, Loader2, ShoppingCart } from "lucide-react";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { IoCheckmarkCircleOutline } from "react-icons/io5";
+import { useDispatch, useSelector } from "react-redux";
 
 const ProductDetailsPage: React.FC = () => {
   const router = useRouter();
@@ -54,6 +53,10 @@ const ProductDetailsPage: React.FC = () => {
     }
   }, [selectedSizeVariant]);
 
+  const isProductInFavorites = useMemo(() => {
+    return favorites.some((fav) => fav.id === product?.data.id);
+  }, [favorites, product]);
+
   if (isLoading) {
     return <ProductDetailsPageSkeleton />;
   }
@@ -83,8 +86,10 @@ const ProductDetailsPage: React.FC = () => {
       addProductToCart({
         ...product.data,
         orderSize: selectedSizeVariant.size.name,
+        orderSizeId: selectedSizeVariant.size.id,
         orderQty: qty,
         orderColor: selectedSizeVariant.color.name,
+        orderColorId: selectedSizeVariant.color.id,
         orderHexCode: selectedSizeVariant.color.hexCode,
       })
     );
@@ -112,11 +117,7 @@ const ProductDetailsPage: React.FC = () => {
 
   const handleFavorite = (): void => {
     if (product) {
-      dispatch(addProductToFavorite(product));
-
-      const isProductInFavorites = favorites.some(
-        (fav) => fav.id === product.id
-      );
+      dispatch(addProductToFavorite(product.data));
 
       toast({
         title: isProductInFavorites
@@ -130,7 +131,6 @@ const ProductDetailsPage: React.FC = () => {
   };
 
   const isComingSoon = product?.data.statusTag === "coming soon";
-  const isProductInFavorites = favorites.some((fav) => fav.id === product.id);
 
   return (
     <MaxWidth className="flex flex-col items-center w-full">
@@ -320,7 +320,13 @@ const ProductDetailsPage: React.FC = () => {
 
             {/* features */}
             <div>
-              <Button variant="link" className="px-0 text-lg" onClick={() => setFeaturesOpen(true)}>View Product Features</Button>
+              <Button
+                variant="link"
+                className="px-0 text-lg"
+                onClick={() => setFeaturesOpen(true)}
+              >
+                View Product Features
+              </Button>
             </div>
           </div>
         </div>
@@ -337,7 +343,11 @@ const ProductDetailsPage: React.FC = () => {
         productId={product?.data.id}
         productName={product?.data.name}
       />
-      <ProductFeatures open={featuresOpen} setOpen={setFeaturesOpen} product={product.data} />
+      <ProductFeatures
+        open={featuresOpen}
+        setOpen={setFeaturesOpen}
+        product={product.data}
+      />
     </MaxWidth>
   );
 };

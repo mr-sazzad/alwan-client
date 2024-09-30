@@ -12,20 +12,9 @@ const AccountLayout: React.FC<AccountLayoutProps> = ({ children }) => {
   const userRoutes = useUserAccountMenu();
 
   return (
-    <MaxWidth className="mt-[90px]">
-      <div className="w-full h-[15vh] bg-gradient-to-r from-green-200 to-green-300 rounded-md py-3 px-5 flex flex-row justify-between">
-        <div className="flex flex-col">
-          <h2 className="text-xl font-semibold">Hello</h2>
-          <p className="text-sm text-muted-foreground">
-            Welcome to your account
-          </p>
-        </div>
-        <div className="mt-auto">
-          <p className="text-muted-foreground text-xs">alwan ideal lifesyle</p>
-        </div>
-      </div>
+    <MaxWidth className="mt-[100px]">
       <div className="flex sm:flex-row flex-col min-h-[50vh]">
-        <div className="flex md:w-[170px] sm:w-[58px] sm:flex-col flex-row sm:justify-start sm:items-start justify-center items-center w-full sm:h-[73vh] sm:border-r gap-1 sm:pt-10 pt-10">
+        <div className="flex md:w-[200px] sm:w-[58px] sm:flex-col flex-row sm:justify-start sm:items-start justify-center items-center w-full sm:h-[73vh] sm:border-r gap-1 sm:pt-10 pt-10">
           {userRoutes.map((route) => (
             <Link
               key={route.id}
@@ -41,7 +30,7 @@ const AccountLayout: React.FC<AccountLayoutProps> = ({ children }) => {
                 <route.icon
                   className={`${
                     route.active ? "" : "text-muted-foreground"
-                  } md:text-base text-xl`}
+                  } md:text-base h-5 w-5`}
                 />
                 <p className="text-xl font-medium md:flex hidden">
                   {route.title}

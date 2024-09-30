@@ -32,6 +32,7 @@ const userApi = baseApi.injectEndpoints({
         url: `/users/${id}`,
         method: "PATCH",
         data,
+        contentType: "multipart/form-data",
       }),
       invalidatesTags: [tagTypes.user],
     }),

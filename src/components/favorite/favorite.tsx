@@ -1,7 +1,6 @@
 "use client";
 
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import ImageSlider from "../cards/image-slider";
 import { Button } from "../ui/button";
 import {
   Sheet,
@@ -13,9 +12,7 @@ import {
   SheetTrigger,
 } from "../ui/sheet";
 import { toast } from "../ui/use-toast";
-import SmallName from "../utils/product-name";
 
-import { IoBagHandleOutline } from "react-icons/io5";
 import { PiTrashLight } from "react-icons/pi";
 import { TbHeartX } from "react-icons/tb";
 import AlertDialogComp from "../alert-dialog/alert-dialog";
@@ -27,9 +24,11 @@ import {
 } from "@/redux/api/favorite/favoriteSlice";
 import { RootState } from "@/redux/store";
 import { IProduct } from "@/types";
+import { Heart } from "lucide-react";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
-import { Heart } from "lucide-react";
+import ImageSlider from "../cards/image-slider";
+import CartMoney from "../utils/cart-money";
 
 interface IWishlist {
   open: boolean;
@@ -77,29 +76,31 @@ const Favorite: React.FC<IWishlist> = ({ open, setOpen }) => {
     <>
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetTrigger asChild>
-          <Button variant="ghost" size="icon" className="rounded-full flex justify-center items-center">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="rounded-full flex justify-center items-center"
+          >
             <Heart size={20} />
           </Button>
         </SheetTrigger>
         <SheetContent className="flex flex-col justify-between">
           <SheetHeader>
             <SheetTitle className="text-lg font-medium">Favorite</SheetTitle>
-            <SheetDescription>
-              Here&lsquo;s your favorite items
-            </SheetDescription>
+            <SheetDescription>Here&apos;s your favorite items</SheetDescription>
           </SheetHeader>
           <div className="h-full">
             {wishlistProducts.length ? (
               <div className="flex flex-col justify-between h-full">
                 <div className="overflow-y-auto">
-                  {wishlistProducts.map((product: IProduct) => (
+                  {wishlistProducts?.map((product: IProduct) => (
                     <div
                       key={product.id}
                       className="flex flex-row gap-2 mt-5 w-full items-center"
                     >
                       <div className="flex flex-row gap-4 flex-1">
-                        <div className="relative w-[80px] h-[80px]">
-                          <ImageSlider urls={product.imageUrls} />
+                        <div className="relative w-[100px] h-[100px]">
+                          <ImageSlider urls={product?.imageUrls} />
                         </div>
                         <div>
                           <Button
@@ -108,17 +109,16 @@ const Favorite: React.FC<IWishlist> = ({ open, setOpen }) => {
                             className="px-0 py-0"
                           >
                             <Link href={`/t-shirts/${product.id}`}>
-                              <SmallName
-                                name={product.name}
-                                className="font-medium"
-                              />
+                              <p className="text-lg text-wrap text-start">
+                                {product.name}
+                              </p>
                             </Link>
                           </Button>
-                          {/* <div className="flex gap-1 items-center text-sm text-gray-400">
-                            {product.prices && (
-                              <CartMoney prices={product.prices} />
+                          <div className="flex gap-1 items-center text-sm text-gray-400 mt-5">
+                            {product.sizeVariants && (
+                              <CartMoney sizeVariants={product.sizeVariants} />
                             )}
-                          </div> */}
+                          </div>
                         </div>
                       </div>
                       <Button
@@ -132,18 +132,6 @@ const Favorite: React.FC<IWishlist> = ({ open, setOpen }) => {
                     </div>
                   ))}
                 </div>
-                <div className="w-full flex flex-col gap-1">
-                  <Button
-                    variant="destructive"
-                    onClick={() => setEraseModalOpen(true)}
-                    disabled={wishlistProducts.length < 1}
-                  >
-                    Clear Favorite
-                  </Button>
-                  <Button variant="outline" onClick={() => setOpen(false)}>
-                    Close
-                  </Button>
-                </div>
               </div>
             ) : (
               <div className="flex flex-col gap-3 items-center justify-between mt-5 h-full">
@@ -153,25 +141,27 @@ const Favorite: React.FC<IWishlist> = ({ open, setOpen }) => {
                     Empty Favorite
                   </p>
                 </div>
-                <Button
-                  className="w-full text-lg font-normal"
-                  onClick={() => setOpen(false)}
-                >
-                  Close
-                </Button>
               </div>
             )}
           </div>
 
           <SheetFooter>
+            <div className="w-full flex flex-col gap-1">
+              <Button
+                onClick={() => setEraseModalOpen(true)}
+                disabled={wishlistProducts.length < 1}
+                className="text-lg font-normal"
+              >
+                Clear Favorite
+              </Button>
+            </div>
             <AlertDialogComp
               open={eraseModalOpen}
               setOpen={setEraseModalOpen}
-              title="Do you want to remove your wishlist"
-              description="hello"
+              title="Do you want to remove your Favorite?"
+              description="This action cannot be undone. Are you sure you want to clear your favorite?"
               handler={handleCartClear}
-              buttonText="Yes, I Want"
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              buttonText="Yes, clear"
             />
           </SheetFooter>
         </SheetContent>

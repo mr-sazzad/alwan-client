@@ -121,6 +121,21 @@ export default function CheckoutPage() {
     }
   }, [userRes, currentUser, guestAddress, form]);
 
+  console.log("ORDER DATA =>", {
+    form,
+    totalPrice,
+    shippingCost,
+    currentUser,
+    productId,
+    quantity: quantity ? Number(quantity) : undefined,
+    sizeId: sizeRes?.data?.id,
+    colorId: colorRes?.data?.id,
+    cartProducts,
+    createAOrder,
+    router,
+    setLoading,
+  });
+
   const handlePlaceOrder = usePlaceOrder({
     form,
     totalPrice,
@@ -175,7 +190,7 @@ export default function CheckoutPage() {
   return (
     <MaxWidth className="flex justify-center">
       <div className="max-w-[900px] w-full px-5 mt-[100px]">
-        <div>
+        <div className="my-5">
           {!addressToShow ? (
             <Button
               variant="outline"
