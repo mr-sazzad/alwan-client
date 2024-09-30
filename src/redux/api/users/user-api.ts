@@ -31,8 +31,8 @@ const userApi = baseApi.injectEndpoints({
       query: ({ id, ...data }) => ({
         url: `/users/${id}`,
         method: "PATCH",
-        data,
-        contentType: "multipart/form-data",
+        body: data,
+        formData: true,
       }),
       invalidatesTags: [tagTypes.user],
     }),

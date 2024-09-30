@@ -6,12 +6,12 @@ import {
   DrawerClose,
   DrawerContent,
   DrawerDescription,
-  DrawerFooter,
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { useAdminDashboardMenu } from "@/static/admin-dashboard-menu";
+import { X } from "lucide-react";
 import Link from "next/link";
 
 const AdminsMobileMenu = () => {
@@ -25,36 +25,36 @@ const AdminsMobileMenu = () => {
       </DrawerTrigger>
       <DrawerContent>
         <div>
-          <DrawerHeader>
-            <DrawerTitle>Menu</DrawerTitle>
+          <DrawerHeader className="mt-3">
+            <DrawerTitle className="font-medium text-2xl">Menu</DrawerTitle>
             <DrawerDescription>
               Access your administrative dashboard to manage products,
               categories, orders, and more.
             </DrawerDescription>
           </DrawerHeader>
-          <div className="flex flex-row justify-start gap-2 w-full flex-wrap px-5">
+          <div className="flex flex-row justify-start gap-2 w-full flex-wrap px-5 mb-7">
             {adminRoutes.map((menu) => (
               <Link
                 key={menu.id}
                 href={menu.href}
-                className={`flex gap-2 justify-start items-center rounded w-[32%] border border-gray-400 p-1 h-[35px] overflow-hidden ${
+                className={`flex gap-2 justify-start items-center rounded w-[32%] border border-gray-300 p-1 h-[35px] overflow-hidden ${
                   menu.active
                     ? "bg-black/90 dark:bg-slate-100 text-slate-100 dark:text-black/80 hover:bg-black/80 hover:text-slate-100 dark:hover:text-gray-400"
                     : "hover:bg-gray-300 dark:hover:bg-gray-100 text-muted-foreground dark:hover:text-black/80 hover:text-gray-800"
                 }`}
               >
-                <menu.icon />
-                <p className="text-xs font-medium">{menu.title}</p>
+                <menu.icon className="h-4 w-4" />
+                <p className="">{menu.title}</p>
               </Link>
             ))}
           </div>
-          <DrawerFooter>
+          <div className="absolute top-7 right-7">
             <DrawerClose>
-              <Button className="w-full" variant="outline" size="sm">
-                Cancel Menu
+              <Button className="rounded-full" size="icon">
+                <X />
               </Button>
             </DrawerClose>
-          </DrawerFooter>
+          </div>
         </div>
       </DrawerContent>
     </Drawer>

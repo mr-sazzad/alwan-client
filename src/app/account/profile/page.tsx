@@ -1,18 +1,21 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Mail, MapPin, Phone, ShoppingBag, Upload } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Form, FormField, FormItem } from "@/components/ui/form";
+import { toast } from "@/components/ui/use-toast";
 
 import ProfileSkeleton from "@/components/skeletons/profile-skeleton";
-import { Input } from "@/components/ui/input";
-import { toast } from "@/components/ui/use-toast";
 import { getUserFromLocalStorage } from "@/helpers/jwt";
 import { useGetSingleUserOrdersQuery } from "@/redux/api/orders/ordersApi";
 import {
@@ -21,10 +24,22 @@ import {
 } from "@/redux/api/users/user-api";
 import { IUserData } from "@/types";
 
+const profileSchema = z.object({
+  file: z.instanceof(File).refine((file) => file.size < 3 * 1024 * 1024, {
+    message: "File size must be less than 3MB",
+  }),
+});
+
 export default function ProfilePage() {
   const router = useRouter();
   const [userData, setUserData] = useState<IUserData | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const form = useForm<z.infer<typeof profileSchema>>({
+    resolver: zodResolver(profileSchema),
+    defaultValues: {
+      file: new File([], ""),
+    },
+  });
 
   useEffect(() => {
     const currentUserData = getUserFromLocalStorage() as IUserData | null;
@@ -44,54 +59,51 @@ export default function ProfilePage() {
 
   const [updateSingleUser, { isLoading: isUpdating }] =
     useUpdateSingleUserMutation();
+
   const { data: orders, isLoading: isOrderLoading } =
     useGetSingleUserOrdersQuery(userData?.userId ?? "", {
       skip: !userData?.userId,
     });
 
-  const handleImageUpload = async (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const formData = new FormData();
-      formData.append("file", file);
+  const onSubmit = async (values: z.infer<typeof profileSchema>) => {
+    if (!userData?.userId) {
+      toast({
+        title: "Error",
+        description: "User ID not found",
+        variant: "destructive",
+      });
+      return;
+    }
 
-      // formData.forEach((value, key) => {
-      //   console.log(`${key}:`, value);
-      // });
+    const formData = new FormData();
+    formData.append("file", values.file);
 
-      try {
-        const result: any = await updateSingleUser({
-          id: userData?.userId,
-          data: formData,
+    try {
+      const result = await updateSingleUser({
+        id: userData.userId,
+        data: formData,
+      }).unwrap();
+
+      if (result.success) {
+        toast({
+          title: "Success",
+          description: "Profile image updated successfully",
         });
-
-        console.log(result);
-
-        if (result.success) {
-          toast({
-            title: "Success",
-            description: "Profile image updated successfully",
-          });
-        } else {
-          toast({
-            title: "Error",
-            description: "Profile image update failed",
-            variant: "destructive",
-          });
-        }
-      } catch (error) {
+      } else {
         toast({
           title: "Error",
-          description: "Error uploading profile image",
+          description: result.message || "Profile image update failed",
+          variant: "destructive",
         });
       }
+    } catch (error) {
+      console.error("Error uploading profile image:", error);
+      toast({
+        title: "Error",
+        description: "Error uploading profile image",
+        variant: "destructive",
+      });
     }
-  };
-
-  const triggerFileInput = () => {
-    fileInputRef.current?.click();
   };
 
   if (isUserLoading || isOrderLoading || !userData) {
@@ -100,7 +112,7 @@ export default function ProfilePage() {
 
   return (
     <div className="container mx-auto py-10 px-4">
-      <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg shadow-xl p-8 mb-10">
+      <div className="bg-gradient-to-r from-primary to-secondary rounded-lg shadow-xl p-8 mb-10">
         <div className="flex flex-col md:flex-row items-center gap-8">
           <div className="relative">
             <Avatar className="w-32 h-32 border-4 border-white">
@@ -116,16 +128,46 @@ export default function ProfilePage() {
                 <AvatarFallback>{user?.data?.name?.charAt(0)}</AvatarFallback>
               )}
             </Avatar>
-            <Button
-              size="icon"
-              variant="secondary"
-              className="absolute bottom-0 right-0 rounded-full shadow-lg"
-              onClick={triggerFileInput}
-              disabled={isUpdating}
-              aria-label="Upload profile picture"
-            >
-              <Upload className="h-4 w-4" />
-            </Button>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)}>
+                <FormField
+                  control={form.control}
+                  name="file"
+                  render={({ field }) => (
+                    <FormItem>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        id="profile-image-upload"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            field.onChange(file);
+                            form.handleSubmit(onSubmit)();
+                          }
+                        }}
+                      />
+                      <Button
+                        size="icon"
+                        variant="secondary"
+                        className="absolute bottom-0 right-0 rounded-full shadow-lg"
+                        disabled={isUpdating}
+                        type="button"
+                        aria-label="Upload profile picture"
+                        onClick={() => {
+                          document
+                            .getElementById("profile-image-upload")
+                            ?.click();
+                        }}
+                      >
+                        <Upload className="h-4 w-4" />
+                      </Button>
+                    </FormItem>
+                  )}
+                />
+              </form>
+            </Form>
           </div>
           <div className="text-center md:text-left text-white">
             <h1 className="text-3xl font-bold mb-2">{user?.data?.name}</h1>
@@ -172,15 +214,6 @@ export default function ProfilePage() {
           </CardContent>
         </Card>
       </div>
-
-      <Input
-        type="file"
-        ref={fileInputRef}
-        className="hidden"
-        onChange={handleImageUpload}
-        accept="image/*"
-        aria-label="Upload profile picture"
-      />
     </div>
   );
 }

@@ -121,6 +121,7 @@ const ProductForm = ({ mode, product, setOpen }: ProductFormProps) => {
   const onSubmit = async (data: z.infer<typeof productSchema>) => {
     try {
       const formData = new FormData();
+
       data.files.forEach((file) => {
         formData.append("files", file);
       });

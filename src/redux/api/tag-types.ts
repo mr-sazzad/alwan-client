@@ -14,6 +14,8 @@ export enum tagTypes {
   color = "color",
   homeText = "homeText",
   notification = "notification",
+  income = "income",
+  expense = "expense",
 }
 
 export const tagTypeLists = [
@@ -33,4 +35,6 @@ export const tagTypeLists = [
   tagTypes.color,
   tagTypes.homeText,
   tagTypes.notification,
+  tagTypes.income,
+  tagTypes.expense,
 ];

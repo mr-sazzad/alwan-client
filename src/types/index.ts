@@ -365,3 +365,11 @@ export interface FormValues {
   unionId: string;
   streetAddress: string;
 }
+
+export interface Expense {
+  id: string;
+  title: string;
+  description: string;
+  amount: number;
+  createdAt: string;
+}
