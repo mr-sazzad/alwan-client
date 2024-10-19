@@ -196,7 +196,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
                 {selectedVariant && selectedVariant.stock < 20 && (
                   <div className="flex gap-3 items-center">
                     <IoMdAlarm size={20} className="text-destructive" />
-                    <p className="text-destructive font-semibold">
+                    <p className="text-destructive font-medium">
                       Just a few left. Order soon.
                     </p>
                   </div>

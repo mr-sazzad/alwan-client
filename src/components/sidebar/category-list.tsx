@@ -1,5 +1,7 @@
+import { getUserFromLocalStorage } from "@/helpers/jwt";
 import { handleSignInWithGoogle } from "@/helpers/sign-in-with-google";
 import { Category } from "@/types";
+import Link from "next/link";
 import { useState } from "react";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import LoginModal from "../modals/login-modal";
@@ -28,6 +30,8 @@ export function CategoryList({
 }: CategoryListProps) {
   const [open, setOpen] = useState(false);
   const [SignUpOpen, setSignUpOpen] = useState(false);
+
+  const currentUser = getUserFromLocalStorage();
 
   return (
     <>
@@ -76,7 +80,7 @@ export function CategoryList({
               ))}
           </ul>
         </div>
-        {isFirstPage && (
+        {isFirstPage && !currentUser && (
           <div className="mt-16">
             <Card>
               <CardContent className="p-4">
@@ -93,6 +97,22 @@ export function CategoryList({
                     Sign In
                   </Button>
                 </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+        {isFirstPage && currentUser && (
+          <div className="mt-16">
+            <Card>
+              <CardContent className="p-4">
+                <h3 className="text-lg font-medium mb-2">Need Assistance?</h3>
+                <p className="text-sm text-muted-foreground mb-4">
+                  If you&apos;re experiencing any issues or have questions,
+                  please don&apos;t hesitate to reach out.
+                </p>
+                <Link href="/contact" passHref>
+                  <Button className="w-full">Contact Us</Button>
+                </Link>
               </CardContent>
             </Card>
           </div>

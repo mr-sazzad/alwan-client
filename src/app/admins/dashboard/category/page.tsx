@@ -3,9 +3,10 @@
 import PageTitle from "@/components/admins/dashboard/page-titles/page-title";
 import AlwanBreadCrumb from "@/components/breadcrumbs/breadcrumb";
 import CategoryDrawer from "@/components/categories/category-drawer";
+import AdminsCategorySkeleton from "@/components/skeletons/admins-category-skeleton";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
 import { useGetCategoriesQuery } from "@/redux/api/categoies/categoriesApi";
+import { Upload } from "lucide-react";
 import { useState } from "react";
 import CategoryTableColumns from "./category-columns";
 
@@ -15,18 +16,7 @@ const Category = () => {
   const { data: categories, isLoading } = useGetCategoriesQuery(undefined);
 
   if (isLoading) {
-    return (
-      <div className="flex flex-col gap-3">
-        <Skeleton className="w-[200px] h-7" />
-        <Skeleton className="w-full h-20" />
-        <Skeleton className="ml-auto w-[150px] h-10" />
-        <div className="flex justify-between gap-2">
-          <Skeleton className="md:w-[250px] w-full h-10" />
-          <Skeleton className="w-[100px] h-10" />
-        </div>
-        <Skeleton className="w-full h-[40vh]" />
-      </div>
-    );
+    return <AdminsCategorySkeleton />;
   }
 
   return (
@@ -37,12 +27,13 @@ const Category = () => {
           { label: "Dashboard", href: "/admins/dashboard" },
         ]}
         page="Category"
-        className="mb-3"
+        className="my-3"
       />
       <PageTitle title="Category" description="Category information" />
 
       <div className="flex justify-end items-center mt-5">
-        <Button variant="link" size="sm" onClick={() => setOpen(true)}>
+        <Button variant="outline" size="sm" onClick={() => setOpen(true)}>
+          <Upload className="w-4 h-4 mr-2" />
           Create Category
         </Button>
       </div>

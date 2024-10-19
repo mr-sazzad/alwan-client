@@ -29,6 +29,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { homeTextSchema } from "@/schemas/admins/home-text-schema";
 import { IReadCategory } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { X } from "lucide-react";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -96,7 +97,7 @@ export default function HomeTextForm({
   return (
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerContent>
-        <div className="mx-auto w-full max-w-sm">
+        <div className="mx-auto w-full max-w-sm py-4">
           <DrawerHeader>
             <DrawerTitle>
               {isUpdating ? "Update Text" : "Create Text"}
@@ -185,10 +186,10 @@ export default function HomeTextForm({
               </Button>
             </form>
           </Form>
-          <DrawerFooter>
+          <DrawerFooter className="absolute top-3 right-3">
             <DrawerClose asChild>
-              <Button variant="outline" className="w-full">
-                Cancel
+              <Button className="rounded-full" size="icon">
+                <X className="w-4 h-4" />
               </Button>
             </DrawerClose>
           </DrawerFooter>

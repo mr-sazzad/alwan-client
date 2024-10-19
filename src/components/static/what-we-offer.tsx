@@ -1,38 +1,64 @@
-import { IconType } from "react-icons";
+import { Card, CardContent } from "@/components/ui/card";
+import { CreditCard, HeadphonesIcon, RefreshCcw, Rocket } from "lucide-react";
 
-interface IItemType {
-  id: number;
-  icon: IconType;
-  label: string;
-}
+const offerItems = [
+  {
+    id: 1,
+    icon: Rocket,
+    label: "Faster Delivery",
+    description: "Lightning-quick shipping",
+  },
+  {
+    id: 2,
+    icon: CreditCard,
+    label: "Secure Payments",
+    description: "Safe & flexible options",
+  },
+  {
+    id: 3,
+    icon: RefreshCcw,
+    label: "Easy Returns",
+    description: "Hassle-free process",
+  },
+  {
+    id: 4,
+    icon: HeadphonesIcon,
+    label: "24/7 Support",
+    description: "Always here to help",
+  },
+];
 
-interface IItems {
-  items: IItemType[];
-}
-
-const WhatWeOffer: React.FC<IItems> = ({ items }) => {
+export default function WhatWeOffer() {
   return (
-    <div className="w-full pb-2">
-      <div className="flex justify-center gap-2 w-full">
-        {items.map((item) => (
-          <div
-            className="flex flex-col items-center border rounded border-dashed text-muted-foreground p-2 hover:bg-gray-100 hover:font-semibold transition group border-gray-400 hover:border-gray-100 w-full"
-            key={item.id}
-          >
-            <div className="p-2 bg-gradient-to-r from-emerald-50 to-emerald-100 rounded-full">
-              <item.icon
-                size={26}
-                className="group-hover:scale-75 transition-all duration-75"
-              />
+    <section className="w-full py-12 bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5">
+      <div className="container mx-auto px-4">
+        <h2 className="text-3xl md:text-4xl font-bold text-center mb-8 text-primary">
+          What We Offer
+        </h2>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+          {offerItems.map((item) => (
+            <div key={item.id} className="w-full">
+              <Card className="h-full transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+                <CardContent className="p-4 md:p-6">
+                  <div className="flex flex-col items-center text-center lg:flex-row lg:items-start lg:text-left space-y-3 lg:space-y-0 lg:space-x-4">
+                    <div className="bg-primary/10 rounded-full p-3 flex-shrink-0">
+                      <item.icon className="w-6 h-6 md:w-8 md:h-8 text-primary" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg md:text-xl font-medium text-primary">
+                        {item.label}
+                      </h3>
+                      <p className="text-xs md:text-sm text-muted-foreground mt-1">
+                        {item.description}
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
-            <p className="md:text-base group-hover:font-medium text-sm group-hover:scale-90 duration-75 tracking-tight mt-2">
-              {item.label}
-            </p>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
-    </div>
+    </section>
   );
-};
-
-export default WhatWeOffer;
+}

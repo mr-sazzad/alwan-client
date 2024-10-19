@@ -28,9 +28,10 @@ import {
 import { productTypeSchema } from "@/schemas/admins/product-type-schema";
 import { IReadProductType } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2 } from "lucide-react";
+import { X } from "lucide-react";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { PiSpinner } from "react-icons/pi";
 import { z } from "zod";
 
 interface ProductTypeDrawerProps {
@@ -106,7 +107,7 @@ const ProductTypeDrawer = ({
   return (
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerContent>
-        <div className="mx-auto w-full max-w-sm">
+        <div className="mx-auto w-full max-w-sm py-4">
           <DrawerHeader>
             <DrawerTitle>
               {isEditing ? "Update" : "Create"} Product Type
@@ -145,7 +146,7 @@ const ProductTypeDrawer = ({
                 disabled={isLoading}
               >
                 {isLoading ? (
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  <PiSpinner className="mr-2 h-4 w-4 animate-spin" />
                 ) : isEditing ? (
                   "Update"
                 ) : (
@@ -154,10 +155,10 @@ const ProductTypeDrawer = ({
               </Button>
             </form>
           </Form>
-          <DrawerFooter>
+          <DrawerFooter className="absolute top-3 right-3">
             <DrawerClose asChild>
-              <Button variant="outline" disabled={isLoading}>
-                Cancel
+              <Button disabled={isLoading} size="icon" className="rounded-full">
+                <X />
               </Button>
             </DrawerClose>
           </DrawerFooter>

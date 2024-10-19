@@ -16,6 +16,7 @@ import { useDeleteSingleProductMutation } from "@/redux/api/products/productsApi
 import { IProduct, IReadCategory, IReadSize, IReadSizeVariant } from "@/types";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
 
 export type Product = {
@@ -24,7 +25,7 @@ export type Product = {
   category: IReadCategory;
   sizeVariants: IReadSizeVariant[];
   size: IReadSize;
-  status: "IN_STOCK" | "OUT_OF_STOCK";
+  stockStatus: "AVAILABLE" | "OUT_OF_STOCK";
 };
 
 const ProductTableColumns = () => {
@@ -88,6 +89,10 @@ const ProductTableColumns = () => {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>
+                  <Link href={`${path}/${id}`}>View Product Details</Link>
+                </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={() => {
                     setDialogOpen(true), setProduct(row.original);

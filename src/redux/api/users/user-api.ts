@@ -28,12 +28,15 @@ const userApi = baseApi.injectEndpoints({
     }),
 
     updateSingleUser: build.mutation({
-      query: ({ id, ...data }) => ({
-        url: `/users/${id}`,
-        method: "PATCH",
-        body: data,
-        formData: true,
-      }),
+      query: ({ id, data }) => {
+        console.log("data from api =>", data);
+        return {
+          url: `/users/${id}`,
+          method: "PATCH",
+          data,
+          contentType: "multipart/form-data",
+        };
+      },
       invalidatesTags: [tagTypes.user],
     }),
 

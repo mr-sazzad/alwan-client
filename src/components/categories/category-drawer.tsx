@@ -8,11 +8,13 @@ import {
 import { categorySchema } from "@/schemas/admins/category-schema";
 import { ICreateCategory } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { AlertTriangle, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { PiSpinnerGapBold } from "react-icons/pi";
 import { VscCloudUpload } from "react-icons/vsc";
 import { z } from "zod";
+import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
 import { Button } from "../ui/button";
 import { Drawer, DrawerClose, DrawerContent, DrawerFooter } from "../ui/drawer";
 import {
@@ -164,16 +166,21 @@ const CategoryDrawer: React.FC<CategoryDrawerProps> = ({
 
   const isLoading = isCreating || isUpdating || isFetching;
 
+  const watchIsLeaf = form.watch("isLeaf");
+
   return (
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerContent>
-        <div className="mx-auto w-full max-w-md mt-2">
-          <div className="text-xs text-center mb-2 bg-red-50 border-2 border-red-200 mx-2 rounded px-2 py-3 text-muted-foreground">
-            The &apos;isNavigational&apos; and &apos;isLeaf&apos; options should
-            not be set to
-            <span className="font-medium text-black"> Yeah</span> or
-            <span className="font-medium text-black"> Nope</span>.
-          </div>
+        <div className="mx-auto w-full max-w-md mt-2 py-4">
+          <Alert variant="destructive" className="mb-4">
+            <AlertTriangle className="h-4 w-4" />
+            <AlertTitle>Important Note</AlertTitle>
+            <AlertDescription>
+              Please be cautious when setting &apos;isNavigational&apos; and
+              &apos;isLeaf&apos; options. These settings have significant
+              implications for category behavior and structure.
+            </AlertDescription>
+          </Alert>
 
           <Form {...form}>
             <form
@@ -237,7 +244,10 @@ const CategoryDrawer: React.FC<CategoryDrawerProps> = ({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Parent ID</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
+                    <Select
+                      onValueChange={field.onChange}
+                      value={field.value || undefined}
+                    >
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Select Parent ID" />
@@ -253,13 +263,47 @@ const CategoryDrawer: React.FC<CategoryDrawerProps> = ({
                               </SelectItem>
                             ))
                           ) : (
-                            <SelectItem value="">
+                            <SelectItem value="no-categories">
                               No categories available
                             </SelectItem>
                           )}
                         </SelectGroup>
                       </SelectContent>
                     </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="isLeaf"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Is Leaf?</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      value={field.value || undefined}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Is this a leaf category?" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="true">
+                          Yes, it&apos;s a leaf category
+                        </SelectItem>
+                        <SelectItem value="false">
+                          No, it&apos;s not a leaf category
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormDescription>
+                      A leaf category is one that doesn&apos;t have any
+                      subcategories.
+                    </FormDescription>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -270,41 +314,64 @@ const CategoryDrawer: React.FC<CategoryDrawerProps> = ({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Is Navigational</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
+                    <Select
+                      onValueChange={(value) => {
+                        field.onChange(value);
+                        if (value === "true" && watchIsLeaf === "true") {
+                          form.setValue("isLeaf", "false");
+                        }
+                      }}
+                      value={field.value || undefined}
+                    >
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Do You Stored Products to this?" />
+                          <SelectValue placeholder="Is this a navigational category?" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="true">✅ Yeah</SelectItem>
-                        <SelectItem value="false">❎ Nope</SelectItem>
+                        <SelectItem
+                          value="true"
+                          disabled={watchIsLeaf === "true"}
+                        >
+                          Yes, it&apos;s navigational
+                        </SelectItem>
+                        <SelectItem value="false">
+                          No, it&apos;s not navigational
+                        </SelectItem>
                       </SelectContent>
                     </Select>
+                    <FormDescription>
+                      A navigational category is used for organizing
+                      subcategories.
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
               />
 
-              {/* First Title and Second Title fields (unchanged) */}
+              <FormField
+                control={form.control}
+                name="firstTitle"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>First Title</FormLabel>
+                    <FormControl>
+                      <Input placeholder="First Title" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
               <FormField
                 control={form.control}
-                name="isLeaf"
+                name="secondTitle"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Is Leaf?</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Do You Stored Products to this?" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="true">✅ Yeah</SelectItem>
-                        <SelectItem value="false">❎ Nope</SelectItem>
-                      </SelectContent>
-                    </Select>
+                    <FormLabel>Second Title</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Second Title" {...field} />
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -316,22 +383,24 @@ const CategoryDrawer: React.FC<CategoryDrawerProps> = ({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>On Home?</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
+                    <Select
+                      onValueChange={field.onChange}
+                      value={field.value || undefined}
+                    >
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Do you want to show this on the home page ?" />
+                          <SelectValue placeholder="Do you want to show this on the home page?" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="true">✅ Yes, I want</SelectItem>
+                        <SelectItem value="true">
+                          Yes, show on home page
+                        </SelectItem>
                         <SelectItem value="false">
-                          ❎ No, I don&apos;t want
+                          No, don&apos;t show on home page
                         </SelectItem>
                       </SelectContent>
                     </Select>
-                    <FormDescription>
-                      Yes means you want to show this category on home page
-                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -341,18 +410,18 @@ const CategoryDrawer: React.FC<CategoryDrawerProps> = ({
                 {isLoading ? (
                   <PiSpinnerGapBold className="animate-spin" />
                 ) : mode === "create" ? (
-                  "Create"
+                  "Create Category"
                 ) : (
-                  "Update"
+                  "Update Category"
                 )}
               </Button>
             </form>
           </Form>
 
-          <DrawerFooter>
+          <DrawerFooter className="absolute top-2 right-2">
             <DrawerClose>
-              <Button className="w-full" variant="outline" disabled={isLoading}>
-                Cancel
+              <Button className="rounded-full" disabled={isLoading} size="icon">
+                <X />
               </Button>
             </DrawerClose>
           </DrawerFooter>

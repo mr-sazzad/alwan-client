@@ -4,9 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
   Dialog,
-  DialogClose,
   DialogContent,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -39,21 +37,22 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { RiLoaderLine } from "react-icons/ri";
+import ReactSelect from "react-select";
 import { z } from "zod";
 
 interface CouponFormProps {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
-  categories: { value: string; label: string }[];
-  products: { value: string; label: string }[];
+  categories: { id: string; name: string }[];
+  products: { id: string; name: string }[];
   isUpdating: boolean;
   couponData?: z.infer<typeof CouponSchema> | null;
   onSubmit: (data: z.infer<typeof CouponSchema>) => Promise<void>;
 }
 
-const CouponForm = ({
+export default function CouponForm({
   open,
   setOpen,
   categories,
@@ -61,7 +60,7 @@ const CouponForm = ({
   isUpdating,
   couponData,
   onSubmit,
-}: CouponFormProps) => {
+}: CouponFormProps) {
   const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<z.infer<typeof CouponSchema>>({
@@ -69,6 +68,7 @@ const CouponForm = ({
     defaultValues: {
       code: "",
       discountType: "PERCENTAGE",
+      type: "PRODUCT",
       discountValue: 0,
       startDate: new Date(),
       endDate: new Date(),
@@ -76,6 +76,7 @@ const CouponForm = ({
       products: [],
       usageLimit: 0,
       minOrderValue: 0,
+      usedCount: 0,
     },
   });
 
@@ -87,20 +88,33 @@ const CouponForm = ({
         code: "",
         discountType: "PERCENTAGE",
         discountValue: 0,
+        type: "PRODUCT",
         startDate: new Date(),
         endDate: new Date(),
         categories: [],
         products: [],
         usageLimit: 0,
         minOrderValue: 0,
+        usedCount: 0,
       });
     }
   }, [isUpdating, couponData, form]);
 
   const handleSubmit = async (data: z.infer<typeof CouponSchema>) => {
+    console.log("Submitting data:", data);
     setIsLoading(true);
     try {
-      await onSubmit(data);
+      const formattedData = {
+        ...data,
+        categories: data.type === "CATEGORY" ? data.categories : undefined,
+        products: data.type === "PRODUCT" ? data.products : undefined,
+      };
+
+      // Remove categories and products if they're not needed
+      if (data.type !== "CATEGORY") delete formattedData.categories;
+      if (data.type !== "PRODUCT") delete formattedData.products;
+
+      await onSubmit(formattedData);
       setOpen(false);
     } catch (error) {
       console.error("Error submitting form:", error);
@@ -109,11 +123,13 @@ const CouponForm = ({
     }
   };
 
+  const couponType = form.watch("type");
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="max-w-4xl w-full h-[85vh] overflow-y-auto hide-scrollbar rounded">
         <DialogHeader>
-          <DialogTitle className="text-xl">
+          <DialogTitle className="text-xl font-medium">
             {isUpdating ? "Update Coupon" : "Create New Coupon"}
           </DialogTitle>
         </DialogHeader>
@@ -123,19 +139,58 @@ const CouponForm = ({
               onSubmit={form.handleSubmit(handleSubmit)}
               className="space-y-4"
             >
-              <FormField
-                control={form.control}
-                name="code"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Code</FormLabel>
-                    <FormControl>
-                      <Input placeholder="SUMMER-2024" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <div className="grid md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="code"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Code</FormLabel>
+                      <FormControl>
+                        <Input placeholder="SUMMER-2024" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="type"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Coupon Type</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select a Type" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectGroup>
+                            <SelectLabel>Types</SelectLabel>
+                            <SelectItem value="GLOBAL">
+                              Global Coupon
+                            </SelectItem>
+                            <SelectItem value="DELIVERY">
+                              Delivery Coupon
+                            </SelectItem>
+                            <SelectItem value="CATEGORY">
+                              Category Coupon
+                            </SelectItem>
+                            <SelectItem value="PRODUCT">
+                              Product Coupon
+                            </SelectItem>
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
 
               <div className="grid md:grid-cols-2 gap-4">
                 <FormField
@@ -189,6 +244,7 @@ const CouponForm = ({
                   )}
                 />
               </div>
+
               <div className="grid md:grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
@@ -220,7 +276,9 @@ const CouponForm = ({
                             mode="single"
                             selected={field.value}
                             onSelect={field.onChange}
-                            disabled={(date) => date < new Date("1900-01-01")}
+                            disabled={(date) =>
+                              date < new Date() || date < new Date("1900-01-01")
+                            }
                             initialFocus
                           />
                         </PopoverContent>
@@ -260,7 +318,10 @@ const CouponForm = ({
                             mode="single"
                             selected={field.value}
                             onSelect={field.onChange}
-                            disabled={(date) => date < new Date("1900-01-01")}
+                            disabled={(date) =>
+                              date <= form.getValues("startDate") ||
+                              date < new Date("1900-01-01")
+                            }
                             initialFocus
                           />
                         </PopoverContent>
@@ -270,69 +331,104 @@ const CouponForm = ({
                   )}
                 />
               </div>
-              <div className="grid md:grid-cols-2 gap-4">
+
+              {couponType === "CATEGORY" && (
                 <FormField
                   control={form.control}
                   name="categories"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Categories</FormLabel>
-                      <Select
-                        onValueChange={(value) => field.onChange([value])}
-                        value={field.value && field.value[0]}
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select categories" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {categories.map((category) => (
-                            <SelectItem
-                              key={category.value}
-                              value={category.value}
-                            >
-                              {category.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                      <FormControl>
+                        <Controller
+                          name="categories"
+                          control={form.control}
+                          render={({ field }) => (
+                            <ReactSelect
+                              isMulti
+                              options={categories.map((category) => ({
+                                value: category.id,
+                                label: category.name,
+                              }))}
+                              value={(field.value || []).map((id) => {
+                                const category = categories.find(
+                                  (c) => c.id === id
+                                );
+                                return category
+                                  ? { value: category.id, label: category.name }
+                                  : null;
+                              })}
+                              onChange={(newValue) =>
+                                field.onChange(
+                                  newValue.map((item) => item?.value || "")
+                                )
+                              }
+                              classNames={{
+                                control: (state) => "border-input",
+                                menu: () => "bg-background",
+                                option: (state) =>
+                                  state.isFocused
+                                    ? "bg-accent"
+                                    : "bg-background",
+                              }}
+                            />
+                          )}
+                        />
+                      </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
+              )}
 
+              {couponType === "PRODUCT" && (
                 <FormField
                   control={form.control}
                   name="products"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Products</FormLabel>
-                      <Select
-                        onValueChange={(value) => field.onChange([value])}
-                        value={field.value && field.value[0]}
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select products" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {products.map((product) => (
-                            <SelectItem
-                              key={product.value}
-                              value={product.value}
-                            >
-                              {product.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                      <FormControl>
+                        <Controller
+                          name="products"
+                          control={form.control}
+                          render={({ field }) => (
+                            <ReactSelect
+                              isMulti
+                              options={products.map((product) => ({
+                                value: product.id,
+                                label: product.name,
+                              }))}
+                              value={(field.value || []).map((id) => {
+                                const product = products.find(
+                                  (p) => p.id === id
+                                );
+                                return product
+                                  ? { value: product.id, label: product.name }
+                                  : null;
+                              })}
+                              onChange={(newValue) =>
+                                field.onChange(
+                                  newValue.map((item) => item?.value || "")
+                                )
+                              }
+                              classNames={{
+                                control: (state) => "border-input",
+                                menu: () => "bg-background",
+                                option: (state) =>
+                                  state.isFocused
+                                    ? "bg-accent"
+                                    : "bg-background",
+                              }}
+                            />
+                          )}
+                        />
+                      </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-              </div>
+              )}
 
               <div className="grid md:grid-cols-2 gap-4">
                 <FormField
@@ -387,16 +483,7 @@ const CouponForm = ({
             </form>
           </Form>
         </div>
-        <DialogFooter>
-          <DialogClose asChild>
-            <Button variant="outline" className="w-[96%] mx-auto">
-              Cancel
-            </Button>
-          </DialogClose>
-        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
-};
-
-export default CouponForm;
+}

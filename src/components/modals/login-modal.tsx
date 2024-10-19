@@ -29,7 +29,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { FcGoogle } from "react-icons/fc";
+import { FaGoogle } from "react-icons/fa";
 import { z } from "zod";
 import ForgotPasswordDrawer from "./forgot-pass-drawer";
 
@@ -95,7 +95,15 @@ export default function LoginModal({
   const onSubmit = async (data: z.infer<typeof loginSchema>) => {
     try {
       const res = await signInUser(data).unwrap();
-      if (res?.data?.accessToken) {
+
+      if (!res?.success) {
+        toast({
+          title: "Login Failed",
+          description: "Something went wrong. Please try again.",
+          variant: "destructive",
+        });
+        return;
+      } else {
         setToLocalStorage("alwan-user-access-token", res.data.accessToken);
         setOpen(false);
         form.reset();
@@ -110,6 +118,7 @@ export default function LoginModal({
         title: "Login Error",
         description: "Invalid credentials. Please try again.",
       });
+      return;
     }
   };
 
@@ -137,55 +146,58 @@ export default function LoginModal({
             </DialogDescription>
           </DialogHeader>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email</FormLabel>
-                    <FormControl>
-                      <Input placeholder="example@gmail.com" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Password</FormLabel>
-                    <FormControl>
-                      <div className="relative">
-                        <Input
-                          type={showPassword ? "text" : "password"}
-                          placeholder="••••••"
-                          {...field}
-                        />
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                          onClick={togglePasswordVisibility}
-                          aria-label={
-                            showPassword ? "Hide password" : "Show password"
-                          }
-                        >
-                          {showPassword ? (
-                            <EyeOff className="h-4 w-4 text-gray-500" />
-                          ) : (
-                            <Eye className="h-4 w-4 text-gray-500" />
-                          )}
-                        </Button>
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+            <form onSubmit={form.handleSubmit(onSubmit)}>
+              <div className="space-y-4">
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Email</FormLabel>
+                      <FormControl>
+                        <Input placeholder="example@gmail.com" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Password</FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <Input
+                            type={showPassword ? "text" : "password"}
+                            placeholder="••••••"
+                            {...field}
+                          />
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                            onClick={togglePasswordVisibility}
+                            aria-label={
+                              showPassword ? "Hide password" : "Show password"
+                            }
+                          >
+                            {showPassword ? (
+                              <EyeOff className="h-4 w-4 text-gray-500" />
+                            ) : (
+                              <Eye className="h-4 w-4 text-gray-500" />
+                            )}
+                          </Button>
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
               <Button
                 type="button"
                 variant="link"
@@ -197,23 +209,6 @@ export default function LoginModal({
                   ? `Forgot Password? (${resetTimer}s)`
                   : "Forgot Password?"}
               </Button>
-              <div className="text-xs text-muted-foreground">
-                By continuing, I agree to Alwan&apos;s{" "}
-                <a
-                  href="/privacy-policy"
-                  className="underline hover:text-primary"
-                >
-                  Privacy Policy
-                </a>{" "}
-                and{" "}
-                <a
-                  href="/terms-of-use"
-                  className="underline hover:text-primary"
-                >
-                  Terms of Use
-                </a>
-                .
-              </div>
               <Button type="submit" className="w-full" disabled={isLoading}>
                 {isLoading ? (
                   <>
@@ -226,7 +221,7 @@ export default function LoginModal({
               </Button>
             </form>
           </Form>
-          <div className="relative my-4">
+          <div className="relative my-2">
             <div className="absolute inset-0 flex items-center">
               <Separator className="w-full" />
             </div>
@@ -242,9 +237,21 @@ export default function LoginModal({
             className="w-full"
             onClick={handler}
           >
-            <FcGoogle className="mr-2 h-4 w-4" />
+            <FaGoogle className="mr-2 h-4 w-4" />
             Sign In With Google
           </Button>
+
+          <div className="text-xs text-muted-foreground">
+            By continuing, I agree to Alwan&apos;s{" "}
+            <a href="/privacy-policy" className="underline hover:text-primary">
+              Privacy Policy
+            </a>{" "}
+            and{" "}
+            <a href="/terms-of-use" className="underline hover:text-primary">
+              Terms of Use
+            </a>
+            .
+          </div>
         </DialogContent>
       </Dialog>
 

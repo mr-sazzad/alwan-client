@@ -1,11 +1,5 @@
 export const KEY = "alwan-user-access-token";
 
-export interface IMeta {
-  total: number;
-  page: number;
-  size: number;
-}
-
 export interface IResponseData {
   status: number;
   success: boolean;
@@ -14,8 +8,21 @@ export interface IResponseData {
 
 export interface IResponse {
   data: IResponseData;
-  meta?: IMeta;
 }
+
+export type IErrorMessage = {
+  path: string | number;
+  message: string;
+};
+
+export type IErrorResponse = {
+  data: {
+    statusCode: number;
+    message: string;
+    errorMessages: IErrorMessage[];
+    success: boolean;
+  };
+};
 
 export interface IReadCarousel {
   id: string;
@@ -109,6 +116,7 @@ export interface SizeVariant {
   sizeId: string;
   manufacturingCost: number;
 }
+
 export interface IReadSizeVariant {
   id: string;
   productId: string;
@@ -133,13 +141,40 @@ export interface IProduct {
   categoryId: string;
   category: IReadCategory;
   productTypeId: string;
-  isCouponApplicable: boolean;
-  isFreeDeliveryAvailable: boolean;
-  stockStatus: "IN_STOCK" | "OUT_OF_STOCK";
-  statusTag: string;
+  couponEligible: boolean;
+  freeShippingAvailable: boolean;
+  isNewArrival: boolean;
+  sku: string;
+  stockStatus: "AVAILABLE" | "OUT_OF_STOCK";
+  availabilityTag: string;
   sizeVariants: IReadSizeVariant[];
   reviews: IReview[];
   createdAt: string;
+}
+
+export interface ProductWithDetails {
+  id: string;
+  product: {
+    id: string;
+    name: string;
+    brand: string;
+    description: string[];
+    features: string[];
+    imageUrls: string[];
+    categoryId: string;
+    productTypeId: string;
+    isCouponApplicable: boolean;
+  };
+  size?: { name: string };
+  color?: { name: string; hexCode: string };
+  quantity: number;
+  discountedPrice: number;
+  itemStatus:
+    | "PROCESSING"
+    | "ONTHEWAY"
+    | "DELIVERED"
+    | "REQUESTTORETURN"
+    | "RETURNED";
 }
 
 export interface IUserCartProduct {
@@ -151,9 +186,12 @@ export interface IUserCartProduct {
   imageUrls: string[];
   categoryId: string;
   productTypeId: string;
-  isCouponApplicable: boolean;
-  isFreeDeliveryAvailable: boolean;
-  stockStatus: "IN_STOCK" | "OUT_OF_STOCK";
+  couponEligible: boolean;
+  freeShippingAvailable: boolean;
+  isNewArrival: boolean;
+  sku: string;
+  stockStatus: "AVAILABLE" | "OUT_OF_STOCK";
+  availabilityTag: string;
   sizeVariants: IReadSizeVariant[];
   orderColor: string;
   orderColorId: string;
@@ -364,6 +402,7 @@ export interface FormValues {
   union: string;
   unionId: string;
   streetAddress: string;
+  label: "HOME" | "OFFICE";
 }
 
 export interface Expense {

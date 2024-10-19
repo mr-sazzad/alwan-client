@@ -11,4 +11,5 @@ export const baseApi = createApi({
 
   endpoints: (builder) => ({}),
   tagTypes: tagTypeLists,
+  refetchOnMountOrArgChange: true,
 });

@@ -16,7 +16,7 @@ const NotFound: React.FC<NotFoundProps> = ({
   return (
     <div className="flex flex-col gap-2 justify-center items-center">
       <Icon size={size} className="text-muted-foreground" />
-      <p className={`text-xl font-semibold text-muted-foreground ${className}`}>
+      <p className={`text-xl font-medium text-muted-foreground ${className}`}>
         {text}
       </p>
     </div>

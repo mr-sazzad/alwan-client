@@ -1,32 +1,55 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { BarChart, FileText, Settings, Users } from "lucide-react";
 import Link from "next/link";
 
-import { RiSettings2Line } from "react-icons/ri";
+export default function AdminDashboard() {
+  const menuItems = [
+    {
+      icon: BarChart,
+      label: "Analytics",
+      href: "/admins/dashboard/application-dashboard",
+    },
+    { icon: Users, label: "User Management", href: "/admins/dashboard/users" },
+    { icon: FileText, label: "Reports", href: "/admins/dashboard/reports" },
+    { icon: Settings, label: "Settings", href: "/admins/dashboard/settings" },
+  ];
 
-const AdminDashboard = () => {
   return (
-    <div className="flex justify-center items-center h-custom-height">
-      <div className="flex flex-col items-center text-center">
-        <RiSettings2Line
-          size={25}
-          className="mb-3 text-gray-800 dark:text-white"
-        />
-        <h1 className="text-xl font-semibold text-gray-800 dark:text-white">
-          Select a Menu
-        </h1>
-        <p className="text-sm text-gray-800 dark:text-white">
-          For detailed information
-        </p>
-        <Button className="mt-1" variant="link">
-          <Link href="/admins/dashboard/application-dashboard">
-            Go To Analytics
-          </Link>
-        </Button>
-      </div>
+    <div className="container mx-auto px-4 py-8">
+      <Card className="w-full">
+        <CardHeader>
+          <CardTitle className="text-2xl font-medium">
+            Admin Dashboard
+          </CardTitle>
+          <CardDescription>
+            Select a menu option for detailed information
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {menuItems.map((item, index) => (
+              <Link key={index} href={item.href} passHref>
+                <Button
+                  variant="outline"
+                  className="w-full h-24 text-left flex items-center space-x-4 hover:bg-secondary transition-colors"
+                >
+                  <item.icon className="w-6 h-6 text-primary" />
+                  <span className="font-medium">{item.label}</span>
+                </Button>
+              </Link>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
-};
-
-export default AdminDashboard;
+}

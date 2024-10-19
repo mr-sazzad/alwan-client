@@ -74,6 +74,13 @@ const HomeTextTable = ({ texts, onUpdateText }: HomeTextTableProps) => {
     {
       accessorKey: "buttonText",
       header: "BTN Text",
+      cell: ({ row }) => {
+        return (
+          <div className="inline-flex items-center bg-fuchsia-100 text-fuchsia-600 px-2 py-1 rounded-md">
+            <span>{row.original.buttonText}</span>
+          </div>
+        );
+      },
     },
     {
       accessorKey: "category.name",

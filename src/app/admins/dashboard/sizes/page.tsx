@@ -3,7 +3,7 @@
 import PageTitle from "@/components/admins/dashboard/page-titles/page-title";
 import SizeDrawer from "@/components/admins/dashboard/sizes/size-drawer";
 import AlwanBreadCrumb from "@/components/breadcrumbs/breadcrumb";
-import AdminDashboardLoading from "@/components/lodings/admin-dashboard-loding";
+import AdminColorSkeleton from "@/components/skeletons/admin-color-skeleton";
 import { Button } from "@/components/ui/button";
 import { useGetAllSizesQuery } from "@/redux/api/size/size-api";
 import { useState } from "react";
@@ -14,7 +14,7 @@ const Size = () => {
   const [open, setOpen] = useState(false);
 
   if (isLoading) {
-    return <AdminDashboardLoading />;
+    return <AdminColorSkeleton />;
   }
 
   return (
@@ -29,7 +29,7 @@ const Size = () => {
       />
       <PageTitle title="Size" description="Size information" />
       <div className="flex justify-end mt-3">
-        <Button variant="link" onClick={() => setOpen(true)}>
+        <Button variant="outline" onClick={() => setOpen(true)}>
           Add New Size
         </Button>
       </div>

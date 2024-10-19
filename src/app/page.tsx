@@ -1,7 +1,12 @@
-"use client";
 import Home from "@/components/home/home";
+import { Metadata } from "next";
 
-export default function App() {
+export const metadata: Metadata = {
+  title: "Home | Alwan",
+  description: "this is home page",
+};
+
+export default function Page() {
   return (
     <div>
       <Home />

@@ -1,20 +1,22 @@
+import {
+  Angry,
+  Bug,
+  Diameter,
+  FolderOpen,
+  GalleryHorizontal,
+  Gem,
+  Gift,
+  HandCoins,
+  LayoutDashboard,
+  MessagesSquare,
+  Package,
+  Paintbrush,
+  PenTool,
+  Puzzle,
+  TreePalm,
+} from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useMemo } from "react";
-import { BiCategoryAlt } from "react-icons/bi";
-import { BsBodyText } from "react-icons/bs";
-import { GiExpense, GiProfit } from "react-icons/gi";
-import { GoCommentDiscussion } from "react-icons/go";
-import { LiaTshirtSolid } from "react-icons/lia";
-import { LuLayoutDashboard } from "react-icons/lu";
-import {
-  MdMergeType,
-  MdOutlineColorLens,
-  MdStarBorderPurple500,
-} from "react-icons/md";
-import { RiCoupon3Line } from "react-icons/ri";
-import { RxSize } from "react-icons/rx";
-import { TbCarouselHorizontal, TbTruckReturn } from "react-icons/tb";
-import { VscFeedback } from "react-icons/vsc";
 
 export const useAdminDashboardMenu = () => {
   const pathname = usePathname();
@@ -25,78 +27,78 @@ export const useAdminDashboardMenu = () => {
         id: 1,
         title: "Dashboard",
         href: "/admins/dashboard/application-dashboard",
-        icon: LuLayoutDashboard,
+        icon: LayoutDashboard,
         active: pathname.includes("/admins/dashboard/application-dashboard"),
       },
       {
         id: 2,
         title: "Carousel",
         href: "/admins/dashboard/carousel",
-        icon: TbCarouselHorizontal,
+        icon: GalleryHorizontal,
         active: pathname.includes("/admins/dashboard/carousel"),
       },
       {
         id: 3,
         title: "Category",
         href: "/admins/dashboard/category",
-        icon: BiCategoryAlt,
+        icon: FolderOpen,
         active: pathname.includes("/admins/dashboard/category"),
       },
       {
         id: 4,
         title: "Reviews",
         href: "/admins/dashboard/reviews",
-        icon: GoCommentDiscussion,
+        icon: MessagesSquare,
         active: pathname.includes("/admins/dashboard/reviews"),
       },
       {
         id: 5,
         title: "Color",
         href: "/admins/dashboard/colors",
-        icon: MdOutlineColorLens,
+        icon: Paintbrush,
         active: pathname.includes("/admins/dashboard/colors"),
       },
       {
         id: 6,
         title: "Coupon",
         href: "/admins/dashboard/coupons",
-        icon: RiCoupon3Line,
+        icon: Puzzle,
         active: pathname.includes("/admins/dashboard/coupons"),
       },
       {
         id: 7,
         title: "Expenses",
         href: "/admins/dashboard/expenses",
-        icon: GiExpense,
-        active: pathname.includes("/admins/dashboard/espenses"),
+        icon: HandCoins,
+        active: pathname.includes("/admins/dashboard/expenses"),
       },
 
       {
         id: 8,
         title: "Feedbacks",
         href: "/admins/dashboard/feedbacks",
-        icon: VscFeedback,
+        icon: Bug,
         active: pathname.includes("/admins/dashboard/feedbacks"),
       },
       {
         id: 9,
         title: "Orders",
         href: "/admins/dashboard/orders",
-        icon: MdStarBorderPurple500,
+        icon: Package,
         active: pathname.includes("/admins/dashboard/orders"),
       },
       {
         id: 10,
         title: "Product Type",
         href: "/admins/dashboard/product-types",
-        icon: MdMergeType,
+        icon: PenTool,
         active: pathname.includes("/admins/dashboard/product-types"),
       },
       {
         id: 11,
         title: "Products",
         href: "/admins/dashboard/products",
-        icon: LiaTshirtSolid,
+        icon: Gift,
         active: pathname.includes("/admins/dashboard/products"),
       },
 
@@ -104,28 +106,28 @@ export const useAdminDashboardMenu = () => {
         id: 12,
         title: "Returns",
         href: "/admins/dashboard/returns",
-        icon: TbTruckReturn,
+        icon: Angry,
         active: pathname.includes("/admins/dashboard/returns"),
       },
       {
         id: 13,
         title: "Revinew",
         href: "/admins/dashboard/revinews",
-        icon: GiProfit,
+        icon: Gem,
         active: pathname.includes("/admins/dashboard/revinews"),
       },
       {
         id: 14,
-        title: "Size",
+        title: "Product Size",
         href: "/admins/dashboard/sizes",
-        icon: RxSize,
+        icon: Diameter,
         active: pathname.includes("/admins/dashboard/sizes"),
       },
       {
         id: 15,
         title: "Home Text",
         href: "/admins/dashboard/home-text",
-        icon: BsBodyText,
+        icon: TreePalm,
         active: pathname.includes("/admins/dashboard/home-text"),
       },
     ],

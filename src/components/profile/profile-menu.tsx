@@ -1,150 +1,174 @@
 "use client";
 
-import { getUserFromLocalStorage } from "@/helpers/jwt";
-import Link from "next/link";
-import { useState } from "react";
-import AlertDialogComp from "../alert-dialog/alert-dialog";
-import LoginModal from "../modals/login-modal";
-import SignUpModal from "../modals/signUp-modal";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { Button } from "../ui/button";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
-
+} from "@/components/ui/dropdown-menu";
+import { toast } from "@/components/ui/use-toast";
+import { getUserFromLocalStorage } from "@/helpers/jwt";
 import { removeFromLocalStorage } from "@/helpers/local-storage";
-import { Separator } from "../ui/separator";
-import { toast } from "../ui/use-toast";
-
-// icons
 import { handleSignInWithGoogle } from "@/helpers/sign-in-with-google";
-import { User } from "lucide-react";
-import { FiUserCheck, FiUserPlus } from "react-icons/fi";
-import { VscSignOut } from "react-icons/vsc";
+import { LogOut, User, UserCheck, UserPlus } from "lucide-react";
+import Link from "next/link";
+import { useState } from "react";
+import LoginModal from "../modals/login-modal";
+import SignUpModal from "../modals/signUp-modal";
+import { extractNameFromEmail } from "../utils/utils";
 
-const Profile = () => {
-  const currentUser = getUserFromLocalStorage();
+export interface ICurrentUser {
+  email: string;
+  role: "ADMIN" | "USER";
+  userId: string;
+  int: number;
+  exp: number;
+}
+
+export default function Profile() {
+  const currentUser = getUserFromLocalStorage() as ICurrentUser | null;
   const [open, setOpen] = useState(false);
   const [signOutDialogOpen, setSignOutDialogOpen] = useState(false);
-  const [SignUpOpen, setSignUpOpen] = useState(false);
+  const [signUpOpen, setSignUpOpen] = useState(false);
 
   const handleUserSignout = () => {
     removeFromLocalStorage("alwan-user-access-token");
-
     toast({
       title: "Log out",
-      description: "Sign out successfull",
+      description: "Sign out successful",
     });
   };
 
+  console.log(currentUser);
+
   return (
     <>
-      <div>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="link"
-              className="rounded-full p-0 flex justify-center items-center overflow-hidden border-0 outline-none w-[30px] h-[30px]"
-            >
-              <Avatar className="w-[25px] h-[25px]">
-                <AvatarImage
-                  src="https://i.ibb.co/Qkf0sqm/images.jpg"
-                  alt="profile-image"
-                />
-                <AvatarFallback>AW</AvatarFallback>
-              </Avatar>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-[300px]">
-            {currentUser ? (
-              <>
-                <DropdownMenuLabel className="text-lg font-medium">
-                  My Account
-                </DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                  <Link
-                    href="/account/profile"
-                    className="flex gap-2 items-center"
-                  >
-                    <User size={16} />
-                    <p>Profile</p>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button className="relative h-8 w-8 rounded-full flex justify-center items-center">
+            <Avatar className="h-8 w-8">
+              <AvatarImage
+                src="https://i.ibb.co/Qkf0sqm/images.jpg"
+                alt="Profile"
+              />
+              <AvatarFallback>AW</AvatarFallback>
+            </Avatar>
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent className="w-80 mr-1 mt-6" align="center">
+          {currentUser ? (
+            <Card className="border-0 shadow-none">
+              <CardHeader className="pb-0">
+                <CardTitle className="font-medium text-lg">
+                  {extractNameFromEmail(currentUser.email)}
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="grid gap-4">
+                <div className="flex flex-col space-y-1">
+                  <p className="text-sm text-muted-foreground">
+                    {currentUser.email}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    {currentUser.role}
+                  </p>
+                </div>
+                <div className="grid gap-2">
+                  <Link href="/account/profile" className="w-full">
+                    <Button variant="outline" className="w-full justify-start">
+                      <User className="mr-2 h-4 w-4" />
+                      Profile
+                    </Button>
                   </Link>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  onSelect={() => setSignOutDialogOpen(true)}
-                  className="cursor-pointer flex items-center gap-2"
-                >
-                  <VscSignOut size={16} />
-                  <p>Log out</p>
-                </DropdownMenuItem>
-              </>
-            ) : (
-              <>
-                <DropdownMenuItem
-                  className="w-full list-none"
-                  onSelect={() => setOpen(true)}
-                >
-                  <div>
-                    <h2 className="text-lg font-medium mb-2">Login First</h2>
-                    <p className="text-sm text-muted-foreground">
-                      Experience seamless access to your account with our secure
-                      login.
-                    </p>
-                  </div>
-                </DropdownMenuItem>
-                <Separator className="my-1" />
-                <DropdownMenuItem
-                  className="w-full list-none cursor-pointer"
-                  onSelect={() => setOpen(true)}
-                >
-                  <div className="py-1 flex items-center gap-2">
-                    <FiUserCheck size={18} />{" "}
-                    <p className="text-lg font-medium">Sign In</p>
-                  </div>
-                </DropdownMenuItem>
-                <Separator className="my-1" />
-                <DropdownMenuItem
-                  className="w-full list-none cursor-pointer"
-                  onSelect={() => setSignUpOpen(true)}
-                >
-                  <div className="py-1 flex items-center gap-2">
-                    <FiUserPlus size={18} />{" "}
-                    <p className="text-lg font-medium">Sign Up</p>
-                  </div>
-                </DropdownMenuItem>
-              </>
-            )}
-          </DropdownMenuContent>
-        </DropdownMenu>
 
-        <LoginModal
-          open={open}
-          setOpen={setOpen}
-          handler={handleSignInWithGoogle}
-        />
-        <SignUpModal
-          signUpOpen={SignUpOpen}
-          setSignUpOpen={setSignUpOpen}
-          handler={handleSignInWithGoogle}
-        />
-      </div>
-      <AlertDialogComp
-        open={signOutDialogOpen}
-        setOpen={setSignOutDialogOpen}
-        title="Confirm Sign Out"
-        description="Are you sure you want to sign out? You'll need to sign in again to access your account."
-        handler={handleUserSignout}
-        buttonText="Sign Out"
+                  <Button
+                    variant="outline"
+                    className="w-full justify-start text-red-500 hover:text-red-600"
+                    onClick={() => setSignOutDialogOpen(true)}
+                  >
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Log out
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          ) : (
+            <Card className="border-0 shadow-none">
+              <CardHeader>
+                <CardTitle>Login First</CardTitle>
+                <CardDescription>
+                  Experience seamless access to your account with our secure
+                  login.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="grid gap-4">
+                <Button
+                  variant="outline"
+                  className="w-full justify-start"
+                  onClick={() => setOpen(true)}
+                >
+                  <UserCheck className="mr-2 h-4 w-4" />
+                  Sign In
+                </Button>
+                <Button
+                  variant="outline"
+                  className="w-full justify-start"
+                  onClick={() => setSignUpOpen(true)}
+                >
+                  <UserPlus className="mr-2 h-4 w-4" />
+                  Sign Up
+                </Button>
+              </CardContent>
+            </Card>
+          )}
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      <LoginModal
+        open={open}
+        setOpen={setOpen}
+        handler={handleSignInWithGoogle}
       />
+      <SignUpModal
+        signUpOpen={signUpOpen}
+        setSignUpOpen={setSignUpOpen}
+        handler={handleSignInWithGoogle}
+      />
+
+      <AlertDialog open={signOutDialogOpen} onOpenChange={setSignOutDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirm Sign Out</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to sign out? You&apos;ll need to sign in
+              again to access your account.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleUserSignout}>
+              Sign Out
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   );
-};
-
-export default Profile;
+}

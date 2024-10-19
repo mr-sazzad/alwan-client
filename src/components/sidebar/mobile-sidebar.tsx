@@ -53,7 +53,7 @@ export default function SheetComponent() {
 
   return (
     <>
-      <Button onClick={() => setOpen(true)} variant="ghost" size="icon">
+      <Button onClick={() => setOpen(true)} size="icon">
         <HiOutlineMenuAlt1 size={20} />
       </Button>
 

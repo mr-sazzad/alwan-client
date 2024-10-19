@@ -1,17 +1,17 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
+import { FiSearch } from "react-icons/fi";
 import blackLogo from "../images/logo-black-40.png";
 import Cart from "./cart/cart";
 import Favorite from "./favorite/favorite";
 import Profile from "./profile/profile-menu";
+import FullWidthSearch from "./search/search";
 import DesktopMenu from "./sidebar/desktop-menu";
 import MobileSidebar from "./sidebar/mobile-sidebar";
-import { Button } from "@/components/ui/button";
-import { FiSearch } from "react-icons/fi";
-import FullWidthSearch from "./search/search";
 
 const throttle = (func: Function, limit: number) => {
   let inThrottle: boolean;
@@ -49,7 +49,7 @@ export default function Header() {
   return (
     <>
       <nav
-        className={`h-[90px] md:px-14 sm:px-10 px-5 w-full fixed top-0 z-30 bg-white transition-transform duration-200 border-b ${
+        className={`h-[90px] md:px-14 sm:px-10 px-5 w-full fixed top-0 z-30 transition-transform duration-200 border-b bg-white dark:bg-slate-900 ${
           visible ? "translate-y-0" : "-translate-y-full"
         }`}
       >
@@ -70,11 +70,11 @@ export default function Header() {
             </div>
             <div className="flex items-center">
               <Button
-                variant="ghost"
                 size="icon"
-                className="mr-2"
+                variant="ghost"
                 onClick={() => setIsSearchOpen(true)}
                 aria-label="Open search"
+                className="rounded-full mr-1"
               >
                 <FiSearch size={20} />
               </Button>
@@ -92,7 +92,10 @@ export default function Header() {
           </menu>
         </div>
       </nav>
-      <FullWidthSearch isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
+      <FullWidthSearch
+        isOpen={isSearchOpen}
+        onClose={() => setIsSearchOpen(false)}
+      />
     </>
   );
 }

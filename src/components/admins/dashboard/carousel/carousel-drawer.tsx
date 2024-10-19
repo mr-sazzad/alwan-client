@@ -15,28 +15,39 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useRegisterACarouselMutation } from "@/redux/api/carousel/carouselApi";
+import { toast } from "@/components/ui/use-toast";
+import {
+  useRegisterACarouselMutation,
+  useUpdateCarouselMutation,
+} from "@/redux/api/carousel/carouselApi";
 import { carouselSchema } from "@/schemas/admins/carousel-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { X } from "lucide-react";
 import { Dispatch, SetStateAction, useState } from "react";
 import { useForm } from "react-hook-form";
 import { GoShieldCheck } from "react-icons/go";
 import { VscCloudUpload } from "react-icons/vsc";
 import { z } from "zod";
 
-interface AddCarouselDrawerProps {
+interface CarouselDrawerProps {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
   carouselId?: string;
+  isUpdate: boolean;
 }
 
-const AddCarouselDrawer: React.FC<AddCarouselDrawerProps> = ({
+const CarouselDrawer: React.FC<CarouselDrawerProps> = ({
   open,
   setOpen,
   carouselId,
+  isUpdate,
 }) => {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
-  const [registerACarousel, { isLoading }] = useRegisterACarouselMutation();
+
+  const [registerACarousel, { isLoading: isCreating }] =
+    useRegisterACarouselMutation();
+  const [updateCarousel, { isLoading: isUpdating }] =
+    useUpdateCarouselMutation();
 
   const form = useForm<z.infer<typeof carouselSchema>>({
     resolver: zodResolver(carouselSchema),
@@ -45,22 +56,60 @@ const AddCarouselDrawer: React.FC<AddCarouselDrawerProps> = ({
     },
   });
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async () => {
     const formData = new FormData();
-    selectedFiles.forEach((file) => formData.append("files", file));
+
+    if (selectedFiles.length > 0) {
+      selectedFiles.forEach((file) => formData.append("files", file));
+    } else if (isUpdate) {
+      formData.append("noNewFiles", "true");
+    }
 
     try {
-      const result = await registerACarousel(formData).unwrap();
-      setOpen(false);
+      let result;
+      if (isUpdate && carouselId) {
+        formData.append("id", carouselId);
+
+        result = await updateCarousel({
+          id: carouselId,
+          data: formData,
+        }).unwrap();
+      } else {
+        result = await registerACarousel(formData).unwrap();
+      }
+
+      if (!result.success) {
+        toast({
+          title: "Error",
+          description:
+            result.message ||
+            `Failed to ${isUpdate ? "update" : "upload"} carousel`,
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Success",
+          description: `Carousel ${
+            isUpdate ? "updated" : "uploaded"
+          } successfully`,
+        });
+        setOpen(false);
+        setSelectedFiles([]);
+        form.reset();
+      }
     } catch (error) {
-      console.error("Error uploading carousel:", error);
+      toast({
+        title: "Error",
+        description: `Failed to ${isUpdate ? "update" : "upload"} carousel`,
+        variant: "destructive",
+      });
     }
   };
 
   return (
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerContent>
-        <div className="mx-auto w-full max-w-sm mt-5">
+        <div className="max-w-sm w-full mx-auto mt-10">
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmit)}
@@ -72,7 +121,7 @@ const AddCarouselDrawer: React.FC<AddCarouselDrawerProps> = ({
                 render={({ field }) => (
                   <FormItem className="md:col-span-4 col-span-1">
                     <FormControl>
-                      <div className="mb-4 flex justify-center items-center border border-dashed rounded-lg px-5 py-8 relative">
+                      <div className="mb-4 flex justify-center items-center border border-dashed rounded-lg px-5 py-4 relative">
                         <Input
                           type="file"
                           accept="image/*"
@@ -89,18 +138,23 @@ const AddCarouselDrawer: React.FC<AddCarouselDrawerProps> = ({
                           <p className="ml-2 text-sm text-gray-500">
                             JPEG, PNG, GIF up to 10MB
                           </p>
-                          <p className="ml-2 text-sm text-gray-500">
-                            Hold the CTRL button to select multiple images
+                          <p className="ml-2 text-sm text-gray-500 text-center">
+                            Hold{" "}
+                            <span className="bg-orange-100 px-1 py-1 rounded text-orange-600 text-xs font-semibold">
+                              CTRL
+                            </span>{" "}
+                            btn to select multiple files
                           </p>
 
                           {selectedFiles.length > 0 && (
-                            <div className="rounded flex gap-1 bg-slate-100 py-1 px-2 mt-2">
+                            <div className="rounded flex flex-wrap gap-1 bg-indigo-100 py-1 px-2 mt-2">
                               {selectedFiles.map((file, index) => (
                                 <p
                                   key={index}
-                                  className="text-gray-600 text-sm font-thin"
+                                  className="text-muted-foreground text-xs font-thin text-indigo-500"
                                 >
                                   {file.name}
+                                  {index < selectedFiles.length - 1 ? "," : ""}
                                 </p>
                               ))}
                             </div>
@@ -112,17 +166,27 @@ const AddCarouselDrawer: React.FC<AddCarouselDrawerProps> = ({
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="w-full" disabled={isLoading}>
+              <Button
+                type="submit"
+                className="w-full mb-4"
+                disabled={isCreating || isUpdating}
+              >
                 <div className="flex gap-2 items-center">
-                  <GoShieldCheck size={20} /> Create Carousel
+                  <GoShieldCheck size={20} /> {isUpdate ? "Update" : "Create"}{" "}
+                  Carousel
                 </div>
               </Button>
             </form>
           </Form>
-          <DrawerFooter>
+
+          <DrawerFooter className="absolute top-2 right-2">
             <DrawerClose>
-              <Button className="w-full" variant="secondary">
-                Cancel
+              <Button
+                className="w-full rounded-full px-2"
+                variant="secondary"
+                size="icon"
+              >
+                <X />
               </Button>
             </DrawerClose>
           </DrawerFooter>
@@ -132,4 +196,4 @@ const AddCarouselDrawer: React.FC<AddCarouselDrawerProps> = ({
   );
 };
 
-export default AddCarouselDrawer;
+export default CarouselDrawer;

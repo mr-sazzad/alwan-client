@@ -1,5 +1,5 @@
 import { getFromLocalStorage } from "@/helpers/local-storage";
-import { IResponse, KEY } from "@/types";
+import { IErrorResponse, IResponse, KEY } from "@/types";
 import axios from "axios";
 
 export const instance = axios.create();
@@ -11,6 +11,7 @@ instance.defaults.timeout = 50000;
 // Add a request interceptor
 instance.interceptors.request.use(
   function (config) {
+    // set accessToken to headers before request is sent
     const accessToken = getFromLocalStorage(KEY);
 
     if (accessToken) {
@@ -23,16 +24,26 @@ instance.interceptors.request.use(
   }
 );
 
+// Add a response interceptor
+
 instance.interceptors.response.use(
   //@ts-ignore
   function (response) {
     const responseObject: IResponse = {
       data: response?.data,
-      meta: response?.data?.meta,
     };
     return responseObject;
   },
+
   function (error) {
-    return error.response;
+    const responseObject: IErrorResponse = {
+      data: {
+        statusCode: error?.response?.status,
+        success: error?.response?.data?.success,
+        message: error?.response?.data?.message,
+        errorMessages: error?.response?.data?.errorMessages,
+      },
+    };
+    return responseObject;
   }
 );

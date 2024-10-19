@@ -15,7 +15,7 @@ import { toast } from "@/components/ui/use-toast";
 import { useDeleteCouponMutation } from "@/redux/api/coupon/couponApi";
 import { CouponSchema } from "@/schemas/admins/coupon-schema";
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, MoreHorizontal } from "lucide-react";
+import { ArrowUpDown, Edit, Eye, MoreHorizontal, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { z } from "zod";
 
@@ -69,14 +69,30 @@ const CouponTableColumns = ({
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       ),
+      cell: ({ row }) => (
+        <div className="inline-flex items-center bg-violet-100 text-violet-600 px-2 py-1 rounded-md">
+          <span className="w-2 h-2 rounded bg-violet-600 mr-2" />
+          <span>{row.original.code}</span>
+        </div>
+      ),
     },
     {
       accessorKey: "discountType",
       header: "DSC Type",
+      cell: ({ row }) => (
+        <div className="inline-flex items-center bg-sky-100 text-sky-600 px-2 py-1 rounded-md">
+          <span>{row.original.discountType}</span>
+        </div>
+      ),
     },
     {
       accessorKey: "type",
       header: "Type",
+      cell: ({ row }) => (
+        <div className="inline-flex items-center bg-sky-100 text-sky-600 px-2 py-1 rounded-md">
+          <span>{row.original.type}</span>
+        </div>
+      ),
     },
     {
       accessorKey: "endDate",
@@ -84,16 +100,20 @@ const CouponTableColumns = ({
       cell: ({ row }) => {
         const date = new Date(row.original.endDate);
         return (
-          <span className="text-muted-foreground">
+          <span className="inline-flex items-center bg-pink-100 text-pink-600 px-2 py-1 rounded-md">
             {`${date.toLocaleDateString("en-GB")}`}
           </span>
         );
       },
     },
-
     {
       accessorKey: "minOrderValue",
       header: "Min Order",
+      cell: ({ row }) => (
+        <div className="inline-flex items-center bg-sky-100 text-sky-600 px-2 py-1 rounded-md">
+          <span>{row.original.minOrderValue}</span>
+        </div>
+      ),
     },
     {
       id: "actions",
@@ -114,9 +134,11 @@ const CouponTableColumns = ({
               <DropdownMenuItem
                 onClick={() => console.log("View details", coupon.id)}
               >
+                <Eye className="mr-2 h-4 w-4" />
                 Coupon Details
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => onUpdateCoupon(coupon)}>
+                <Edit className="mr-2 h-4 w-4" />
                 Update Coupon
               </DropdownMenuItem>
               <Separator />
@@ -125,6 +147,7 @@ const CouponTableColumns = ({
                   setOpen(true), setCouponId(row.original.id);
                 }}
               >
+                <Trash2 className="mr-2 h-4 w-4" />
                 Delete Coupon
               </DropdownMenuItem>
             </DropdownMenuContent>

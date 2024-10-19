@@ -3,7 +3,7 @@
 import CouponForm from "@/components/admins/dashboard/coupons/coupon-form";
 import PageTitle from "@/components/admins/dashboard/page-titles/page-title";
 import AlwanBreadCrumb from "@/components/breadcrumbs/breadcrumb";
-import AdminDashboardLoading from "@/components/lodings/admin-dashboard-loding";
+import AdminColorSkeleton from "@/components/skeletons/admin-color-skeleton";
 import { Button } from "@/components/ui/button";
 import { useGetLeafCategoriesQuery } from "@/redux/api/categoies/categoriesApi";
 import {
@@ -33,7 +33,7 @@ const Coupon = () => {
   const [updateCoupon] = useUpdateCouponMutation();
 
   if (isLoading || categoryLoading || productLoading) {
-    return <AdminDashboardLoading />;
+    return <AdminColorSkeleton />;
   }
 
   const handleCreateCoupon = () => {
@@ -69,17 +69,17 @@ const Coupon = () => {
           { label: "Dashboard", href: "/dashboard" },
         ]}
         page="Coupons"
-        className="mb-3"
+        className="my-3"
       />
       <PageTitle title="Coupons" description="Coupons information" />
 
       <div className="flex w-full justify-end mt-3">
         <Button
-          variant="link"
+          variant="outline"
           onClick={handleCreateCoupon}
           className="flex items-center gap-1"
         >
-          + Add New Coupon
+          Add New Coupon
         </Button>
       </div>
 

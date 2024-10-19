@@ -1,21 +1,24 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { FiSearch } from "react-icons/fi";
-import { X } from "lucide-react";
+import { Input } from "@/components/ui/input";
 import { useGetAllProductsQuery } from "@/redux/api/products/productsApi";
 import { IProduct } from "@/types";
-import { useRouter } from "next/navigation";
+import { X } from "lucide-react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import { FiSearch } from "react-icons/fi";
 
 interface FullWidthSearchProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-export default function FullWidthSearch({ isOpen, onClose }: FullWidthSearchProps) {
+export default function FullWidthSearch({
+  isOpen,
+  onClose,
+}: FullWidthSearchProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [isClosing, setIsClosing] = useState(false);
   const router = useRouter();
@@ -23,9 +26,11 @@ export default function FullWidthSearch({ isOpen, onClose }: FullWidthSearchProp
   const inputRef = useRef<HTMLInputElement>(null);
   const { data: products, isLoading } = useGetAllProductsQuery(undefined);
 
-  const filteredProducts = products?.data.filter((product: IProduct) =>
-    product.name.toLowerCase().includes(searchTerm.toLowerCase())
-  ).slice(0, 8);
+  const filteredProducts = products?.data
+    ?.filter((product: IProduct) =>
+      product.name.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    .slice(0, 8);
 
   const handleGoToDetailsPage = (id: string) => {
     setSearchTerm("");
@@ -49,7 +54,10 @@ export default function FullWidthSearch({ isOpen, onClose }: FullWidthSearchProp
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+      if (
+        searchRef.current &&
+        !searchRef.current.contains(event.target as Node)
+      ) {
         handleClose();
       }
     };
@@ -66,10 +74,10 @@ export default function FullWidthSearch({ isOpen, onClose }: FullWidthSearchProp
   if (!isOpen && !isClosing) return null;
 
   return (
-    <div 
-      className={`fixed inset-0 bg-white z-50 overflow-y-auto transition-all duration-300 ease-in-out ${
+    <div
+      className={`fixed inset-0 bg-white dark:bg-gray-900 z-50 overflow-y-auto transition-all duration-300 ease-in-out ${
         isOpen && !isClosing ? "translate-x-0" : "translate-x-full"
-      }`} 
+      }`}
       ref={searchRef}
     >
       <div className="container mx-auto px-4 py-8">
@@ -82,32 +90,36 @@ export default function FullWidthSearch({ isOpen, onClose }: FullWidthSearchProp
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full pr-10 text-lg !outline-none !ring-0 !ring-offset-0"
-              style={{ boxShadow: 'none' }}
+              style={{ boxShadow: "none" }}
             />
             <Button
-              variant="ghost"
               size="icon"
-              className="absolute right-0 top-0 bottom-0 transition-all duration-300 ease-in-out hover:bg-gray-100"
+              variant="ghost"
+              className="absolute right-0 top-0 bottom-0 transition-all duration-300 ease-in-out"
               onClick={() => setSearchTerm("")}
               aria-label="Clear search"
             >
               {searchTerm ? <X size={20} /> : <FiSearch size={20} />}
             </Button>
           </div>
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            onClick={handleClose} 
+          <Button
+            size="icon"
+            variant="ghost"
+            onClick={handleClose}
             aria-label="Close search"
-            className="hover:bg-gray-100"
+            className="rounded-full"
           >
             <X size={24} />
           </Button>
         </div>
 
-        <div className={`min-h-[400px] transition-all duration-300 ease-in-out ${
-          isOpen && !isClosing ? "opacity-100 translate-x-0" : "opacity-0 translate-x-4"
-        }`}>
+        <div
+          className={`min-h-[400px] transition-all duration-300 ease-in-out ${
+            isOpen && !isClosing
+              ? "opacity-100 translate-x-0"
+              : "opacity-0 translate-x-4"
+          }`}
+        >
           {isLoading ? (
             <div className="flex justify-center items-center h-[400px]">
               <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900"></div>
@@ -129,7 +141,8 @@ export default function FullWidthSearch({ isOpen, onClose }: FullWidthSearchProp
                   />
                   <h3 className="font-medium text-lg">{product.name}</h3>
                   <p className="text-gray-600">
-                    TK. {product.sizeVariants[0]?.price || "Price Not Available"}
+                    TK.{" "}
+                    {product.sizeVariants[0]?.price || "Price Not Available"}
                   </p>
                 </div>
               ))}
@@ -137,14 +150,20 @@ export default function FullWidthSearch({ isOpen, onClose }: FullWidthSearchProp
           ) : searchTerm.length >= 3 ? (
             <div className="flex flex-col items-center justify-center h-[400px]">
               <FiSearch size={48} className="text-gray-400 mb-4" />
-              <p className="text-xl font-medium text-gray-600">No products found</p>
+              <p className="text-xl font-medium text-gray-600">
+                No products found
+              </p>
               <p className="text-gray-500 mt-2">Try a different search term</p>
             </div>
           ) : (
             <div className="flex flex-col items-center justify-center h-[400px]">
               <FiSearch size={48} className="text-gray-400 mb-4" />
-              <p className="text-xl font-medium text-gray-600">Start typing to search</p>
-              <p className="text-gray-500 mt-2">Find products by name, category, or description</p>
+              <p className="text-xl font-medium text-gray-600">
+                Start typing to search
+              </p>
+              <p className="text-gray-500 mt-2">
+                Find products by name, category, or description
+              </p>
             </div>
           )}
         </div>

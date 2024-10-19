@@ -1,10 +1,17 @@
 "use client";
 
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { HiOutlineSparkles, HiPlusSmall } from "react-icons/hi2";
+import { TbHomeCheck, TbHomeEdit } from "react-icons/tb";
+import { z } from "zod";
+
 import AlertDialogComp from "@/components/alert-dialog/alert-dialog";
-import AlwanBreadCrumb from "@/components/breadcrumbs/breadcrumb";
 import AddressDialog from "@/components/profile/address-dialog";
 import AddressSkeleton from "@/components/skeletons/profile-address-skeleton";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,39 +29,27 @@ import {
   useSetActiveAddressMutation,
   useUpdateAddressMutation,
 } from "@/redux/api/address/addressApi";
-import {
-  useGetSingleUserQuery,
-  useUpdateSingleUserMutation,
-} from "@/redux/api/users/user-api";
+import { useGetSingleUserQuery } from "@/redux/api/users/user-api";
 import { profileAddressSchema } from "@/schemas/profile-address-schema";
 import { IUserData } from "@/types";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { BiDotsHorizontalRounded } from "react-icons/bi";
-import { HiOutlineSparkles, HiPlusSmall } from "react-icons/hi2";
-import { TbHomeCheck, TbHomeEdit, TbHomeX } from "react-icons/tb";
-import { z } from "zod";
+
+import { MapPin, Search, Trash2 } from "lucide-react";
 import homeIcon from "../../../images/house_4730076.png";
 
-const Address = () => {
+export default function Address() {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [resetForm, setResetForm] = useState(false);
-
   const [selectedAddress, setSelectedAddress] = useState<any>(null);
   const [userData, setUserData] = useState<IUserData | null>(null);
 
-  const [updateSingleUser, { isLoading: isUserUpdating }] =
-    useUpdateSingleUserMutation();
-  const [setActiveAddress, { isLoading: isAddressStatusChanging }] =
-    useSetActiveAddressMutation();
+  const [setActiveAddress] = useSetActiveAddressMutation();
   const [deleteAddress, { isLoading: isAddressDeleting }] =
     useDeleteAddressMutation();
   const [updateAddress, { isLoading: isAddressUpdating }] =
     useUpdateAddressMutation();
-  const [addNewAddress, { isLoading: isAddressAdding }] =
+  const [addNewAddress, { isLoading: isNewAddressAdding }] =
     useAddNewAddressMutation();
 
   useEffect(() => {
@@ -78,6 +73,18 @@ const Address = () => {
     return <AddressSkeleton />;
   }
 
+  const sortedAddresses = response?.data.addresses
+    ? [...response.data.addresses].sort((a, b) => {
+        if (a.isDefault === b.isDefault) {
+          return (
+            response.data.addresses.indexOf(a) -
+            response.data.addresses.indexOf(b)
+          );
+        }
+        return a.isDefault ? -1 : 1;
+      })
+    : [];
+
   const handleAddAddressClick = () => {
     setSelectedAddress(null);
     setOpen(true);
@@ -98,7 +105,7 @@ const Address = () => {
       if (result.status === 200) {
         toast({
           title: "Success",
-          description: "Address updated successfully",
+          description: "Address set as default successfully",
         });
         refetch();
       } else {
@@ -143,6 +150,7 @@ const Address = () => {
     const requestedData = {
       recipientName:
         values.recipientName || selectedAddress?.recipientName || "",
+      label: values.label || selectedAddress?.label || "",
       phone: values.phone || selectedAddress?.phone || "",
       division: values.division || selectedAddress?.division || "",
       divisionId: values.divisionId,
@@ -167,7 +175,7 @@ const Address = () => {
     ) {
       toast({
         title: "Error",
-        description: "Please fill the inputs first then apply changes!",
+        description: "Please fill all required fields before applying changes!",
         variant: "destructive",
       });
       return;
@@ -176,13 +184,11 @@ const Address = () => {
     try {
       let result: any;
       if (selectedAddress) {
-        // Update existing address
         result = await updateAddress({
           addressId: selectedAddress.id,
           ...requestedData,
         });
       } else {
-        // Add new address
         result = await addNewAddress({
           id: response.data.id,
           ...requestedData,
@@ -193,7 +199,9 @@ const Address = () => {
         setOpen(false);
         toast({
           title: "Success",
-          description: "Your information was updated",
+          description: selectedAddress
+            ? "Address updated successfully"
+            : "New address added successfully",
         });
         refetch();
         setResetForm(true);
@@ -210,120 +218,120 @@ const Address = () => {
   };
 
   return (
-    <>
-      <AlwanBreadCrumb
-        links={[
-          { label: "Home", href: "/" },
-          { label: "Account", href: "/account" },
-        ]}
-        page="Address"
-        className="my-3"
-      />
-      <div className="flex justify-between items-start">
-        <div>
-          <h1 className="text-xl md:font-bold font-semibold">Address</h1>
-          <p className="text-sm text-muted-foreground">
-            See Your Address Information.
-          </p>
-        </div>
-      </div>
+    <div className="container mx-auto px-4 py-8">
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-2xl font-medium text-primary">
+            Manage Addresses
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Button
+            className="flex items-center justify-center gap-2 w-full h-12 mb-6 font-medium rounded"
+            onClick={handleAddAddressClick}
+          >
+            <HiPlusSmall className="h-5 w-5" />
+            Add New Address
+          </Button>
 
-      <Button
-        variant="outline"
-        className="flex items-center gap-1 w-full h-[100px] mt-3 bg-gradient-to-r from-green-50 to-green-100"
-        onClick={handleAddAddressClick}
-      >
-        <HiPlusSmall />
-        Add address
-      </Button>
-
-      {response?.data.addresses?.length ? (
-        response.data.addresses.map((address: any) => (
-          <div key={address.id}>
-            <div className="flex justify-between items-center border rounded mt-5 p-2">
-              <div className="flex gap-4 items-center">
-                <div>
-                  <Image
-                    alt="home-icon"
-                    src={homeIcon}
-                    height={40}
-                    width={40}
-                  />
-                </div>
-                <div className="flex flex-col">
-                  <div className="flex items-center gap-3">
-                    <p className="font-medium">{address.recipientName}</p>
-                    <p className="text-muted-foreground text-sm">
-                      {address.phone}
+          {sortedAddresses?.length ? (
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {sortedAddresses.map((address: any) => (
+                <Card key={address.id} className="relative">
+                  <CardContent className="pt-6">
+                    <div className="flex items-start gap-4 mb-4">
+                      <Image
+                        alt="home-icon"
+                        src={homeIcon}
+                        height={40}
+                        width={40}
+                        className="rounded-full bg-primary/10 p-2"
+                      />
+                      <div>
+                        <p className="font-semibold text-primary">
+                          {address.recipientName}
+                        </p>
+                        <p className="text-sm text-muted-foreground">
+                          {address.phone}
+                        </p>
+                      </div>
+                    </div>
+                    <p className="text-sm mb-1 text-muted-foreground">
+                      {address.streetAddress}
                     </p>
-                  </div>
-                  <p className="text-muted-foreground text-sm">
-                    {address.streetAddress}
-                  </p>
-                  <p className="text-muted-foreground text-sm">
-                    {address.union}, {address.upazila}, {address.district},{" "}
-                    {address.division}
-                  </p>
-                  <div className="flex flex-start gap-2 mt-1">
-                    <p className="text-sm font-medium">{address.label}</p>
-                    {address.isDefault && (
-                      <p className="font-medium text-sm text-rose-600">
-                        Default Shipping & Billing Address
-                      </p>
-                    )}
-                  </div>
-                </div>
-              </div>
-              <div>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon">
-                      <BiDotsHorizontalRounded size={20} />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent className="w-56">
-                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuGroup>
-                      <DropdownMenuItem
-                        disabled={address.isDefault}
-                        onClick={() => handleSetActiveAddress(address)}
-                      >
-                        <TbHomeCheck className="mr-2 h-4 w-4" />
-                        <span>Set Default</span>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
-                        onClick={() => handleEditAddressClick(address)}
-                      >
-                        <TbHomeEdit className="mr-2 h-4 w-4" />
-                        <span>Update</span>
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem
-                        onClick={() => {
-                          setSelectedAddress(address);
-                          setDialogOpen(true);
-                        }}
-                      >
-                        <TbHomeX className="mr-2 h-4 w-4" />
-                        <span>Delete</span>
-                      </DropdownMenuItem>
-                    </DropdownMenuGroup>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                    <p className="text-sm mb-2 text-muted-foreground">
+                      {address.union}, {address.upazila}, {address.district},{" "}
+                      {address.division}
+                    </p>
+                    <div className="flex items-center gap-2 mt-2">
+                      <span className="text-xs font-medium bg-primary/10 text-primary px-2 py-1 rounded">
+                        {address.label}
+                      </span>
+                      {address.isDefault && (
+                        <span className="bg-green-100 text-green-500 text-xs font-medium px-2 py-1 rounded flex items-center gap-1">
+                          <MapPin className="w-3 h-3" />
+                          Default
+                        </span>
+                      )}
+                    </div>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="absolute top-2 right-2"
+                        >
+                          <HiOutlineSparkles className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent className="w-56">
+                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuGroup>
+                          <DropdownMenuItem
+                            disabled={address.isDefault}
+                            onClick={() => handleSetActiveAddress(address)}
+                          >
+                            <TbHomeCheck className="mr-2 h-4 w-4" />
+                            <span>Set as Default</span>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => handleEditAddressClick(address)}
+                          >
+                            <TbHomeEdit className="mr-2 h-4 w-4" />
+                            <span>Edit Address</span>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => {
+                              setSelectedAddress(address);
+                              setDialogOpen(true);
+                            }}
+                          >
+                            <Trash2 className="mr-2 h-4 w-4 text-red-500" />
+                            <span className="text-red-500">Delete Address</span>
+                          </DropdownMenuItem>
+                        </DropdownMenuGroup>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          ) : (
+            <div className="flex justify-center items-center h-40">
+              <div className="text-center">
+                <Search className="mx-auto h-10 w-10 text-gray-400" />
+                <h3 className="mt-2 text-lg font-medium text-gray-900">
+                  No addresses
+                </h3>
+                <p className="mt-1 text-sm text-gray-500">
+                  Get started by creating a new address.
+                </p>
               </div>
             </div>
-          </div>
-        ))
-      ) : (
-        <div className="flex justify-center w-full h-full items-center sm:mt-0 mt-16">
-          <div className="flex flex-col items-center">
-            <HiOutlineSparkles size={40} />
-            <p className="font-semibold mt-2">Not Found</p>
-            <p className="text-muted-foreground">Address not found</p>
-          </div>
-        </div>
-      )}
+          )}
+        </CardContent>
+      </Card>
 
       <AddressDialog
         addressModalOpen={open}
@@ -333,12 +341,7 @@ const Address = () => {
         submitHandler={handler}
         selectedAddress={selectedAddress}
         resetForm={resetForm}
-        isLoading={
-          isUserUpdating ||
-          isAddressAdding ||
-          isAddressStatusChanging ||
-          isAddressUpdating
-        }
+        isLoading={isAddressUpdating || isNewAddressAdding}
       />
 
       <AlertDialogComp
@@ -346,12 +349,11 @@ const Address = () => {
         setOpen={setDialogOpen}
         title="Are you absolutely sure?"
         description="This action cannot be undone. This will permanently delete your address and remove data from our servers."
-        buttonText="Continue"
+        buttonText="Delete Address"
         handler={handleAddressDelete}
         loading={isAddressDeleting}
+        className="bg-red-500 hover:bg-red-600 text-white"
       />
-    </>
+    </div>
   );
-};
-
-export default Address;
+}

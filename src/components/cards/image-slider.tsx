@@ -13,9 +13,16 @@ import { Swiper, SwiperSlide } from "swiper/react";
 interface ImageSliderProps {
   urls: string[];
   isRounded?: boolean;
+  width?: number;
+  height?: number;
 }
 
-const ImageSlider: React.FC<ImageSliderProps> = ({ urls, isRounded }) => {
+const ImageSlider: React.FC<ImageSliderProps> = ({
+  urls,
+  isRounded,
+  width,
+  height,
+}) => {
   const [swiper, setSwiper] = useState<null | SwiperType>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [slideConfig, setSlideConfig] = useState({
@@ -89,8 +96,8 @@ const ImageSlider: React.FC<ImageSliderProps> = ({ urls, isRounded }) => {
             <Image
               loading="eager"
               className="-z-10 object-contain object-center"
-              width={1300}
-              height={1300}
+              width={width || 1300}
+              height={height || 1300}
               src={url}
               alt="product-image"
             />

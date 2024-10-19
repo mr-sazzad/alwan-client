@@ -79,7 +79,7 @@ const Favorite: React.FC<IWishlist> = ({ open, setOpen }) => {
           <Button
             variant="ghost"
             size="icon"
-            className="rounded-full flex justify-center items-center"
+            className="rounded-full flex justify-center items-center mr-1"
           >
             <Heart size={20} />
           </Button>
