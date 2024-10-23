@@ -53,7 +53,12 @@ export default function SheetComponent() {
 
   return (
     <>
-      <Button onClick={() => setOpen(true)} size="icon">
+      <Button
+        onClick={() => setOpen(true)}
+        size="icon"
+        variant="ghost"
+        className="rounded-full"
+      >
         <HiOutlineMenuAlt1 size={20} />
       </Button>
 

@@ -25,6 +25,7 @@ import {
   useSignUpUserMutation,
 } from "@/redux/api/auth/auth-api";
 import { signUpSchema } from "@/schemas/signup-schema";
+import { KEY } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -89,7 +90,7 @@ export default function SignUpModal({
         email: data.email,
         password: data.password,
       }).unwrap();
-      setToLocalStorage("alwan-user-access-token", loginRes.data.accessToken);
+      setToLocalStorage(KEY, loginRes.data.accessToken);
 
       form.reset();
       setSignUpOpen(false);

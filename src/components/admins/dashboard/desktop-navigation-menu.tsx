@@ -28,9 +28,9 @@ export default function AdminsDesktopMenu() {
 
   return (
     <motion.div
-      className="hidden sm:flex flex-col border-r dark:border-gray-800 h-screen"
+      className="hidden sm:flex flex-col border-r dark:border-gray-800 h-auto"
       animate={{ width: isExpanded ? 240 : 70 }}
-      transition={{ duration: 0.3 }}
+      transition={{ duration: 0.2 }}
     >
       <div className="p-4">
         <Button

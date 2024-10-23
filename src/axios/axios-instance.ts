@@ -11,11 +11,11 @@ instance.defaults.timeout = 50000;
 // Add a request interceptor
 instance.interceptors.request.use(
   function (config) {
-    // set accessToken to headers before request is sent
-    const accessToken = getFromLocalStorage(KEY);
+    // set token to headers before request is sent
+    const token = getFromLocalStorage(KEY);
 
-    if (accessToken) {
-      config.headers.Authorization = accessToken;
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },

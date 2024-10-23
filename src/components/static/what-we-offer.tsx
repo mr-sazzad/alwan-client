@@ -30,9 +30,9 @@ const offerItems = [
 
 export default function WhatWeOffer() {
   return (
-    <section className="w-full py-12 bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5">
+    <section className="w-full py-12 bg-gray-50 dark:bg-gray-900">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl md:text-4xl font-bold text-center mb-8 text-primary">
+        <h2 className="text-3xl md:text-4xl font-bold text-center mb-8 text-black dark:text-gray-100">
           What We Offer
         </h2>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">

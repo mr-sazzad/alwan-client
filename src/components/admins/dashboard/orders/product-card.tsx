@@ -18,7 +18,7 @@ interface OrderPageProductCardProps {
   handleOrderStatusChange: (orderStatus: string) => void;
   orderStatus:
     | "PROCESSING"
-    | "ONTHEWAY"
+    | "IN_TRANSIT"
     | "DELIVERED"
     | "REQUESTTORETURN"
     | "RETURNED";

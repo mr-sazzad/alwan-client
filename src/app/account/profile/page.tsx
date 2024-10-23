@@ -1,7 +1,14 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Calendar, Clock, MapPin, Phone, Settings, Upload } from "lucide-react";
+import {
+  Clock,
+  MapPin,
+  Phone,
+  Settings,
+  ShoppingCart,
+  Upload,
+} from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -22,7 +29,7 @@ import {
   useGetSingleUserQuery,
   useUpdateSingleUserMutation,
 } from "@/redux/api/users/user-api";
-import { IUserAddress, IUserData } from "@/types";
+import { IUser, IUserAddress } from "@/types";
 
 const profileSchema = z.object({
   file: z.instanceof(File).refine((file) => file.size < 3 * 1024 * 1024, {
@@ -32,7 +39,7 @@ const profileSchema = z.object({
 
 export default function ProfilePage() {
   const router = useRouter();
-  const [userData, setUserData] = useState<IUserData | null>(null);
+  const [userData, setUserData] = useState<IUser | null>(null);
   const [open, setOpen] = useState(false);
 
   const form = useForm<z.infer<typeof profileSchema>>({
@@ -43,7 +50,7 @@ export default function ProfilePage() {
   });
 
   useEffect(() => {
-    const currentUserData = getUserFromLocalStorage() as IUserData | null;
+    const currentUserData = getUserFromLocalStorage() as IUser | null;
     if (!currentUserData) {
       router.back();
     } else {
@@ -213,64 +220,66 @@ export default function ProfilePage() {
           </CardContent>
         </Card>
 
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          <div>
-            <h3 className="text-lg font-medium">Your Account Information</h3>
+        <div>
+          <h3 className="text-lg font-medium mb-4">Your Account Information</h3>
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">
+                  Total Orders
+                </CardTitle>
+                <ShoppingCart className="h-6 w-6 text-emerald-500 p-1 rounded-full bg-emerald-100" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-medium">
+                  {orders?.data?.length || 0}
+                </div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">
+                  Account Age
+                </CardTitle>
+                <Clock className="h-6 w-6 text-orange-500 p-1 rounded-full bg-orange-100" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-medium">
+                  {user?.data?.createdAt
+                    ? `${Math.floor(
+                        (new Date().getTime() -
+                          new Date(user.data.createdAt).getTime()) /
+                          (1000 * 3600 * 24)
+                      )} days`
+                    : "N/A"}
+                </div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">
+                  Saved Addresses
+                </CardTitle>
+                <MapPin className="h-6 w-6 text-blue-500 p-1 rounded-full bg-blue-100" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-medium">
+                  {user?.data?.addresses?.length || 0}
+                </div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">
+                  Account Status
+                </CardTitle>
+                <Settings className="h-6 w-6 text-yellow-500 p-1 rounded-full bg-yellow-100" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-medium">Active</div>
+              </CardContent>
+            </Card>
           </div>
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Total Orders
-              </CardTitle>
-              <Calendar className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">
-                {orders?.data?.length || 0}
-              </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Account Age</CardTitle>
-              <Clock className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">
-                {user?.data?.createdAt
-                  ? `${Math.floor(
-                      (new Date().getTime() -
-                        new Date(user.data.createdAt).getTime()) /
-                        (1000 * 3600 * 24)
-                    )} days`
-                  : "N/A"}
-              </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Saved Addresses
-              </CardTitle>
-              <MapPin className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">
-                {user?.data?.addresses?.length || 0}
-              </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Account Status
-              </CardTitle>
-              <Settings className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">Active</div>
-            </CardContent>
-          </Card>
         </div>
       </div>
     </>

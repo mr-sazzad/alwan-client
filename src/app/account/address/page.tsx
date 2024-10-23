@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { HiOutlineSparkles, HiPlusSmall } from "react-icons/hi2";
@@ -31,10 +30,9 @@ import {
 } from "@/redux/api/address/addressApi";
 import { useGetSingleUserQuery } from "@/redux/api/users/user-api";
 import { profileAddressSchema } from "@/schemas/profile-address-schema";
-import { IUserData } from "@/types";
+import { IUser } from "@/types";
 
-import { MapPin, Search, Trash2 } from "lucide-react";
-import homeIcon from "../../../images/house_4730076.png";
+import { Earth, MapPin, Search, Trash2 } from "lucide-react";
 
 export default function Address() {
   const router = useRouter();
@@ -42,7 +40,7 @@ export default function Address() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [resetForm, setResetForm] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState<any>(null);
-  const [userData, setUserData] = useState<IUserData | null>(null);
+  const [userData, setUserData] = useState<IUser | null>(null);
 
   const [setActiveAddress] = useSetActiveAddressMutation();
   const [deleteAddress, { isLoading: isAddressDeleting }] =
@@ -53,7 +51,7 @@ export default function Address() {
     useAddNewAddressMutation();
 
   useEffect(() => {
-    const currentUserData = getUserFromLocalStorage() as IUserData | null;
+    const currentUserData = getUserFromLocalStorage() as IUser | null;
     if (!currentUserData) {
       router.back();
     } else {
@@ -240,15 +238,18 @@ export default function Address() {
                 <Card key={address.id} className="relative">
                   <CardContent className="pt-6">
                     <div className="flex items-start gap-4 mb-4">
-                      <Image
+                      {/* <Image
                         alt="home-icon"
                         src={homeIcon}
                         height={40}
                         width={40}
                         className="rounded-full bg-primary/10 p-2"
-                      />
+                      /> */}
+                      <div className="h-10 w-10 flex justify-center items-center rounded bg-primary/10">
+                        <Earth className="h-8 w-8 p-1 text-emerald-500" />
+                      </div>
                       <div>
-                        <p className="font-semibold text-primary">
+                        <p className="font-medium text-primary capitalize">
                           {address.recipientName}
                         </p>
                         <p className="text-sm text-muted-foreground">
@@ -268,7 +269,7 @@ export default function Address() {
                         {address.label}
                       </span>
                       {address.isDefault && (
-                        <span className="bg-green-100 text-green-500 text-xs font-medium px-2 py-1 rounded flex items-center gap-1">
+                        <span className="bg-emerald-100 dark:bg-emerald-900/40 text-emerald-500 dark:text-emerald-400 text-xs font-medium px-2 py-1 rounded flex items-center gap-1">
                           <MapPin className="w-3 h-3" />
                           Default
                         </span>

@@ -13,10 +13,10 @@ import Link from "next/link";
 const TermsOfUsePage = () => {
   return (
     <MaxWidth className="mt-[100px] mb-16">
-      <h1 className="md:text-3xl sm:text-2xl text-xl font-bold text-center mb-4">
+      <h1 className="md:text-3xl sm:text-2xl text-xl font-medium mb-4">
         Terms of Use
       </h1>
-      <p className="text-sm md:text-base text-center text-muted-foreground mb-8">
+      <p className="text-sm md:text-base text-muted-foreground mb-8">
         Please read these terms carefully before using the Alwan Ideal website
         or purchasing our products.
       </p>
@@ -113,7 +113,7 @@ const TermsOfUsePage = () => {
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-xl font-semibold">
+          <CardTitle className="text-xl font-medium">
             Questions or Concerns?
           </CardTitle>
         </CardHeader>

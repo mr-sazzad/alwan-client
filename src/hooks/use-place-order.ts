@@ -112,19 +112,26 @@ export const usePlaceOrder = ({
     try {
       const createdOrder = await createAOrder(orderData);
 
-      if (!createdOrder.data?.id) {
-        throw new Error("Order creation failed");
+      console.log("🚀🚀🚀 CREATED ORDER =>", createdOrder);
+
+      if (!createdOrder.data?.success) {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Something went wrong. Please try again.",
+        });
+        return;
+      } else {
+        toast({
+          variant: "default",
+          title: "Success",
+          description: "Order placed successfully.",
+        });
+
+        setTimeout(() => {
+          router.push("/account/orders");
+        }, 2000);
       }
-
-      toast({
-        variant: "default",
-        title: "Success",
-        description: "Order placed successfully.",
-      });
-
-      setTimeout(() => {
-        router.back();
-      }, 2000);
     } catch (error: any) {
       toast({
         title: "Error",

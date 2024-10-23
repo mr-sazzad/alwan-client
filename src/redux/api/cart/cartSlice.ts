@@ -35,8 +35,8 @@ const cartSlice = createSlice({
       const existingProduct = state.products.find(
         (product) =>
           product.id === id &&
-          product.orderSize === orderSize &&
-          product.orderColor === orderColor
+          product.orderSize.toUpperCase() === orderSize.toUpperCase() &&
+          product.orderColor.toUpperCase() === orderColor.toUpperCase()
       );
 
       if (existingProduct) {
@@ -71,7 +71,8 @@ const cartSlice = createSlice({
       if (product) {
         const variant = product.sizeVariants.find(
           (variant) =>
-            variant.size.name === size && variant.color.name === color
+            variant.size.name.toUpperCase() === size.toUpperCase() &&
+            variant.color.name.toUpperCase() === color.toUpperCase()
         );
 
         if (variant && product.orderQty < variant.stock) {
@@ -101,7 +102,8 @@ const cartSlice = createSlice({
       if (product) {
         const variant = product.sizeVariants.find(
           (variant) =>
-            variant.size.name === size && variant.color.name === color
+            variant.size.name.toUpperCase() === size.toUpperCase() &&
+            variant.color.name.toUpperCase() === color.toUpperCase()
         );
 
         if (variant && product.orderQty > 1) {
@@ -117,13 +119,16 @@ const cartSlice = createSlice({
 
     deleteProduct: (
       state,
-      action: PayloadAction<{ id: string; size: string }>
+      action: PayloadAction<{ id: string; size: string; color: string }>
     ) => {
       state.products = state.products.filter(
         (product) =>
           !(
             product.id === action.payload.id &&
-            product.orderSize === action.payload.size
+            product.orderSize.toUpperCase() ===
+              action.payload.size.toUpperCase() &&
+            product.orderColor.toUpperCase() ===
+              action.payload.color.toUpperCase()
           )
       );
       setToLocalStorage(

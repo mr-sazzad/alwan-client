@@ -1,4 +1,4 @@
-import { IOrderResponse, IOrderResponseData } from "@/types";
+import { IOrder } from "@/types";
 import {
   Card,
   CardContent,
@@ -13,7 +13,7 @@ import ProfileOnTheWayOrderItem from "./profile-on-the-way-order-item";
 import ProfileProcessingOrderItem from "./profile-processing-order-item";
 
 interface IProfileOrderTabsProps {
-  orders: IOrderResponse;
+  orders: IOrder[];
 }
 
 const ProfileOrderTabs: React.FC<IProfileOrderTabsProps> = ({ orders }) => {

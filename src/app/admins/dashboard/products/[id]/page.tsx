@@ -1,25 +1,11 @@
 "use client";
 
-import AlwanBreadCrumb from "@/components/breadcrumbs/breadcrumb";
-import AdminDashboardLoading from "@/components/lodings/admin-dashboard-loding";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { toast } from "@/components/ui/use-toast";
-import { useGetSingleProductQuery } from "@/redux/api/products/productsApi";
 import {
   AlertCircle,
   Calendar,
   Clipboard,
   Database,
+  Dog,
   Folder,
   MapPin,
   Package,
@@ -34,54 +20,21 @@ import Image from "next/image";
 import { useParams } from "next/navigation";
 import { useState } from "react";
 
-type Address = {
-  recipientName: string;
-  phone: string;
-  streetAddress: string;
-  district: string;
-  division: string;
-};
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { toast } from "@/components/ui/use-toast";
 
-type UserInfo = {
-  id: string;
-  email: string;
-  addresses: Address[];
-};
-
-type Review = {
-  id: string;
-  rating: number;
-  content: string;
-  createdAt: string;
-  user: UserInfo;
-};
-
-type Product = {
-  id: string;
-  name: string;
-  slug: string;
-  description: string[];
-  features: string[];
-  imageUrls: string[];
-  category: { id: string; name: string };
-  sizeVariants: {
-    id: string;
-    size: { id: string; name: string };
-    color: { id: string; name: string; hexCode: string };
-    price: number;
-    stock: number;
-    manufacturingCost: number;
-  }[];
-  reviews: Review[];
-  isCouponApplicable: boolean;
-  isFreeDeliveryAvailable: boolean;
-  stockStatus: string;
-  statusTag: string;
-  brand: string;
-  createdAt: string;
-  updatedAt: string;
-  productType: { id: string; name: string };
-};
+import AdminProductPageSkeleton from "@/components/skeletons/admin-product-page-skeleton";
+import { useGetSingleProductQuery } from "@/redux/api/products/productsApi";
+import { IProduct } from "@/types";
+import AdminProductTable from "./admin-product-columns";
 
 export default function AdminProductPage() {
   const { id } = useParams();
@@ -94,13 +47,10 @@ export default function AdminProductPage() {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
 
   if (isLoading) {
-    return <AdminDashboardLoading />;
+    return <AdminProductPageSkeleton />;
   }
 
-  console.log(response);
-
   if (error) {
-    console.error("Error fetching product:", error);
     return (
       <div className="flex items-center justify-center h-screen">
         <Card className="w-full max-w-md">
@@ -120,7 +70,7 @@ export default function AdminProductPage() {
     );
   }
 
-  const product = response?.data as Product | undefined;
+  const product = response?.data as IProduct | undefined;
 
   if (!product) {
     return (
@@ -150,392 +100,306 @@ export default function AdminProductPage() {
     : 0;
 
   return (
-    <div className="container mx-auto px-4 py-3">
-      <AlwanBreadCrumb
-        links={[
-          { label: "Dashboard", href: "/admins/dashboard" },
-          { label: "Products", href: "/admins/dashboard/products" },
-        ]}
-        page={`${product.name}`}
-        className="mb-6"
-      />
+    <div className="container mx-auto px-4 py-8 bg-gray-50 dark:bg-[#020817]">
+      <div className="mb-8 p-6 bg-white dark:bg-gray-900  rounded-lg shadow-sm">
+        <h1 className="text-3xl font-medium text-primary mb-2">
+          {product.name}
+        </h1>
+        <p className="text-sm text-muted-foreground mb-4">{product.id}</p>
+        <div className="flex items-center space-x-4">
+          <span
+            className={`${
+              product.stockStatus === "AVAILABLE"
+                ? "bg-green-100 text-green-600"
+                : "bg-red-100 text-red-600"
+            } px-3 py-2 rounded font-medium`}
+          >
+            {product.stockStatus}
+          </span>
+          <span className="bg-teal-100 text-teal-600 px-3 py-2 rounded font-medium">
+            {product.availabilityTag}
+          </span>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => {
+                    navigator.clipboard.writeText(product.id);
+                    toast({
+                      title: "Product ID Copied",
+                      description:
+                        "The product ID has been copied to your clipboard.",
+                    });
+                  }}
+                >
+                  <Clipboard className="h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent className="text-sm bg-primary text-primary-foreground">
+                <p>Copy Product ID</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant="outline" size="icon" onClick={() => refetch()}>
+                  <RefreshCw className="h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent className="text-sm bg-primary text-primary-foreground">
+                <p>Refresh Product Data</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </div>
+      </div>
 
-      <div className="bg-white shadow-xl rounded-lg overflow-hidden">
-        <div className="p-6">
-          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-8">
-            <div>
-              <h1 className="text-3xl font-medium text-gray-900">
-                {product.name}
-              </h1>
-              <p className="mt-2 text-sm text-muted-foreground">{product.id}</p>
-            </div>
-            <div className="flex flex-wrap items-center gap-4">
-              <span
-                className={`text-sm px-2 py-1 rounded ${
-                  product.statusTag === "coming soon"
-                    ? "bg-rose-100 text-rose-600"
-                    : "bg-teal-100 text-teal-600"
-                }`}
-              >
-                {product.stockStatus}
-              </span>
-              <span
-                className={`text-sm px-2 py-1 rounded ${
-                  product.statusTag === "coming soon"
-                    ? "bg-rose-100 text-rose-600"
-                    : "bg-teal-100 text-teal-600"
-                }`}
-              >
-                {product.statusTag}
-              </span>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="lg:col-span-2 space-y-8">
+          <Card className="shadow-sm">
+            <CardHeader className="bg-gray-50 dark:bg-gray-900 border-b">
+              <CardTitle className="flex items-center text-xl font-medium">
+                <Package className="mr-2 text-muted-foreground" />
+                Product Details
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="grid grid-cols-2 sm:grid-cols-3 gap-6 p-6">
+              <InfoItem
+                icon={<Folder className="text-green-600" />}
+                label="Category"
+                value={product.category?.name || "N/A"}
+              />
+              <InfoItem
+                icon={<Database className="text-purple-600" />}
+                label="Total Stock"
+                value={totalStock.toString()}
+              />
+              <InfoItem
+                icon={<Truck className="text-yellow-600" />}
+                label="Free Delivery"
+                value={product.freeShippingAvailable ? "Yes" : "No"}
+              />
+              <InfoItem
+                icon={<Puzzle className="text-sky-600" />}
+                label="Coupon Applicable"
+                value={product.couponEligible ? "Yes" : "No"}
+              />
+              <InfoItem
+                icon={<Calendar className="text-teal-600" />}
+                label="Created"
+                value={new Date(product.createdAt).toLocaleDateString()}
+              />
+              <InfoItem
+                icon={<Calendar className="text-orange-600" />}
+                label="Updated"
+                value={new Date(product.updatedAt).toLocaleDateString()}
+              />
+            </CardContent>
+          </Card>
 
-              <Button
-                variant="outline"
-                className="flex items-center"
-                onClick={() => {
-                  navigator.clipboard.writeText(product.id);
-                  toast({
-                    title: "Product ID Copied",
-                    description:
-                      "The product ID has been copied to your clipboard.",
-                  });
-                }}
-              >
-                <Clipboard className="h-4 w-4" />
-              </Button>
+          <Card className="shadow-sm">
+            <CardHeader className="bg-gray-50 dark:bg-gray-900 border-b">
+              <CardTitle className="flex items-center text-xl font-medium">
+                <Package className="mr-2 text-muted-foreground" />
+                Size Variants
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="px-1">
+              <div className="h-[200px] hide-scrollbar overflow-x-auto overflow-y-auto">
+                <AdminProductTable data={product.sizeVariants || []} />
+              </div>
+            </CardContent>
+          </Card>
 
-              <Button
-                variant="outline"
-                onClick={() => refetch()}
-                className="flex items-center"
-              >
-                <RefreshCw className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
+          <Tabs
+            defaultValue="description"
+            className="bg-white dark:bg-[#020817] rounded-lg shadow-sm"
+          >
+            <TabsList className="w-full justify-start border-b bg-gray-50 dark:bg-gray-900">
+              <TabsTrigger value="description" className="font-medium">
+                Description
+              </TabsTrigger>
+              <TabsTrigger value="features" className="font-medium">
+                Features
+              </TabsTrigger>
+              <TabsTrigger value="reviews" className="font-medium">
+                Reviews
+              </TabsTrigger>
+            </TabsList>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div className="lg:col-span-2">
-              <Card className="mb-8">
-                <CardHeader>
-                  <CardTitle className="flex items-center text-2xl font-medium">
-                    <Package className="mr-2" />
-                    Product Details
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
-                  <InfoItem
-                    icon={<Folder className="h-6 w-6" />}
-                    label="Category"
-                    value={product.category?.name || "N/A"}
-                  />
-                  <InfoItem
-                    icon={<Database className="h-6 w-6" />}
-                    label="Total Stock"
-                    value={totalStock.toString()}
-                  />
-                  <InfoItem
-                    icon={<Truck className="h-6 w-6" />}
-                    label="Free Delivery"
-                    value={product.isFreeDeliveryAvailable ? "Yes" : "No"}
-                  />
-                  <InfoItem
-                    icon={<Puzzle className="h-6 w-6" />}
-                    label="Coupon Applicable"
-                    value={product.isCouponApplicable ? "Yes" : "No"}
-                  />
-                  <InfoItem
-                    icon={<Calendar className="h-6 w-6" />}
-                    label="Created"
-                    value={new Date(product.createdAt).toDateString()}
-                  />
-                  <InfoItem
-                    icon={<Calendar className="h-6 w-6" />}
-                    label="Updated"
-                    value={new Date(product.updatedAt).toDateString()}
-                  />
-                </CardContent>
-              </Card>
+            <TabsContent value="description" className="p-6">
+              <h3 className="text-xl font-medium text-primary/90 mb-4">
+                Description
+              </h3>
+              <p className="text-gray-600">{product.description}</p>
+            </TabsContent>
 
-              <Card className="mb-8">
-                <CardHeader>
-                  <CardTitle className="flex items-center text-2xl font-medium">
-                    <Package className="mr-2" />
-                    Size Variants
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="p-0">
-                  <div className="overflow-x-auto">
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead className="font-medium">Size</TableHead>
-                          <TableHead className="font-medium">Color</TableHead>
-                          <TableHead className="font-medium">Price</TableHead>
-                          <TableHead className="font-medium">
-                            Manufacturing Cost
-                          </TableHead>
-                          <TableHead className="font-medium">Stock</TableHead>
-                          <TableHead className="font-medium">Profit</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {product.sizeVariants?.map((variant) => (
-                          <TableRow key={variant.id}>
-                            <TableCell>{variant.size.name}</TableCell>
-                            <TableCell>
-                              <div className="flex items-center">
-                                <div
-                                  className="w-4 h-4 rounded-full mr-2 border"
-                                  style={{
-                                    backgroundColor: variant.color.hexCode,
-                                  }}
-                                ></div>
-                                {variant.color.name}
-                              </div>
-                            </TableCell>
-                            <TableCell>${variant.price.toFixed(2)}</TableCell>
-                            <TableCell>
-                              ${variant.manufacturingCost.toFixed(2)}
-                            </TableCell>
-                            <TableCell>{variant.stock}</TableCell>
-                            <TableCell>
-                              $
-                              {(
-                                variant.price - variant.manufacturingCost
-                              ).toFixed(2)}
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </div>
-                </CardContent>
-              </Card>
+            <TabsContent value="features" className="p-6">
+              <h3 className="text-xl font-medium text-primary/90 mb-4">
+                Features
+              </h3>
+              <ul className="list-disc pl-5 space-y-2 text-gray-600">
+                {product.features?.map((feature, index) => (
+                  <li key={index}>{feature}</li>
+                ))}
+              </ul>
+            </TabsContent>
 
-              <Tabs defaultValue="description" className="mt-8">
-                <TabsList className="w-full justify-start border-b">
-                  <TabsTrigger value="description">Description</TabsTrigger>
-                  <TabsTrigger value="features">Features</TabsTrigger>
-                  <TabsTrigger value="reviews">Reviews</TabsTrigger>
-                </TabsList>
-
-                <TabsContent value="description">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="text-2xl font-medium">
-                        Description
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <ul className="list-disc pl-5 space-y-2">
-                        {product.description?.map((desc, index) => (
-                          <li key={index}>{desc}</li>
-                        ))}
-                      </ul>
-                    </CardContent>
-                  </Card>
-                </TabsContent>
-
-                <TabsContent value="features">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="text-2xl font-medium">
-                        Features
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <ul className="list-disc pl-5 space-y-2">
-                        {product.features?.map((feature, index) => (
-                          <li key={index}>{feature}</li>
-                        ))}
-                      </ul>
-                    </CardContent>
-                  </Card>
-                </TabsContent>
-
-                <TabsContent value="reviews">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="text-2xl font-medium">
-                        Customer Reviews
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-6">
-                        {product.reviews.map((review) => (
-                          <div key={review.id} className="border-b pb-4">
-                            <div className="flex justify-between items-center">
-                              <p className="flex items-center mb-2">
-                                <User className="w-4 h-4 mr-1" />
-                                {review.user.addresses[0]?.recipientName ||
-                                  "Anonymous"}
-                              </p>
-                              <div className="flex flex-col-reverse gap-2 mb-2">
-                                <div className="flex items-center">
-                                  {[...Array(5)].map((_, i) => (
-                                    <Star
-                                      key={i}
-                                      className={`w-5 h-5 ${
-                                        i < review.rating
-                                          ? "text-yellow-400"
-                                          : "text-gray-300"
-                                      }`}
-                                      fill="currentColor"
-                                    />
-                                  ))}
-                                </div>
-                                <span className="text-xs text-muted-foreground">
-                                  {new Date(review.createdAt).toDateString()}
-                                </span>
-                              </div>
-                            </div>
-
-                            <p className="mb-2">{review.content}</p>
-                            <div className="text-sm text-muted-foreground">
-                              <p className="flex items-center mt-1">
-                                <Phone className="w-4 h-4 mr-1" />
-                                {review.user.addresses[0]?.phone || "N/A"}
-                              </p>
-                              <p className="flex items-center mt-1">
-                                <MapPin className="w-4 h-4 mr-1" />
-                                {review.user.addresses[0]?.streetAddress},{" "}
-                                {review.user.addresses[0]?.district},{" "}
-                                {review.user.addresses[0]?.division}
-                              </p>
-                            </div>
+            <TabsContent value="reviews" className="p-6">
+              <h3 className="text-xl font-medium text-primary/90 mb-4">
+                Customer Reviews
+              </h3>
+              <div className="h-[200px] hide-scrollbar overflow-y-auto">
+                <div className="space-y-6">
+                  {product.reviews.map((review) => (
+                    <div key={review.id} className="border-b pb-4">
+                      <div className="flex justify-between items-center">
+                        <p className="flex items-center mb-2 font-medium">
+                          <User className="w-4 h-4 mr-1 text-blue-600" />
+                          {review.user.addresses[0]?.recipientName ||
+                            "Anonymous"}
+                        </p>
+                        <div className="flex flex-col-reverse gap-2 mb-2">
+                          <div className="flex items-center">
+                            {[...Array(5)].map((_, i) => (
+                              <Star
+                                key={i}
+                                className={`w-5 h-5 ${
+                                  i < review.rating
+                                    ? "text-yellow-400"
+                                    : "text-gray-300"
+                                }`}
+                                fill="currentColor"
+                              />
+                            ))}
                           </div>
-                        ))}
+                          <span className="text-xs text-gray-500">
+                            {new Date(review.createdAt).toLocaleDateString()}
+                          </span>
+                        </div>
                       </div>
-                    </CardContent>
-                  </Card>
-                </TabsContent>
-              </Tabs>
-            </div>
 
-            <div className="space-y-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-2xl font-medium">
-                    Product Images
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="aspect-square rounded-lg overflow-hidden border mb-4">
+                      <p className="mb-2 text-gray-600">{review.content}</p>
+                      <div className="text-sm text-gray-500">
+                        <p className="flex items-center mt-1">
+                          <Phone className="w-4 h-4 mr-1 text-green-600" />
+                          {review.user.addresses[0]?.phone || "N/A"}
+                        </p>
+                        <p className="flex items-center mt-1">
+                          <MapPin className="w-4 h-4 mr-1 text-red-600" />
+                          {review.user.addresses[0]?.streetAddress},{" "}
+                          {review.user.addresses[0]?.district},{" "}
+                          {review.user.addresses[0]?.division}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </TabsContent>
+          </Tabs>
+        </div>
+
+        <div className="space-y-8">
+          <Card className="bg-white dark:bg-[#020817] shadow-sm">
+            <CardHeader className="bg-gray-50 dark:bg-gray-900 border-b">
+              <CardTitle className="text-xl font-medium flex items-center">
+                <Dog className="mr-2 text-muted-foreground" />
+                Product Images
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-6">
+              <div className="aspect-square rounded-lg overflow-hidden border mb-4">
+                <Image
+                  src={product.imageUrls[activeImageIndex]}
+                  alt={`${product.name} ${activeImageIndex + 1}`}
+                  layout="responsive"
+                  width={400}
+                  height={400}
+                  objectFit="cover"
+                />
+              </div>
+              <div className="grid grid-cols-4 gap-2">
+                {product.imageUrls?.map((url, index) => (
+                  <button
+                    key={index}
+                    className={`relative aspect-square rounded-md overflow-hidden border ${
+                      index === activeImageIndex ? "ring-2 ring-blue-500" : ""
+                    }`}
+                    onClick={() => setActiveImageIndex(index)}
+                  >
                     <Image
-                      src={product.imageUrls[activeImageIndex]}
-                      alt={`${product.name} ${activeImageIndex + 1}`}
-                      layout="responsive"
-                      width={400}
-                      height={400}
+                      src={url}
+                      alt={`${product.name} ${index + 1}`}
+                      layout="fill"
                       objectFit="cover"
                     />
-                  </div>
-                  <div className="grid grid-cols-4 gap-2">
-                    {product.imageUrls?.map((url, index) => (
-                      <button
-                        key={index}
-                        className={`relative aspect-square rounded-md overflow-hidden border ${
-                          index === activeImageIndex
-                            ? "ring-2 ring-primary"
-                            : ""
+                  </button>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-white dark:bg-[#020817] shadow-sm">
+            <CardHeader className="bg-gray-50 dark:bg-gray-900 border-b">
+              <CardTitle className="flex items-center text-xl font-medium">
+                <AlertCircle className="mr-2 text-muted-foreground" />
+                Quick Stats
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4 p-6">
+              <QuickStat
+                label="Total Variants"
+                value={product.sizeVariants?.length || 0}
+              />
+              <QuickStat
+                label="Price Range"
+                value={`BDT ${Math.min(
+                  ...(product.sizeVariants?.map((v) => v.price || 0) || [0])
+                )} - BDT ${Math.max(
+                  ...(product.sizeVariants?.map((v) => v.price || 0) || [0])
+                )}`}
+              />
+              <QuickStat label="Total Stock" value={totalStock} />
+              <QuickStat
+                label="Avg. Manufacturing Cost"
+                value={`BDT ${(
+                  (product.sizeVariants?.reduce(
+                    (acc, v) => acc + (v.manufacturingCost || 0),
+                    0
+                  ) || 0) / (product.sizeVariants?.length || 1)
+                ).toFixed(2)}`}
+              />
+              <QuickStat
+                label="Average Rating"
+                value={
+                  <div className="flex items-center">
+                    <span className="mr-2 font-medium">
+                      {averageRating.toFixed(1)}
+                    </span>
+                    {[...Array(5)].map((_, i) => (
+                      <Star
+                        key={i}
+                        className={`w-4 h-4 ${
+                          i < Math.round(averageRating)
+                            ? "text-yellow-400"
+                            : "text-gray-300"
                         }`}
-                        onClick={() => setActiveImageIndex(index)}
-                      >
-                        <Image
-                          src={url}
-                          alt={`${product.name} ${index + 1}`}
-                          layout="fill"
-                          objectFit="cover"
-                        />
-                      </button>
+                        fill="currentColor"
+                      />
                     ))}
                   </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center text-2xl font-medium">
-                    <AlertCircle className="mr-2" />
-                    Quick Stats
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="flex justify-between items-center">
-                    <span className="font-medium text-sm text-muted-foreground">
-                      Total Variants:
-                    </span>
-                    <span>{product.sizeVariants?.length || 0}</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="font-medium text-sm text-muted-foreground">
-                      Price Range:
-                    </span>
-                    <span>
-                      $
-                      {Math.min(
-                        ...(product.sizeVariants?.map((v) => v.price || 0) || [
-                          0,
-                        ])
-                      )}{" "}
-                      - $
-                      {Math.max(
-                        ...(product.sizeVariants?.map((v) => v.price || 0) || [
-                          0,
-                        ])
-                      )}
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="font-medium text-sm text-muted-foreground">
-                      Total Stock:
-                    </span>
-                    <span>{totalStock}</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="font-medium text-sm text-muted-foreground">
-                      Avg. Manufacturing Cost:
-                    </span>
-                    <span>
-                      $
-                      {(
-                        (product.sizeVariants?.reduce(
-                          (acc, v) => acc + (v.manufacturingCost || 0),
-                          0
-                        ) || 0) / (product.sizeVariants?.length || 1)
-                      ).toFixed(2)}
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="font-medium text-sm text-muted-foreground">
-                      Average Rating:
-                    </span>
-                    <div className="flex items-center">
-                      <span className="mr-2">{averageRating.toFixed(1)}</span>
-                      {[...Array(5)].map((_, i) => (
-                        <Star
-                          key={i}
-                          className={`w-4 h-4 ${
-                            i < Math.round(averageRating)
-                              ? "text-yellow-400"
-                              : "text-gray-300"
-                          }`}
-                          fill="currentColor"
-                        />
-                      ))}
-                    </div>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="font-medium text-sm text-muted-foreground">
-                      Total Reviews:
-                    </span>
-                    <span>{product.reviews?.length || 0}</span>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
+                }
+              />
+              <QuickStat
+                label="Total Reviews"
+                value={product.reviews?.length || 0}
+              />
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>
@@ -552,14 +416,31 @@ function InfoItem({
   value: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-col bg-gray-100 rounded">
-      <div className="h-8 w-8 rounded mb-3 bg-gray-300 flex justify-center items-center mt-2 ml-2 text-gray-800">
+    <div className="flex items-center space-x-3 bg-gray-50 dark:bg-gray-900 rounded-lg p-3">
+      <div className="h-10 w-10 rounded-full bg-white dark:bg-gray-800 flex justify-center items-center shadow-sm">
         {icon}
       </div>
-      <span className="font-medium text-muted-foreground text-sm ml-2">
-        {label}
+      <div>
+        <p className="text-sm text-muted-foreground font-medium">{label}</p>
+        <p className="font-medium text-primary">{value}</p>
+      </div>
+    </div>
+  );
+}
+
+function QuickStat({
+  label,
+  value,
+}: {
+  label: string;
+  value: React.ReactNode;
+}) {
+  return (
+    <div className="flex justify-between items-center">
+      <span className="font-medium text-sm text-muted-foreground">
+        {label}:
       </span>
-      <span className="ml-2 mb-2 font-medium">{value}</span>
+      <span className="font-medium text-primary/80 text-sm">{value}</span>
     </div>
   );
 }

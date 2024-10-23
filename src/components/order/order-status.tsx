@@ -9,10 +9,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-type OrderStatusType = "ACTIVE" | "CANCELLED";
+type OrderStatusType = "CONFIRM" | "CANCELLED";
 
 const statusConfig: Record<OrderStatusType, { color: string }> = {
-  ACTIVE: {
+  CONFIRM: {
     color: "bg-emerald-100 text-emerald-600",
   },
   CANCELLED: {

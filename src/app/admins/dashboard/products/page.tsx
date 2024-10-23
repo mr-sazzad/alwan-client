@@ -29,7 +29,7 @@ const Page = () => {
       <AlwanBreadCrumb
         links={[
           { label: "Home", href: "/" },
-          { label: "Dashboard", href: "/dashboard" },
+          { label: "Dashboard", href: "/admins/dashboard" },
         ]}
         page="Products"
         className="my-3"

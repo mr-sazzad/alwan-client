@@ -15,7 +15,13 @@ import {
 import { useDeleteSingleProductMutation } from "@/redux/api/products/productsApi";
 import { IProduct, IReadCategory, IReadSize, IReadSizeVariant } from "@/types";
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, MoreHorizontal } from "lucide-react";
+import {
+  ArrowUpDown,
+  Eye,
+  MoreHorizontal,
+  PencilLine,
+  Trash2,
+} from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -91,18 +97,23 @@ const ProductTableColumns = () => {
                 <DropdownMenuLabel>Actions</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem>
-                  <Link href={`${path}/${id}`}>View Product Details</Link>
+                  <Link href={`${path}/${id}`} className="flex items-center">
+                    <Eye className="w-4 h-4 mr-2" />
+                    View Details
+                  </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={() => {
                     setDialogOpen(true), setProduct(row.original);
                   }}
                 >
-                  Update this product
+                  <PencilLine className="w-4 h-4 mr-2" />
+                  Update product
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onSelect={() => setOpen(true)}>
-                  Delete this product
+                  <Trash2 className="w-4 h-4 mr-2 text-red-500" />
+                  Delete product
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

@@ -64,12 +64,12 @@ export default function AccountLayout({ children }: AccountLayoutProps) {
 
           <Card
             className={`overflow-hidden transition-all duration-300 ease-in-out md:h-auto md:overflow-visible ${
-              isMobileMenuOpen ? "border" : "border-0 md:border"
+              isMobileMenuOpen ? "border" : "border-0"
             }`}
             style={{ maxHeight: menuHeight }}
           >
             <CardContent className="p-4" ref={menuRef}>
-              <nav className="flex flex-col space-y-1">
+              <nav className="flex flex-col space-y-2">
                 {userRoutes.map((route) => (
                   <Link
                     key={route.id}

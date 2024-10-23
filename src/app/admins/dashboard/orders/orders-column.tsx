@@ -7,10 +7,11 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, MoreHorizontal, Package } from "lucide-react";
+import { ArrowUpDown, EyeIcon, MoreHorizontal, Package } from "lucide-react";
 import Link from "next/link";
 
 export type OrderItem = {
@@ -137,11 +138,11 @@ const OrderTableColumns = () => {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuSeparator />
               <DropdownMenuItem>
+                <EyeIcon className="w-4 h-4 mr-2" />
                 <Link href={`${path}/${order.id}`}>View Details</Link>
               </DropdownMenuItem>
-              <DropdownMenuItem>Update Status</DropdownMenuItem>
-              <DropdownMenuItem>Send Invoice</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         );

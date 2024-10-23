@@ -1,92 +1,131 @@
-import * as React from "react"
-
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import {
-  Dialog,
-  DialogContent
-} from "@/components/ui/dialog"
-import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from "@/components/ui/drawer"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { useMediaQuery } from "@/hooks/useMediaQuery"
-import Image from "next/image"
-import { IReadSizeVariant } from "@/types"
-import DotIcon from "../utils/half-icon"
-import { X } from "lucide-react"
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Drawer, DrawerClose, DrawerContent } from "@/components/ui/drawer";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
+import { Check, X } from "lucide-react";
+import Image from "next/image";
+import * as React from "react";
 
 interface IProductFeaturesProps {
-    open: boolean;
-    setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-    product: any
+  open: boolean;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  product: any;
 }
 
-const ProductFeatures:React.FC<IProductFeaturesProps> = ({open, setOpen, product}) => {
-  const isDesktop = useMediaQuery("(min-width: 768px)")
+export default function ProductFeatures({
+  open,
+  setOpen,
+  product,
+}: IProductFeaturesProps) {
+  const isDesktop = useMediaQuery("(min-width: 768px)");
+
+  const getPriceRange = (sizeVariants: any[]) => {
+    const prices = sizeVariants.map((variant) => variant.price);
+    const minPrice = Math.min(...prices);
+    const maxPrice = Math.max(...prices);
+    return minPrice === maxPrice
+      ? `TK. ${minPrice}`
+      : `TK. ${minPrice} - ${maxPrice}`;
+  };
+
+  const Content = () => (
+    <div className="flex flex-col h-full py-4">
+      <div className="flex items-start gap-6 mb-6">
+        <Image
+          src={product.imageUrls[0]}
+          alt={product.name}
+          width={100}
+          height={100}
+          className="rounded-lg object-cover flex-shrink-0"
+        />
+        <div className="flex-grow">
+          <div>
+            <div className="flex items-center gap-8">
+              {product?.isNewArrival && (
+                <span className="text-sm font-medium text-[#D33918]">
+                  New Arrival
+                </span>
+              )}
+              <span className="text-sm font-medium text-[#D33918]">
+                {product?.availabilityTag}
+              </span>
+            </div>
+            <h2 className="text-xl font-medium text-primary">{product.name}</h2>
+            <p className="text-xl font-medium mt-1">
+              {getPriceRange(product?.sizeVariants)}
+            </p>
+          </div>
+          <p className="text-sm text-muted-foreground mt-2">
+            SKU: {product?.sku}
+          </p>
+        </div>
+      </div>
+
+      <div className="overflow-y-auto hide-scrollbar">
+        <div className="space-y-4">
+          <section>
+            <h3 className="text-lg font-medium mb-2">Description</h3>
+            <p className="text-muted-foreground leading-relaxed">
+              {product?.description}
+            </p>
+          </section>
+
+          <section>
+            <h3 className="text-lg font-medium mb-2">Features</h3>
+            <ul className="grid grid-cols-1 gap-2">
+              {product?.features.map((feature: string, i: number) => (
+                <li key={i} className="flex items-center gap-1">
+                  <Check
+                    size={16}
+                    className="text-muted-foreground flex-shrink-0"
+                  />
+                  <span className="text-muted-foreground">{feature}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+
+          <section>
+            <h3 className="text-lg font-medium mb-2">Product Details</h3>
+            <div className="bg-secondary rounded-lg p-4">
+              <div className="grid grid-cols-2 gap-y-2 text-sm">
+                <span className="text-muted-foreground">Category:</span>
+                <span className="font-medium">{product?.category.name}</span>
+                <span className="text-muted-foreground">Brand:</span>
+                <span className="font-medium">{product?.brand}</span>
+                <span className="text-muted-foreground">Stock Status:</span>
+                <span className="font-medium">
+                  {product?.stockStatus.charAt(0).toUpperCase() +
+                    product?.stockStatus.slice(1).toLowerCase()}
+                </span>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  );
 
   if (isDesktop) {
     return (
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="sm:max-w-[725px] p-10">
-            <div className="flex gap-2">
-                <Image src={product.imageUrls[0]} alt="product-image" height={60} width={60}/>
-                <div className="flex flex-col justify-center">
-                    <h2 className="font-medium">{product.name}</h2>
-                    <p className="font-medium">TK. {product.sizeVariants[0].price}</p>
-                </div>
-            </div>
-            <div className="mt-4">
-                <div>
-                    {product.description.map((description: string, i: number) => (<p key={i}> {description}</p>))}
-                </div>
-            </div>
-            <div className="mt-1">
-                <p className="text-xl font-normal">Features</p>
-                <div>
-                    {product.features.map((feature: string, i: number) => (<div key={i} className="flex items-center"><p>{feature}</p> </div>))}
-                </div>
-            </div>
+        <DialogContent className="sm:max-w-4xl p-6 overflow-hidden">
+          <Content />
         </DialogContent>
       </Dialog>
-    )
+    );
   }
 
   return (
     <Drawer open={open} onOpenChange={setOpen}>
-      <DrawerContent >
-        <div className="p-6 max-h-[70vh] overflow-y-auto">
-          <div className="flex gap-2">
-            <Image src={product.imageUrls[0]} alt="product-image" height={60} width={60} />
-            <div className="flex flex-col justify-center">
-              <p>{product.name}</p>
-              <p className="font-medium">TK. {product.sizeVariants[0].price}</p>
-            </div>
-          </div>
-          <p className="mt-4">{product.description}</p>
-
-          <div className="mt-5">
-            <h2 className="text-xl mb-2">Features</h2>
-            {product.features.map((feature: string, i: number) => (<div key={i}>{feature}</div>))}
-          </div>
-        </div>
-        <DrawerFooter className="absolute right-5 top-5">
-          <DrawerClose>
-          <Button variant="secondary" className="w-full rounded-full px-[10px]"><X size={20} /></Button>
-          </DrawerClose>
-        </DrawerFooter>
+      <DrawerContent className="px-2">
+        <Content />
+        <DrawerClose asChild>
+          <Button size="icon" className="rounded-full absolute right-4 top-4">
+            <X size={20} />
+          </Button>
+        </DrawerClose>
       </DrawerContent>
     </Drawer>
-  )
+  );
 }
-
-
-export default ProductFeatures;

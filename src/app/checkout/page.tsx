@@ -1,8 +1,15 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ChevronRight } from "lucide-react";
-import Image from "next/image";
+import {
+  ChevronRight,
+  CreditCard,
+  Home,
+  MapPin,
+  Phone,
+  ShoppingBag,
+  User,
+} from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -13,10 +20,12 @@ import CheckoutPageSingleProductCard from "@/components/cards/checkout-page-sing
 import MaxWidth from "@/components/max-width";
 import AddressDialog from "@/components/profile/address-dialog";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 
 import { getUserFromLocalStorage } from "@/helpers/jwt";
 import { usePlaceOrder } from "@/hooks/use-place-order";
+import { useGetSingleColorByIdQuery } from "@/redux/api/color/color-api";
 import { useCreateAOrderMutation } from "@/redux/api/orders/ordersApi";
 import { useGetSingleProductQuery } from "@/redux/api/products/productsApi";
 import { useGetSingleSizeQuery } from "@/redux/api/size/size-api";
@@ -24,10 +33,6 @@ import { useGetSingleUserQuery } from "@/redux/api/users/user-api";
 import { RootState } from "@/redux/store";
 import { addressSchema } from "@/schemas/address-schema";
 import { FormValues, IUserAddress, IUserCartProduct, IUserData } from "@/types";
-
-import homeIcon from "@/images/house_4730076.png";
-import { useGetSingleColorByIdQuery } from "@/redux/api/color/color-api";
-import Loading from "../loading";
 
 const GUEST_ADDRESS_KEY = "alwan_guest_user_address";
 
@@ -121,21 +126,6 @@ export default function CheckoutPage() {
     }
   }, [userRes, currentUser, guestAddress, form]);
 
-  console.log("ORDER DATA =>", {
-    form,
-    totalPrice,
-    shippingCost,
-    currentUser,
-    productId,
-    quantity: quantity ? Number(quantity) : undefined,
-    sizeId: sizeRes?.data?.id,
-    colorId: colorRes?.data?.id,
-    cartProducts,
-    createAOrder,
-    router,
-    setLoading,
-  });
-
   const handlePlaceOrder = usePlaceOrder({
     form,
     totalPrice,
@@ -170,9 +160,8 @@ export default function CheckoutPage() {
     }
   };
 
-  if (isUserLoading || isSizeLoading || isProductLoading || isColorLoading) {
-    return <Loading />;
-  }
+  const isLoading =
+    isUserLoading || isSizeLoading || isProductLoading || isColorLoading;
 
   const productsToShow: IUserCartProduct[] =
     productId && productRes?.data
@@ -181,80 +170,125 @@ export default function CheckoutPage() {
             ...productRes.data,
             orderQty: Number(quantity),
             orderSize: sizeRes?.data?.name,
-            orderColor: colorRes.data.name,
-            colorHexCode: colorRes.data.hexCode,
+            orderColor: colorRes?.data?.name,
+            colorHexCode: colorRes?.data?.hexCode,
           },
         ]
       : cartProducts;
 
   return (
-    <MaxWidth className="flex justify-center">
-      <div className="max-w-[900px] w-full px-5 mt-[100px]">
-        <div className="my-5">
-          {!addressToShow ? (
-            <Button
-              variant="outline"
-              className="md:py-8 py-7 w-full"
-              onClick={handleAddressButtonClick}
-            >
-              <p className="font-medium tracking-wider">Add Delivery Address</p>
-            </Button>
-          ) : (
-            <div className="flex gap-4 items-center">
-              <div>
-                <Image alt="home-icon" src={homeIcon} height={40} width={40} />
-              </div>
-              <div className="flex flex-col">
-                <div className="flex items-center gap-3">
-                  <p className="font-medium">{addressToShow.recipientName}</p>
-                  <p className="text-muted-foreground text-sm">
-                    {addressToShow.phone}
-                  </p>
-                </div>
-                <p className="text-muted-foreground text-sm">
-                  {addressToShow.streetAddress}
-                </p>
-                <p className="text-muted-foreground text-sm">
-                  {addressToShow.union}, {addressToShow.upazila},{" "}
-                  {addressToShow.district}, {addressToShow.division}
-                </p>
-              </div>
-              <div className="ml-auto">
-                <Button
-                  variant="ghost"
-                  className="w-full rounded-full px-2.5 ml-auto"
-                  size="icon"
-                  onClick={handleAddressButtonClick}
-                >
-                  <ChevronRight className="h-5 w-5" />
-                </Button>
-              </div>
-            </div>
-          )}
+    <MaxWidth className="flex justify-center mt-[100px]">
+      <div className="max-w-6xl w-full px-4 py-4">
+        <h1 className="text-3xl font-medium mb-4">Checkout</h1>
+        <div className="grid md:grid-cols-5 gap-4">
+          <div className="md:col-span-3 space-y-4">
+            <Card className="bg-slate-100 dark:bg-slate-900">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 font-medium">
+                  <Home className="h-5 w-5" />
+                  Delivery Address
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {isLoading ? (
+                  <Skeleton className="h-24 w-full" />
+                ) : !addressToShow ? (
+                  <Button
+                    variant="outline"
+                    className="w-full h-24"
+                    onClick={handleAddressButtonClick}
+                  >
+                    Add Delivery Address
+                  </Button>
+                ) : (
+                  <div className="flex items-start gap-4">
+                    <div className="flex-grow">
+                      <div className="flex items-center gap-2">
+                        <User className="w-4 h-4" />
+                        <p className="font-medium">
+                          {addressToShow.recipientName}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Phone className="w-4 h-4 text-muted-foreground" />
+                        <p className="text-sm text-muted-foreground">
+                          {addressToShow.phone}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <MapPin className="w-4 h-4 text-muted-foreground" />
+                        <p className="text-sm text-muted-foreground mt-2">
+                          {addressToShow.streetAddress}, {addressToShow.union},{" "}
+                          {addressToShow.upazila},{addressToShow.district},{" "}
+                          {addressToShow.division}
+                        </p>
+                      </div>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={handleAddressButtonClick}
+                    >
+                      <ChevronRight className="h-5 w-5" />
+                    </Button>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            <Card className="bg-slate-100 dark:bg-slate-900">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 font-medium">
+                  <ShoppingBag className="h-5 w-5" />
+                  Order Summary
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {isLoading ? (
+                  <Skeleton className="h-24 w-full" />
+                ) : (
+                  <div className="space-y-4">
+                    {productsToShow.map((product) => (
+                      <CheckoutPageSingleProductCard
+                        key={product.id}
+                        product={product}
+                        quantity={String(product.orderQty)}
+                        size={product.orderSize}
+                      />
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="md:col-span-2">
+            <Card className="bg-slate-100 dark:bg-slate-900">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 font-medium">
+                  <CreditCard className="h-5 w-5" /> Payment Details
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {isLoading ? (
+                  <Skeleton className="h-48 w-full" />
+                ) : (
+                  <CheckOutPageBillingInfo
+                    products={productsToShow}
+                    district={
+                      addressToShow?.district || userRes?.data?.district
+                    }
+                    handlePlaceOrder={handlePlaceOrder}
+                    setTotalPrice={setTotalPrice}
+                    setShippingCost={setShippingCost}
+                    buttonLoading={loading}
+                  />
+                )}
+              </CardContent>
+            </Card>
+          </div>
         </div>
-        <Separator className="my-3" />
-        <div className="flex flex-col gap-2 w-full">
-          {productsToShow.map((product) => (
-            <CheckoutPageSingleProductCard
-              key={product.id}
-              product={product}
-              quantity={String(product.orderQty)}
-              size={product.orderSize}
-            />
-          ))}
-        </div>
-        <Separator className="my-3" />
-        <div>
-          <CheckOutPageBillingInfo
-            products={productsToShow}
-            district={addressToShow?.district || userRes?.data?.district}
-            handlePlaceOrder={handlePlaceOrder}
-            setTotalPrice={setTotalPrice}
-            setShippingCost={setShippingCost}
-            totalPrice={totalPrice}
-            buttonLoading={loading}
-          />
-        </div>
+
         <AddressDialog
           addressModalOpen={addressModalOpen}
           setAddressModalOpen={setAddressModalOpen}

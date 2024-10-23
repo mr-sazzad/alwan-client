@@ -38,12 +38,12 @@ import {
   useUpdateOrderByOrderIdMutation,
   useUpdateOrderStatusMutation,
 } from "@/redux/api/orders/ordersApi";
-import { ProductWithDetails } from "@/types";
+import { IOrderItem } from "@/types";
 import Image from "next/image";
 
 const statusColors = {
   PROCESSING: "bg-blue-100 text-blue-600",
-  ONTHEWAY: "bg-yellow-100 text-yellow-600",
+  IN_TRANSIT: "bg-yellow-100 text-yellow-600",
   DELIVERED: "bg-green-100 text-green-600",
   REQUESTTORETURN: "bg-orange-100 text-orange-600",
   RETURNED: "bg-red-100 text-red-600",
@@ -75,7 +75,7 @@ export default function OrderDetails() {
     useUpdateOrderStatusMutation();
   const [updateOrderByOrderId, { isLoading: isOrderUpdating }] =
     useUpdateOrderByOrderIdMutation();
-  const [localItems, setLocalItems] = useState<ProductWithDetails[]>([]);
+  const [localItems, setLocalItems] = useState<IOrderItem[]>([]);
   const [isInvoiceFormOpen, setIsInvoiceFormOpen] = useState(false);
   const [showInvoice, setShowInvoice] = useState(false);
   const [invoiceData, setInvoiceData] = useState({
@@ -116,6 +116,8 @@ export default function OrderDetails() {
       </div>
     );
   }
+
+  console.log(response?.data);
 
   if (!response?.data) {
     return (
@@ -171,7 +173,7 @@ export default function OrderDetails() {
           item.id === itemId
             ? {
                 ...item,
-                itemStatus: newStatus as ProductWithDetails["itemStatus"],
+                itemStatus: newStatus as IOrderItem["itemStatus"],
               }
             : item
         )
@@ -198,7 +200,7 @@ export default function OrderDetails() {
     const statuses = localItems.map((item) => item.itemStatus);
     if (statuses.every((status) => status === "DELIVERED")) return "DELIVERED";
     if (statuses.some((status) => status === "RETURNED")) return "RETURNED";
-    if (statuses.some((status) => status === "ONTHEWAY")) return "ONTHEWAY";
+    if (statuses.some((status) => status === "IN_TRANSIT")) return "IN_TRANSIT";
     if (statuses.some((status) => status === "REQUESTTORETURN"))
       return "REQUESTTORETURN";
     return "PROCESSING";
@@ -283,7 +285,7 @@ export default function OrderDetails() {
                   </CardHeader>
                   <CardContent className="space-y-6">
                     {localItems && localItems.length > 0 ? (
-                      localItems.map((item: ProductWithDetails) => (
+                      localItems.map((item: IOrderItem) => (
                         <div
                           key={item.id}
                           className="flex flex-col md:flex-row items-start md:items-center space-y-4 md:space-y-0 md:space-x-4 p-4 md:p-6 bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-300"
@@ -335,7 +337,9 @@ export default function OrderDetails() {
                               </span>
                               <span
                                 className="inline-block w-6 h-6 rounded mr-1 align-middle"
-                                style={{ backgroundColor: item.color?.hexCode }}
+                                style={{
+                                  backgroundColor: item?.color?.hexCode,
+                                }}
                               ></span>
                               <span className="text-indigo-600 bg-indigo-100 px-2 py-1 rounded">
                                 {item.quantity} Pcs
@@ -343,7 +347,7 @@ export default function OrderDetails() {
                             </p>
                             <p className="font-medium text-lg">
                               {formatCurrency(
-                                item.discountedPrice * item.quantity
+                                (item.discountedPrice ?? 0) * item.quantity
                               )}
                             </p>
                           </div>
@@ -368,8 +372,8 @@ export default function OrderDetails() {
                                 <SelectItem value="PROCESSING">
                                   Processing
                                 </SelectItem>
-                                <SelectItem value="ONTHEWAY">
-                                  On the Way
+                                <SelectItem value="IN_TRANSIT">
+                                  In Transit
                                 </SelectItem>
                                 <SelectItem value="DELIVERED">
                                   Delivered
@@ -526,7 +530,7 @@ export default function OrderDetails() {
           items={localItems.map((item) => ({
             product: { name: item.product.name },
             quantity: item.quantity,
-            discountedPrice: item.discountedPrice,
+            discountedPrice: item.discountedPrice ?? 0,
             size: item.size,
           }))}
           onGenerate={handleInvoiceGenerated}

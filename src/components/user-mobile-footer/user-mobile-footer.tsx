@@ -34,7 +34,7 @@ const UserMobileFooter = () => {
           pathname.startsWith("/admins/dashboard") ? "hidden" : ""
         }`}
       >
-        <div className="flex flex-row gap-1 h-[47px] w-full justify-between bg-white rounded-full">
+        <div className="flex flex-row gap-1 h-[47px] w-full justify-between bg-white dark:bg-gray-900 rounded-full">
           {userMobileMenu.map((menu) => (
             <div
               key={menu.id}
@@ -49,20 +49,14 @@ const UserMobileFooter = () => {
                     href={menu.href}
                     className="w-full h-full flex justify-center items-center"
                   >
-                    <menu.icon
-                      size={22}
-                      className="font-extrabold"
-                    />
+                    <menu.icon size={22} className="font-extrabold" />
                   </Link>
                 ) : (
                   <div
                     onClick={menu.onClick}
                     className="w-full h-full flex justify-center items-center group"
                   >
-                    <menu.icon
-                      size={22}
-                      className="font-extrabold"
-                    />
+                    <menu.icon size={22} className="font-extrabold" />
                   </div>
                 )}
               </div>

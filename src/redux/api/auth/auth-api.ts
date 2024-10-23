@@ -45,6 +45,24 @@ const authApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: [tagTypes.auth],
     }),
+
+    changePassword: build.mutation({
+      query: (data) => ({
+        url: `/auth/change-password`,
+        method: "PATCH",
+        data,
+      }),
+      invalidatesTags: [tagTypes.auth],
+    }),
+
+    deleteUser: build.mutation({
+      query: ({ userId, ...data }) => ({
+        url: `/auth/delete-user/${userId}`,
+        method: "DELETE",
+        data,
+      }),
+      invalidatesTags: [tagTypes.auth],
+    }),
   }),
 });
 
@@ -53,4 +71,7 @@ export const {
   useSignInUserMutation,
   useSignInWithGoogleQuery,
   useForgetPasswordMutation,
+  useResetPasswordMutation,
+  useChangePasswordMutation,
+  useDeleteUserMutation,
 } = authApi;

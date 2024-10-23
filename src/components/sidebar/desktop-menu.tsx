@@ -49,14 +49,14 @@ const DesktopMenu: React.FC = () => {
                         {childCategory.isLeaf ? (
                           <Link
                             href={`/categories/${childCategory.id}`}
-                            className="font-medium text-sm block text-muted-foreground hover:text-black"
+                            className="font-medium text-sm block text-muted-foreground hover:text-black dark:hover:text-white"
                           >
                             {childCategory.name}
                           </Link>
                         ) : (
-                          <p className="font-medium text-sm cursor-default">
+                          <span className="font-medium text-sm cursor-default">
                             {childCategory.name}
-                          </p>
+                          </span>
                         )}
                         <ul className="space-y-1 text-sm">
                           {childCategory.children?.map((subCategory: any) => (

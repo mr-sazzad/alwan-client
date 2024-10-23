@@ -1,48 +1,30 @@
 "use client";
 
-import ProfileOrderTabs from "@/components/profile/order-tabs";
-import ProfileRejectedOrders from "@/components/profile/profile-rejected-orders";
+import { AnimatePresence } from "framer-motion";
+
+import OrderCard from "@/components/order/order-card";
 import { getUserFromLocalStorage } from "@/helpers/jwt";
 import { useGetSingleUserOrdersQuery } from "@/redux/api/orders/ordersApi";
-import { IUserData } from "@/types";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { IOrder, IUser } from "@/types";
+import OrdersLoader from "./components/orders-loader";
 
-const Order = () => {
-  const router = useRouter();
-  const [userData, setUserData] = useState<IUserData>();
+export default function OrderHistoryPage() {
+  const user = getUserFromLocalStorage() as IUser;
+  const { data: orderRes, isLoading } = useGetSingleUserOrdersQuery(
+    user?.userId
+  );
 
-  useEffect(() => {
-    const currentUserData = getUserFromLocalStorage() as any;
-    if (!currentUserData) {
-      router.push("/");
-    } else {
-      setUserData(currentUserData);
-    }
-  }, [router]);
-
-  const { data: orders, isLoading: isOrderLoading } =
-    useGetSingleUserOrdersQuery(userData?.userId);
-
-  if (isOrderLoading) {
-    return <div>Loading...</div>;
+  if (isLoading) {
+    return <OrdersLoader />;
   }
 
   return (
-    <>
-      <div>
-        <div className="mb-5">
-          <h2 className="text-xl font-semibold">Orders</h2>
-          <p className="text-sm font-medium text-muted-foreground">
-            If you placed an order, you can track its status here. Stay updated
-            on your delivery every step of the way.
-          </p>
-        </div>
-        <ProfileOrderTabs orders={orders} />
-        <ProfileRejectedOrders />
-      </div>
-    </>
+    <div className="space-y-6">
+      <AnimatePresence>
+        {orderRes?.data?.map((order: IOrder) => (
+          <OrderCard key={order.id} order={order} />
+        ))}
+      </AnimatePresence>
+    </div>
   );
-};
-
-export default Order;
+}

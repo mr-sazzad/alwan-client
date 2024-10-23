@@ -11,7 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { IReadProductType } from "@/types";
+import { IProductType } from "@/types";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, MoreHorizontal, PencilLine, Trash2 } from "lucide-react";
 import { useState } from "react";
@@ -29,7 +29,7 @@ const ProductTypeColumns: React.FC<ProductTypeColumnsProps> = ({
   productTypes,
 }) => {
   const [open, setOpen] = useState(false);
-  const [productType, setProductType] = useState<IReadProductType>();
+  const [productType, setProductType] = useState<IProductType>();
 
   const columns: ColumnDef<ProductType>[] = [
     {

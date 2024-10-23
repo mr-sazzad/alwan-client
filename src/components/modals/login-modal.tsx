@@ -25,6 +25,7 @@ import {
 } from "@/helpers/local-storage";
 import { useSignInUserMutation } from "@/redux/api/auth/auth-api";
 import { loginSchema } from "@/schemas/login-schemas";
+import { KEY } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -104,7 +105,7 @@ export default function LoginModal({
         });
         return;
       } else {
-        setToLocalStorage("alwan-user-access-token", res.data.accessToken);
+        setToLocalStorage(KEY, res.data.refreshToken);
         setOpen(false);
         form.reset();
         toast({

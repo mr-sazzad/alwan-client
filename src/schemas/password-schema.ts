@@ -7,14 +7,7 @@ export const passwordSchema = z
       .min(1, { message: "Current password is required" }),
     newPassword: z
       .string()
-      .min(8, { message: "Password must be at least 8 characters long" })
-      .regex(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-        {
-          message:
-            "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character",
-        }
-      ),
+      .min(5, { message: "Password must be at least 5 characters long" }),
     confirmPassword: z.string(),
   })
   .refine((data) => data.newPassword === data.confirmPassword, {

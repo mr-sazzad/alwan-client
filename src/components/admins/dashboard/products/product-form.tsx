@@ -1,3 +1,11 @@
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect, useState } from "react";
+import { useFieldArray, useForm } from "react-hook-form";
+import { BiTrash } from "react-icons/bi";
+import { TbCubePlus } from "react-icons/tb";
+import { VscCloudUpload } from "react-icons/vsc";
+import { z } from "zod";
+
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -26,18 +34,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/use-toast";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
-import { useFieldArray, useForm } from "react-hook-form";
-import { BiTrash } from "react-icons/bi";
-import { PiSpinnerLight } from "react-icons/pi";
-import { TbCubePlus } from "react-icons/tb";
-import { VscCloudUpload } from "react-icons/vsc";
-import { z } from "zod";
 
+// Assume these imports are available
 import { useGetLeafCategoriesQuery } from "@/redux/api/categoies/categoriesApi";
 import { useGetAllColorsQuery } from "@/redux/api/color/color-api";
 import { useGetProductTypesQuery } from "@/redux/api/product-types/product-types-api";
@@ -47,13 +49,7 @@ import {
 } from "@/redux/api/products/productsApi";
 import { useGetAllSizesQuery } from "@/redux/api/size/size-api";
 import { productSchema } from "@/schemas/product-schema";
-import {
-  IProduct,
-  IReadCategory,
-  IReadColor,
-  IReadProductType,
-  IReadSize,
-} from "@/types";
+import { IProduct } from "@/types";
 
 interface ProductFormProps {
   mode: "create" | "update";
@@ -64,7 +60,7 @@ interface ProductFormProps {
 export default function Component({
   mode = "create",
   product,
-  setOpen = () => {},
+  setOpen,
 }: ProductFormProps) {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
@@ -84,7 +80,7 @@ export default function Component({
   const form = useForm<z.infer<typeof productSchema>>({
     resolver: zodResolver(productSchema),
     defaultValues: {
-      files: [] as File[],
+      files: [],
       name: "",
       description: "",
       features: "",
@@ -111,9 +107,7 @@ export default function Component({
     if (mode === "update" && product) {
       form.reset({
         name: product.name,
-        description: Array.isArray(product.description)
-          ? product.description.join(", ")
-          : product.description,
+        description: product.description,
         features: Array.isArray(product.features)
           ? product.features.join(", ")
           : product.features,
@@ -127,6 +121,9 @@ export default function Component({
         sku: product.sku,
         sizeVariants: product.sizeVariants,
       });
+      setSelectedSizes(
+        product.sizeVariants.map((variant: any) => variant.sizeId)
+      );
     }
   }, [product, form, mode]);
 
@@ -140,7 +137,6 @@ export default function Component({
 
       const productData = {
         ...data,
-        description: data.description.split(",").map((desc) => desc.trim()),
         features: data.features.split(",").map((feature) => feature.trim()),
       };
 
@@ -174,19 +170,6 @@ export default function Component({
     }
   };
 
-  const handleSizeChange = (index: number, sizeId: string) => {
-    const updatedSizes = [...selectedSizes];
-    updatedSizes[index] = sizeId;
-    setSelectedSizes(updatedSizes);
-  };
-
-  const availableSizes = (index: number) => {
-    const usedSizes = selectedSizes.slice(0, index);
-    return sizes?.data.filter(
-      (size: IReadSize) => !usedSizes.includes(size.id)
-    );
-  };
-
   if (
     isCategoryLoading ||
     isColorLoading ||
@@ -194,9 +177,24 @@ export default function Component({
     isProductTypeLoading
   ) {
     return (
-      <div className="flex justify-center items-center h-screen">
-        <PiSpinnerLight className="animate-spin h-8 w-8" />
-      </div>
+      <Card className="w-full max-w-4xl mx-auto">
+        <CardHeader>
+          <Skeleton className="h-8 w-3/4" />
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <Skeleton className="h-40 w-full" />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Skeleton className="h-10 w-full" />
+            <Skeleton className="h-10 w-full" />
+          </div>
+          <Separator />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <Skeleton className="h-10 w-full" />
+            <Skeleton className="h-10 w-full" />
+            <Skeleton className="h-10 w-full" />
+          </div>
+        </CardContent>
+      </Card>
     );
   }
 
@@ -205,7 +203,7 @@ export default function Component({
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <Card className="w-full max-w-4xl mx-auto">
           <CardHeader>
-            <CardTitle className="text-2xl font-bold">
+            <CardTitle className="text-2xl font-medium">
               {mode === "create" ? "Create New Product" : "Update Product"}
             </CardTitle>
           </CardHeader>
@@ -292,10 +290,7 @@ export default function Component({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Category</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
+                    <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Select a category" />
@@ -304,7 +299,7 @@ export default function Component({
                       <SelectContent>
                         <SelectGroup>
                           <SelectLabel>Categories</SelectLabel>
-                          {categories?.data.map((category: IReadCategory) => (
+                          {categories?.data.map((category: any) => (
                             <SelectItem key={category.id} value={category.id}>
                               {category.name}
                             </SelectItem>
@@ -323,10 +318,7 @@ export default function Component({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Product Type</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
+                    <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Select a product type" />
@@ -335,7 +327,7 @@ export default function Component({
                       <SelectContent>
                         <SelectGroup>
                           <SelectLabel>Product Types</SelectLabel>
-                          {productTypes?.data.map((type: IReadProductType) => (
+                          {productTypes?.data.map((type: any) => (
                             <SelectItem key={type.id} value={type.id}>
                               {type.name}
                             </SelectItem>
@@ -351,17 +343,14 @@ export default function Component({
 
             <Separator />
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <FormField
                 control={form.control}
                 name="stockStatus"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Stock Status</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
+                    <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Select stock status" />
@@ -388,10 +377,7 @@ export default function Component({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Status Tag</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
+                    <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Select availability tag" />
@@ -440,27 +426,6 @@ export default function Component({
                       </SelectContent>
                     </Select>
                     <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="isNewArrival"
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                    <div className="space-y-0.5">
-                      <FormLabel className="text-base">New Arrival</FormLabel>
-                      <FormDescription>
-                        Mark this product as a new arrival
-                      </FormDescription>
-                    </div>
-                    <FormControl>
-                      <Switch
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
                   </FormItem>
                 )}
               />
@@ -553,7 +518,7 @@ export default function Component({
                                 </SelectTrigger>
                               </FormControl>
                               <SelectContent>
-                                {colors?.data.map((color: IReadColor) => (
+                                {colors?.data.map((color: any) => (
                                   <SelectItem key={color.id} value={color.id}>
                                     {color.name}
                                   </SelectItem>
@@ -573,7 +538,11 @@ export default function Component({
                             <Select
                               onValueChange={(value) => {
                                 field.onChange(value);
-                                handleSizeChange(index, value);
+                                setSelectedSizes((prev) => {
+                                  const newSizes = [...prev];
+                                  newSizes[index] = value;
+                                  return newSizes;
+                                });
                               }}
                               value={field.value}
                             >
@@ -583,13 +552,17 @@ export default function Component({
                                 </SelectTrigger>
                               </FormControl>
                               <SelectContent>
-                                {availableSizes(index)?.map(
-                                  (size: IReadSize) => (
+                                {sizes?.data
+                                  .filter(
+                                    (size: any) =>
+                                      !selectedSizes.includes(size.id) ||
+                                      selectedSizes[index] === size.id
+                                  )
+                                  .map((size: any) => (
                                     <SelectItem key={size.id} value={size.id}>
                                       {size.name}
                                     </SelectItem>
-                                  )
-                                )}
+                                  ))}
                               </SelectContent>
                             </Select>
                             <FormMessage />
@@ -663,7 +636,7 @@ export default function Component({
                     <FormLabel>Description</FormLabel>
                     <FormControl>
                       <Textarea
-                        placeholder="Description 1, Description 2"
+                        placeholder="Small description about the product"
                         className="min-h-[100px]"
                         {...field}
                       />
@@ -681,7 +654,9 @@ export default function Component({
                 render={({ field }) => (
                   <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4 flex-1">
                     <div className="space-y-0.5">
-                      <FormLabel className="text-base">Free Shipping</FormLabel>
+                      <FormLabel className="text-base font-medium">
+                        Free Shipping
+                      </FormLabel>
                       <FormDescription>
                         Offer free shipping for this product
                       </FormDescription>
@@ -702,11 +677,34 @@ export default function Component({
                 render={({ field }) => (
                   <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4 flex-1">
                     <div className="space-y-0.5">
-                      <FormLabel className="text-base">
+                      <FormLabel className="text-base font-medium">
                         Coupon Eligible
                       </FormLabel>
                       <FormDescription>
                         Allow coupons to be used on this product
+                      </FormDescription>
+                    </div>
+                    <FormControl>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="isNewArrival"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4 flex-1">
+                    <div className="space-y-0.5">
+                      <FormLabel className="text-base font-medium">
+                        New Arrival
+                      </FormLabel>
+                      <FormDescription>
+                        Mark this product as a new arrival
                       </FormDescription>
                     </div>
                     <FormControl>
@@ -727,7 +725,7 @@ export default function Component({
               disabled={isCreating || isUpdating}
             >
               {isCreating || isUpdating ? (
-                <PiSpinnerLight className="mr-2 h-4 w-4 animate-spin" />
+                <Skeleton className="h-4 w-4 rounded-full" />
               ) : (
                 <TbCubePlus className="mr-2 h-4 w-4" />
               )}

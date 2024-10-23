@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/select";
 import { useGetAllOrdersQuery } from "@/redux/api/orders/ordersApi";
 import { useGetAllUsersQuery } from "@/redux/api/users/user-api";
+import { IOrder, IUser } from "@/types";
 import {
   AlertCircle,
   DollarSign,
@@ -55,14 +56,6 @@ const AdminCardComponent = ({
   </Card>
 );
 
-interface Order {
-  orderStatus: string;
-  totalAmount: number;
-  createdAt: string;
-}
-
-interface User {}
-
 const AdminDashboard = () => {
   const [dateRange, setDateRange] = useState<"7" | "30" | "90">("90");
   const {
@@ -80,6 +73,8 @@ const AdminDashboard = () => {
     return <AdminDashboardSkeleton />;
   }
 
+  console.log("OrderRes?.data", orderRes?.data);
+
   if (userError || orderError) {
     return (
       <Alert variant="destructive">
@@ -92,12 +87,15 @@ const AdminDashboard = () => {
     );
   }
 
-  const userCount = (userRes?.data as User[] | undefined)?.length || 0;
-  const orders = orderRes?.data as Order[] | undefined;
+  const userCount = (userRes?.data as IUser[] | undefined)?.length || 0;
+  const orders = orderRes?.data as IOrder[] | undefined;
+
   const totalSales =
-    orders?.reduce((acc, order) => acc + (order.totalAmount || 0), 0) || 0;
+    orders?.reduce((acc, order) => acc + (order.totalCost || 0), 0) || 0;
+
   const canceledOrdersCount =
     orders?.filter((order) => order.orderStatus === "CANCELLED")?.length || 0;
+
   const todaySales =
     orders
       ?.filter((order) => {
@@ -105,7 +103,8 @@ const AdminDashboard = () => {
         const today = new Date();
         return orderDate.toDateString() === today.toDateString();
       })
-      ?.reduce((acc, order) => acc + (order.totalAmount || 0), 0) || 0;
+      ?.reduce((acc, order) => acc + (order.totalCost || 0), 0) || 0;
+
   const yesterdaySales =
     orders
       ?.filter((order) => {
@@ -114,11 +113,13 @@ const AdminDashboard = () => {
         yesterday.setDate(yesterday.getDate() - 1);
         return orderDate.toDateString() === yesterday.toDateString();
       })
-      ?.reduce((acc, order) => acc + (order.totalAmount || 0), 0) || 0;
+      ?.reduce((acc, order) => acc + (order.totalCost || 0), 0) || 0;
 
   const totalOrders = orders?.length || 0;
   const pendingOrders =
-    orders?.filter((order) => order.orderStatus === "PENDING")?.length || 0;
+    orders?.filter((order) =>
+      order.items.some((item) => item.itemStatus === "PROCESSING")
+    )?.length || 0;
 
   // Prepare data for charts
   const getDaysArray = (days: number) => {
@@ -126,7 +127,7 @@ const AdminDashboard = () => {
       .map((_, i) => {
         const date = new Date();
         date.setDate(date.getDate() - i);
-        return date.toISOString().split("T")[0];
+        return date.toLocaleString().split("T")[0];
       })
       .reverse();
   };
@@ -137,19 +138,22 @@ const AdminDashboard = () => {
     date,
     income:
       orders
-        ?.filter((order) => order.createdAt.split("T")[0] === date)
-        ?.reduce((acc, order) => acc + (order.totalAmount || 0), 0) || 0,
+        ?.filter(
+          (order) => order.createdAt.toLocaleString().split("T")[0] === date
+        )
+        ?.reduce((acc, order) => acc + (order.totalCost || 0), 0) || 0,
   }));
 
   const orderData = daysArray.map((date) => ({
     date,
     orders:
-      orders?.filter((order) => order.createdAt.split("T")[0] === date)
-        ?.length || 0,
+      orders?.filter(
+        (order) => order.createdAt.toLocaleString().split("T")[0] === date
+      )?.length || 0,
   }));
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div>
       <AlwanBreadCrumb
         links={[
           { label: "Home", href: "/" },
@@ -171,7 +175,7 @@ const AdminDashboard = () => {
           title="Total Sales"
           Icon={DollarSign}
           content="Lifetime sales"
-          stats={`$${totalSales.toFixed(2)}`}
+          stats={`TK ${totalSales.toFixed(2)}`}
         />
         <AdminCardComponent
           title="Total Orders"
@@ -195,13 +199,19 @@ const AdminDashboard = () => {
           title="Today's Sales"
           Icon={TrendingUp}
           content="Sales for today"
-          stats={`$${todaySales.toFixed(2)}`}
+          stats={`TK ${todaySales.toFixed(2)}`}
         />
         <AdminCardComponent
           title="Yesterday's Sales"
           Icon={History}
           content="Sales from yesterday"
-          stats={`$${yesterdaySales.toFixed(2)}`}
+          stats={`TK ${yesterdaySales.toFixed(2)}`}
+        />
+        <AdminCardComponent
+          title="Total Income"
+          Icon={History}
+          content="Lifetime income"
+          stats={`TK ${totalSales.toFixed(2)}`}
         />
       </div>
 

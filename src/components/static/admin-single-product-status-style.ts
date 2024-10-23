@@ -4,10 +4,10 @@ export const statusStyles = {
     textColor: "text-yellow-900",
     displayText: "PROCESSING",
   },
-  ONTHEWAY: {
+  IN_TRANSIT: {
     bgColor: "bg-blue-300",
     textColor: "text-blue-900",
-    displayText: "ONTHEWAY",
+    displayText: "IN_TRANSIT",
   },
   DELIVERED: {
     bgColor: "bg-green-300",
@@ -32,8 +32,8 @@ export const orderStatusArray = [
     label: "Processing",
   },
   {
-    value: "onTheWay",
-    label: "On The Way",
+    value: "in_transit",
+    label: "In Transit",
   },
   {
     value: "delivered",

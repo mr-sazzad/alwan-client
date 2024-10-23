@@ -28,6 +28,7 @@ import { toast } from "@/components/ui/use-toast";
 import { getUserFromLocalStorage } from "@/helpers/jwt";
 import { removeFromLocalStorage } from "@/helpers/local-storage";
 import { handleSignInWithGoogle } from "@/helpers/sign-in-with-google";
+import { KEY } from "@/types";
 import { LogOut, User, UserCheck, UserPlus } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
@@ -50,14 +51,12 @@ export default function Profile() {
   const [signUpOpen, setSignUpOpen] = useState(false);
 
   const handleUserSignout = () => {
-    removeFromLocalStorage("alwan-user-access-token");
+    removeFromLocalStorage(KEY);
     toast({
       title: "Log out",
       description: "Sign out successful",
     });
   };
-
-  console.log(currentUser);
 
   return (
     <>

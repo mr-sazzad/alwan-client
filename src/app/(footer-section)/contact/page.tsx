@@ -101,16 +101,16 @@ export default function ContactPage() {
   const messengerUsername = "100077653895732";
 
   return (
-    <div className="min-h-screen bg-white text-black">
-      <div className="flex items-center justify-center mt-[100px]">
-        <h1 className="text-3xl font-medium">Contact Us</h1>
-      </div>
+    <div className="min-h-screen bg-white dark:bg-gray-900 text-black dark:text-gray-100">
       <MaxWidth className="">
+        <div className="flex items-center mt-[100px]">
+          <h1 className="text-3xl font-medium">Contact Us</h1>
+        </div>
         <div className="container mx-auto px-4 py-12">
           <div className="grid lg:grid-cols-2 gap-12">
             <div className="space-y-8">
-              <div className="bg-white p-8 rounded-lg shadow-md border border-gray-200">
-                <h2 className="text-2xl font-medium mb-6 text-black">
+              <div className="bg-white dark:bg-gray-900 p-8 rounded-lg shadow-md border border-gray-200 dark:border-gray-700">
+                <h2 className="text-2xl font-medium mb-6 text-black dark:text-gray-100">
                   Get in Touch
                 </h2>
                 <div className="space-y-4">
@@ -242,8 +242,9 @@ export default function ContactPage() {
                   </Dialog>
                 </div>
               </div>
-              <div className="bg-white p-8 rounded-lg shadow-md border border-gray-200">
-                <h2 className="text-2xl font-medium mb-6 text-black">
+
+              <div className="bg-white dark:bg-gray-900 p-8 rounded-lg shadow-md border border-gray-200 dark:border-gray-700">
+                <h2 className="text-2xl font-medium mb-6 text-black dark:text-gray-100">
                   Frequently Asked Questions
                 </h2>
                 <Accordion type="single" collapsible className="w-full">
@@ -277,28 +278,29 @@ export default function ContactPage() {
                 </Accordion>
               </div>
             </div>
+
             <div className="space-y-8">
-              <div className="bg-white p-8 rounded-lg shadow-md border border-gray-200">
-                <h2 className="text-2xl font-medium mb-6 text-black">
+              <div className="bg-white dark:bg-gray-900 p-8 rounded-lg shadow-md border border-gray-200 dark:border-gray-700">
+                <h2 className="text-2xl font-medium mb-6 text-black dark:text-gray-100">
                   Contact Information
                 </h2>
                 <div className="space-y-4">
                   <div className="flex items-center">
-                    <Phone className="mr-3 text-black" />
+                    <Phone className="mr-3 text-black dark:text-gray-100" />
                     <span>+8801613-980323</span>
                   </div>
                   <div className="flex items-center">
-                    <Mail className="mr-3 text-black" />
+                    <Mail className="mr-3 text-black dark:text-gray-100" />
                     <span>contact.alwanlifestyle@gmail.com</span>
                   </div>
                   <div className="flex items-center">
-                    <MapPin className="mr-3 text-black" />
+                    <MapPin className="mr-3 text-black dark:text-gray-100" />
                     <span>8100, Gopalganj Sadar, Goplaganj</span>
                   </div>
                 </div>
               </div>
-              <div className="bg-white p-8 rounded-lg shadow-md border border-gray-200">
-                <h2 className="text-2xl font-medium mb-6 text-black">
+              <div className="bg-white dark:bg-gray-900 p-8 rounded-lg shadow-md border border-gray-200 dark:border-gray-700">
+                <h2 className="text-2xl font-medium mb-6 text-black dark:text-gray-100">
                   Our Location
                 </h2>
                 <div className="aspect-video rounded-lg overflow-hidden">

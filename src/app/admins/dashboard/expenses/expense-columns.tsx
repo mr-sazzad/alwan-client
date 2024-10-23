@@ -2,14 +2,14 @@
 
 import AlertDialogComp from "@/components/alert-dialog/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { Expense } from "@/types";
+import { IExpense } from "@/types";
 import { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
 import { Edit, Trash2 } from "lucide-react";
 import { useState } from "react";
 
 interface ExpensesColumnsProps {
-  onEdit: (expense: Expense) => void;
+  onEdit: (expense: IExpense) => void;
   onDelete: (id: string) => void;
   isLoading: boolean;
 }
@@ -18,7 +18,7 @@ export const ExpensesColumns = ({
   onEdit,
   onDelete,
   isLoading,
-}: ExpensesColumnsProps): ColumnDef<Expense>[] => {
+}: ExpensesColumnsProps): ColumnDef<IExpense>[] => {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [expenseToDelete, setExpenseToDelete] = useState<string | null>(null);
 
@@ -66,8 +66,10 @@ export const ExpensesColumns = ({
     {
       accessorKey: "createdAt",
       header: "Date",
-      cell: ({ row }) =>
-        format(new Date(row.getValue("createdAt")), "MMM dd, yyyy"),
+      cell: ({ row }) => {
+        const date = new Date(row.getValue("createdAt"));
+        return format(date, "PP");
+      },
     },
     {
       id: "actions",

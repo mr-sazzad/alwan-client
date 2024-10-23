@@ -11,7 +11,6 @@ interface CheckOutPageBillingInfoProps {
   handlePlaceOrder: () => void;
   setTotalPrice: React.Dispatch<React.SetStateAction<number>>;
   setShippingCost: React.Dispatch<React.SetStateAction<number>>;
-  totalPrice: number;
   buttonLoading: boolean;
 }
 
@@ -21,7 +20,6 @@ const CheckOutPageBillingInfo: React.FC<CheckOutPageBillingInfoProps> = ({
   qty,
   setTotalPrice,
   setShippingCost,
-  totalPrice,
   handlePlaceOrder,
 }) => {
   const [subTotal, setSubTotal] = useState<number>(0);
@@ -56,7 +54,7 @@ const CheckOutPageBillingInfo: React.FC<CheckOutPageBillingInfoProps> = ({
     setSubTotal(amount);
 
     // Update charge based on city
-    const shippingCharge = district === "dhaka" ? 70 : 130;
+    const shippingCharge = district === "dhaka" ? 70 : 100;
     setCharge(shippingCharge);
   }, [products, qty, district]);
 
@@ -114,7 +112,7 @@ const CheckOutPageBillingInfo: React.FC<CheckOutPageBillingInfoProps> = ({
     <>
       <div className="flex flex-col">
         <div className="flex justify-between items-center">
-          <p>Sub Total:</p> <p>{subTotal} TK</p>
+          <p>Sub Total:</p> <p>BDT {subTotal}</p>
         </div>
         <Separator className="my-4" />
         {couponId && (
@@ -132,7 +130,7 @@ const CheckOutPageBillingInfo: React.FC<CheckOutPageBillingInfoProps> = ({
           </>
         )}
         <div className="flex justify-between items-center">
-          <p>Shipping:</p> <p>{charge} TK</p>
+          <p>Shipping:</p> <p>BDT {charge}</p>
         </div>
         <Separator className="my-4" />
 
@@ -145,14 +143,14 @@ const CheckOutPageBillingInfo: React.FC<CheckOutPageBillingInfoProps> = ({
                   {`( ${discountedAmount} )`}
                 </p>
               )}
-              <p>{total} TK</p>
+              <p>BDT {total}</p>
             </div>
           </div>
         </div>
         <div className="flex flex-col gap-2">
           <div className="flex items-center justify-between">
             <p className="text-sm text-muted-foreground">
-              Do you have a coupon or promo code?
+              Do you have a coupon?
             </p>
             <Button
               variant="link"
@@ -166,7 +164,7 @@ const CheckOutPageBillingInfo: React.FC<CheckOutPageBillingInfoProps> = ({
         </div>
         <div className="w-full mt-4">
           <Button className="w-full" onClick={() => handlePlaceOrder()}>
-            Order Now
+            Place Order
           </Button>
         </div>
       </div>

@@ -1,25 +1,33 @@
 "use client";
 
+import { Bell, CircleDot, Heart, Loader2, ShoppingCart } from "lucide-react";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { toast } from "@/components/ui/use-toast";
+
 import DetailsPageImageSlider from "@/components/cards/details-page-slider";
 import MaxWidth from "@/components/max-width";
 import NotificationDialog from "@/components/modals/notify-dialog";
 import ProductFeatures from "@/components/modals/product-features";
-import ProductDetailsPageSkeleton from "@/components/skeletons/product-details-skeleton";
 import ReviewAndInfoTab from "@/components/tabs/review-and-info-tab";
-import { Button } from "@/components/ui/button";
-import { toast } from "@/components/ui/use-toast";
+
 import { addProductToCart } from "@/redux/api/cart/cartSlice";
 import { addProductToFavorite } from "@/redux/api/favorite/favoriteSlice";
 import { useGetSingleProductQuery } from "@/redux/api/products/productsApi";
 import { AppDispatch, RootState } from "@/redux/store";
 import { IReadSizeVariant } from "@/types";
-import { Bell, Heart, Loader2, ShoppingCart } from "lucide-react";
-import { useParams, useRouter } from "next/navigation";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { IoCheckmarkCircleOutline } from "react-icons/io5";
-import { useDispatch, useSelector } from "react-redux";
 
-const ProductDetailsClient: React.FC = () => {
+export default function Component() {
   const router = useRouter();
   const { product_id } = useParams() as { product_id: string };
   const dispatch = useDispatch<AppDispatch>();
@@ -35,44 +43,31 @@ const ProductDetailsClient: React.FC = () => {
     useState<boolean>(false);
   const [featuresOpen, setFeaturesOpen] = useState<boolean>(false);
 
-  const availableQuantities = useRef<number>(0);
-
   useEffect(() => {
     if (product?.data.sizeVariants && product.data.sizeVariants.length > 0) {
       const initialSizeVariant = product.data.sizeVariants[0];
       setSelectedSizeVariant(initialSizeVariant);
-      availableQuantities.current = initialSizeVariant.stock;
       setQty(initialSizeVariant.stock > 0 ? 1 : 0);
     }
   }, [product]);
-
-  useEffect(() => {
-    if (selectedSizeVariant) {
-      availableQuantities.current = selectedSizeVariant.stock;
-      setQty(selectedSizeVariant.stock > 0 ? 1 : 0);
-    }
-  }, [selectedSizeVariant]);
 
   const isProductInFavorites = useMemo(() => {
     return favorites.some((fav) => fav.id === product?.data.id);
   }, [favorites, product]);
 
-  if (isLoading) {
-    return <ProductDetailsPageSkeleton />;
-  }
-
   const handleQtyChange = (increment: boolean): void => {
     setQty((prev) => {
       const newQty = increment ? prev + 1 : prev - 1;
-      return Math.max(1, Math.min(newQty, availableQuantities.current));
+      return Math.max(1, Math.min(newQty, selectedSizeVariant?.stock || 0));
     });
   };
 
   const handleSelectSizeVariant = (sizeVariant: IReadSizeVariant): void => {
     setSelectedSizeVariant(sizeVariant);
+    setQty(sizeVariant.stock > 0 ? 1 : 0);
   };
 
-  const handleAddToCart = (): void => {
+  const handleAddToBag = (): void => {
     if (!selectedSizeVariant || !product) {
       toast({
         variant: "destructive",
@@ -110,7 +105,7 @@ const ProductDetailsClient: React.FC = () => {
     }
 
     setLoading(true);
-    const queryString = `?productId=${product.data.id}&quantity=${qty}&sizeId=${selectedSizeVariant.size.id}&colorId=${selectedSizeVariant.colorId}`;
+    const queryString = `?productId=${product?.data?.id}&quantity=${qty}&sizeId=${selectedSizeVariant.size.id}&colorId=${selectedSizeVariant.colorId}`;
     router.push(`/checkout${queryString}`);
     setLoading(false);
   };
@@ -130,99 +125,109 @@ const ProductDetailsClient: React.FC = () => {
     }
   };
 
-  const isComingSoon = product?.data.statusTag === "coming soon";
+  const isComingSoon = product?.data?.availabilityTag === "coming soon";
+
+  if (isLoading) {
+    return (
+      <MaxWidth className="flex flex-col items-center w-full mt-24">
+        <div className="w-full max-w-6xl">
+          <div className="flex flex-col md:flex-row gap-8">
+            <Skeleton className="w-full md:w-1/2 aspect-square rounded-lg" />
+            <div className="w-full md:w-1/2 space-y-4">
+              <Skeleton className="h-8 w-3/4" />
+              <Skeleton className="h-6 w-1/2" />
+              <Skeleton className="h-10 w-1/3" />
+              <div className="space-y-2">
+                <Skeleton className="h-10 w-full" />
+                <Skeleton className="h-10 w-full" />
+                <Skeleton className="h-10 w-full" />
+              </div>
+              <Skeleton className="h-32 w-full" />
+            </div>
+          </div>
+        </div>
+      </MaxWidth>
+    );
+  }
 
   return (
     <MaxWidth className="flex flex-col items-center w-full">
-      <div className="mt-[100px] md:max-w-5xl w-full flex flex-col lg:gap-20 md:gap-16 gap-10">
-        <div className="flex flex-col md:flex-row gap-5 relative w-full h-fit">
-          <div className="md:hidden my-4 ml-5">
-            {isComingSoon && (
-              <p className="text-xs font-medium text-[#9E3500]">Coming Soon</p>
-            )}
-            <h2 className="text-lg font-medium capitalize">
-              {product?.data.name}
-            </h2>
-            <p className="text-sm font-medium capitalize">
-              {product?.data.category.name}
-            </p>
-            <p className="mt-5 font-semibold capitalize">
-              TK. {selectedSizeVariant?.price}
-            </p>
-          </div>
-          {/* Image Slider */}
-          <div className="flex justify-center items-center lg:h-[450px] lg:w-[450px] md:w-[320px] md:h-[320px] w-full relative flex-1 h-fit">
-            {product?.data.imageUrls && (
+      <div className="mt-[100px] w-full max-w-6xl">
+        <div className="flex flex-col md:flex-row gap-8">
+          <div className="w-full md:w-1/2">
+            {product?.data?.imageUrls && (
               <DetailsPageImageSlider urls={product.data.imageUrls} />
             )}
           </div>
+          <div className="w-full md:w-1/2 space-y-6">
+            <div>
+              <span className="inline-block px-2 py-1 text-sm font-medium text-[#D33918] mb-2">
+                {product?.data?.availabilityTag}
+              </span>
 
-          {/* Product Details */}
-          <div className="flex-1 w-full h-full">
-            <div className="hidden md:block">
-              {isComingSoon && (
-                <p className="text-xs font-medium text-[#9E3500]">
-                  Coming Soon
-                </p>
-              )}
-              <h2 className="text-lg font-medium capitalize">
-                {product?.data.name}
-              </h2>
-              <p className="text-sm font-medium capitalize">
-                {product?.data.category.name}
+              <h1 className="text-xl font-medium capitalize">
+                {product?.data?.name}
+              </h1>
+              <p className="text-lg text-muted-foreground capitalize">
+                {product?.data?.category?.name}
               </p>
-              <p className="md:mt-5 text-xl font-semibold">
+              <p className="text-xl font-medium mt-2">
                 TK. {selectedSizeVariant?.price}
               </p>
             </div>
 
-            <div className="mt-3">
-              <p className="font-medium">Select Size:</p>
-              <div className="flex justify-between items-center gap-1 mt-2 w-full">
-                {product?.data.sizeVariants &&
-                  product.data.sizeVariants.map(
-                    (sizeVariant: IReadSizeVariant) => (
-                      <Button
-                        key={sizeVariant.id}
-                        className="uppercase mr-1 px-6 w-full"
-                        variant={
-                          selectedSizeVariant?.id === sizeVariant.id
-                            ? "default"
-                            : "secondary"
-                        }
-                        onClick={() => handleSelectSizeVariant(sizeVariant)}
-                      >
-                        {sizeVariant.size.name}
-                      </Button>
-                    )
-                  )}
+            <div className="space-y-4">
+              <div>
+                <label className="text-sm font-medium text-muted-foreground">
+                  Select Your Size
+                </label>
+                <div className="grid grid-cols-3 gap-2 mt-2">
+                  {product?.data?.sizeVariants &&
+                    product.data?.sizeVariants.map(
+                      (sizeVariant: IReadSizeVariant) => (
+                        <Button
+                          key={sizeVariant.id}
+                          className="w-full"
+                          variant={
+                            selectedSizeVariant?.id === sizeVariant.id
+                              ? "default"
+                              : "outline"
+                          }
+                          onClick={() => handleSelectSizeVariant(sizeVariant)}
+                        >
+                          {sizeVariant.size.name}
+                        </Button>
+                      )
+                    )}
+                </div>
               </div>
-            </div>
-            <div className="py-2 flex gap-1 items-center ml-2">
-              <IoCheckmarkCircleOutline size={12} />
-              <p className="text-xs font-medium text-muted-foreground">
-                {`${availableQuantities.current} ${
-                  availableQuantities.current > 1 ? "are" : "is"
-                } available`}
-              </p>
-            </div>
 
-            {/* quantity */}
-            <div className="flex flex-col gap-2 mt-3">
+              {selectedSizeVariant && (
+                <div className="flex items-center text-sm text-muted-foreground">
+                  <CircleDot className="mr-1 w-3 h-3" />
+                  <span>
+                    {selectedSizeVariant.stock}{" "}
+                    {selectedSizeVariant.stock > 1 ? "are" : "is"} available
+                  </span>
+                </div>
+              )}
+
               {!isComingSoon && (
-                <div className="flex gap-2 justify-between items-center border border-gray-200 overflow-hidden h-10 w-full py-0.5">
+                <div className="flex items-center gap-2">
                   <Button
-                    className="cursor-pointer p-1 flex-1 text-xl"
+                    className="px-4 py-2 text-xl"
                     onClick={() => handleQtyChange(false)}
-                    variant="secondary"
+                    variant="outline"
                   >
                     -
                   </Button>
-                  <p className="flex-1 flex justify-center">{qty}</p>
+                  <span className="flex-1 text-center w-full border py-[7px] rounded-md">
+                    {qty}
+                  </span>
                   <Button
-                    className="cursor-pointer p-1 flex-1 text-xl"
+                    className="px-4 py-2 text-xl"
                     onClick={() => handleQtyChange(true)}
-                    variant="secondary"
+                    variant="outline"
                   >
                     +
                   </Button>
@@ -230,109 +235,97 @@ const ProductDetailsClient: React.FC = () => {
               )}
 
               {isComingSoon ? (
-                <>
+                <div className="space-y-2">
                   <Button
-                    className="px-6 flex items-center font-medium text-lg"
+                    className="w-full"
                     onClick={() => setIsNotificationDialogOpen(true)}
                     size="lg"
                   >
-                    <Bell className="mr-2 h-4 w-4" /> <p>Notify Me</p>
+                    <Bell className="mr-2 h-4 w-4" /> Notify Me
                   </Button>
                   <Button
-                    className="px-6 flex items-center font-medium"
+                    className="w-full"
                     variant="outline"
                     onClick={handleFavorite}
                     size="lg"
                   >
-                    <div className="flex justify-center items-center text-lg">
+                    <Heart
+                      className="mr-2 h-4 w-4"
+                      fill={isProductInFavorites ? "currentColor" : "none"}
+                      stroke={isProductInFavorites ? "none" : "currentColor"}
+                    />
+                    {isProductInFavorites
+                      ? "Remove from Favorites"
+                      : "Add to Favorites"}
+                  </Button>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  <div className="grid grid-cols-2 gap-2">
+                    <Button
+                      className="w-full"
+                      variant="outline"
+                      onClick={handleAddToBag}
+                      disabled={!qty}
+                      size="lg"
+                    >
+                      <ShoppingCart className="mr-2 w-4 h-4" /> Add To Bag
+                    </Button>
+                    <Button
+                      className="w-full"
+                      variant="outline"
+                      onClick={handleFavorite}
+                      size="lg"
+                    >
                       <Heart
                         className="mr-2 h-4 w-4"
                         fill={isProductInFavorites ? "currentColor" : "none"}
                         stroke={isProductInFavorites ? "none" : "currentColor"}
                       />
-                      <p>{isProductInFavorites ? "Remove" : "Favorite"}</p>
-                    </div>
-                  </Button>
-                </>
-              ) : (
-                <>
-                  {/* add to cart button */}
-                  <div className="flex w-full gap-2">
-                    <Button
-                      className="px-6 flex items-center font-medium text-lg w-full"
-                      variant="outline"
-                      onClick={handleAddToCart}
-                      disabled={!qty}
-                      size="lg"
-                    >
-                      <ShoppingCart className="mr-2 w-4 h-4" />{" "}
-                      <p>Add To Bag</p>
-                    </Button>
-                    <Button
-                      className="px-6 flex items-center font-medium w-full"
-                      variant="outline"
-                      onClick={handleFavorite}
-                      size="lg"
-                    >
-                      <div className="flex justify-center items-center text-lg">
-                        <Heart
-                          className="mr-2 h-4 w-4"
-                          fill={isProductInFavorites ? "currentColor" : "none"}
-                          stroke={
-                            isProductInFavorites ? "none" : "currentColor"
-                          }
-                        />
-                        <p>{isProductInFavorites ? "Remove" : "Favorite"}</p>
-                      </div>
+                      {isProductInFavorites ? "Remove" : "Favorite"}
                     </Button>
                   </div>
-
-                  {/* buy now button */}
                   <Button
-                    className="px-6 flex gap-2 items-center font-medium text-lg"
+                    className="w-full"
                     onClick={handleBuyNow}
                     disabled={!qty}
                     size="lg"
                   >
                     {loading ? (
-                      <Loader2 size={16} className="animate-spin" />
-                    ) : (
-                      "Buy It Now"
-                    )}
+                      <Loader2 size={16} className="animate-spin mr-2" />
+                    ) : null}
+                    Buy Now
                   </Button>
-                </>
+                </div>
               )}
             </div>
 
-            {/* description */}
-            <div className="mt-5">
-              {product?.data.description &&
-                product.data.description.map((desc: string, i: number) => (
-                  <ul key={i} className="mt-1 flex flex-col gap-2">
-                    <li>
-                      <p className="sm:text-base text-sm text-muted-foreground">
-                        {desc}
-                      </p>
-                    </li>
-                  </ul>
-                ))}
-            </div>
-
-            {/* features */}
-            <div>
-              <Button
-                variant="link"
-                className="px-0 text-lg"
-                onClick={() => setFeaturesOpen(true)}
-              >
-                View Product Features
-              </Button>
-            </div>
+            <Accordion type="single" collapsible className="w-full">
+              <AccordionItem value="description">
+                <AccordionTrigger>Description</AccordionTrigger>
+                <AccordionContent>
+                  <p className="text-sm  text-muted-foreground">
+                    {product?.data?.description}
+                  </p>
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="features">
+                <AccordionTrigger>Product Features</AccordionTrigger>
+                <AccordionContent>
+                  <Button
+                    variant="link"
+                    className="p-0 h-auto text-sm"
+                    onClick={() => setFeaturesOpen(true)}
+                  >
+                    View detailed product features
+                  </Button>
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
           </div>
         </div>
 
-        {/* Tabs Section */}
-        <div className="w-full">
+        <div>
           <ReviewAndInfoTab />
         </div>
       </div>
@@ -340,16 +333,14 @@ const ProductDetailsClient: React.FC = () => {
       <NotificationDialog
         open={isNotificationDialogOpen}
         setOpen={setIsNotificationDialogOpen}
-        productId={product?.data.id}
-        productName={product?.data.name}
+        productId={product?.data?.id}
+        productName={product?.data?.name}
       />
       <ProductFeatures
         open={featuresOpen}
         setOpen={setFeaturesOpen}
-        product={product.data}
+        product={product?.data}
       />
     </MaxWidth>
   );
-};
-
-export default ProductDetailsClient;
+}
