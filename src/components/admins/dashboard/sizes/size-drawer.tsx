@@ -27,6 +27,7 @@ import {
 } from "@/redux/api/size/size-api";
 import { sizeSchema } from "@/schemas/admins/size-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { X } from "lucide-react";
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { PiSpinner } from "react-icons/pi";
@@ -96,7 +97,7 @@ const SizeDrawer: React.FC<SizeDrawerProps> = ({ open, setOpen, size }) => {
   return (
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerContent>
-        <div className="mx-auto max-w-sm w-full">
+        <div className="mx-auto max-w-sm w-full py-4">
           <DrawerHeader>
             <DrawerTitle>{size ? "Update Size" : "Create Size"}</DrawerTitle>
             <DrawerDescription>
@@ -139,10 +140,10 @@ const SizeDrawer: React.FC<SizeDrawerProps> = ({ open, setOpen, size }) => {
               </Button>
             </form>
           </Form>
-          <DrawerFooter>
+          <DrawerFooter className="absolute top-3 right-3">
             <DrawerClose asChild>
-              <Button variant="outline" className="w-full">
-                Cancel
+              <Button className="rounded-full" size="icon">
+                <X />
               </Button>
             </DrawerClose>
           </DrawerFooter>

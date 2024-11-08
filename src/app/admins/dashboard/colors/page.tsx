@@ -3,7 +3,7 @@
 import CreateColorDrawer from "@/components/admins/dashboard/color/create-color-drawer";
 import PageTitle from "@/components/admins/dashboard/page-titles/page-title";
 import AlwanBreadCrumb from "@/components/breadcrumbs/breadcrumb";
-import AdminDashboardLoading from "@/components/lodings/admin-dashboard-loding";
+import AdminColorSkeleton from "@/components/skeletons/admin-color-skeleton";
 import { Button } from "@/components/ui/button";
 import { useGetAllColorsQuery } from "@/redux/api/color/color-api";
 import { useState } from "react";
@@ -14,7 +14,7 @@ const Color = () => {
   const { data: colors, isLoading } = useGetAllColorsQuery(undefined);
 
   if (isLoading) {
-    return <AdminDashboardLoading />;
+    return <AdminColorSkeleton />;
   }
   return (
     <div>
@@ -30,11 +30,11 @@ const Color = () => {
 
       <div className="flex justify-end mt-3">
         <Button
-          variant="link"
+          variant="outline"
           className="flex items-center"
           onClick={() => setOpen(true)}
         >
-          Add Color
+          Add New Color
         </Button>
       </div>
 

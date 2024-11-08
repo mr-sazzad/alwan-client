@@ -7,7 +7,7 @@ interface BadgeProps {
   className?: string;
 }
 
-const Badge: React.FC<BadgeProps> = ({
+const AlwanBadge: React.FC<BadgeProps> = ({
   variant = "gray",
   children,
   className,
@@ -30,4 +30,4 @@ const Badge: React.FC<BadgeProps> = ({
   );
 };
 
-export default Badge;
+export default AlwanBadge;

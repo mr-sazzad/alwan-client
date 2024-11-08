@@ -13,10 +13,10 @@ import Link from "next/link";
 const PrivacyPolicyPage = () => {
   return (
     <MaxWidth className="mt-[110px] mb-16">
-      <h1 className="md:text-3xl sm:text-2xl text-xl font-bold md:text-start text-center mb-4">
+      <h1 className="md:text-3xl sm:text-2xl text-xl font-medium md:text-start mb-4">
         Privacy Policy
       </h1>
-      <p className="text-sm md:text-base md:text-start text-center text-muted-foreground mb-8">
+      <p className="text-sm md:text-base md:text-start text-muted-foreground mb-8">
         At Alwan Ideal, we are committed to protecting your privacy and ensuring
         the security of your personal information.
       </p>
@@ -160,7 +160,7 @@ const PrivacyPolicyPage = () => {
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-xl font-semibold">
+          <CardTitle className="text-xl font-medium">
             Contact Us About Privacy
           </CardTitle>
         </CardHeader>

@@ -69,7 +69,7 @@ export function DataTable<TData, TValue>({
         {/* Filtering Part */}
         {filterColumn && (
           <Input
-            placeholder={`Filter by ${filterColumn}...`}
+            placeholder={`Filter by ${filterColumn} ...`}
             value={
               (table.getColumn(filterColumn)?.getFilterValue() as string) ?? ""
             }

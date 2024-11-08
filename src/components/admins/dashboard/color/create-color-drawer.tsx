@@ -26,6 +26,7 @@ import {
 } from "@/redux/api/color/color-api";
 import { colorSchema } from "@/schemas/admins/color-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { X } from "lucide-react";
 import { Dispatch, SetStateAction, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { PiSpinner } from "react-icons/pi";
@@ -100,7 +101,7 @@ const ColorDrawer: React.FC<ColorDrawerProps> = ({ open, setOpen, color }) => {
   return (
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerContent>
-        <div className="max-w-sm w-full mx-auto">
+        <div className="max-w-sm w-full mx-auto py-4">
           <DrawerHeader>
             <DrawerTitle>{color ? "Update Color" : "Create Color"}</DrawerTitle>
           </DrawerHeader>
@@ -156,16 +157,16 @@ const ColorDrawer: React.FC<ColorDrawerProps> = ({ open, setOpen, color }) => {
                 ) : color ? (
                   "Update"
                 ) : (
-                  "Save"
+                  "Create"
                 )}
               </Button>
             </form>
           </Form>
 
-          <DrawerFooter>
+          <DrawerFooter className="absolute top-4 right-4">
             <DrawerClose>
-              <Button className="w-full" variant="outline">
-                Cancel
+              <Button className="rounded-full" size="icon">
+                <X />
               </Button>
             </DrawerClose>
           </DrawerFooter>

@@ -1,132 +1,167 @@
+import {
+  Angry,
+  BarChart,
+  Bug,
+  Diameter,
+  FolderOpen,
+  GalleryHorizontal,
+  Gem,
+  Gift,
+  HandCoins,
+  MessagesSquare,
+  Package,
+  Paintbrush,
+  PenTool,
+  PieChart,
+  Puzzle,
+  Settings,
+  TreePalm,
+  Users,
+} from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useMemo } from "react";
-import { BiCategoryAlt } from "react-icons/bi";
-import { BsBodyText } from "react-icons/bs";
-import { GiExpense, GiProfit } from "react-icons/gi";
-import { GoCommentDiscussion } from "react-icons/go";
-import { LiaTshirtSolid } from "react-icons/lia";
-import { LuLayoutDashboard } from "react-icons/lu";
-import {
-  MdMergeType,
-  MdOutlineColorLens,
-  MdStarBorderPurple500,
-} from "react-icons/md";
-import { RiCoupon3Line } from "react-icons/ri";
-import { RxSize } from "react-icons/rx";
-import { TbCarouselHorizontal, TbTruckReturn } from "react-icons/tb";
-import { VscFeedback } from "react-icons/vsc";
 
 export const useAdminDashboardMenu = () => {
   const pathname = usePathname();
 
   const routes = useMemo(
     () => [
+      // Core Functionality
       {
         id: 1,
         title: "Dashboard",
         href: "/admins/dashboard/application-dashboard",
-        icon: LuLayoutDashboard,
+        icon: PieChart,
         active: pathname.includes("/admins/dashboard/application-dashboard"),
       },
       {
         id: 2,
-        title: "Carousel",
-        href: "/admins/dashboard/carousel",
-        icon: TbCarouselHorizontal,
-        active: pathname.includes("/admins/dashboard/carousel"),
-      },
-      {
-        id: 3,
-        title: "Category",
-        href: "/admins/dashboard/category",
-        icon: BiCategoryAlt,
-        active: pathname.includes("/admins/dashboard/category"),
-      },
-      {
-        id: 4,
-        title: "Reviews",
-        href: "/admins/dashboard/reviews",
-        icon: GoCommentDiscussion,
-        active: pathname.includes("/admins/dashboard/reviews"),
-      },
-      {
-        id: 5,
-        title: "Color",
-        href: "/admins/dashboard/colors",
-        icon: MdOutlineColorLens,
-        active: pathname.includes("/admins/dashboard/colors"),
-      },
-      {
-        id: 6,
-        title: "Coupon",
-        href: "/admins/dashboard/coupons",
-        icon: RiCoupon3Line,
-        active: pathname.includes("/admins/dashboard/coupons"),
-      },
-      {
-        id: 7,
-        title: "Expenses",
-        href: "/admins/dashboard/expenses",
-        icon: GiExpense,
-        active: pathname.includes("/admins/dashboard/espenses"),
-      },
-
-      {
-        id: 8,
-        title: "Feedbacks",
-        href: "/admins/dashboard/feedbacks",
-        icon: VscFeedback,
-        active: pathname.includes("/admins/dashboard/feedbacks"),
-      },
-      {
-        id: 9,
         title: "Orders",
         href: "/admins/dashboard/orders",
-        icon: MdStarBorderPurple500,
+        icon: Package,
         active: pathname.includes("/admins/dashboard/orders"),
       },
       {
-        id: 10,
+        id: 3,
+        title: "Products",
+        href: "/admins/dashboard/products",
+        icon: Gift,
+        active: pathname.includes("/admins/dashboard/products"),
+      },
+      {
+        id: 4,
+        title: "Users",
+        href: "/admins/dashboard/users",
+        icon: Users,
+        active: pathname.includes("/admins/dashboard/users"),
+      },
+
+      // Product Management
+      {
+        id: 5,
         title: "Product Type",
         href: "/admins/dashboard/product-types",
-        icon: MdMergeType,
+        icon: PenTool,
         active: pathname.includes("/admins/dashboard/product-types"),
       },
       {
-        id: 11,
-        title: "Products",
-        href: "/admins/dashboard/products",
-        icon: LiaTshirtSolid,
-        active: pathname.includes("/admins/dashboard/products"),
-      },
-
-      {
-        id: 12,
-        title: "Returns",
-        href: "/admins/dashboard/returns",
-        icon: TbTruckReturn,
-        active: pathname.includes("/admins/dashboard/returns"),
+        id: 6,
+        title: "Category",
+        href: "/admins/dashboard/category",
+        icon: FolderOpen,
+        active: pathname.includes("/admins/dashboard/category"),
       },
       {
-        id: 13,
-        title: "Revinew",
-        href: "/admins/dashboard/revinews",
-        icon: GiProfit,
-        active: pathname.includes("/admins/dashboard/revinews"),
-      },
-      {
-        id: 14,
-        title: "Size",
+        id: 7,
+        title: "Product Size",
         href: "/admins/dashboard/sizes",
-        icon: RxSize,
+        icon: Diameter,
         active: pathname.includes("/admins/dashboard/sizes"),
       },
       {
+        id: 8,
+        title: "Color",
+        href: "/admins/dashboard/colors",
+        icon: Paintbrush,
+        active: pathname.includes("/admins/dashboard/colors"),
+      },
+      {
+        id: 9,
+        title: "Carousel",
+        href: "/admins/dashboard/carousel",
+        icon: GalleryHorizontal,
+        active: pathname.includes("/admins/dashboard/carousel"),
+      },
+
+      // Financial Management
+      {
+        id: 10,
+        title: "Revinew",
+        href: "/admins/dashboard/revinews",
+        icon: Gem,
+        active: pathname.includes("/admins/dashboard/revinews"),
+      },
+      {
+        id: 11,
+        title: "Expenses",
+        href: "/admins/dashboard/expenses",
+        icon: HandCoins,
+        active: pathname.includes("/admins/dashboard/expenses"),
+      },
+
+      // User Interaction & Feedback
+      {
+        id: 12,
+        title: "Reviews",
+        href: "/admins/dashboard/reviews",
+        icon: MessagesSquare,
+        active: pathname.includes("/admins/dashboard/reviews"),
+      },
+      {
+        id: 13,
+        title: "Feedbacks",
+        href: "/admins/dashboard/feedbacks",
+        icon: Bug,
+        active: pathname.includes("/admins/dashboard/feedbacks"),
+      },
+      {
+        id: 14,
+        title: "Returns",
+        href: "/admins/dashboard/returns",
+        icon: Angry,
+        active: pathname.includes("/admins/dashboard/returns"),
+      },
+
+      // Marketing & Coupons
+      {
         id: 15,
+        title: "Coupon",
+        href: "/admins/dashboard/coupons",
+        icon: Puzzle,
+        active: pathname.includes("/admins/dashboard/coupons"),
+      },
+
+      // Reports & Settings
+      {
+        id: 16,
+        title: "Reports",
+        href: "/admins/dashboard/reports",
+        icon: BarChart,
+        active: pathname.includes("/admins/dashboard/reports"),
+      },
+      {
+        id: 17,
         title: "Home Text",
         href: "/admins/dashboard/home-text",
-        icon: BsBodyText,
+        icon: TreePalm,
         active: pathname.includes("/admins/dashboard/home-text"),
+      },
+      {
+        id: 18,
+        title: "Settings",
+        href: "/admins/dashboard/settings",
+        icon: Settings,
+        active: pathname.includes("/admins/dashboard/settings"),
       },
     ],
     [pathname]

@@ -8,10 +8,10 @@ import PageTitle from "@/components/admins/dashboard/page-titles/page-title";
 import { DataTable } from "@/components/admins/dashboard/products/data-table";
 import ProductForm from "@/components/admins/dashboard/products/product-form";
 import AlwanBreadCrumb from "@/components/breadcrumbs/breadcrumb";
-import AdminDashboardLoading from "@/components/lodings/admin-dashboard-loding";
+import AdminColorSkeleton from "@/components/skeletons/admin-color-skeleton";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { Box } from "lucide-react";
 import { useState } from "react";
-import { HiOutlineSquaresPlus } from "react-icons/hi2";
 
 const Page = () => {
   const { data: response, isLoading } = useGetAllProductsQuery(undefined);
@@ -19,26 +19,28 @@ const Page = () => {
   const columns = ProductTableColumns();
 
   if (isLoading) {
-    return <AdminDashboardLoading />;
+    return <AdminColorSkeleton />;
   }
+
+  console.log(response);
 
   return (
     <div>
       <AlwanBreadCrumb
         links={[
           { label: "Home", href: "/" },
-          { label: "Dashboard", href: "/dashboard" },
+          { label: "Dashboard", href: "/admins/dashboard" },
         ]}
         page="Products"
-        className="mb-3"
+        className="my-3"
       />
       <PageTitle title="Products" description="Products information" />
 
-      <div className="flex justify-end">
+      <div className="flex justify-end mt-3">
         <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
           <DialogTrigger asChild>
-            <Button variant="link" className="flex gap-1 items-center">
-              <HiOutlineSquaresPlus /> Add a new product
+            <Button variant="outline" className="flex gap-1 items-center">
+              <Box className="w-4 h-4" /> Add a new product
             </Button>
           </DialogTrigger>
           <DialogContent className="max-w-5xl">

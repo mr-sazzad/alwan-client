@@ -1,20 +1,33 @@
 "use client";
 
+import { useState } from "react";
+
 import PageTitle from "@/components/admins/dashboard/page-titles/page-title";
+import { DataTable } from "@/components/admins/dashboard/products/data-table";
 import SearchReviewsDrawer from "@/components/admins/dashboard/reviews/search-reviews-drawer";
 import AlwanBreadCrumb from "@/components/breadcrumbs/breadcrumb";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useGetCategoriesQuery } from "@/redux/api/categoies/categoriesApi";
+import { useGetLeafCategoriesQuery } from "@/redux/api/categoies/categoriesApi";
+import { useGetProductReviewsQuery } from "@/redux/api/reviews/reviews-api";
 import { IProduct } from "@/types";
-import { useState } from "react";
+import ReviewsTableColumns from "./reviews-columns";
 
 const Reviews = () => {
   const [selectedProduct, setSelectedProduct] = useState<IProduct | null>(null);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const { data: categories, isLoading: isCategoriesLoading } =
-    useGetCategoriesQuery(undefined);
+    useGetLeafCategoriesQuery(undefined);
 
-  const [open, setOpen] = useState(false);
+  const columns = ReviewsTableColumns();
+
+  const {
+    data: reviews,
+    isLoading: isReviewsLoading,
+    error: reviewsError,
+  } = useGetProductReviewsQuery(selectedProduct?.id || "", {
+    skip: !selectedProduct,
+  });
 
   if (isCategoriesLoading) {
     return (
@@ -28,7 +41,7 @@ const Reviews = () => {
   }
 
   const handleProductReviewSearch = () => {
-    setOpen(true);
+    setIsDrawerOpen(true);
   };
 
   return (
@@ -44,19 +57,39 @@ const Reviews = () => {
 
       <PageTitle title="Reviews" description="User Reviews information" />
 
-      <div className="flex justify-end my-3">
-        <Button variant="secondary" onClick={handleProductReviewSearch}>
+      <div className="flex justify-end items-center my-3">
+        <Button variant="outline" onClick={handleProductReviewSearch}>
           Search Product Reviews
         </Button>
       </div>
 
-      <SearchReviewsDrawer
-        open={open}
-        setOpen={setOpen}
-        categories={categories?.data || []}
-        selectedProduct={selectedProduct}
-        setSelectedProduct={setSelectedProduct}
-      />
+      {isReviewsLoading ? (
+        <div>Loading reviews...</div>
+      ) : reviewsError ? (
+        <div className="text-center text-red-500">
+          Error loading reviews. Please try again later.
+        </div>
+      ) : (
+        <>
+          <div>
+            <DataTable
+              columns={columns}
+              data={reviews?.data ?? []}
+              filterColumn="rating"
+            />
+          </div>
+        </>
+      )}
+
+      {isDrawerOpen && (
+        <SearchReviewsDrawer
+          open={isDrawerOpen}
+          setOpen={setIsDrawerOpen}
+          categories={categories?.data || []}
+          selectedProduct={selectedProduct}
+          setSelectedProduct={setSelectedProduct}
+        />
+      )}
     </div>
   );
 };

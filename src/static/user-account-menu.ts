@@ -4,8 +4,7 @@ import { usePathname } from "next/navigation";
 import { useMemo } from "react";
 
 // react icons
-import { HiOutlineHome } from "react-icons/hi2";
-import { MdOutlineStarBorderPurple500 } from "react-icons/md";
+import { Box, Home, Settings, UserRound } from "lucide-react";
 
 export const useUserAccountMenu = () => {
   const pathname = usePathname();
@@ -14,17 +13,31 @@ export const useUserAccountMenu = () => {
     () => [
       {
         id: 1,
-        title: "Address",
-        href: "/account/address",
-        icon: HiOutlineHome,
-        active: pathname.startsWith("/account/address"),
+        title: "Profile",
+        href: "/account/profile",
+        icon: UserRound,
+        active: pathname.startsWith("/account/profile"),
       },
       {
         id: 2,
+        title: "Address",
+        href: "/account/address",
+        icon: Home,
+        active: pathname.startsWith("/account/address"),
+      },
+      {
+        id: 3,
         title: "Orders",
         href: "/account/orders",
-        icon: MdOutlineStarBorderPurple500,
+        icon: Box,
         active: pathname.startsWith("/account/orders"),
+      },
+      {
+        id: 4,
+        title: "Settings",
+        href: "/account/settings",
+        icon: Settings,
+        active: pathname.startsWith("/account/settings"),
       },
     ],
     [pathname]

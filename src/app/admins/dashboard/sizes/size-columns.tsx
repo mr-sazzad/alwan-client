@@ -15,7 +15,7 @@ import { toast } from "@/components/ui/use-toast";
 import { useDeleteSizeMutation } from "@/redux/api/size/size-api";
 import { DropdownMenuLabel } from "@radix-ui/react-dropdown-menu";
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, MoreHorizontal } from "lucide-react";
+import { ArrowUpDown, MoreHorizontal, PencilLine, Trash2 } from "lucide-react";
 import { useState } from "react";
 
 export type Size = {
@@ -73,12 +73,28 @@ const SizeTableColumns: React.FC<SizeTableColumnsProps> = ({ sizes }) => {
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       ),
+      cell: ({ row }) => {
+        return (
+          <div className="inline-flex items-center bg-orange-100 text-orange-600 px-2 py-1 rounded-md">
+            <span className="w-2 h-2 rounded bg-orange-600 mr-2" />
+            <span>{row.original.name}</span>
+          </div>
+        );
+      },
     },
     {
       accessorKey: "id",
-      header: "Server ID",
+      header: "Size ID",
+      cell: ({ row }) => {
+        const sizeId = row.original.id;
+        const truncatedSizeId = `${sizeId.slice(0, 6)}...${sizeId.slice(-5)}`;
+        return (
+          <span className="inline-flex items-center bg-fuchsia-100 text-fuchsia-600 px-2 py-1 rounded-md">
+            {truncatedSizeId}
+          </span>
+        );
+      },
     },
-
     {
       id: "actions",
       enableHiding: false,
@@ -97,20 +113,22 @@ const SizeTableColumns: React.FC<SizeTableColumnsProps> = ({ sizes }) => {
                 <DropdownMenuLabel className="px-2 font-medium">
                   Actions
                 </DropdownMenuLabel>
+                <DropdownMenuSeparator />
                 <DropdownMenuItem
                   onClick={() => {
                     setOpen(true), setSize(row.original);
                   }}
                 >
+                  <PencilLine className="w-4 h-4 mr-2" />
                   Update size
                 </DropdownMenuItem>
-                <DropdownMenuSeparator />
                 <DropdownMenuItem
                   onClick={() => {
                     setDialogOpen(true);
                     setSize(row.original);
                   }}
                 >
+                  <Trash2 className="w-4 h-4 mr-2 text-red-500" />
                   Delete size
                 </DropdownMenuItem>
               </DropdownMenuContent>

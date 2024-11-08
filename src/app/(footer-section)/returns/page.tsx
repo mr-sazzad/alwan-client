@@ -25,13 +25,13 @@ export default function ReturnPolicyPage() {
   return (
     <MaxWidth className="mt-[100px]">
       <div className="container mx-auto px-4 py-12">
-        <h1 className="text-4xl font-bold mb-8 text-center text-primary">
+        <h1 className="text-4xl font-medium mb-8 text-primary">
           Return Policy
         </h1>
 
         <Card className="mb-8">
           <CardHeader>
-            <CardTitle className="text-2xl">Key Points</CardTitle>
+            <CardTitle className="text-2xl font-medium">Key Points</CardTitle>
             <CardDescription>
               Important information about our return policy
             </CardDescription>
@@ -55,12 +55,10 @@ export default function ReturnPolicyPage() {
         </Card>
 
         <div className="grid md:grid-cols-2 gap-8 mb-12">
-          <div className="bg-white p-6 rounded-lg shadow-md flex items-start">
+          <div className="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-md flex items-start">
             <FaExchangeAlt className="text-primary text-3xl mr-4 mt-1" />
             <div>
-              <h3 className="text-xl font-semibold mb-2">
-                Unused Products Only
-              </h3>
+              <h3 className="text-xl font-medium mb-2">Unused Products Only</h3>
               <p>
                 We accept returns only for unused products in their original
                 condition. Any signs of use or alteration will result in the
@@ -68,12 +66,10 @@ export default function ReturnPolicyPage() {
               </p>
             </div>
           </div>
-          <div className="bg-white p-6 rounded-lg shadow-md flex items-start">
+          <div className="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-md flex items-start">
             <FaCalendarAlt className="text-primary text-3xl mr-4 mt-1" />
             <div>
-              <h3 className="text-xl font-semibold mb-2">
-                7-Day Return Window
-              </h3>
+              <h3 className="text-xl font-medium mb-2">7-Day Return Window</h3>
               <p>
                 You must inform us of your intent to return within 7 days of
                 receiving your product. Returns initiated after this period will
@@ -81,10 +77,10 @@ export default function ReturnPolicyPage() {
               </p>
             </div>
           </div>
-          <div className="bg-white p-6 rounded-lg shadow-md flex items-start">
+          <div className="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-md flex items-start">
             <FaTruck className="text-primary text-3xl mr-4 mt-1" />
             <div>
-              <h3 className="text-xl font-semibold mb-2">Return Shipping</h3>
+              <h3 className="text-xl font-medium mb-2">Return Shipping</h3>
               <p>
                 Customers are responsible for return shipping costs, except in
                 cases of defective items. We recommend using a trackable
@@ -92,10 +88,10 @@ export default function ReturnPolicyPage() {
               </p>
             </div>
           </div>
-          <div className="bg-white p-6 rounded-lg shadow-md flex items-start">
+          <div className="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-md flex items-start">
             <FaInfoCircle className="text-primary text-3xl mr-4 mt-1" />
             <div>
-              <h3 className="text-xl font-semibold mb-2">Refund Process</h3>
+              <h3 className="text-xl font-medium mb-2">Refund Process</h3>
               <p>
                 Once we receive and inspect the returned item, we&apos;ll
                 process your refund. Please allow 5-10 business days for the
@@ -139,7 +135,7 @@ export default function ReturnPolicyPage() {
         </Accordion>
 
         <div className="text-center">
-          <h2 className="text-2xl font-semibold mb-4">Need Help?</h2>
+          <h2 className="text-2xl font-medium mb-4">Need Help?</h2>
           <p className="mb-4">
             If you have any questions about our return policy, please don&apos;t
             hesitate to contact us.

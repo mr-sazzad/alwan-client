@@ -7,11 +7,13 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { IReadProductType } from "@/types";
+import { IProductType } from "@/types";
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, MoreHorizontal } from "lucide-react";
+import { ArrowUpDown, MoreHorizontal, PencilLine, Trash2 } from "lucide-react";
 import { useState } from "react";
 
 export type ProductType = {
@@ -27,7 +29,7 @@ const ProductTypeColumns: React.FC<ProductTypeColumnsProps> = ({
   productTypes,
 }) => {
   const [open, setOpen] = useState(false);
-  const [productType, setProductType] = useState<IReadProductType>();
+  const [productType, setProductType] = useState<IProductType>();
 
   const columns: ColumnDef<ProductType>[] = [
     {
@@ -41,10 +43,25 @@ const ProductTypeColumns: React.FC<ProductTypeColumnsProps> = ({
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       ),
+      cell: ({ row }) => (
+        <div className="inline-flex items-center bg-violet-100 text-violet-600 px-2 py-1 rounded-md">
+          <span className="w-2 h-2 rounded bg-violet-600 mr-2" />
+          <span>{row.original.name}</span>
+        </div>
+      ),
     },
     {
       accessorKey: "id",
       header: "Type Id",
+      cell: ({ row }) => {
+        const typeId = row.original.id;
+        const truncatedSizeId = `${typeId.slice(0, 6)}...${typeId.slice(-5)}`;
+        return (
+          <span className="inline-flex items-center bg-teal-100 text-teal-600 px-2 py-1 rounded-md">
+            {truncatedSizeId}
+          </span>
+        );
+      },
     },
     {
       id: "actions",
@@ -61,18 +78,19 @@ const ProductTypeColumns: React.FC<ProductTypeColumnsProps> = ({
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="w-full"
-                    onClick={() => {
-                      setOpen(true);
-                      setProductType(row.original);
-                    }}
-                  >
-                    Update Product Type
-                  </Button>
+                <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  onSelect={() => (setOpen(true), setProductType(row.original))}
+                >
+                  <PencilLine className="w-4 h-4 mr-2" />
+                  Update Product Type
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onSelect={() => (setOpen(true), setProductType(row.original))}
+                >
+                  <Trash2 className="w-4 h-4 mr-2 text-red-500" />
+                  Delete Product Type
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

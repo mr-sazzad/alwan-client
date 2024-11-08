@@ -1,7 +1,33 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  Mail,
+  MapPin,
+  MessageCircle,
+  MessagesSquare,
+  Phone,
+} from "lucide-react";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+
 import MaxWidth from "@/components/max-width";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import {
   Form,
   FormControl,
@@ -13,206 +39,286 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/use-toast";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import {
-  FaEnvelope,
-  FaFacebook,
-  FaInstagram,
-  FaMapMarkerAlt,
-  FaPhone,
-  FaTwitter,
-  FaWhatsapp,
-} from "react-icons/fa";
-import * as z from "zod";
+import Link from "next/link";
 
 const formSchema = z.object({
-  name: z.string().min(2, {
-    message: "Name must be at least 2 characters.",
-  }),
-  email: z.string().email({
-    message: "Please enter a valid email address.",
-  }),
-  subject: z.string().min(5, {
-    message: "Subject must be at least 5 characters.",
-  }),
-  message: z.string().min(10, {
-    message: "Message must be at least 10 characters.",
-  }),
+  name: z.string().min(2, { message: "Name must be at least 2 characters." }),
+  email: z.string().email({ message: "Please enter a valid email address." }),
+  subject: z
+    .string()
+    .min(5, { message: "Subject must be at least 5 characters." }),
+  message: z
+    .string()
+    .min(10, { message: "Message must be at least 10 characters." }),
 });
 
 export default function ContactPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: "",
-      email: "",
-      subject: "",
-      message: "",
-    },
+    defaultValues: { name: "", email: "", subject: "", message: "" },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true);
-    setTimeout(() => {
-      setIsSubmitting(false);
-      toast({
-        title: "Message Sent",
-        description:
-          "We've received your message and will get back to you soon.",
+    try {
+      const response = await fetch("/api/send-email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values),
       });
-      form.reset();
-    }, 2000);
+
+      if (response.ok) {
+        setIsDialogOpen(false);
+        toast({
+          title: "Message Sent",
+          description:
+            "We've received your message and will get back to you soon.",
+        });
+        form.reset();
+      } else {
+        throw new Error("Failed to send email");
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to send the message. Please try again later.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   const whatsappNumber = "+8801613980323";
   const whatsappMessage =
     "Hello, I have a question about Alwan Ideal Lifestyle.";
 
+  const messengerUsername = "100077653895732";
+
   return (
-    <MaxWidth className="mt-[100px]">
-      <div className="container mx-auto px-4 py-12">
-        <h1 className="text-4xl font-bold mb-8 text-center text-primary">
-          Contact Alwan Ideal Lifestyle
-        </h1>
-        <div className="grid md:grid-cols-2 gap-12">
-          <div className="bg-white p-8 rounded-lg shadow-md">
-            <h2 className="text-2xl font-semibold mb-6 text-primary">
-              Send us a message
-            </h2>
-            <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-6"
-              >
-                <FormField
-                  control={form.control}
-                  name="name"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Name</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Your name" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Email</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="email"
-                          placeholder="Your email"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="subject"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Subject</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Message subject" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="message"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Message</FormLabel>
-                      <FormControl>
-                        <Textarea placeholder="Your message" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <Button
-                  type="submit"
-                  className="w-full"
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting ? "Sending..." : "Send Message"}
-                </Button>
-              </form>
-            </Form>
-          </div>
-          <div>
-            <div className="bg-white p-8 rounded-lg shadow-md mb-8">
-              <h2 className="text-2xl font-semibold mb-6 text-primary">
-                Contact Information
-              </h2>
-              <div className="space-y-4">
-                <div className="flex items-center">
-                  <FaPhone className="mr-3 text-primary" />
-                  <span>+8801613-980323</span>
+    <div className="min-h-screen bg-white dark:bg-gray-900 text-black dark:text-gray-100">
+      <MaxWidth className="">
+        <div className="flex items-center mt-[100px]">
+          <h1 className="text-3xl font-medium">Contact Us</h1>
+        </div>
+        <div className="container mx-auto px-4 py-12">
+          <div className="grid lg:grid-cols-2 gap-12">
+            <div className="space-y-8">
+              <div className="bg-white dark:bg-gray-900 p-8 rounded-lg shadow-md border border-gray-200 dark:border-gray-700">
+                <h2 className="text-2xl font-medium mb-6 text-black dark:text-gray-100">
+                  Get in Touch
+                </h2>
+                <div className="space-y-4">
+                  <Button asChild className="w-full" variant="outline">
+                    <Link
+                      href={`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
+                        whatsappMessage
+                      )}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <MessageCircle className="mr-2" size={20} />
+                      Chat on WhatsApp
+                    </Link>
+                  </Button>
+
+                  <Button asChild className="w-full" variant="outline">
+                    <Link
+                      href={`https://m.me/${messengerUsername}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <MessagesSquare className="mr-2" size={20} />
+                      Chat on Messenger
+                    </Link>
+                  </Button>
+
+                  <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                    <DialogTrigger asChild>
+                      <Button className="w-full" variant="outline">
+                        <Mail className="mr-2" size={20} />
+                        Send Email
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-2xl bg-white text-black max-h-[97vh] overflow-y-scroll hide-scrollbar">
+                      <DialogHeader>
+                        <DialogTitle className="font-medium text-xl">
+                          Send us an email
+                        </DialogTitle>
+                        <DialogDescription>
+                          Fill out this form and we&apos;ll get back to you as
+                          soon as possible.
+                        </DialogDescription>
+                      </DialogHeader>
+                      <Form {...form}>
+                        <form
+                          onSubmit={form.handleSubmit(onSubmit)}
+                          className="space-y-4"
+                        >
+                          <FormField
+                            control={form.control}
+                            name="name"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Name</FormLabel>
+                                <FormControl>
+                                  <Input
+                                    placeholder="Your name"
+                                    {...field}
+                                    className="bg-white text-black"
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={form.control}
+                            name="email"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Email</FormLabel>
+                                <FormControl>
+                                  <Input
+                                    type="email"
+                                    placeholder="Your email"
+                                    {...field}
+                                    className="bg-white text-black"
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={form.control}
+                            name="subject"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Subject</FormLabel>
+                                <FormControl>
+                                  <Input
+                                    placeholder="Message subject"
+                                    {...field}
+                                    className="bg-white text-black"
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={form.control}
+                            name="message"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Message</FormLabel>
+                                <FormControl>
+                                  <Textarea
+                                    placeholder="Your message"
+                                    {...field}
+                                    className="bg-white text-black"
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <Button
+                            type="submit"
+                            className="w-full bg-black text-white hover:bg-gray-800"
+                            disabled={isSubmitting}
+                          >
+                            {isSubmitting ? "Sending..." : "Send Message"}
+                          </Button>
+                        </form>
+                      </Form>
+                    </DialogContent>
+                  </Dialog>
                 </div>
-                <div className="flex items-center">
-                  <FaEnvelope className="mr-3 text-primary" />
-                  <span>contact.alwanlifestyle@gmail.com</span>
-                </div>
-                <div className="flex items-center">
-                  <FaMapMarkerAlt className="mr-3 text-primary" />
-                  <span>8100, Gopalganj Sadar, Goplaganj</span>
-                </div>
+              </div>
+
+              <div className="bg-white dark:bg-gray-900 p-8 rounded-lg shadow-md border border-gray-200 dark:border-gray-700">
+                <h2 className="text-2xl font-medium mb-6 text-black dark:text-gray-100">
+                  Frequently Asked Questions
+                </h2>
+                <Accordion type="single" collapsible className="w-full">
+                  <AccordionItem value="item-1">
+                    <AccordionTrigger>
+                      What are your business hours?
+                    </AccordionTrigger>
+                    <AccordionContent>
+                      We are open Monday to Friday, 9:00 AM to 6:00 PM. We are
+                      closed on weekends and public holidays.
+                    </AccordionContent>
+                  </AccordionItem>
+                  <AccordionItem value="item-2">
+                    <AccordionTrigger>
+                      Do you offer international shipping?
+                    </AccordionTrigger>
+                    <AccordionContent>
+                      Yes, we offer international shipping to select countries.
+                      Please check our shipping policy for more details.
+                    </AccordionContent>
+                  </AccordionItem>
+                  <AccordionItem value="item-3">
+                    <AccordionTrigger>
+                      What is your return policy?
+                    </AccordionTrigger>
+                    <AccordionContent>
+                      We offer a 07-day return policy for most items. Please
+                      refer to our returns page for full details and conditions.
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
               </div>
             </div>
-            <div className="bg-white p-8 rounded-lg shadow-md">
-              <h2 className="text-2xl font-semibold mb-6 text-primary">
-                Connect With Us
-              </h2>
-              <div className="flex justify-between items-center mb-6">
-                <a
-                  href="#"
-                  className="text-primary hover:text-primary-dark transition-colors"
-                >
-                  <FaFacebook size={32} />
-                </a>
-                <a
-                  href="#"
-                  className="text-primary hover:text-primary-dark transition-colors"
-                >
-                  <FaTwitter size={32} />
-                </a>
-                <a
-                  href="#"
-                  className="text-primary hover:text-primary-dark transition-colors"
-                >
-                  <FaInstagram size={32} />
-                </a>
+
+            <div className="space-y-8">
+              <div className="bg-white dark:bg-gray-900 p-8 rounded-lg shadow-md border border-gray-200 dark:border-gray-700">
+                <h2 className="text-2xl font-medium mb-6 text-black dark:text-gray-100">
+                  Contact Information
+                </h2>
+                <div className="space-y-4">
+                  <div className="flex items-center">
+                    <Phone className="mr-3 text-black dark:text-gray-100" />
+                    <span>+8801613-980323</span>
+                  </div>
+                  <div className="flex items-center">
+                    <Mail className="mr-3 text-black dark:text-gray-100" />
+                    <span>contact.alwanlifestyle@gmail.com</span>
+                  </div>
+                  <div className="flex items-center">
+                    <MapPin className="mr-3 text-black dark:text-gray-100" />
+                    <span>8100, Gopalganj Sadar, Goplaganj</span>
+                  </div>
+                </div>
               </div>
-              <a
-                href={`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
-                  whatsappMessage
-                )}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center justify-center bg-green-500 text-white py-3 px-6 rounded-lg hover:bg-green-600 transition-colors"
-              >
-                <FaWhatsapp className="mr-2" size={24} />
-                Contact us on WhatsApp
-              </a>
+              <div className="bg-white dark:bg-gray-900 p-8 rounded-lg shadow-md border border-gray-200 dark:border-gray-700">
+                <h2 className="text-2xl font-medium mb-6 text-black dark:text-gray-100">
+                  Our Location
+                </h2>
+                <div className="aspect-video rounded-lg overflow-hidden">
+                  <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d29373.58913071724!2d89.80761611562497!3d23.00837!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39ff0a1f8e2c2a6f%3A0x4a3e2c6f2a8b6f0d!2sGopalganj%20Sadar%20Upazila!5e0!3m2!1sen!2sbd!4v1652345678901!5m2!1sen!2sbd"
+                    width="100%"
+                    height="100%"
+                    style={{ border: 0 }}
+                    allowFullScreen
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                  ></iframe>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </MaxWidth>
+      </MaxWidth>
+    </div>
   );
 }

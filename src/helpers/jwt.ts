@@ -1,8 +1,9 @@
+import { KEY } from "@/types";
 import { JwtPayload, jwtDecode } from "jwt-decode";
 import { getFromLocalStorage } from "./local-storage";
 
 export const getUserFromLocalStorage = (): JwtPayload | undefined => {
-  const token = getFromLocalStorage("alwan-user-access-token") as string;
+  const token = getFromLocalStorage(KEY) as string;
 
   if (!token) {
     return undefined;

@@ -17,7 +17,7 @@ import {
 } from "@/redux/api/categoies/categoriesApi";
 import { DropdownMenuLabel } from "@radix-ui/react-dropdown-menu";
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, MoreHorizontal } from "lucide-react";
+import { ArrowUpDown, Edit, Eye, MoreHorizontal, Trash2 } from "lucide-react";
 import React, { useState } from "react";
 
 export type Category = {
@@ -82,22 +82,51 @@ const CategoryTableColumns: React.FC<CategoryTableColumnsProps> = ({
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       ),
+      cell: ({ row }) => (
+        <div className="inline-flex items-center bg-violet-100 text-violet-600 px-2 py-1 rounded-md">
+          <span className="w-2 h-2 rounded bg-violet-600 mr-2" />
+          <span>{row.original.name}</span>
+        </div>
+      ),
     },
     {
       accessorKey: "parent.name",
       header: "Parent",
-      cell: ({ row }) =>
-        row.original.parent ? row.original.parent.name : "not available",
+      cell: ({ row }) => (
+        <span className="text-muted-foreground">
+          {row.original.parent ? row.original.parent.name : "Not Available"}
+        </span>
+      ),
     },
     {
       accessorKey: "isLeaf",
-      header: "Is Leaf",
-      cell: ({ row }) => (row.original.isLeaf ? "Yes" : "No"),
+      header: "Is Leaf?",
+      cell: ({ row }) => (
+        <span
+          className={`text-center px-2 py-1 rounded ${
+            row.original.isLeaf
+              ? "bg-green-100 text-green-600"
+              : "bg-red-100 text-red-600"
+          }`}
+        >
+          {row.original.isLeaf ? "Yes" : "No"}
+        </span>
+      ),
     },
     {
       accessorKey: "isNavigational",
-      header: "Is Navigation",
-      cell: ({ row }) => (row.original.isNavigational ? "Yes" : "No"),
+      header: "Is Navigational?",
+      cell: ({ row }) => (
+        <span
+          className={`text-center px-2 py-1 rounded ${
+            row.original.isNavigational
+              ? "bg-teal-100 text-teal-600"
+              : "bg-orange-100 text-orange-600"
+          }`}
+        >
+          {row.original.isNavigational ? "Yes" : "No"}
+        </span>
+      ),
     },
     {
       id: "actions",
@@ -119,6 +148,7 @@ const CategoryTableColumns: React.FC<CategoryTableColumnsProps> = ({
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => handleDetailsClick(id)}>
+                <Eye className="mr-2 h-4 w-4" />
                 Category Details
               </DropdownMenuItem>
               <DropdownMenuItem
@@ -127,6 +157,7 @@ const CategoryTableColumns: React.FC<CategoryTableColumnsProps> = ({
                   setCategoryId(id);
                 }}
               >
+                <Edit className="mr-2 h-4 w-4" />
                 Update Category
               </DropdownMenuItem>
               <DropdownMenuItem
@@ -135,6 +166,7 @@ const CategoryTableColumns: React.FC<CategoryTableColumnsProps> = ({
                   setCategoryId(id);
                 }}
               >
+                <Trash2 className="mr-2 h-4 w-4" />
                 Remove Category
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -167,10 +199,9 @@ const CategoryTableColumns: React.FC<CategoryTableColumnsProps> = ({
         open={dialogOpen}
         setOpen={setDialogOpen}
         handler={handleCategoryDelete}
-        title="Remove Category?"
-        description="Do you want to Remove this category?"
-        buttonText="Remove"
-        className="bg-destructive hover:bg-destructive/70"
+        title="Confirm Category Deletion"
+        description="Are you sure you want to delete this category? This action cannot be undone."
+        buttonText="Delete"
         loading={isLoading}
       />
     </div>

@@ -1,20 +1,36 @@
-export const KEY = "alwan-user-access-token";
+export const KEY = "alwan-user-token";
 
-export interface IMeta {
-  total: number;
-  page: number;
-  size: number;
-}
-
-export interface IResponseData {
+export interface IResponseData<T = any> {
   status: number;
   success: boolean;
-  data: any;
+  message?: string;
+  data: T;
 }
 
-export interface IResponse {
-  data: IResponseData;
-  meta?: IMeta;
+export interface IResponse<T = any> {
+  data: IResponseData<T>;
+}
+
+export type IErrorMessage = {
+  path: string | number;
+  message: string;
+};
+
+export type IErrorResponse = {
+  data: {
+    statusCode: number;
+    message: string;
+    errorMessages: IErrorMessage[];
+    success: boolean;
+  };
+};
+
+export interface ILoginRes {
+  statusCode: number;
+  success: boolean;
+  message: string;
+  accessToken: string;
+  refreshToken: string;
 }
 
 export interface IReadCarousel {
@@ -24,43 +40,37 @@ export interface IReadCarousel {
   updatedAt: string;
 }
 
-export interface ILoginRes {
-  accessToken: string;
-  refreshToken: string;
-}
-
-export interface ICreateCategory {
+export interface ICategory {
+  id: string;
   name: string;
-  file: File;
-  parentId: string;
+  slug: string;
+  imageUrl: string | null;
+  parentId: string | null;
+  isLeaf: boolean;
+  isNavigational: boolean;
   firstTitle: string;
   secondTitle: string;
   isOnHomePage: boolean;
-  isNavigational: boolean;
-  isLeaf: boolean;
+  parent?: ICategory | null;
+  subCategories?: ICategory[];
+  homePageTexts: IHomePageText[];
+  createdAt: string;
+  updatedAt: string;
 }
 
-export interface IReadCategory {
+export interface IHomePageText {
+  id: string;
+  title: string;
+  text: string[];
+  buttonText: string;
+  categoryId: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface IProductType {
   id: string;
   name: string;
-  imageUrl: string;
-  isLeaf: boolean;
-  isNavigational: boolean;
-  parentId: string;
-  firstTitle: string;
-  secondTitle: string;
-  isOnHomePage: boolean;
-}
-
-export interface IReadProductType {
-  id: string;
-  name: string;
-}
-
-export interface imageProps {
-  id: number;
-  src: string;
-  alt: string;
 }
 
 export interface ICoupon {
@@ -68,56 +78,62 @@ export interface ICoupon {
   code: string;
   discountPercentage: number;
   discountValue: number;
+  type: "GLOBAL" | "CATEGORY" | "PRODUCT" | "DELIVERY";
+  startDate: string;
+  endDate: string;
+  usageLimit: number;
+  usedCount: number;
+  maxUsagePerUser: number;
+  minOrderValue: number;
+  categories: ICategory[];
+  products: IProduct[];
+  Order: IOrder[];
+  couponUsages: ICouponUsage[];
   parentId?: string;
   createdAt: string;
   updatedAt: string;
 }
 
-export interface IReadColor {
+export interface ICouponUsage {
   id: string;
-  name: string;
-  hexCode: string;
-}
-
-export interface IConvertedColor {
-  id: string;
-  value: string;
-  label: string;
-}
-
-export interface IReview {
-  id: string;
-  rating: number;
-  content: string;
-  userId: string;
-  productId: string;
+  userId: string | null;
+  email: string | null;
+  couponId: string;
+  usageCount: number;
+  user: IUser | null;
+  coupon: ICoupon;
   createdAt: string;
   updatedAt: string;
 }
 
-export interface IReadSize {
+export interface IColor {
   id: string;
   name: string;
+  hexCode: string;
+  value?: string;
+  label?: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
-export interface SizeVariant {
+export interface ISize {
   id: string;
-  productId: string;
-  price: number;
-  stock: number;
-  colorId: string;
-  sizeId: string;
-  manufacturingCost: number;
+  name: string;
+  sizeVariants: ISizeVariant[];
+  OrderItem: IOrderItem[];
+  createdAt: string;
+  updatedAt: string;
 }
-export interface IReadSizeVariant {
+
+export interface ISizeVariant {
   id: string;
   productId: string;
   price: number;
   stock: number;
   colorId: string;
-  color: IReadColor;
+  color: IColor;
   sizeId: string;
-  size: IReadSize;
+  size: ISize;
   manufacturingCost: number;
   createdAt: string;
   updatedAt: string;
@@ -126,41 +142,25 @@ export interface IReadSizeVariant {
 export interface IProduct {
   id: string;
   name: string;
-  brand: string;
-  description: string[];
+  slug: string;
+  sku: string;
+  description: string;
+  productTypeId: string;
+  isNewArrival: boolean;
   features: string[];
   imageUrls: string[];
   categoryId: string;
-  category: IReadCategory;
-  productTypeId: string;
-  isCouponApplicable: boolean;
-  isFreeDeliveryAvailable: boolean;
-  stockStatus: "IN_STOCK" | "OUT_OF_STOCK";
-  statusTag: string;
-  sizeVariants: IReadSizeVariant[];
+  category: ICategory;
+  sizeVariants: ISizeVariant[];
   reviews: IReview[];
-  createdAt: string;
-}
-
-export interface IUserCartProduct {
-  id: string;
-  name: string;
+  couponEligible: boolean;
+  freeShippingAvailable: boolean;
+  stockStatus: "AVAILABLE" | "OUT_OF_STOCK";
+  availabilityTag: string;
   brand: string;
-  description: string[];
-  features: string[];
-  imageUrls: string[];
-  categoryId: string;
-  productTypeId: string;
-  isCouponApplicable: boolean;
-  isFreeDeliveryAvailable: boolean;
-  stockStatus: "IN_STOCK" | "OUT_OF_STOCK";
-  sizeVariants: IReadSizeVariant[];
-  orderColor: string;
-  reviews: any[]; //! i will fix this later
-  orderSize: string;
-  orderQty: number;
-  orderHexCode: string;
+  productType: IProductType;
   createdAt: string;
+  updatedAt: string;
 }
 
 export interface IReview {
@@ -168,39 +168,22 @@ export interface IReview {
   rating: number;
   content: string;
   userId: string;
+  user: IUser;
   productId: string;
   createdAt: string;
   updatedAt: string;
 }
 
-export interface OrderItem {
-  productId: string;
-  size: string;
-  quantity: number;
-}
-
-export interface OrderData {
+export interface IUser {
+  id: string;
   userId?: string;
-  userName?: string;
-  email?: string;
-  division?: string;
-  district?: string;
-  upazila?: string;
-  union?: string;
-  streetAddress?: string;
-  phone: string;
-  altPhone?: string;
-  totalCost: number;
-  shippingCost: number;
-  orderNote?: string;
-  items: OrderItem[];
-}
-
-export interface IUserData {
-  userId: string;
-  userName: string;
   email: string;
-  role: "User" | "Admin";
+  googleId: string;
+  password: string;
+  role: "USER" | "ADMIN";
+  imageUrl: string;
+  addresses: IUserAddress[];
+  createdAt: string;
 }
 
 export interface IUserAddress {
@@ -224,16 +207,20 @@ export interface IUserAddress {
 export interface IOrderItem {
   id: string;
   sizeId: string;
+  size: ISize;
+  colorId: string;
+  color: IColor;
   quantity: number;
   returnQuantity: number;
+  returnNote: string;
+  discountedPrice?: number;
   itemStatus:
     | "PROCESSING"
-    | "ONTHEWAY"
+    | "IN_TRANSIT"
     | "DELIVERED"
     | "REQUESTTORETURN"
     | "RETURNED";
-  returnNote: string;
-  returnReasene: string;
+  returnReason: string;
   orderId: string;
   productId: string;
   createdAt: string;
@@ -241,7 +228,7 @@ export interface IOrderItem {
   product: IProduct;
 }
 
-export interface IOrderResponseData {
+export interface IOrder {
   id: string;
   userName: string;
   division: string;
@@ -251,11 +238,12 @@ export interface IOrderResponseData {
   streetAddress: string;
   totalCost: number;
   phone: string;
+  email: string;
   altPhone: string | null;
   couponId: string | null;
-  orderNotes: string | null;
+  orderNote: string | null;
   userId: string;
-  orderStatus: "ACTIVE" | "CANCELLED";
+  orderStatus: "CONFIRM" | "CANCELLED";
   shippingMethod: "CASH_ON_DELIVERY" | "ONLINE_PAYMENT";
   shippingCost: number;
   createdAt: Date;
@@ -263,56 +251,13 @@ export interface IOrderResponseData {
   items: IOrderItem[];
 }
 
-export interface IOrderResponse {
-  status: number;
-  success: boolean;
-  message: string;
-  data: IOrderResponseData[];
+export interface IAddress {
+  division: IDivision;
+  district: IDistrict;
+  upazila: IUpazila;
+  union: IUnion;
 }
 
-export interface IProductCategory {
-  id: string;
-  title: string;
-  imageUrl: string;
-  subsCategories: ProductSubCategory[];
-}
-
-export interface ProductSubCategory {
-  id: string;
-  title: string;
-  imageUrl: string;
-  parentId: string;
-}
-
-export interface HomePageText {
-  id: string;
-  title: string;
-  text: string[];
-  buttonText: string;
-  categoryId: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface Category {
-  id: string;
-  name: string;
-  slug: string;
-  imageUrl: string | null;
-  parentId: string | null;
-  isNavigational: boolean;
-  isLeaf: boolean;
-  firstTitle: string;
-  secondTitle: string;
-  isOnHomePage: boolean;
-  parent?: Category | null;
-  subCategories?: Category[];
-  homePageTexts: HomePageText[];
-  createdAt: string;
-  updatedAt: string;
-}
-
-// Addresses
 export interface IDivision {
   id: string;
   name: string;
@@ -345,18 +290,18 @@ export interface IUnion {
   url: string;
 }
 
-export interface FormValues {
-  recipientName: string;
-  email: string;
-  phone: string;
-  altPhone: string;
-  division: string;
-  divisionId: string;
-  district: string;
-  districtId: string;
-  upazila: string;
-  upazilaId: string;
-  union: string;
-  unionId: string;
-  streetAddress: string;
+export interface IExpense {
+  id: string;
+  title: string;
+  description: string;
+  amount: number;
+  createdAt: string;
+}
+
+export interface IFeedback {
+  id: string;
+  rating: number;
+  message: string;
+  createdAt: string;
+  updatedAt: string;
 }

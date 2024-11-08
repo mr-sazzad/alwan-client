@@ -5,7 +5,6 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardContent,
@@ -27,10 +26,8 @@ export default function ShippingPage() {
   return (
     <MaxWidth className="mt-[100px]">
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-4xl font-bold mb-6 text-center">
-          Shipping Information
-        </h1>
-        <p className="text-lg mb-8 text-center text-muted-foreground">
+        <h1 className="text-3xl font-medium mb-4">Shipping Information</h1>
+        <p className="mb-8 text-muted-foreground">
           At Alwan, we&apos;re committed to delivering tranquility and
           mindfulness to your doorstep across Bangladesh. Our shipping process
           is designed to be as smooth and stress-free as your journey to inner
@@ -41,7 +38,7 @@ export default function ShippingPage() {
           <Card>
             <CardHeader>
               <Truck className="w-10 h-10 mb-2 text-primary" />
-              <CardTitle>Nationwide Delivery</CardTitle>
+              <CardTitle className="font-medium">Nationwide Delivery</CardTitle>
               <CardDescription>Serving all of Bangladesh</CardDescription>
             </CardHeader>
             <CardContent>
@@ -53,7 +50,7 @@ export default function ShippingPage() {
           <Card>
             <CardHeader>
               <MapPin className="w-10 h-10 mb-2 text-primary" />
-              <CardTitle>Local Partnerships</CardTitle>
+              <CardTitle className="font-medium">Local Partnerships</CardTitle>
               <CardDescription>Reliable courier services</CardDescription>
             </CardHeader>
             <CardContent>
@@ -65,7 +62,7 @@ export default function ShippingPage() {
           <Card>
             <CardHeader>
               <Clock className="w-10 h-10 mb-2 text-primary" />
-              <CardTitle>Processing Time</CardTitle>
+              <CardTitle className="font-medium">Processing Time</CardTitle>
               <CardDescription>1-2 business days</CardDescription>
             </CardHeader>
             <CardContent>
@@ -77,7 +74,9 @@ export default function ShippingPage() {
 
         <Card className="mb-12">
           <CardHeader>
-            <CardTitle>Shipping Rates and Estimated Delivery Times</CardTitle>
+            <CardTitle className="font-medium">
+              Shipping Rates and Estimated Delivery Times
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <Table>
@@ -106,7 +105,7 @@ export default function ShippingPage() {
 
         <Card className="mb-12">
           <CardHeader>
-            <CardTitle>Our Shipping Process</CardTitle>
+            <CardTitle className="font-medium">Our Shipping Process</CardTitle>
             <CardDescription>From our hands to your home</CardDescription>
           </CardHeader>
           <CardContent>
@@ -142,7 +141,7 @@ export default function ShippingPage() {
           </CardContent>
         </Card>
 
-        <h2 className="text-2xl font-semibold mb-4">
+        <h2 className="text-2xl font-medium mb-4">
           Frequently Asked Questions
         </h2>
         <Accordion type="single" collapsible className="mb-12">
@@ -190,7 +189,7 @@ export default function ShippingPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center">
+            <CardTitle className="flex items-center font-medium">
               <HelpCircle className="w-6 h-6 mr-2" />
               Need More Information?
             </CardTitle>
@@ -202,12 +201,12 @@ export default function ShippingPage() {
               help.
             </p>
             <div className="flex space-x-4">
-              <Badge variant="outline" className="text-sm py-1 px-2">
+              <span className="text-sm py-1 px-2 border rounded-full">
                 support.alwan@gmail.com
-              </Badge>
-              <Badge variant="outline" className="text-sm py-1 px-2">
+              </span>
+              <span className="text-sm py-1 px-2 border rounded-full">
                 +8801613980323
-              </Badge>
+              </span>
             </div>
           </CardContent>
         </Card>

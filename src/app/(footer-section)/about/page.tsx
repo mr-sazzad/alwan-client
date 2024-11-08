@@ -13,18 +13,16 @@ export default function AboutPage() {
   return (
     <MaxWidth className="mt-[100px]">
       <div className="container mx-auto px-4 py-8">
-        <div className="max-w-3xl mx-auto text-center mb-12">
-          <h1 className="text-4xl font-bold mb-4">About Alwan</h1>
-          <p className="text-xl text-muted-foreground">
-            Embracing the vibrant spirit of Bangladesh through mindful fashion
-          </p>
-        </div>
+        <h1 className="text-3xl font-medium mb-2">About Alwan</h1>
+        <p className="text-muted-foreground mb-6">
+          Embracing the vibrant spirit of Bangladesh through mindful fashion
+        </p>
 
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 mb-12">
           <Card>
             <CardHeader>
               <Heart className="w-10 h-10 mb-2 text-primary" />
-              <CardTitle>Our Story</CardTitle>
+              <CardTitle className="font-medium">Our Story</CardTitle>
             </CardHeader>
             <CardContent>
               Born from a passion to blend traditional Bangladeshi aesthetics
@@ -36,7 +34,7 @@ export default function AboutPage() {
           <Card>
             <CardHeader>
               <Leaf className="w-10 h-10 mb-2 text-primary" />
-              <CardTitle>Our Mission</CardTitle>
+              <CardTitle className="font-medium">Our Mission</CardTitle>
             </CardHeader>
             <CardContent>
               At Alwan, we`&apos;re committed to enhancing the everyday style of
@@ -48,7 +46,7 @@ export default function AboutPage() {
           <Card>
             <CardHeader>
               <Sun className="w-10 h-10 mb-2 text-primary" />
-              <CardTitle>Our Vision</CardTitle>
+              <CardTitle className="font-medium">Our Vision</CardTitle>
             </CardHeader>
             <CardContent>
               We envision a Bangladesh where every individual expresses their
@@ -61,7 +59,7 @@ export default function AboutPage() {
 
         <Card className="mb-12">
           <CardHeader>
-            <CardTitle>Our Products</CardTitle>
+            <CardTitle className="font-medium">Our Products</CardTitle>
             <CardDescription>
               Crafted with care, designed for comfort and style
             </CardDescription>
@@ -77,7 +75,7 @@ export default function AboutPage() {
                   <AvatarFallback>TS</AvatarFallback>
                 </Avatar>
                 <div>
-                  <h3 className="font-semibold">T-Shirts</h3>
+                  <h3 className="font-medium">T-Shirts</h3>
                   <p className="text-sm text-muted-foreground">
                     Made with soft, locally sourced cotton
                   </p>
@@ -92,7 +90,7 @@ export default function AboutPage() {
                   <AvatarFallback>HD</AvatarFallback>
                 </Avatar>
                 <div>
-                  <h3 className="font-semibold">Hoodies</h3>
+                  <h3 className="font-medium">Hoodies</h3>
                   <p className="text-sm text-muted-foreground">
                     Cozy designs with Bangladeshi-inspired patterns
                   </p>
@@ -107,7 +105,7 @@ export default function AboutPage() {
                   <AvatarFallback>PJ</AvatarFallback>
                 </Avatar>
                 <div>
-                  <h3 className="font-semibold">Panjabis</h3>
+                  <h3 className="font-medium">Panjabis</h3>
                   <p className="text-sm text-muted-foreground">
                     Traditional wear with a modern twist
                   </p>
@@ -122,7 +120,7 @@ export default function AboutPage() {
                   <AvatarFallback>LE</AvatarFallback>
                 </Avatar>
                 <div>
-                  <h3 className="font-semibold">Limited Editions</h3>
+                  <h3 className="font-medium">Limited Editions</h3>
                   <p className="text-sm text-muted-foreground">
                     Seasonal collections inspired by Bengali culture
                   </p>
@@ -136,7 +134,7 @@ export default function AboutPage() {
           <Card>
             <CardHeader>
               <Users className="w-10 h-10 mb-2 text-primary" />
-              <CardTitle>Our Community</CardTitle>
+              <CardTitle className="font-medium">Our Community</CardTitle>
             </CardHeader>
             <CardContent>
               <p className="mb-4">
@@ -160,7 +158,7 @@ export default function AboutPage() {
           <Card>
             <CardHeader>
               <Award className="w-10 h-10 mb-2 text-primary" />
-              <CardTitle>Our Commitment</CardTitle>
+              <CardTitle className="font-medium">Our Commitment</CardTitle>
             </CardHeader>
             <CardContent>
               <p className="mb-4">At Alwan, we`&apos;re dedicated to:</p>
@@ -181,7 +179,7 @@ export default function AboutPage() {
         <Card>
           <CardHeader>
             <ShoppingBag className="w-10 h-10 mb-2 text-primary" />
-            <CardTitle>Shop Alwan</CardTitle>
+            <CardTitle className="font-medium">Shop Alwan</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="mb-4">Experience the Alwan style:</p>

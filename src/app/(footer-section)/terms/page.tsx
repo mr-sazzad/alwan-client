@@ -11,14 +11,14 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 export default function TermsAndConditionsPage() {
   return (
     <MaxWidth className="mt-[100px]">
-      <div className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold mb-6 text-center">
-          Terms and Conditions
-        </h1>
+      <div className="container px-4 py-8">
+        <h1 className="text-3xl font-medium mb-6">Terms and Conditions</h1>
 
         <Card className="mb-8">
           <CardHeader>
-            <CardTitle>Welcome to Our Lifestyle Website</CardTitle>
+            <CardTitle className="font-medium">
+              Welcome to Our Lifestyle Website
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-muted-foreground">

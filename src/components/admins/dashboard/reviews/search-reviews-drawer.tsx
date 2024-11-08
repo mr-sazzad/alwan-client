@@ -46,10 +46,8 @@ const SearchReviewsDrawer: React.FC<SearchReviewsDrawerProps> = ({
     const product =
       products?.data?.products.find((p: IProduct) => p.id === id) || null;
     setSelectedProduct(product);
+    setOpen(false);
   };
-
-  if (!isProductsLoading) {
-  }
 
   return (
     <Drawer open={open} onOpenChange={setOpen}>
@@ -90,7 +88,7 @@ const SearchReviewsDrawer: React.FC<SearchReviewsDrawerProps> = ({
                   <SelectLabel>Products</SelectLabel>
                   {isProductsLoading ? (
                     <SelectItem value="loading" disabled>
-                      Loading...
+                      Select a product
                     </SelectItem>
                   ) : (
                     products?.data.products.map((product: IProduct) => (
@@ -104,15 +102,8 @@ const SearchReviewsDrawer: React.FC<SearchReviewsDrawerProps> = ({
             </Select>
           )}
 
-          <Button
-            onClick={() => setOpen(false)}
-            className="w-full mb-2 mt-5"
-            disabled={!selectedProduct}
-          >
-            Submit
-          </Button>
           <DrawerClose asChild disabled={isProductsLoading}>
-            <Button variant="outline" className="w-full">
+            <Button variant="outline" className="w-full mt-5">
               Cancel
             </Button>
           </DrawerClose>

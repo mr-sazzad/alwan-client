@@ -10,7 +10,8 @@ type UsePlaceOrderParams = {
   currentUser: { userId: string } | null;
   productId?: string;
   quantity?: number;
-  size?: string;
+  sizeId?: string;
+  colorId?: string;
   cartProducts: IUserCartProduct[];
   createAOrder: (orderData: OrderData) => Promise<any>;
   router: AppRouterInstance;
@@ -24,7 +25,8 @@ export const usePlaceOrder = ({
   currentUser,
   productId,
   quantity,
-  size,
+  sizeId,
+  colorId,
   cartProducts,
   createAOrder,
   router,
@@ -45,19 +47,6 @@ export const usePlaceOrder = ({
       altPhone,
       orderNote,
     } = form.getValues();
-
-    console.log(
-      recipientName,
-      email,
-      phone,
-      district,
-      upazila,
-      union,
-      streetAddress,
-      altPhone,
-      orderNote,
-      "HHHHHHH"
-    );
 
     // Validate required fields
     if (
@@ -80,56 +69,69 @@ export const usePlaceOrder = ({
 
     // Prepare order data
     const orderData: OrderData = {
-      division,
-      district,
-      upazila,
-      union,
-      streetAddress,
+      userName: recipientName,
+      email,
       phone,
+      address: {
+        division,
+        district,
+        upazila,
+        union,
+        streetAddress,
+      },
       altPhone,
-      totalCost: totalPrice,
       orderNote,
+      totalCost: totalPrice,
       shippingCost,
       items: [],
       userId: currentUser?.userId,
-      userName: currentUser ? undefined : recipientName,
-      email: currentUser ? undefined : email,
     };
 
-    console.log(orderData, "ORDER DATA FROM USE PLACE ORDER");
+    console.log(" 🛒 🛒 🛒 Cart Products =>", cartProducts);
 
     // Determine order items based on single product or cart
     if (productId && quantity) {
       orderData.items.push({
         productId,
         quantity: Number(quantity),
-        size: size as string,
+        sizeId: sizeId as string,
+        colorId: colorId as string,
       });
     } else {
       orderData.items = cartProducts.map((product) => ({
         productId: product.id,
-        size: product.orderSize,
+        sizeId: product.orderSizeId,
         quantity: product.orderQty,
+        colorId: product.orderColorId,
       }));
     }
+
+    console.log(orderData, "ORDER DATA FROM USE PLACE ORDER");
 
     // Create order
     try {
       const createdOrder = await createAOrder(orderData);
 
-      if (!createdOrder.data?.id) {
-        throw new Error("Order creation failed");
+      console.log("🚀🚀🚀 CREATED ORDER =>", createdOrder);
+
+      if (!createdOrder.data?.success) {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Something went wrong. Please try again.",
+        });
+        return;
+      } else {
+        toast({
+          variant: "default",
+          title: "Success",
+          description: "Order placed successfully.",
+        });
+
+        setTimeout(() => {
+          router.push("/account/orders");
+        }, 2000);
       }
-
-      toast({
-        variant: "default",
-        title: "Success",
-        description: "Order placed successfully.",
-      });
-
-      setTimeout(() => {
-        router.back();
-      }, 2000);
     } catch (error: any) {
       toast({
         title: "Error",

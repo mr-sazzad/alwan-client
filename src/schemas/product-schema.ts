@@ -1,6 +1,6 @@
 import z from "zod";
 
-export const statusEnum = ["IN_STOCK", "OUT_OF_STOCK"] as const;
+export const statusEnum = ["AVAILABLE", "OUT_OF_STOCK"] as const;
 
 export const productSchema = z.object({
   files: z
@@ -20,10 +20,12 @@ export const productSchema = z.object({
     .refine((value) => statusEnum.includes(value), {
       message: "must be either 'In stock' or 'Out of stock'",
     })
-    .default("IN_STOCK"),
-  statusTag: z.string().optional(),
-  isCouponApplicable: z.string().default("No"),
-  isFreeDeliveryAvailable: z.string().default("No"),
+    .default("AVAILABLE"),
+  availabilityTag: z.string().optional(),
+  couponEligible: z.boolean().default(false),
+  freeShippingAvailable: z.boolean().default(false),
+  isNewArrival: z.boolean().default(false),
+  sku: z.string().min(1, { message: "SKU is required" }),
   sizeVariants: z.array(
     z.object({
       price: z.number(),

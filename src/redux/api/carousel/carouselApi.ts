@@ -37,12 +37,15 @@ const carouselApi = baseApi.injectEndpoints({
       providesTags: [tagTypes.carousel],
     }),
 
-    updateSingleCarousel: build.mutation({
-      query: ({ id, ...data }) => ({
-        url: `/carousel/${id}`,
-        method: "PATCH",
-        data,
-      }),
+    updateCarousel: build.mutation({
+      query: ({ id, data }) => {
+        return {
+          url: `/carousel/${id}`,
+          method: "PATCH",
+          data,
+          contentType: "multipart/form-data",
+        };
+      },
       invalidatesTags: [tagTypes.carousel],
     }),
 
@@ -61,6 +64,6 @@ export const {
   useGetAllCarouselsQuery,
   useGetSingleCarouselQuery,
   useGetlatestCarouselQuery,
-  useUpdateSingleCarouselMutation,
+  useUpdateCarouselMutation,
   useDeleteSingleCarouselMutation,
 } = carouselApi;

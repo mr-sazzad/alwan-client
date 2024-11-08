@@ -8,6 +8,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
@@ -64,10 +65,45 @@ const ColorTableColumns: React.FC<ColorTableColumnsProps> = ({ colors }) => {
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       ),
+      cell: ({ row }) => (
+        <div className="inline-flex items-center bg-violet-100 text-violet-600 px-2 py-1 rounded-md">
+          <span className="w-2 h-2 rounded bg-violet-600 mr-2" />
+          <span>{row.original.name}</span>
+        </div>
+      ),
+    },
+    {
+      accessorKey: "hexCode",
+      header: "Color",
+      cell: ({ getValue }) => {
+        const hexCode = getValue() as string;
+        return (
+          <>
+            <div className="flex items-center space-x-1">
+              <div
+                className="w-12 h-5 rounded border border-gray-300"
+                style={{ backgroundColor: hexCode }}
+                aria-hidden="true"
+              />
+            </div>
+          </>
+        );
+      },
     },
     {
       accessorKey: "hexCode",
       header: "Hex Code",
+      cell: ({ row }) => {
+        return (
+          <>
+            <div className="flex items-center space-x-1">
+              <div className="bg-teal-100 text-teal-600 px-2 py-1 rounded">
+                {row.original.hexCode.toUpperCase()}
+              </div>
+            </div>
+          </>
+        );
+      },
     },
     {
       id: "actions",
@@ -84,13 +120,17 @@ const ColorTableColumns: React.FC<ColorTableColumnsProps> = ({ colors }) => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
+                <DropdownMenuLabel className="px-2 font-medium">
+                  Actions
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
                 <DropdownMenuItem
                   onClick={() => {
                     setOpen(true);
                     setColor(row.original);
                   }}
                 >
-                  Update
+                  Update Color
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
@@ -99,7 +139,7 @@ const ColorTableColumns: React.FC<ColorTableColumnsProps> = ({ colors }) => {
                     setColorId(row.original.id);
                   }}
                 >
-                  Delete
+                  Delete Color
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

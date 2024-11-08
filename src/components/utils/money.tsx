@@ -28,3 +28,10 @@ const Money = ({ prices, className }: MoneyProps) => {
 };
 
 export default Money;
+
+export function formatCurrency(amount: number): string {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "BDT",
+  }).format(amount);
+}

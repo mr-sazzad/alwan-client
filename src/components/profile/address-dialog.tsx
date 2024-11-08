@@ -3,7 +3,14 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { PiSpinner } from "react-icons/pi";
+import {
+  PiEnvelope,
+  PiHouse,
+  PiMapPin,
+  PiPhone,
+  PiSpinner,
+  PiUser,
+} from "react-icons/pi";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -18,6 +25,7 @@ import {
   FormField,
   FormItem,
   FormLabel,
+  FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import {
@@ -30,15 +38,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-
 import { addressSchema } from "@/schemas/address-schema";
 import { FormValues, IDistrict, IDivision, IUnion, IUpazila } from "@/types";
+import { getNameById } from "../utils/get-name-by-id";
 
 import districtData from "../../../public/address/district.json";
 import divisionData from "../../../public/address/division.json";
 import unionData from "../../../public/address/union.json";
 import upazilaData from "../../../public/address/upazila.json";
-import { getNameById } from "../utils/get-name-by-id";
 
 interface IAddressDialogProps {
   addressModalOpen: boolean;
@@ -51,7 +58,7 @@ interface IAddressDialogProps {
   resetForm: boolean;
 }
 
-const AddressDialog: React.FC<IAddressDialogProps> = ({
+export default function AddressDialog({
   addressModalOpen,
   setAddressModalOpen,
   currentUser,
@@ -60,7 +67,7 @@ const AddressDialog: React.FC<IAddressDialogProps> = ({
   selectedAddress,
   isLoading,
   resetForm,
-}) => {
+}: IAddressDialogProps) {
   const [filteredDistricts, setFilteredDistricts] = useState<IDistrict[]>([]);
   const [filteredUpazilas, setFilteredUpazilas] = useState<IUpazila[]>([]);
   const [filteredUnions, setFilteredUnions] = useState<IUnion[]>([]);
@@ -69,7 +76,7 @@ const AddressDialog: React.FC<IAddressDialogProps> = ({
     resolver: zodResolver(addressSchema),
     defaultValues: {
       recipientName: "",
-      email: "",
+      email: currentUser?.email || "",
       phone: "",
       altPhone: "",
       division: "",
@@ -77,6 +84,7 @@ const AddressDialog: React.FC<IAddressDialogProps> = ({
       upazila: "",
       union: "",
       streetAddress: "",
+      label: "HOME",
     },
   });
 
@@ -91,23 +99,25 @@ const AddressDialog: React.FC<IAddressDialogProps> = ({
         district: selectedAddress.districtId,
         upazila: selectedAddress.upazilaId,
         union: selectedAddress.unionId,
+        label: selectedAddress.label,
         streetAddress: selectedAddress.streetAddress,
       });
 
-      const districts = districtData.filter(
-        (district) => district.division_id === selectedAddress.divisionId
+      setFilteredDistricts(
+        districtData.filter(
+          (district) => district.division_id === selectedAddress.divisionId
+        )
       );
-      setFilteredDistricts(districts);
-
-      const upazilas = upazilaData.filter(
-        (upazila) => upazila.district_id === selectedAddress.districtId
+      setFilteredUpazilas(
+        upazilaData.filter(
+          (upazila) => upazila.district_id === selectedAddress.districtId
+        )
       );
-      setFilteredUpazilas(upazilas);
-
-      const unions = unionData.filter(
-        (union) => union.upazilla_id === selectedAddress.upazilaId
+      setFilteredUnions(
+        unionData.filter(
+          (union) => union.upazilla_id === selectedAddress.upazilaId
+        )
       );
-      setFilteredUnions(unions);
     }
   }, [selectedAddress, currentUser, form]);
 
@@ -128,23 +138,17 @@ const AddressDialog: React.FC<IAddressDialogProps> = ({
 
     if (resetForm) {
       form.reset();
-      console.log("Form reset");
     }
   };
 
   return (
     <Dialog open={addressModalOpen} onOpenChange={setAddressModalOpen}>
-      <DialogContent className="rounded h-[90vh] overflow-y-auto hide-scrollbar max-w-xl w-full">
+      <DialogContent className="sm:max-w-[500px] hide-scrollbar max-h-[90vh] overflow-y-auto rounded">
         <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
+          <DialogTitle className="text-xl font-medium">{title}</DialogTitle>
         </DialogHeader>
         <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit, (errors) => {
-              console.log("Form validation errors:", errors);
-            })}
-            className="space-y-4"
-          >
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
               control={form.control}
               name="recipientName"
@@ -152,12 +156,19 @@ const AddressDialog: React.FC<IAddressDialogProps> = ({
                 <FormItem>
                   <FormLabel>Recipient Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="John Doe" {...field} />
+                    <div className="relative">
+                      <Input
+                        placeholder="John Doe"
+                        {...field}
+                        className="pl-10"
+                      />
+                      <PiUser className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
+                    </div>
                   </FormControl>
+                  <FormMessage />
                 </FormItem>
               )}
             />
-
             <FormField
               control={form.control}
               name="email"
@@ -165,16 +176,22 @@ const AddressDialog: React.FC<IAddressDialogProps> = ({
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input
-                      type="email"
-                      placeholder="john@example.com"
-                      {...field}
-                    />
+                    <div className="relative">
+                      <Input
+                        type="email"
+                        placeholder="john@example.com"
+                        {...field}
+                        disabled={!!currentUser}
+                        className="pl-10"
+                        value={currentUser?.email || field.value}
+                      />
+                      <PiEnvelope className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                    </div>
                   </FormControl>
+                  <FormMessage />
                 </FormItem>
               )}
             />
-
             <FormField
               control={form.control}
               name="phone"
@@ -182,12 +199,19 @@ const AddressDialog: React.FC<IAddressDialogProps> = ({
                 <FormItem>
                   <FormLabel>Phone</FormLabel>
                   <FormControl>
-                    <Input placeholder="01234567890" {...field} />
+                    <div className="relative">
+                      <Input
+                        placeholder="01234567890"
+                        {...field}
+                        className="pl-10"
+                      />
+                      <PiPhone className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                    </div>
                   </FormControl>
+                  <FormMessage />
                 </FormItem>
               )}
             />
-
             <FormField
               control={form.control}
               name="altPhone"
@@ -195,12 +219,19 @@ const AddressDialog: React.FC<IAddressDialogProps> = ({
                 <FormItem>
                   <FormLabel>Alternative Phone</FormLabel>
                   <FormControl>
-                    <Input placeholder="01234567890" {...field} />
+                    <div className="relative">
+                      <Input
+                        placeholder="01234567890"
+                        {...field}
+                        className="pl-10"
+                      />
+                      <PiPhone className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                    </div>
                   </FormControl>
+                  <FormMessage />
                 </FormItem>
               )}
             />
-
             <FormField
               control={form.control}
               name="division"
@@ -234,10 +265,10 @@ const AddressDialog: React.FC<IAddressDialogProps> = ({
                       </SelectGroup>
                     </SelectContent>
                   </Select>
+                  <FormMessage />
                 </FormItem>
               )}
             />
-
             <FormField
               control={form.control}
               name="district"
@@ -270,10 +301,10 @@ const AddressDialog: React.FC<IAddressDialogProps> = ({
                       </SelectGroup>
                     </SelectContent>
                   </Select>
+                  <FormMessage />
                 </FormItem>
               )}
             />
-
             <FormField
               control={form.control}
               name="upazila"
@@ -305,10 +336,10 @@ const AddressDialog: React.FC<IAddressDialogProps> = ({
                       </SelectGroup>
                     </SelectContent>
                   </Select>
+                  <FormMessage />
                 </FormItem>
               )}
             />
-
             <FormField
               control={form.control}
               name="union"
@@ -330,10 +361,34 @@ const AddressDialog: React.FC<IAddressDialogProps> = ({
                       </SelectGroup>
                     </SelectContent>
                   </Select>
+                  <FormMessage />
                 </FormItem>
               )}
             />
-
+            <FormField
+              control={form.control}
+              name="label"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Label</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a label" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="HOME">Home</SelectItem>
+                      <SelectItem value="OFFICE">Office</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <FormField
               control={form.control}
               name="streetAddress"
@@ -341,30 +396,30 @@ const AddressDialog: React.FC<IAddressDialogProps> = ({
                 <FormItem>
                   <FormLabel>Street Address</FormLabel>
                   <FormControl>
-                    <Textarea
-                      placeholder="123 Main St, Apartment 4B"
-                      {...field}
-                    />
+                    <div className="relative">
+                      <Textarea
+                        placeholder="123 Main St, Apartment 4B"
+                        {...field}
+                        className="pl-10 pt-2"
+                      />
+                      <PiMapPin className="absolute left-3 top-3 text-gray-500" />
+                    </div>
                   </FormControl>
+                  <FormMessage />
                 </FormItem>
               )}
             />
-
-            <Button
-              type="submit"
-              className="w-full"
-              disabled={isLoading}
-              onClick={() =>
-                console.log("Form state before submission:", form.getValues())
-              }
-            >
+            <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading ? (
                 <>
                   <PiSpinner className="mr-2 h-4 w-4 animate-spin" />
                   Please wait
                 </>
               ) : (
-                "Save Address"
+                <>
+                  <PiHouse className="mr-2 h-4 w-4" />
+                  Save Address
+                </>
               )}
             </Button>
           </form>
@@ -372,6 +427,4 @@ const AddressDialog: React.FC<IAddressDialogProps> = ({
       </DialogContent>
     </Dialog>
   );
-};
-
-export default AddressDialog;
+}

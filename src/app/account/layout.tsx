@@ -1,65 +1,99 @@
 "use client";
 
 import MaxWidth from "@/components/max-width";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { useUserAccountMenu } from "@/static/user-account-menu";
+import { Menu, X } from "lucide-react";
 import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
 
 interface AccountLayoutProps {
   children: React.ReactNode;
 }
 
-const AccountLayout: React.FC<AccountLayoutProps> = ({ children }) => {
+export default function AccountLayout({ children }: AccountLayoutProps) {
   const userRoutes = useUserAccountMenu();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [menuHeight, setMenuHeight] = useState("0px");
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  useEffect(() => {
+    const updateMenuHeight = () => {
+      if (menuRef.current) {
+        if (window.innerWidth >= 768) {
+          setMenuHeight("auto");
+        } else {
+          setMenuHeight(
+            isMobileMenuOpen ? `${menuRef.current.scrollHeight}px` : "0px"
+          );
+        }
+      }
+    };
+
+    updateMenuHeight();
+    window.addEventListener("resize", updateMenuHeight);
+
+    return () => {
+      window.removeEventListener("resize", updateMenuHeight);
+    };
+  }, [isMobileMenuOpen]);
 
   return (
-    <MaxWidth className="mt-[90px]">
-      <div className="w-full h-[15vh] bg-gradient-to-r from-green-200 to-green-300 rounded-md py-3 px-5 flex flex-row justify-between">
-        <div className="flex flex-col">
-          <h2 className="text-xl font-semibold">Hello</h2>
-          <p className="text-sm text-muted-foreground">
-            Welcome to your account
-          </p>
-        </div>
-        <div className="mt-auto">
-          <p className="text-muted-foreground text-xs">alwan ideal lifesyle</p>
-        </div>
-      </div>
-      <div className="flex sm:flex-row flex-col min-h-[50vh]">
-        <div className="flex md:w-[170px] sm:w-[58px] sm:flex-col flex-row sm:justify-start sm:items-start justify-center items-center w-full sm:h-[73vh] sm:border-r gap-1 sm:pt-10 pt-10">
-          {userRoutes.map((route) => (
-            <Link
-              key={route.id}
-              href={route.href}
-              className="flex flex-col items-center sm:mt-0 px-3 py-1 "
+    <MaxWidth className="mt-[100px]">
+      <div className="container mx-auto px-4 py-4 md:py-8">
+        <div className="flex flex-col md:grid md:gap-6 md:grid-cols-[240px_1fr] lg:grid-cols-[280px_1fr]">
+          <div className="md:hidden mb-4">
+            <Button
+              onClick={toggleMobileMenu}
+              variant="outline"
+              className="w-full justify-between"
             >
-              <div className="p-1 w-full flex sm:justify-start items-center justify-center gap-2">
-                <div
-                  className={`w-[3px] bg-black h-[18px] rounded-r-full sm:block hidden ${
-                    route.active ? "" : "bg-transparent"
-                  }`}
-                />
-                <route.icon
-                  className={`${
-                    route.active ? "" : "text-muted-foreground"
-                  } md:text-base text-xl`}
-                />
-                <p className="text-xl font-medium md:flex hidden">
-                  {route.title}
-                </p>
-              </div>
+              <span>Menu</span>
+              {isMobileMenuOpen ? (
+                <X className="h-4 w-4" />
+              ) : (
+                <Menu className="h-4 w-4" />
+              )}
+            </Button>
+          </div>
 
-              <div
-                className={`w-[45%] bg-black h-[3px] rounded-b-full ${
-                  route.active ? "sm:hidden" : "bg-transparent"
-                }`}
-              />
-            </Link>
-          ))}
+          <Card
+            className={`overflow-hidden transition-all duration-300 ease-in-out md:h-auto md:overflow-visible ${
+              isMobileMenuOpen ? "border" : "border-0"
+            }`}
+            style={{ maxHeight: menuHeight }}
+          >
+            <CardContent className="p-4" ref={menuRef}>
+              <nav className="flex flex-col space-y-2">
+                {userRoutes.map((route) => (
+                  <Link
+                    key={route.id}
+                    href={route.href}
+                    className={`flex items-center rounded-md px-3 py-2 text-sm font-medium transition-colors ${
+                      route.active
+                        ? "bg-primary text-primary-foreground"
+                        : "hover:bg-muted"
+                    }`}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    <route.icon className="mr-2 h-4 w-4" />
+                    {route.title}
+                  </Link>
+                ))}
+              </nav>
+            </CardContent>
+          </Card>
+
+          <Card className="mt-4 md:mt-0">
+            <CardContent className="p-4 md:p-6">{children}</CardContent>
+          </Card>
         </div>
-        <div className="p-2 w-full sm:mt-0 mt-5">{children}</div>
       </div>
     </MaxWidth>
   );
-};
-
-export default AccountLayout;
+}

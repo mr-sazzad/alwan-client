@@ -20,7 +20,7 @@ const TextSection = () => {
     );
   }
 
-  const homeText = response?.data[0];
+  const homeText = response?.data;
 
   return (
     <div>

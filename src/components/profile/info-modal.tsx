@@ -44,7 +44,7 @@ const InfoModal: React.FC<IInfoModalProps> = ({
   const form = useForm<z.infer<typeof profileInfoSchema>>({
     resolver: zodResolver(profileInfoSchema),
     defaultValues: {
-      username: "",
+      userName: "",
       phone: "",
       altPhone: "",
       email: "",
@@ -54,7 +54,7 @@ const InfoModal: React.FC<IInfoModalProps> = ({
   useEffect(() => {
     if (user) {
       form.reset({
-        username: user?.data.username || "",
+        userName: user?.data.userName || "",
         phone: user?.data.phone || "",
         altPhone: user?.data.altPhone || "",
         email: user?.data.email || "",
@@ -63,8 +63,9 @@ const InfoModal: React.FC<IInfoModalProps> = ({
   }, [user, form]);
 
   const onSubmit = async (values: z.infer<typeof profileInfoSchema>) => {
+    console.log(values, "VALUES");
     const requestedData = {
-      username: values.username || user?.data.username,
+      userName: values.userName || user?.data.userName,
       email: user.email || values.email,
       phone: values.phone || user?.data.phone,
       altPhone: values.altPhone || user?.data.altPhone,
@@ -94,7 +95,9 @@ const InfoModal: React.FC<IInfoModalProps> = ({
     <Dialog open={infoModalOpen} onOpenChange={setInfoModalOpen}>
       <DialogContent className="sm:max-w-[500px] rounded">
         <DialogHeader>
-          <DialogTitle>Edit your information</DialogTitle>
+          <DialogTitle className="font-medium">
+            Edit your information
+          </DialogTitle>
           <DialogDescription>
             Make changes to your profile here. Click save when you&apos;re done.
           </DialogDescription>
@@ -103,7 +106,7 @@ const InfoModal: React.FC<IInfoModalProps> = ({
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
               control={form.control}
-              name="username"
+              name="userName"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Username</FormLabel>

@@ -13,11 +13,11 @@ export default function SustainabilityPage() {
   return (
     <MaxWidth className="mt-[100px]">
       <div className="container mx-auto px-4 py-8">
-        <section className="text-center mb-8">
-          <h1 className="text-3xl font-bold mb-4">
+        <section className="mb-8">
+          <h1 className="text-3xl font-medium mb-2">
             Our Commitment to Sustainability
           </h1>
-          <p className="text-lg text-muted-foreground">
+          <p className="text-muted-foreground">
             At Alwan Ideal, we believe in offering premium products while caring
             for our environment. We&apos;re taking our first steps towards a
             more sustainable future.
@@ -27,7 +27,7 @@ export default function SustainabilityPage() {
         <section className="grid md:grid-cols-3 gap-6 mb-8">
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center text-lg">
+              <CardTitle className="flex items-center text-lg font-medium">
                 <Leaf className="mr-2 h-5 w-5" />
                 Quality Materials
               </CardTitle>
@@ -39,7 +39,7 @@ export default function SustainabilityPage() {
           </Card>
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center text-lg">
+              <CardTitle className="flex items-center text-lg font-medium">
                 <Recycle className="mr-2 h-5 w-5" />
                 Reducing Waste
               </CardTitle>
@@ -51,7 +51,7 @@ export default function SustainabilityPage() {
           </Card>
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center text-lg">
+              <CardTitle className="flex items-center text-lg font-medium">
                 <ShoppingBag className="mr-2 h-5 w-5" />
                 Local Production
               </CardTitle>
@@ -64,7 +64,7 @@ export default function SustainabilityPage() {
         </section>
 
         <section className="bg-muted p-6 rounded-lg mb-8">
-          <h2 className="text-xl font-bold mb-4">Our Sustainability Goals</h2>
+          <h2 className="text-xl font-medium mb-4">Our Sustainability Goals</h2>
           <ul className="list-disc list-inside space-y-2">
             <li>Use more eco-friendly materials in our products</li>
             <li>Reduce packaging waste</li>
@@ -75,7 +75,7 @@ export default function SustainabilityPage() {
 
         <Alert className="mb-8">
           <AlertTriangle className="h-4 w-4" />
-          <AlertTitle>Important Note</AlertTitle>
+          <AlertTitle className="font-medium">Important Note</AlertTitle>
           <AlertDescription>
             We&apos;re committed to sustainability, but we want to be
             transparent: not all of our products are sustainable yet. We&apos;re
@@ -86,7 +86,7 @@ export default function SustainabilityPage() {
         </Alert>
 
         <section className="mb-8">
-          <h2 className="text-2xl font-bold mb-4">
+          <h2 className="text-2xl font-medium mb-4">
             Frequently Asked Questions
           </h2>
           <Accordion type="single" collapsible className="w-full">
@@ -151,7 +151,7 @@ export default function SustainabilityPage() {
         </section>
 
         <section className="bg-muted p-6 rounded-lg mb-8">
-          <h2 className="text-xl font-bold mb-4">Join Us on Our Journey</h2>
+          <h2 className="text-xl font-medium mb-4">Join Us on Our Journey</h2>
           <p className="text-muted-foreground">
             As a new brand, we&apos;re at the beginning of our sustainability
             journey. We&apos;re committed to improving our practices and

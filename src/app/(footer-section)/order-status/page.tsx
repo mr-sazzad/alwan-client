@@ -47,15 +47,14 @@ export default function OrderProcess() {
 
   return (
     <MaxWidth className="mt-[100px]">
-      {" "}
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold mb-8 text-center">
+        <h1 className="text-3xl font-medium mb-8">
           Understanding Your Order Status
         </h1>
 
         <Card className="mb-8">
           <CardHeader>
-            <CardTitle>Our Order Process</CardTitle>
+            <CardTitle className="font-medium">Our Order Process</CardTitle>
             <CardDescription>
               At Alwan-ideal, we strive to make your shopping experience as
               smooth as possible. Here&apos;s how we process your order:
@@ -84,13 +83,13 @@ export default function OrderProcess() {
           </CardContent>
         </Card>
 
-        <h2 className="text-2xl font-semibold mb-4">Order Status Explained</h2>
+        <h2 className="text-2xl font-medium mb-4">Order Status Explained</h2>
         <div className="grid gap-6 md:grid-cols-2 mb-8">
           {orderStatuses.map((status) => (
             <Card key={status.id}>
               <CardHeader className="flex flex-row items-center space-y-0 pb-2">
                 <status.icon className="w-6 h-6 mr-2" />
-                <CardTitle>{status.label}</CardTitle>
+                <CardTitle className="font-medium">{status.label}</CardTitle>
               </CardHeader>
               <CardContent>
                 <p>{status.description}</p>
@@ -101,7 +100,7 @@ export default function OrderProcess() {
 
         <Card className="mb-8">
           <CardHeader>
-            <CardTitle>Tracking Your Order</CardTitle>
+            <CardTitle className="font-medium">Tracking Your Order</CardTitle>
           </CardHeader>
           <CardContent>
             <p>
@@ -114,7 +113,7 @@ export default function OrderProcess() {
           </CardContent>
         </Card>
 
-        <h2 className="text-2xl font-semibold mb-4">
+        <h2 className="text-2xl font-medium mb-4">
           Frequently Asked Questions
         </h2>
         <Accordion type="single" collapsible className="mb-8">
@@ -162,7 +161,7 @@ export default function OrderProcess() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Need More Help?</CardTitle>
+            <CardTitle className="font-medium">Need More Help?</CardTitle>
           </CardHeader>
           <CardContent className="flex items-center space-x-2">
             <AlertCircle className="w-6 h-6" />

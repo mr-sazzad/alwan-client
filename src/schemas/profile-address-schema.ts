@@ -2,6 +2,7 @@ import { z } from "zod";
 
 export const profileAddressSchema = z.object({
   id: z.string().optional(),
+  label: z.enum(["HOME", "OFFICE"]).optional(),
   recipientName: z.string().optional(),
   phone: z.string().optional(),
   addressId: z.string().optional(),

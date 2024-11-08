@@ -3,7 +3,7 @@
 import HomeTextForm from "@/components/admins/dashboard/home-text/home-text-form";
 import PageTitle from "@/components/admins/dashboard/page-titles/page-title";
 import AlwanBreadCrumb from "@/components/breadcrumbs/breadcrumb";
-import AdminDashboardLoading from "@/components/lodings/admin-dashboard-loding";
+import AdminColorSkeleton from "@/components/skeletons/admin-color-skeleton";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
 import { useGetLeafCategoriesQuery } from "@/redux/api/categoies/categoriesApi";
@@ -13,6 +13,7 @@ import {
   useUpdateTextMutation,
 } from "@/redux/api/home-text/homeTextApi";
 import { homeTextSchema } from "@/schemas/admins/home-text-schema";
+import { CaseUpper } from "lucide-react";
 import { useState } from "react";
 import { z } from "zod";
 import HomeTextTable from "./home-text-table";
@@ -31,7 +32,7 @@ export default function HomeText() {
   const [updateText, { isLoading: isTextUpdating }] = useUpdateTextMutation();
 
   if (isLoading || isCategoriesLoading) {
-    return <AdminDashboardLoading />;
+    return <AdminColorSkeleton />;
   }
 
   const handleSubmit = async (values: HomeTextType) => {
@@ -81,19 +82,25 @@ export default function HomeText() {
           { label: "Dashboard", href: "/dashboard" },
         ]}
         page="Home Text"
+        className="my-3"
       />
-      <PageTitle title="Home Text" description="Home Text information" />
+      <PageTitle
+        title="Home Text"
+        description="Home Text information"
+        icon={<CaseUpper />}
+        accentColor="red"
+      />
 
       <div className="flex justify-end">
         <Button
-          variant="link"
+          variant="outline"
           onClick={() => {
             setIsUpdating(false);
             setSelectedText(null);
             setOpen(true);
           }}
         >
-          + Add New Text
+          Add New Text
         </Button>
       </div>
 
