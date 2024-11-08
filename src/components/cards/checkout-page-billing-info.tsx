@@ -165,11 +165,12 @@ const CheckOutPageBillingInfo: React.FC<CheckOutPageBillingInfoProps> = ({
           </div>
         </div>
         <div className="w-full mt-4">
-          <Button className="w-full" onClick={() => handlePlaceOrder()}>
+          <Button className="w-full" onClick={handlePlaceOrder}>
             Order Now
           </Button>
         </div>
       </div>
+
       <CouponCodeModal
         open={couponModalOpen}
         setOpen={setCouponModalOpen}
