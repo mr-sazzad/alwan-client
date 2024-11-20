@@ -5,7 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import Providers from "@/providers/reduxProvider";
 import { ThemeProvider } from "@/providers/theme-provider";
 import type { Metadata } from "next";
-import { Poppins } from "next/font/google";
+import { Inter } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
 
@@ -14,11 +14,13 @@ export const metadata: Metadata = {
   description: "The ideal lifestyle",
 };
 
-const poppins = Poppins({
-  weight: ["400", "500", "700", "800"],
-  subsets: ["latin"],
-  variable: "--font-poppins",
-});
+// const poppins = Poppins({
+//   weight: ["400", "500", "700", "800"],
+//   subsets: ["latin"],
+//   variable: "--font-poppins",
+// });
+
+const poppins = Inter();
 
 const helvetica = localFont({
   src: "../../public/fonts/HelveticaNowText-Medium.woff2",
@@ -32,7 +34,7 @@ export default function RootLayout({
 }>) {
   return (
     <Providers>
-      <html lang="en" className={`${poppins.variable} ${helvetica.variable}`}>
+      <html lang="en" className={`inter.classname ${helvetica.variable}`}>
         <body>
           <ThemeProvider
             attribute="class"

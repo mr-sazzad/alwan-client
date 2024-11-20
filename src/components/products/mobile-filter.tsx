@@ -2,7 +2,7 @@
 
 import { filterSchema } from "@/schemas/filter-schema";
 import { prices } from "@/static/product-prices";
-import { IReadColor } from "@/types";
+import { IColor } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect } from "react";
@@ -36,12 +36,13 @@ const extendedFilterSchema = filterSchema.extend({
 
 interface MobileFilterProps {
   categoryId: string;
-  colorsFromServer: {
-    data: IReadColor[];
-  };
+  colorsFromServer: IColor[];
 }
 
-const MobileFilter: React.FC<MobileFilterProps> = ({ categoryId, colorsFromServer }) => {
+const MobileFilter: React.FC<MobileFilterProps> = ({
+  categoryId,
+  colorsFromServer,
+}) => {
   const router = useRouter();
 
   const form = useForm<z.infer<typeof extendedFilterSchema>>({
@@ -85,7 +86,7 @@ const MobileFilter: React.FC<MobileFilterProps> = ({ categoryId, colorsFromServe
     return () => subscription.unsubscribe();
   }, [watch, updateQueryParams]);
 
-  const colors = ConvertedColors(colorsFromServer?.data);
+  const colors = ConvertedColors(colorsFromServer);
 
   return (
     <div>

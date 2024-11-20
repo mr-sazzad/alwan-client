@@ -1,6 +1,6 @@
 "use client";
 
-import { Badge } from "@/components/ui/badge";
+import CourierRatioChecker from "@/components/admins/dashboard/courier-ration-checker/courier-ratio-checker";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -13,6 +13,7 @@ import {
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, EyeIcon, MoreHorizontal, Package } from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
 
 export type OrderItem = {
   id: string;
@@ -49,6 +50,7 @@ export type Order = {
 
 const OrderTableColumns = () => {
   const path = "/admins/dashboard/orders";
+  const [open, setOpen] = useState(false);
 
   const columns: ColumnDef<Order>[] = [
     {
@@ -70,7 +72,12 @@ const OrderTableColumns = () => {
       accessorKey: "phone",
       header: "Phone",
       cell: ({ row }) => {
-        return <span className="text-sm">{row.getValue("phone")}</span>;
+        return (
+          <div className="flex gap-1 items-center">
+            <span className="text-sm">{row.getValue("phone")}</span>
+            <CourierRatioChecker phone={row.getValue("phone")} />
+          </div>
+        );
       },
     },
     {
@@ -104,11 +111,15 @@ const OrderTableColumns = () => {
       header: "Items",
       cell: ({ row }) => {
         const items = row.getValue("items") as OrderItem[];
+        const itemCount = items.length;
+        const formattedCount =
+          itemCount < 10 ? `0${itemCount}` : `${itemCount}`;
+
         return (
-          <Badge variant="secondary">
+          <div className="flex gap-1 items-center">
             <Package className="mr-1 h-3 w-3" />
-            {items.length}
-          </Badge>
+            {formattedCount}
+          </div>
         );
       },
     },

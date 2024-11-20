@@ -25,7 +25,7 @@ import { addProductToCart } from "@/redux/api/cart/cartSlice";
 import { addProductToFavorite } from "@/redux/api/favorite/favoriteSlice";
 import { useGetSingleProductQuery } from "@/redux/api/products/productsApi";
 import { AppDispatch, RootState } from "@/redux/store";
-import { IReadSizeVariant } from "@/types";
+import { ISizeVariant } from "@/types";
 
 export default function Component() {
   const router = useRouter();
@@ -36,7 +36,7 @@ export default function Component() {
   const { data: product, isLoading } = useGetSingleProductQuery(product_id);
 
   const [selectedSizeVariant, setSelectedSizeVariant] =
-    useState<IReadSizeVariant | null>(null);
+    useState<ISizeVariant | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [qty, setQty] = useState<number>(0);
   const [isNotificationDialogOpen, setIsNotificationDialogOpen] =
@@ -62,7 +62,7 @@ export default function Component() {
     });
   };
 
-  const handleSelectSizeVariant = (sizeVariant: IReadSizeVariant): void => {
+  const handleSelectSizeVariant = (sizeVariant: ISizeVariant): void => {
     setSelectedSizeVariant(sizeVariant);
     setQty(sizeVariant.stock > 0 ? 1 : 0);
   };
@@ -133,6 +133,7 @@ export default function Component() {
         <div className="w-full max-w-6xl">
           <div className="flex flex-col md:flex-row gap-8">
             <Skeleton className="w-full md:w-1/2 aspect-square rounded-lg" />
+
             <div className="w-full md:w-1/2 space-y-4">
               <Skeleton className="h-8 w-3/4" />
               <Skeleton className="h-6 w-1/2" />
@@ -184,7 +185,7 @@ export default function Component() {
                 <div className="grid grid-cols-3 gap-2 mt-2">
                   {product?.data?.sizeVariants &&
                     product.data?.sizeVariants.map(
-                      (sizeVariant: IReadSizeVariant) => (
+                      (sizeVariant: ISizeVariant) => (
                         <Button
                           key={sizeVariant.id}
                           className="w-full"

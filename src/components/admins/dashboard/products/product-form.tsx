@@ -50,6 +50,7 @@ import {
 import { useGetAllSizesQuery } from "@/redux/api/size/size-api";
 import { productSchema } from "@/schemas/product-schema";
 import { IProduct } from "@/types";
+import { Loader } from "lucide-react";
 
 interface ProductFormProps {
   mode: "create" | "update";
@@ -725,7 +726,7 @@ export default function Component({
               disabled={isCreating || isUpdating}
             >
               {isCreating || isUpdating ? (
-                <Skeleton className="h-4 w-4 rounded-full" />
+                <Loader className="h-4 w-4 mr-2 animate-spin" />
               ) : (
                 <TbCubePlus className="mr-2 h-4 w-4" />
               )}

@@ -1,21 +1,13 @@
 "use client";
 
-import { useGetParentCategoriesQuery } from "@/redux/api/categoies/categoriesApi";
-import { useCategories } from "@/static/deleteable-data/categories";
-import Image from "next/image";
-import { Button } from "../ui/button";
-
 // Icons
 
 const HomeCategories = () => {
-  const { data: parentCategories, isLoading } =
-    useGetParentCategoriesQuery(undefined);
-
-  const categories = useCategories();
+  // HOME CATEGORIES WILL GO HERE
 
   return (
     <div className="mt-5">
-      <div className="flex flex-row flex-wrap w-full">
+      {/* <div className="flex flex-row flex-wrap w-full">
         {categories.map((category: any) => (
           <div
             key={category.id}
@@ -41,7 +33,7 @@ const HomeCategories = () => {
             </div>
           </div>
         ))}
-      </div>
+      </div> */}
     </div>
   );
 };

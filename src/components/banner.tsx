@@ -8,18 +8,24 @@ import { Skeleton } from "./ui/skeleton";
 
 // Helper function to get Cloudinary blur placeholder URL
 const getBlurPlaceholder = (url: string) => {
+  console.log(url);
   return url.replace("/upload/", "/upload/w_100,e_blur:1000,q_auto,f_auto/");
 };
 
 const Banner = () => {
-  const { data: response, isLoading } = useGetAllCarouselsQuery(undefined);
+  const {
+    data: response,
+    isLoading,
+    isError,
+  } = useGetAllCarouselsQuery(undefined);
+
   const [aspectRatio, setAspectRatio] = useState(16 / 9);
 
   if (isLoading) {
     return (
-      <div className="mt-[90px] w-full">
-        <Skeleton className="w-full h-[80vh] md:h-[70vh] lg:h-[79vh]">
-          <div className="w-full h-full flex justify-center items-center">
+      <div className="mt-[90px] w-full h-[80vh] relative">
+        <Skeleton className="w-full h-full">
+          <div className="absolute inset-0 flex justify-center items-center">
             <PiSpinner className="w-5 h-5 animate-spin" />
           </div>
         </Skeleton>
@@ -27,8 +33,12 @@ const Banner = () => {
     );
   }
 
-  if (!response?.data || response.data.length === 0) {
-    return null;
+  if (isError || !response?.data || response.data.length === 0) {
+    return (
+      <div className="mt-[90px] w-full text-center text-gray-500">
+        <p>Failed to load banner image.</p>
+      </div>
+    );
   }
 
   const image = response.data[0].fileUrls[0];
@@ -41,10 +51,7 @@ const Banner = () => {
 
   return (
     <div className="mt-[90px] w-full">
-      <div
-        className="relative w-full"
-        style={{ paddingBottom: `${100 / aspectRatio}%` }}
-      >
+      <div className="mt-[90px] w-full h-[600px] relative">
         <Image
           src={image}
           alt="Banner Image"

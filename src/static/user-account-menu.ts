@@ -3,7 +3,6 @@
 import { usePathname } from "next/navigation";
 import { useMemo } from "react";
 
-// react icons
 import { Box, Home, Settings, UserRound } from "lucide-react";
 
 export const useUserAccountMenu = () => {

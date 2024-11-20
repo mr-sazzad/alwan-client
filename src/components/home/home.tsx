@@ -3,6 +3,7 @@
 import Banner from "../banner";
 import HomeCategories from "../categories/home-categories";
 import MaxWidth from "../max-width";
+import NewArrivalProductsSlider from "../new-arrivals/new-arrival-products-slider";
 import NewArrivals from "../new-arrivals/new-arrivals";
 import WhatWeOffer from "../static/what-we-offer";
 
@@ -24,6 +25,7 @@ const Home = () => {
         <div>
           <NewArrivals />
         </div>
+        <NewArrivalProductsSlider />
       </MaxWidth>
     </div>
   );
