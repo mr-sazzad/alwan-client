@@ -9,7 +9,6 @@ import { IUser } from "@/types";
 import { CalendarIcon, UserPlusIcon, UsersIcon } from "lucide-react";
 import UserColumns from "./user-columns";
 
-// StatusCard component (as provided)
 function StatusCard({
   title,
   value,
@@ -47,7 +46,6 @@ function StatusCard({
 const UsersPage = () => {
   const { data: userRes, isLoading } = useGetAllUsersQuery(undefined);
 
-  // Calculate user statistics
   const totalUsers = userRes?.data.length;
   const todayUsers = userRes?.data.filter(
     (user: IUser) =>
@@ -68,6 +66,8 @@ const UsersPage = () => {
   if (isLoading) {
     return <AdminUsersSkeleton />;
   }
+
+  console.log(userRes);
 
   return (
     <div>

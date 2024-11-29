@@ -15,7 +15,12 @@ import { toast } from "@/components/ui/use-toast";
 import { useDeleteSizeMutation } from "@/redux/api/size/size-api";
 import { DropdownMenuLabel } from "@radix-ui/react-dropdown-menu";
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, MoreHorizontal, PencilLine, Trash2 } from "lucide-react";
+import {
+  ArrowUpDown,
+  ClipboardEdit,
+  MoreHorizontal,
+  Trash2,
+} from "lucide-react";
 import { useState } from "react";
 
 export type Size = {
@@ -75,23 +80,10 @@ const SizeTableColumns: React.FC<SizeTableColumnsProps> = ({ sizes }) => {
       ),
       cell: ({ row }) => {
         return (
-          <div className="inline-flex items-center bg-orange-100 text-orange-600 px-2 py-1 rounded-md">
-            <span className="w-2 h-2 rounded bg-orange-600 mr-2" />
+          <div className="inline-flex items-center text-orange-500 px-2 py-1 rounded-md">
+            <span className="w-2 h-2 rounded bg-orange-700 mr-2" />
             <span>{row.original.name}</span>
           </div>
-        );
-      },
-    },
-    {
-      accessorKey: "id",
-      header: "Size ID",
-      cell: ({ row }) => {
-        const sizeId = row.original.id;
-        const truncatedSizeId = `${sizeId.slice(0, 6)}...${sizeId.slice(-5)}`;
-        return (
-          <span className="inline-flex items-center bg-fuchsia-100 text-fuchsia-600 px-2 py-1 rounded-md">
-            {truncatedSizeId}
-          </span>
         );
       },
     },
@@ -119,7 +111,7 @@ const SizeTableColumns: React.FC<SizeTableColumnsProps> = ({ sizes }) => {
                     setOpen(true), setSize(row.original);
                   }}
                 >
-                  <PencilLine className="w-4 h-4 mr-2" />
+                  <ClipboardEdit className="w-4 h-4 mr-2" />
                   Update size
                 </DropdownMenuItem>
                 <DropdownMenuItem
@@ -128,7 +120,7 @@ const SizeTableColumns: React.FC<SizeTableColumnsProps> = ({ sizes }) => {
                     setSize(row.original);
                   }}
                 >
-                  <Trash2 className="w-4 h-4 mr-2 text-red-500" />
+                  <Trash2 className="w-4 h-4 mr-2" />
                   Delete size
                 </DropdownMenuItem>
               </DropdownMenuContent>

@@ -61,6 +61,8 @@ export default function OrderPage() {
     return <AdminOrdersSkeleton />;
   }
 
+  console.log(orderRes);
+
   const filterOrders = (status: string) => {
     if (!orderRes?.data) return [];
 
@@ -77,12 +79,12 @@ export default function OrderPage() {
         switch (status) {
           case "processing":
             return item.itemStatus === "PROCESSING";
-          case "in-transit":
-            return item.itemStatus === "IN_TRANSIT";
-          case "completed":
+          case "shipped-to-courier":
+            return item.itemStatus === "SHIPPED_TO_COURIER";
+          case "delivered":
             return item.itemStatus === "DELIVERED";
-          case "request-to-return":
-            return item.itemStatus === "REQUESTTORETURN";
+          case "return-requested":
+            return item.itemStatus === "RETURN_REQUESTED";
           case "returned":
             return item.itemStatus === "RETURNED";
           default:
@@ -96,30 +98,31 @@ export default function OrderPage() {
     if (!orderRes?.data)
       return {
         total: 0,
-        inTransit: 0,
+        shipperToCourier: 0,
         cancelled: 0,
         delivered: 0,
-        requestReturn: 0,
+        returnRequested: 0,
         returned: 0,
         processing: 0,
         confirmed: 0,
       };
 
     const total = orderRes.data.length;
-    const cancelled = filterOrders("CANCELLED").length;
-    const inTransit = filterOrders("in-transit").length;
-    const delivered = filterOrders("completed").length;
-    const requestReturn = filterOrders("request-to-return").length;
+    const shippedToCourier = filterOrders("shipped-to-courier").length;
+    const delivered = filterOrders("delivered").length;
+    const returnRequested = filterOrders("return-requested").length;
     const returned = filterOrders("returned").length;
     const processing = filterOrders("processing").length;
+
+    const cancelled = filterOrders("CANCELLED").length;
     const confirmed = filterOrders("CONFIRM").length;
 
     return {
       total,
-      inTransit,
+      shippedToCourier,
       cancelled,
       delivered,
-      requestReturn,
+      returnRequested,
       returned,
       processing,
       confirmed,
@@ -155,19 +158,20 @@ export default function OrderPage() {
       )}%`,
     },
     {
-      title: "In Transit",
+      title: "Shipped To Courier",
       icon: Truck,
-      value: statusCounts.inTransit,
+      value: statusCounts.shippedToCourier,
       status: "On the way",
-      stat: `${((statusCounts.inTransit / statusCounts.total) * 100).toFixed(
-        1
-      )}%`,
+      stat: `${(
+        (statusCounts.shippedToCourier / statusCounts.total) *
+        100
+      ).toFixed(1)}%`,
     },
     {
       title: "Delivered",
       icon: CheckCircle,
       value: statusCounts.delivered,
-      status: "Completed",
+      status: "Delivered",
       stat: `${((statusCounts.delivered / statusCounts.total) * 100).toFixed(
         1
       )}%`,
@@ -184,10 +188,10 @@ export default function OrderPage() {
     {
       title: "Request Return",
       icon: RotateCcw,
-      value: statusCounts.requestReturn,
+      value: statusCounts.returnRequested,
       status: "Pending",
       stat: `${(
-        (statusCounts.requestReturn / statusCounts.total) *
+        (statusCounts.returnRequested / statusCounts.total) *
         100
       ).toFixed(1)}%`,
     },
@@ -231,10 +235,12 @@ export default function OrderPage() {
                 <TabsTrigger value="all">All Orders</TabsTrigger>
                 <TabsTrigger value="processing">Processing</TabsTrigger>
                 <TabsTrigger value="CANCELLED">Cancelled</TabsTrigger>
-                <TabsTrigger value="in-transit">In Transit</TabsTrigger>
+                <TabsTrigger value="shipped-to-courier">
+                  Shipped To Courier
+                </TabsTrigger>
                 <TabsTrigger value="completed">Completed</TabsTrigger>
-                <TabsTrigger value="request-to-return">
-                  Request Return
+                <TabsTrigger value="return-requested">
+                  Return Requested
                 </TabsTrigger>
                 <TabsTrigger value="returned">Returned</TabsTrigger>
               </TabsList>
@@ -260,10 +266,10 @@ export default function OrderPage() {
                 filterColumn="email"
               />
             </TabsContent>
-            <TabsContent value="in-transit" className="space-y-4">
+            <TabsContent value="shipped-to-courier" className="space-y-4">
               <DataTable
                 columns={columns}
-                data={filterOrders("in-transit")}
+                data={filterOrders("shipped-to-courier")}
                 filterColumn="email"
               />
             </TabsContent>
@@ -274,10 +280,10 @@ export default function OrderPage() {
                 filterColumn="email"
               />
             </TabsContent>
-            <TabsContent value="request-to-return" className="space-y-4">
+            <TabsContent value="return-requested" className="space-y-4">
               <DataTable
                 columns={columns}
-                data={filterOrders("request-to-return")}
+                data={filterOrders("return-requested")}
                 filterColumn="email"
               />
             </TabsContent>

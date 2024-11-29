@@ -14,6 +14,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { AlertCircle, Key, Paintbrush, Trash2 } from "lucide-react";
 import { useState } from "react";
+import { PiPasswordLight } from "react-icons/pi";
 
 export default function AccountSettings() {
   const [changePasswordDialogOpen, setChangePasswordDialogOpen] =
@@ -53,7 +54,9 @@ export default function AccountSettings() {
               <Button
                 variant="outline"
                 onClick={() => setChangePasswordDialogOpen(true)}
+                className="flex items-center gap-2"
               >
+                <PiPasswordLight />
                 Change
               </Button>
             </div>

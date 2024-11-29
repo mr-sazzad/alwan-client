@@ -26,7 +26,7 @@ import {
   useUpdateProductTypeByIdMutation,
 } from "@/redux/api/product-types/product-types-api";
 import { productTypeSchema } from "@/schemas/admins/product-type-schema";
-import { IReadProductType } from "@/types";
+import { IProductType } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { X } from "lucide-react";
 import { useEffect } from "react";
@@ -37,7 +37,7 @@ import { z } from "zod";
 interface ProductTypeDrawerProps {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  productType?: IReadProductType;
+  productType?: IProductType;
 }
 
 const ProductTypeDrawer = ({
@@ -69,6 +69,7 @@ const ProductTypeDrawer = ({
 
   const onSubmit = async (value: z.infer<typeof productTypeSchema>) => {
     try {
+      console.log(value);
       let response;
       if (isEditing && productType) {
         response = await updateProductType({

@@ -124,6 +124,7 @@ export default function AddressDialog({
   const onSubmit = (values: FormValues) => {
     const finalValues: FormValues = {
       ...values,
+      email: currentUser?.email || values.email,
       division: getNameById(values.division, divisionData) || "",
       divisionId: values.division,
       district: getNameById(values.district, districtData) || "",
@@ -143,7 +144,7 @@ export default function AddressDialog({
 
   return (
     <Dialog open={addressModalOpen} onOpenChange={setAddressModalOpen}>
-      <DialogContent className="sm:max-w-[500px] hide-scrollbar max-h-[90vh] overflow-y-auto rounded">
+      <DialogContent className="sm:max-w-[600px] hide-scrollbar sm:max-h-[90vh] h-[100vh] overflow-y-auto rounded">
         <DialogHeader>
           <DialogTitle className="text-xl font-medium">{title}</DialogTitle>
         </DialogHeader>
@@ -269,102 +270,108 @@ export default function AddressDialog({
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="district"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>District</FormLabel>
-                  <Select
-                    onValueChange={(value) => {
-                      field.onChange(value);
-                      const upazilas = upazilaData.filter(
-                        (upazila) => upazila.district_id === value
-                      );
-                      setFilteredUpazilas(upazilas);
-                      form.setValue("upazila", "");
-                      form.setValue("union", "");
-                    }}
-                    value={field.value}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select district" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        <SelectLabel>Districts</SelectLabel>
-                        {filteredDistricts.map((district: IDistrict) => (
-                          <SelectItem key={district.id} value={district.id}>
-                            {district.name}
-                          </SelectItem>
-                        ))}
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="upazila"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Upazila</FormLabel>
-                  <Select
-                    onValueChange={(value) => {
-                      field.onChange(value);
-                      const unions = unionData.filter(
-                        (union) => union.upazilla_id === value
-                      );
-                      setFilteredUnions(unions);
-                      form.setValue("union", "");
-                    }}
-                    value={field.value}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select upazila" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        <SelectLabel>Upazilas</SelectLabel>
-                        {filteredUpazilas.map((upazila: IUpazila) => (
-                          <SelectItem key={upazila.id} value={upazila.id}>
-                            {upazila.name}
-                          </SelectItem>
-                        ))}
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="union"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Union</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select union" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        <SelectLabel>Unions</SelectLabel>
-                        {filteredUnions.map((union: IUnion) => (
-                          <SelectItem key={union.id} value={union.id}>
-                            {union.name}
-                          </SelectItem>
-                        ))}
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            {form.watch("division") && (
+              <FormField
+                control={form.control}
+                name="district"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>District</FormLabel>
+                    <Select
+                      onValueChange={(value) => {
+                        field.onChange(value);
+                        const upazilas = upazilaData.filter(
+                          (upazila) => upazila.district_id === value
+                        );
+                        setFilteredUpazilas(upazilas);
+                        form.setValue("upazila", "");
+                        form.setValue("union", "");
+                      }}
+                      value={field.value}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select district" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectLabel>Districts</SelectLabel>
+                          {filteredDistricts.map((district: IDistrict) => (
+                            <SelectItem key={district.id} value={district.id}>
+                              {district.name}
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
+            {form.watch("district") && (
+              <FormField
+                control={form.control}
+                name="upazila"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Upazila</FormLabel>
+                    <Select
+                      onValueChange={(value) => {
+                        field.onChange(value);
+                        const unions = unionData.filter(
+                          (union) => union.upazilla_id === value
+                        );
+                        setFilteredUnions(unions);
+                        form.setValue("union", "");
+                      }}
+                      value={field.value}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select upazila" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectLabel>Upazilas</SelectLabel>
+                          {filteredUpazilas.map((upazila: IUpazila) => (
+                            <SelectItem key={upazila.id} value={upazila.id}>
+                              {upazila.name}
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
+            {form.watch("upazila") && (
+              <FormField
+                control={form.control}
+                name="union"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Union</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select union" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectLabel>Unions</SelectLabel>
+                          {filteredUnions.map((union: IUnion) => (
+                            <SelectItem key={union.id} value={union.id}>
+                              {union.name}
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
             <FormField
               control={form.control}
               name="label"

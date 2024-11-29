@@ -26,8 +26,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { toast } from "@/components/ui/use-toast";
 import { homeTextSchema } from "@/schemas/admins/home-text-schema";
-import { IReadCategory } from "@/types";
+import { ICategory } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { X } from "lucide-react";
 import { useEffect } from "react";
@@ -41,9 +42,9 @@ interface HomeTextProps {
   open: boolean;
   setOpen: (open: boolean) => void;
   isUpdating: boolean;
-  categories: IReadCategory[];
-  onSubmit: (values: z.infer<typeof homeTextSchema>) => void;
-  initialData?: z.infer<typeof homeTextSchema> | null;
+  categories: ICategory[];
+  onSubmit: (values: HomeTextFormData) => void;
+  initialData?: HomeTextFormData | null;
   isLoading: boolean;
 }
 
@@ -70,9 +71,11 @@ export default function HomeTextForm({
     if (initialData) {
       form.reset({
         ...initialData,
+        categoryId: initialData.categoryId ?? "",
+        buttonText: initialData.buttonText ?? "",
         text: Array.isArray(initialData.text)
           ? initialData.text.join(", ")
-          : initialData.text,
+          : initialData.text || "",
       });
     } else {
       form.reset({
@@ -84,13 +87,34 @@ export default function HomeTextForm({
     }
   }, [initialData, form]);
 
+  const removeEmptyFields = (data: HomeTextFormData) => {
+    return Object.fromEntries(
+      Object.entries(data).filter(([key, value]) => value !== "")
+    ) as HomeTextFormData;
+  };
+
   const handleSubmit = async (data: HomeTextFormData) => {
+    const submissionData: HomeTextFormData = {
+      ...data,
+      text: data.text.trim()
+        ? data.text
+            .split(",")
+            .map((item) => item.trim())
+            .join(", ")
+        : "",
+    };
+
+    const cleanedData = removeEmptyFields(submissionData);
+
     try {
-      onSubmit(data);
+      onSubmit(cleanedData);
       setOpen(false);
       form.reset();
     } catch (error) {
-      console.error("Error submitting form:", error);
+      toast({
+        title: "Error",
+        description: "Something went wrong. Please try again!",
+      });
     }
   };
 
@@ -140,10 +164,7 @@ export default function HomeTextForm({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Category Name</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
+                    <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Select a category" />

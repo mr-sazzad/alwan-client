@@ -20,7 +20,7 @@ const TextSection = () => {
     );
   }
 
-  const homeText = response?.data;
+  const homeText = response?.data[0] || {};
 
   return (
     <div>
@@ -29,7 +29,7 @@ const TextSection = () => {
           <h1 className="text-4xl font-extrabold uppercase mb-2 text-center">
             {homeText.title}
           </h1>
-          {homeText.text.map((txt: string, i: number) => (
+          {homeText?.text?.map((txt: string, i: number) => (
             <p
               key={i}
               className="text-center md:text-base text-sm text-muted-foreground w-full"

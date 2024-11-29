@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Eye, EyeOff, Lock } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -51,6 +51,14 @@ const ChangePasswordDialog = ({ open, setOpen }: ChangePasswordDialogProps) => {
     },
   });
 
+  const [isPasswordMatch, setIsPasswordMatch] = useState(true);
+  const watchNewPassword = form.watch("newPassword");
+  const watchConfirmPassword = form.watch("confirmPassword");
+
+  useEffect(() => {
+    setIsPasswordMatch(watchNewPassword === watchConfirmPassword);
+  }, [watchNewPassword, watchConfirmPassword]);
+
   const onSubmit = async (values: z.infer<typeof passwordSchema>) => {
     try {
       const result = await changePassword({
@@ -59,22 +67,22 @@ const ChangePasswordDialog = ({ open, setOpen }: ChangePasswordDialogProps) => {
       }).unwrap();
       if (result.success) {
         toast({
-          title: "Password Changed",
-          description: "Your password has been successfully changed.",
+          title: "Success!",
+          description: "Your password has been updated successfully.",
         });
         setOpen(false);
         form.reset();
       } else {
         toast({
-          title: "Password Change Failed",
-          description: "Password change failed due to some error",
+          title: "Oops!",
+          description: "We couldn't change your password. Please try again.",
           variant: "destructive",
         });
       }
     } catch (error) {
       toast({
-        title: "Password Change Failed",
-        description: "Password change failed due to some error",
+        title: "Error",
+        description: "An unexpected error occurred. Please try again later.",
         variant: "destructive",
       });
     }
@@ -84,11 +92,11 @@ const ChangePasswordDialog = ({ open, setOpen }: ChangePasswordDialogProps) => {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="sm:max-w-lg rounded w-full">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-medium text-center mb-2">
-            Change Password
+          <DialogTitle className="text-2xl font-bold text-center mb-2">
+            Update Your Password
           </DialogTitle>
-          <DialogDescription className="text-center">
-            Enter your current password and a new password below
+          <DialogDescription className="text-center text-gray-600">
+            Enhance your account security by creating a strong, unique password
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -103,7 +111,7 @@ const ChangePasswordDialog = ({ open, setOpen }: ChangePasswordDialogProps) => {
                     <div className="relative">
                       <Input
                         type={showCurrentPassword ? "text" : "password"}
-                        placeholder="current password"
+                        placeholder="Enter your current password"
                         {...field}
                       />
                       <Button
@@ -142,7 +150,7 @@ const ChangePasswordDialog = ({ open, setOpen }: ChangePasswordDialogProps) => {
                     <div className="relative">
                       <Input
                         type={showNewPasswords ? "text" : "password"}
-                        placeholder="new password"
+                        placeholder="Create a new password"
                         {...field}
                       />
                       <Button
@@ -176,7 +184,7 @@ const ChangePasswordDialog = ({ open, setOpen }: ChangePasswordDialogProps) => {
                   <FormControl>
                     <Input
                       type={showNewPasswords ? "text" : "password"}
-                      placeholder="new password"
+                      placeholder="Confirm your new password"
                       {...field}
                     />
                   </FormControl>
@@ -184,7 +192,11 @@ const ChangePasswordDialog = ({ open, setOpen }: ChangePasswordDialogProps) => {
                 </FormItem>
               )}
             />
-            <Button type="submit" className="w-full" disabled={isChanging}>
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={isChanging || !isPasswordMatch}
+            >
               {isChanging ? (
                 <div className="flex items-center justify-center gap-2">
                   <PiSpinner className="animate-spin" />
@@ -192,7 +204,7 @@ const ChangePasswordDialog = ({ open, setOpen }: ChangePasswordDialogProps) => {
                 </div>
               ) : (
                 <div className="flex items-center justify-center gap-2">
-                  <Lock className="mr-2 h-4 w-4" /> Change Password{" "}
+                  <Lock className="mr-2 h-4 w-4" /> Update Password
                 </div>
               )}
             </Button>

@@ -20,7 +20,7 @@ const RequestToReturnPage = () => {
   }
 
   const requestToReturnOrders = orderRes?.data?.filter((order: IOrder) =>
-    order.items.some((item) => item.itemStatus === "REQUESTTORETURN")
+    order.items.some((item) => item.itemStatus === "RETURN_REQUESTED")
   );
 
   if (!requestToReturnOrders || requestToReturnOrders.length === 0) {

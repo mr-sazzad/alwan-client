@@ -32,9 +32,6 @@ const formSchema = z.object({
     message: "Please enter a valid email address.",
   }),
   invoiceDate: z.date(),
-  invoiceNumber: z.string(),
-  paymentMethod: z.string(),
-  courierPartner: z.string(),
   notes: z.string(),
 });
 
@@ -65,7 +62,7 @@ export default function InvoiceForm({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-      <div className="bg-white p-6 rounded-lg max-w-lg w-full max-h-[90vh] overflow-y-auto hide-scrollbar">
+      <div className="bg-white dark:bg-gray-900 p-6 rounded-lg max-w-lg w-full max-h-[90vh] overflow-y-auto hide-scrollbar">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-semibold">Invoice Details</h2>
           <Button variant="ghost" size="icon" onClick={onClose}>
@@ -145,45 +142,6 @@ export default function InvoiceForm({
             />
             <FormField
               control={form.control}
-              name="invoiceNumber"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Invoice Number</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter invoice number" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="paymentMethod"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Payment Method</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter payment method" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="courierPartner"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Courier Partner</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter courier partner" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
               name="notes"
               render={({ field }) => (
                 <FormItem>
@@ -196,10 +154,7 @@ export default function InvoiceForm({
               )}
             />
             <div className="flex justify-end space-x-2">
-              <Button type="button" variant="outline" onClick={onClose}>
-                Cancel
-              </Button>
-              <Button type="submit">
+              <Button type="submit" className="w-full">
                 <ArrowDownToLine className="mr-2 h-4 w-4" /> Generate Invoice
               </Button>
             </div>

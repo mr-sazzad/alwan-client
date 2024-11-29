@@ -30,7 +30,6 @@ export default function CategoryProductsClient() {
   const price = searchParams.get("price");
   const sort = searchParams.get("sort");
 
-  // Function to filter products based on query params
   const filterProducts = (products: IProduct[]) => {
     let filteredProducts = [...products];
 
@@ -44,7 +43,6 @@ export default function CategoryProductsClient() {
       return false;
     }
 
-    // Filter by color
     if (color) {
       const colors = color.split(",").map((c) => c.toLowerCase());
       filteredProducts = filteredProducts.filter((product) =>
@@ -54,7 +52,6 @@ export default function CategoryProductsClient() {
       );
     }
 
-    // Filter by price range
     if (price) {
       const priceRanges = price.split(",");
       filteredProducts = filteredProducts.filter((product) =>
@@ -64,7 +61,6 @@ export default function CategoryProductsClient() {
       );
     }
 
-    // Sort products
     if (sort) {
       switch (sort) {
         case "price_asc":
@@ -101,7 +97,6 @@ export default function CategoryProductsClient() {
         {response?.data.name}
       </h1>
       <div className="flex flex-col md:flex-row gap-3 relative w-full">
-        {/* Desktop Filter (Fixed Position) */}
         <div className="md:min-w-[240px]">
           <div className="w-full md:border-r md:sticky md:top-[90px] hidden md:flex self-start h-screen overflow-y-auto px-2">
             <Filter categoryId={category_name} />
@@ -109,12 +104,21 @@ export default function CategoryProductsClient() {
         </div>
 
         <div className="flex flex-col mt-2 w-full h-full overflow-hidden">
-          {/* Mobile Filter */}
-          <div className="md:hidden mb-4">
-            <MobileFilter
-              colorsFromServer={colors?.data}
-              categoryId={category_name}
-            />
+          <div className="flex justify-between items-center">
+            <div className="text-lg font-medium text-muted-foreground">
+              {filteredProducts.length === 1
+                ? "01 Result"
+                : (filteredProducts.length < 10
+                    ? "0" + filteredProducts.length
+                    : filteredProducts.length) + " Results"}
+            </div>
+
+            <div className="md:hidden mb-4">
+              <MobileFilter
+                colorsFromServer={colors?.data}
+                categoryId={category_name}
+              />
+            </div>
           </div>
 
           <div className="flex flex-wrap justify-start w-full h-full">

@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -27,7 +26,9 @@ const ReviewsCard = () => {
             Be the first to share your thoughts on this product and help others
             make informed decisions.
           </p>
-          <Button className="mt-2">Write a Review</Button>
+          <div className="text-sm text-primary font-medium">
+            You can review only after making a purchase
+          </div>
         </div>
       </CardContent>
     </Card>

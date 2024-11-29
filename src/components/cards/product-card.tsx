@@ -1,6 +1,6 @@
 "use client";
 
-import { IProduct, IReadSizeVariant } from "@/types";
+import { IProduct, ISizeVariant } from "@/types";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import NotificationDialog from "../modals/notify-dialog";
@@ -12,8 +12,9 @@ const ProductCard: React.FC<IProduct> = (product) => {
   const [open, setOpen] = useState<boolean>(false);
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const [actionType, setActionType] = useState<"buy" | "cart">("cart");
-  const [selectedVariant, setSelectedVariant] =
-    useState<IReadSizeVariant | null>(null);
+  const [selectedVariant, setSelectedVariant] = useState<ISizeVariant | null>(
+    null
+  );
 
   const uniqueSizes = new Set(
     product.sizeVariants.map((variant) => variant.size.name)
@@ -36,7 +37,7 @@ const ProductCard: React.FC<IProduct> = (product) => {
             <ImageSlider urls={product.imageUrls} />
             <div className="p-2 capitalize">
               <p className="text-xs font-medium text-[#9E3500]">
-                {product.statusTag}
+                {product.availabilityTag}
               </p>
               <p className="font-medium">{product.name}</p>
               <p className="text-muted-foreground text-sm">
@@ -46,7 +47,7 @@ const ProductCard: React.FC<IProduct> = (product) => {
           </Link>
         </div>
         <div className="flex gap-1 mt-2">
-          {product.statusTag === "coming soon" ? (
+          {product.availabilityTag === "coming soon" ? (
             <Button
               className="w-full"
               variant="outline"

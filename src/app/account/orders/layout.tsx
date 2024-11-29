@@ -9,7 +9,6 @@ import {
   Package,
   RotateCcw,
   Truck,
-  XCircle,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -32,7 +31,7 @@ const orderStatuses = [
     path: "/account/orders/processing",
   },
   {
-    name: "In Transit",
+    name: "To Courier",
     icon: Truck,
     color: "bg-purple-500",
     path: "/account/orders/in-transit",
@@ -42,12 +41,6 @@ const orderStatuses = [
     icon: CheckCircle,
     color: "bg-green-500",
     path: "/account/orders/delivered",
-  },
-  {
-    name: "Cancelled",
-    icon: XCircle,
-    color: "bg-red-500",
-    path: "/account/orders/cancelled",
   },
   {
     name: "Request Return",

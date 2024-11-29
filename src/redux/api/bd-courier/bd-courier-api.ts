@@ -5,7 +5,7 @@ const carouselApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
     getCourierRatio: build.mutation({
       query: (data) => ({
-        url: "/courier-check",
+        url: "/courier/check",
         method: "POST",
         data,
       }),

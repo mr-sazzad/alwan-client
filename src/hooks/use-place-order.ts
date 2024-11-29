@@ -1,5 +1,5 @@
 import { toast } from "@/components/ui/use-toast";
-import { IUserCartProduct, OrderData } from "@/types";
+import { IOrder, IProduct } from "@/types";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import { UseFormReturn } from "react-hook-form";
 
@@ -12,8 +12,8 @@ type UsePlaceOrderParams = {
   quantity?: number;
   sizeId?: string;
   colorId?: string;
-  cartProducts: IUserCartProduct[];
-  createAOrder: (orderData: OrderData) => Promise<any>;
+  cartProducts: IProduct[];
+  createAOrder: (orderData: IOrder) => Promise<any>;
   router: AppRouterInstance;
   setLoading: (loading: boolean) => void;
 };
@@ -48,7 +48,8 @@ export const usePlaceOrder = ({
       orderNote,
     } = form.getValues();
 
-    // Validate required fields
+    console.log("DIVISION => ", division);
+
     if (
       !recipientName ||
       !email ||
@@ -67,18 +68,15 @@ export const usePlaceOrder = ({
       return;
     }
 
-    // Prepare order data
-    const orderData: OrderData = {
+    const orderData: IOrder = {
       userName: recipientName,
       email,
       phone,
-      address: {
-        division,
-        district,
-        upazila,
-        union,
-        streetAddress,
-      },
+      division,
+      district,
+      upazila,
+      union,
+      streetAddress,
       altPhone,
       orderNote,
       totalCost: totalPrice,
@@ -89,7 +87,6 @@ export const usePlaceOrder = ({
 
     console.log(" 🛒 🛒 🛒 Cart Products =>", cartProducts);
 
-    // Determine order items based on single product or cart
     if (productId && quantity) {
       orderData.items.push({
         productId,

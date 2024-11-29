@@ -43,6 +43,7 @@ export interface IReadCarousel {
 export interface ICategory {
   id: string;
   name: string;
+  file: File;
   slug: string;
   imageUrl: string | null;
   parentId: string | null;
@@ -159,6 +160,11 @@ export interface IProduct {
   availabilityTag: string;
   brand: string;
   productType: IProductType;
+  orderSize: string;
+  orderSizeId: string;
+  orderColor: string;
+  orderColorId: string;
+  orderQty: number;
   createdAt: string;
   updatedAt: string;
 }
@@ -176,11 +182,11 @@ export interface IReview {
 
 export interface IUser {
   id: string;
-  userId?: string;
+  userId: string;
   email: string;
   googleId: string;
   password: string;
-  role: "USER" | "ADMIN";
+  role: "USER" | "ADMIN" | "SUPER_ADMIN";
   imageUrl: string;
   addresses: IUserAddress[];
   createdAt: string;
@@ -205,31 +211,28 @@ export interface IUserAddress {
 }
 
 export interface IOrderItem {
-  id: string;
+  id?: string;
   sizeId: string;
-  size: ISize;
+  size?: ISize;
   colorId: string;
-  color: IColor;
+  color?: IColor;
   quantity: number;
-  returnQuantity: number;
-  returnNote: string;
   discountedPrice?: number;
-  itemStatus:
+  itemStatus?:
     | "PROCESSING"
-    | "IN_TRANSIT"
+    | "SHIPPED_TO_COURIER"
     | "DELIVERED"
-    | "REQUESTTORETURN"
+    | "RETURN_REQUESTED"
     | "RETURNED";
-  returnReason: string;
-  orderId: string;
+  orderId?: string;
   productId: string;
-  createdAt: string;
-  updatedAt: string;
-  product: IProduct;
+  createdAt?: string;
+  updatedAt?: string;
+  product?: IProduct;
 }
 
 export interface IOrder {
-  id: string;
+  id?: string;
   userName: string;
   division: string;
   district: string;
@@ -239,15 +242,15 @@ export interface IOrder {
   totalCost: number;
   phone: string;
   email: string;
-  altPhone: string | null;
-  couponId: string | null;
-  orderNote: string | null;
-  userId: string;
-  orderStatus: "CONFIRM" | "CANCELLED";
-  shippingMethod: "CASH_ON_DELIVERY" | "ONLINE_PAYMENT";
+  altPhone?: string;
+  couponId?: string;
+  orderNote: string;
+  userId?: string;
+  orderStatus?: "CONFIRM" | "CANCELLED";
+  shippingMethod?: "CASH_ON_DELIVERY" | "ONLINE_PAYMENT";
   shippingCost: number;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
   items: IOrderItem[];
 }
 
@@ -304,4 +307,21 @@ export interface IFeedback {
   message: string;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface FormValues {
+  recipientName: string;
+  email: string;
+  phone: string;
+  altPhone?: string;
+  division: string;
+  divisionId: string;
+  district: string;
+  districtId: string;
+  upazila: string;
+  upazilaId: string;
+  union: string;
+  unionId: string;
+  streetAddress: string;
+  label: "HOME" | "OFFICE";
 }

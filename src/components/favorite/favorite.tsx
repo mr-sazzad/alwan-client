@@ -48,7 +48,12 @@ const Favorite: React.FC<IFavorite> = ({ open, setOpen }) => {
     (state: RootState) => state.favorite.products
   );
   const [alertOpen, setAlertOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const { toast } = useToast();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     const handleStorageChange = (event: StorageEvent) => {
@@ -90,7 +95,7 @@ const Favorite: React.FC<IFavorite> = ({ open, setOpen }) => {
       <SheetTrigger asChild>
         <Button variant="ghost" size="icon" className="relative rounded-full">
           <Heart size={20} />
-          {wishlistProducts.length > 0 && (
+          {mounted && wishlistProducts.length > 0 && (
             <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-primary text-[10px] font-bold text-primary-foreground flex items-center justify-center">
               {wishlistProducts.length}
             </span>

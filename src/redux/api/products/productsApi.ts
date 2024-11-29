@@ -21,6 +21,14 @@ const productsApi = baseApi.injectEndpoints({
       providesTags: [tagTypes.product],
     }),
 
+    getNewArrivalProducts: build.query({
+      query: () => ({
+        url: "/products/new-arrivals",
+        method: "GET",
+      }),
+      providesTags: [tagTypes.product],
+    }),
+
     getCategoryProducts: build.query({
       query: (categoryId) => ({
         url: `/products/categories/${categoryId}`,
@@ -54,11 +62,13 @@ const productsApi = baseApi.injectEndpoints({
       invalidatesTags: [tagTypes.product],
     }),
   }),
+  overrideExisting: true,
 });
 
 export const {
   useCreateProductMutation,
   useGetAllProductsQuery,
+  useGetNewArrivalProductsQuery,
   useGetCategoryProductsQuery,
   useGetSingleProductQuery,
   useUpdateProductMutation,

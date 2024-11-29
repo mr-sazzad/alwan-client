@@ -1,7 +1,7 @@
 import { baseApi } from "../base-api";
 import { tagTypes } from "../tag-types";
 
-const couponApi = baseApi.injectEndpoints({
+const homePageTextApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
     addHomePageText: build.mutation({
       query: (data) => ({
@@ -9,7 +9,7 @@ const couponApi = baseApi.injectEndpoints({
         method: "POST",
         data,
       }),
-      invalidatesTags: [tagTypes.coupon],
+      invalidatesTags: [tagTypes.homeText],
     }),
 
     getHomePageText: build.query({
@@ -17,7 +17,7 @@ const couponApi = baseApi.injectEndpoints({
         url: "/home-page-text",
         method: "GET",
       }),
-      providesTags: [tagTypes.coupon],
+      providesTags: [tagTypes.homeText],
     }),
 
     updateHomePageText: build.mutation({
@@ -26,15 +26,15 @@ const couponApi = baseApi.injectEndpoints({
         method: "PATCH",
         data,
       }),
-      invalidatesTags: [tagTypes.coupon],
+      invalidatesTags: [tagTypes.homeText],
     }),
 
     deleteHomePageText: build.mutation({
-      query: ({ textId }) => ({
+      query: (textId) => ({
         url: `/home-page-text/${textId}`,
-        method: "PATCH",
+        method: "DELETE",
       }),
-      invalidatesTags: [tagTypes.coupon],
+      invalidatesTags: [tagTypes.homeText],
     }),
   }),
 });
@@ -44,4 +44,4 @@ export const {
   useGetHomePageTextQuery,
   useUpdateHomePageTextMutation,
   useDeleteHomePageTextMutation,
-} = couponApi;
+} = homePageTextApi;

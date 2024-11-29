@@ -87,7 +87,7 @@ export const useAdminDashboardMenu = () => {
       },
       {
         id: 9,
-        title: "Carousel",
+        title: "Banner",
         href: "/admins/dashboard/carousel",
         icon: GalleryHorizontal,
         active: pathname.includes("/admins/dashboard/carousel"),

@@ -111,9 +111,9 @@ const OrderTableColumns = () => {
       header: "Items",
       cell: ({ row }) => {
         const items = row.getValue("items") as OrderItem[];
-        const itemCount = items.length;
+        const totalItems = items.reduce((acc, item) => acc + item.quantity, 0);
         const formattedCount =
-          itemCount < 10 ? `0${itemCount}` : `${itemCount}`;
+          totalItems < 10 ? `0${totalItems}` : `${totalItems}`;
 
         return (
           <div className="flex gap-1 items-center">

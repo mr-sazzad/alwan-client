@@ -66,8 +66,8 @@ const ColorTableColumns: React.FC<ColorTableColumnsProps> = ({ colors }) => {
         </Button>
       ),
       cell: ({ row }) => (
-        <div className="inline-flex items-center bg-violet-100 text-violet-600 px-2 py-1 rounded-md">
-          <span className="w-2 h-2 rounded bg-violet-600 mr-2" />
+        <div className="inline-flex items-center text-teal-700 px-2 py-1 rounded-md">
+          <span className="w-2 h-2 rounded bg-teal-600 mr-2" />
           <span>{row.original.name}</span>
         </div>
       ),
@@ -97,7 +97,7 @@ const ColorTableColumns: React.FC<ColorTableColumnsProps> = ({ colors }) => {
         return (
           <>
             <div className="flex items-center space-x-1">
-              <div className="bg-teal-100 text-teal-600 px-2 py-1 rounded">
+              <div className="text-teal-600 px-2 py-1 rounded">
                 {row.original.hexCode.toUpperCase()}
               </div>
             </div>

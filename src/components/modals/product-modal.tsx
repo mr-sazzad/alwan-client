@@ -16,7 +16,7 @@ import "swiper/css/pagination";
 import { toast } from "../ui/use-toast";
 
 import { RootState } from "@/redux/store";
-import { IProduct, IReadSizeVariant } from "@/types";
+import { IProduct, ISizeVariant } from "@/types";
 import { useDispatch, useSelector } from "react-redux";
 
 // icons
@@ -41,17 +41,17 @@ const ProductModal: React.FC<ProductModalProps> = ({
   actionType,
 }) => {
   const router = useRouter();
-  const [selectedSize, setSelectedSize] = useState("");
   const [quantity, setQuantity] = useState(1);
   const [buttonLoading, SetButtonLoading] = useState(false);
   const [isPlusHovered, setIsPlusHovered] = useState(false);
   const [isMinusHovered, setIsMinusHovered] = useState(false);
   const [isInFavorite, setIsInFavorite] = useState(false);
-  const [selectedVariant, setSelectedVariant] =
-    useState<IReadSizeVariant | null>(null);
+  const [selectedVariant, setSelectedVariant] = useState<ISizeVariant | null>(
+    null
+  );
   const favorites = useSelector((state: RootState) => state.favorite.products);
 
-  const handleSizeClick = (variant: IReadSizeVariant) => {
+  const handleSizeClick = (variant: ISizeVariant) => {
     setSelectedVariant(variant);
     setQuantity(variant.stock > 0 ? 1 : 0);
   };
@@ -70,12 +70,10 @@ const ProductModal: React.FC<ProductModalProps> = ({
 
       if (initialVariant) {
         setSelectedVariant(initialVariant);
-        setSelectedSize(initialVariant.size.name);
         setQuantity(1);
       } else {
         setSelectedVariant(null);
         setQuantity(0);
-        setSelectedSize("");
       }
     }
   }, [product.sizeVariants, selectedVariant]);
@@ -153,24 +151,22 @@ const ProductModal: React.FC<ProductModalProps> = ({
     dispatch(
       addProductToCart({
         ...product,
-        orderSize: selectedSize,
-        orderSizeId: selectedSize,
+        orderSize: selectedVariant.size.name,
+        orderSizeId: selectedVariant.size.id,
         orderQty: quantity,
         orderColor: selectedVariant?.color.name,
         orderColorId: selectedVariant?.color.id,
-        orderHexCode: selectedVariant.color.hexCode,
+        // orderHexCode: selectedVariant.color.hexCode,
       })
     );
     setOpen(false);
     toast({
-      title: "Added to Cart",
-      description: `${product.name} has been added to your cart.`,
+      title: "Added to Bag",
+      description: `${product.name} has been added to your Bag.`,
     });
 
     SetButtonLoading(false);
   };
-
-  console.log(actionType);
 
   return (
     <div className="flex justify-center items-center">
@@ -211,7 +207,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
                   <div className="flex-1">
                     {selectedVariant && (
                       <p className="text-lg font-medium text-muted-foreground">
-                        ${selectedVariant.price}
+                        TK.{selectedVariant.price}.00
                       </p>
                     )}
                   </div>

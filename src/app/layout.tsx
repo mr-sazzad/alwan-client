@@ -4,28 +4,15 @@ import UserMobileMenu from "@/components/navigation-menu/user-mobile-menu";
 import { Toaster } from "@/components/ui/toaster";
 import Providers from "@/providers/reduxProvider";
 import { ThemeProvider } from "@/providers/theme-provider";
+import { GeistMono } from "geist/font/mono";
+import { GeistSans } from "geist/font/sans";
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import localFont from "next/font/local";
 import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Alwan",
   description: "The ideal lifestyle",
 };
-
-// const poppins = Poppins({
-//   weight: ["400", "500", "700", "800"],
-//   subsets: ["latin"],
-//   variable: "--font-poppins",
-// });
-
-const poppins = Inter();
-
-const helvetica = localFont({
-  src: "../../public/fonts/HelveticaNowText-Medium.woff2",
-  variable: "--font-helvetica",
-});
 
 export default function RootLayout({
   children,
@@ -34,8 +21,8 @@ export default function RootLayout({
 }>) {
   return (
     <Providers>
-      <html lang="en" className={`inter.classname ${helvetica.variable}`}>
-        <body>
+      <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable}`}>
+        <body className="font-mono">
           <ThemeProvider
             attribute="class"
             defaultTheme="system"

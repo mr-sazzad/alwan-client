@@ -16,9 +16,6 @@ interface InvoiceData {
   brandPhone: string;
   brandEmail: string;
   invoiceDate: Date;
-  invoiceNumber: string;
-  paymentMethod: string;
-  courierPartner: string;
   notes: string;
 }
 
@@ -119,8 +116,6 @@ export default function InvoiceGenerator({
     // Add invoice details
     addSection(doc, "Invoice Details", yPos);
     yPos += 7;
-    addField(doc, "Invoice Number", invoiceData.invoiceNumber, margin, yPos);
-    yPos += 5;
     addField(
       doc,
       "Date",
@@ -129,8 +124,6 @@ export default function InvoiceGenerator({
       yPos
     );
     yPos += 5;
-    addField(doc, "Payment Method", invoiceData.paymentMethod, margin, yPos);
-    yPos += 10;
 
     // Add customer information
     addSection(doc, "Customer Details", yPos);
@@ -180,10 +173,6 @@ export default function InvoiceGenerator({
       yPos
     );
     yPos += 15;
-
-    // Add courier partner
-    addField(doc, "Courier Partner", invoiceData.courierPartner, margin, yPos);
-    yPos += 10;
 
     // Add notes
     addSection(doc, "Notes", yPos);

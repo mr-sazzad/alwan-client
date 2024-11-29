@@ -4,16 +4,25 @@ import { filterSchema } from "@/schemas/filter-schema";
 import { prices } from "@/static/product-prices";
 import { IColor } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { X } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { PiSlidersHorizontalBold } from "react-icons/pi";
 import { z } from "zod";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "../ui/accordion";
 import { Button } from "../ui/button";
 import { Checkbox } from "../ui/checkbox";
 import {
   Drawer,
+  DrawerClose,
   DrawerContent,
+  DrawerFooter,
   DrawerHeader,
   DrawerTrigger,
 } from "../ui/drawer";
@@ -26,7 +35,6 @@ import {
   FormMessage,
 } from "../ui/form";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
-import { Separator } from "../ui/separator";
 import { ConvertedColors } from "../utils/convert-color";
 
 // Extend the filterSchema to include sorting
@@ -44,6 +52,7 @@ const MobileFilter: React.FC<MobileFilterProps> = ({
   colorsFromServer,
 }) => {
   const router = useRouter();
+  const [showAllPrices, setShowAllPrices] = useState(false);
 
   const form = useForm<z.infer<typeof extendedFilterSchema>>({
     resolver: zodResolver(extendedFilterSchema),
@@ -88,13 +97,16 @@ const MobileFilter: React.FC<MobileFilterProps> = ({
 
   const colors = ConvertedColors(colorsFromServer);
 
+  const visiblePrices = showAllPrices ? prices : prices.slice(0, 3);
+
   return (
     <div>
       <Drawer>
         <DrawerTrigger asChild>
           <Button
             variant="outline"
-            className="w-full flex gap-2 items-center rounded-full py-0"
+            size="sm"
+            className="flex gap-2 items-center rounded-full py-0"
           >
             <p className="text-lg">Filter</p>
             <PiSlidersHorizontalBold size={18} />
@@ -102,144 +114,169 @@ const MobileFilter: React.FC<MobileFilterProps> = ({
         </DrawerTrigger>
         <DrawerContent className="rounded">
           <DrawerHeader>
-            <h2 className="text-xl font-medium mt-2">Filter</h2>
+            <h2 className="text-lg font-medium mt-2 text-start">Filter</h2>
           </DrawerHeader>
           <Form {...form}>
-            <form className="space-y-8 px-4 mb-10">
-              <FormField
-                control={form.control}
-                name="sort"
-                render={({ field }) => (
-                  <FormItem className="space-y-3">
-                    <FormLabel className="text-base">Sort by</FormLabel>
-                    <FormControl>
-                      <RadioGroup
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                        className="flex flex-col space-y-1"
-                      >
-                        <FormItem className="flex items-center space-x-3 space-y-0">
+            <form className="space-y-4 px-4 mb-10">
+              <Accordion type="single" collapsible className="w-full">
+                <AccordionItem value="sort">
+                  <AccordionTrigger>Sort by</AccordionTrigger>
+                  <AccordionContent>
+                    <FormField
+                      control={form.control}
+                      name="sort"
+                      render={({ field }) => (
+                        <FormItem className="space-y-3">
                           <FormControl>
-                            <RadioGroupItem value="price_asc" />
-                          </FormControl>
-                          <FormLabel className="font-normal text-[17px]">
-                            Price: Low to High
-                          </FormLabel>
-                        </FormItem>
-                        <FormItem className="flex items-center space-x-3 space-y-0">
-                          <FormControl>
-                            <RadioGroupItem value="price_desc" />
-                          </FormControl>
-                          <FormLabel className="font-normal text-[17px]">
-                            Price: High to Low
-                          </FormLabel>
-                        </FormItem>
-                      </RadioGroup>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <Separator />
-              <FormField
-                control={form.control}
-                name="colors"
-                render={() => (
-                  <FormItem>
-                    <div className="mb-4">
-                      <FormLabel className="text-base">Color</FormLabel>
-                    </div>
-                    {colors?.map((item) => (
-                      <FormField
-                        key={item.id}
-                        control={form.control}
-                        name="colors"
-                        render={({ field }) => {
-                          return (
-                            <FormItem
-                              key={item.id}
-                              className="flex flex-row items-center space-x-3 space-y-0"
+                            <RadioGroup
+                              onValueChange={field.onChange}
+                              defaultValue={field.value}
+                              className="flex flex-col space-y-1"
                             >
-                              <FormControl>
-                                <Checkbox
-                                  checked={field.value?.includes(item.value)}
-                                  onCheckedChange={(checked) => {
-                                    return checked
-                                      ? field.onChange([
-                                          ...field.value,
-                                          item.value,
-                                        ])
-                                      : field.onChange(
-                                          field.value?.filter(
-                                            (value) => value !== item.value
-                                          )
-                                        );
-                                  }}
-                                />
-                              </FormControl>
-                              <FormLabel className="text-[17px] font-normal">
-                                {item.label}
-                              </FormLabel>
-                            </FormItem>
-                          );
-                        }}
-                      />
-                    ))}
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <Separator />
-              <FormField
-                control={form.control}
-                name="prices"
-                render={() => (
-                  <FormItem>
-                    <div className="mb-4">
-                      <FormLabel className="text-base">Price</FormLabel>
-                    </div>
-                    {prices.map((item) => (
-                      <FormField
-                        key={item.id}
-                        control={form.control}
-                        name="prices"
-                        render={({ field }) => {
-                          return (
-                            <FormItem
+                              <FormItem className="flex items-center space-x-3 space-y-0">
+                                <FormControl>
+                                  <RadioGroupItem value="price_asc" />
+                                </FormControl>
+                                <FormLabel className="font-normal text-[17px]">
+                                  Price: Low to High
+                                </FormLabel>
+                              </FormItem>
+                              <FormItem className="flex items-center space-x-3 space-y-0">
+                                <FormControl>
+                                  <RadioGroupItem value="price_desc" />
+                                </FormControl>
+                                <FormLabel className="font-normal text-[17px]">
+                                  Price: High to Low
+                                </FormLabel>
+                              </FormItem>
+                            </RadioGroup>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="colors">
+                  <AccordionTrigger>Color</AccordionTrigger>
+                  <AccordionContent>
+                    <FormField
+                      control={form.control}
+                      name="colors"
+                      render={() => (
+                        <FormItem>
+                          {colors?.map((item) => (
+                            <FormField
                               key={item.id}
-                              className="flex flex-row items-center space-x-3 space-y-0"
+                              control={form.control}
+                              name="colors"
+                              render={({ field }) => (
+                                <FormItem
+                                  key={item.id}
+                                  className="flex flex-row items-center space-x-3 space-y-0"
+                                >
+                                  <FormControl>
+                                    <Checkbox
+                                      checked={field.value?.includes(
+                                        item.value
+                                      )}
+                                      onCheckedChange={(checked) => {
+                                        return checked
+                                          ? field.onChange([
+                                              ...field.value,
+                                              item.value,
+                                            ])
+                                          : field.onChange(
+                                              field.value?.filter(
+                                                (value) => value !== item.value
+                                              )
+                                            );
+                                      }}
+                                    />
+                                  </FormControl>
+                                  <FormLabel className="text-[17px] font-normal">
+                                    {item.label}
+                                  </FormLabel>
+                                </FormItem>
+                              )}
+                            />
+                          ))}
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="prices">
+                  <AccordionTrigger>Price</AccordionTrigger>
+                  <AccordionContent>
+                    <FormField
+                      control={form.control}
+                      name="prices"
+                      render={() => (
+                        <FormItem>
+                          {visiblePrices.map((item) => (
+                            <FormField
+                              key={item.id}
+                              control={form.control}
+                              name="prices"
+                              render={({ field }) => (
+                                <FormItem
+                                  key={item.id}
+                                  className="flex flex-row items-center space-x-3 space-y-0"
+                                >
+                                  <FormControl>
+                                    <Checkbox
+                                      checked={field.value?.includes(item.id)}
+                                      onCheckedChange={(checked) => {
+                                        return checked
+                                          ? field.onChange([
+                                              ...field.value,
+                                              item.id,
+                                            ])
+                                          : field.onChange(
+                                              field.value?.filter(
+                                                (value) => value !== item.id
+                                              )
+                                            );
+                                      }}
+                                    />
+                                  </FormControl>
+                                  <FormLabel className="text-[17px] font-normal">
+                                    {item.label}
+                                  </FormLabel>
+                                </FormItem>
+                              )}
+                            />
+                          ))}
+                          {prices.length > 3 && (
+                            <Button
+                              type="button"
+                              variant="link"
+                              onClick={() => setShowAllPrices(!showAllPrices)}
+                              className="mt-2"
                             >
-                              <FormControl>
-                                <Checkbox
-                                  checked={field.value?.includes(item.id)}
-                                  onCheckedChange={(checked) => {
-                                    return checked
-                                      ? field.onChange([
-                                          ...field.value,
-                                          item.id,
-                                        ])
-                                      : field.onChange(
-                                          field.value?.filter(
-                                            (value) => value !== item.id
-                                          )
-                                        );
-                                  }}
-                                />
-                              </FormControl>
-                              <FormLabel className="text-[17px] font-normal">
-                                {item.label}
-                              </FormLabel>
-                            </FormItem>
-                          );
-                        }}
-                      />
-                    ))}
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                              {showAllPrices ? "Less" : "More"}
+                            </Button>
+                          )}
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
             </form>
           </Form>
+          <DrawerFooter className="absolute right-0 top-5">
+            <DrawerClose>
+              <Button variant="ghost" size="icon" className="rounded-full">
+                <X className="w-5 h-5" />
+              </Button>
+            </DrawerClose>
+          </DrawerFooter>
         </DrawerContent>
       </Drawer>
     </div>

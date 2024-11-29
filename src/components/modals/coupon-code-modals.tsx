@@ -6,14 +6,13 @@ import { RiLoaderLine } from "react-icons/ri";
 import { z } from "zod";
 import { Button } from "../ui/button";
 import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-} from "../ui/drawer";
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "../ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel } from "../ui/form";
 import { Input } from "../ui/input";
 
@@ -74,15 +73,15 @@ const CouponCodeModal: React.FC<CouponCodeModalProps> = ({
   };
 
   return (
-    <Drawer open={open} onOpenChange={setOpen}>
-      <DrawerContent>
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogContent>
         <div className="mx-auto w-full max-w-md">
-          <DrawerHeader>
-            <DrawerTitle className="text-xl">Coupon</DrawerTitle>
-            <DrawerDescription>
+          <DialogHeader>
+            <DialogTitle className="text-xl">Coupon</DialogTitle>
+            <DialogDescription>
               If you have a coupon then you can get extra discount
-            </DrawerDescription>
-          </DrawerHeader>
+            </DialogDescription>
+          </DialogHeader>
           {error && (
             <div className="bg-red-100 flex justify-center items-center gap-2 border rounded-md w-full py-2">
               <span className="font-medium text-sm">{error}</span>
@@ -102,7 +101,7 @@ const CouponCodeModal: React.FC<CouponCodeModalProps> = ({
                   </FormItem>
                 )}
               />
-              <DrawerFooter className="w-full">
+              <DialogFooter className="mt-2 w-full">
                 <Button type="submit" className="w-full" disabled={isLoading}>
                   {isLoading ? (
                     <RiLoaderLine className="animate-spin h-5 w-5" />
@@ -110,17 +109,12 @@ const CouponCodeModal: React.FC<CouponCodeModalProps> = ({
                     "Apply Coupon"
                   )}
                 </Button>
-                <DrawerClose asChild>
-                  <Button variant="outline" className="w-full">
-                    Cancel
-                  </Button>
-                </DrawerClose>
-              </DrawerFooter>
+              </DialogFooter>
             </form>
           </Form>
         </div>
-      </DrawerContent>
-    </Drawer>
+      </DialogContent>
+    </Dialog>
   );
 };
 

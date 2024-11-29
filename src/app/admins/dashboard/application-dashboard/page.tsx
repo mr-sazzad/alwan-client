@@ -73,8 +73,6 @@ const AdminDashboard = () => {
     return <AdminDashboardSkeleton />;
   }
 
-  console.log("OrderRes?.data", orderRes?.data);
-
   if (userError || orderError) {
     return (
       <Alert variant="destructive">
@@ -86,6 +84,8 @@ const AdminDashboard = () => {
       </Alert>
     );
   }
+
+  console.log(userRes.data);
 
   const userCount = (userRes?.data as IUser[] | undefined)?.length || 0;
   const orders = orderRes?.data as IOrder[] | undefined;
@@ -99,7 +99,7 @@ const AdminDashboard = () => {
   const todaySales =
     orders
       ?.filter((order) => {
-        const orderDate = new Date(order.createdAt);
+        const orderDate = new Date(order.createdAt as Date);
         const today = new Date();
         return orderDate.toDateString() === today.toDateString();
       })
@@ -108,7 +108,7 @@ const AdminDashboard = () => {
   const yesterdaySales =
     orders
       ?.filter((order) => {
-        const orderDate = new Date(order.createdAt);
+        const orderDate = new Date(order.createdAt as Date);
         const yesterday = new Date();
         yesterday.setDate(yesterday.getDate() - 1);
         return orderDate.toDateString() === yesterday.toDateString();
@@ -121,7 +121,6 @@ const AdminDashboard = () => {
       order.items.some((item) => item.itemStatus === "PROCESSING")
     )?.length || 0;
 
-  // Prepare data for charts
   const getDaysArray = (days: number) => {
     return [...Array(days)]
       .map((_, i) => {
@@ -139,7 +138,9 @@ const AdminDashboard = () => {
     income:
       orders
         ?.filter(
-          (order) => order.createdAt.toLocaleString().split("T")[0] === date
+          (order) =>
+            order.createdAt &&
+            order.createdAt.toLocaleString().split("T")[0] === date
         )
         ?.reduce((acc, order) => acc + (order.totalCost || 0), 0) || 0,
   }));
@@ -148,7 +149,9 @@ const AdminDashboard = () => {
     date,
     orders:
       orders?.filter(
-        (order) => order.createdAt.toLocaleString().split("T")[0] === date
+        (order) =>
+          order.createdAt &&
+          order.createdAt.toLocaleString().split("T")[0] === date
       )?.length || 0,
   }));
 
@@ -166,7 +169,7 @@ const AdminDashboard = () => {
       <h1 className="text-3xl font-medium mb-6">Admin Dashboard</h1>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 mb-8">
         <AdminCardComponent
-          title="Total Users"
+          title="Total Customers"
           Icon={Users}
           content="Registered users"
           stats={userCount}

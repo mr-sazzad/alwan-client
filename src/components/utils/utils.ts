@@ -1,13 +1,8 @@
+import { ISizeVariant } from "@/types";
+
 export const shortenId = (id: string) => {
   if (id.length <= 13) return id;
   return `${id.slice(0, 4)}....${id.slice(-5)}`;
-};
-
-export const formatCurrency = (amount: number): string => {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-  }).format(amount);
 };
 
 export const extractNameFromEmail = (email: string): string => {
@@ -21,4 +16,17 @@ export const extractNameFromEmail = (email: string): string => {
   );
 
   return name || email;
+};
+
+export const formatPriceRange = (sizeVariants: ISizeVariant[]): string => {
+  const prices = sizeVariants.map((variant) => variant.price);
+  const uniquePrices = Array.from(new Set(prices));
+
+  if (uniquePrices.length === 1) {
+    return `${uniquePrices[0]}`;
+  } else {
+    const minPrice = Math.min(...uniquePrices);
+    const maxPrice = Math.max(...uniquePrices);
+    return `${minPrice} - ${maxPrice}`;
+  }
 };

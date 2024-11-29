@@ -2,11 +2,11 @@ import {
   removeFromLocalStorage,
   setToLocalStorage,
 } from "@/helpers/local-storage";
-import { IUserCartProduct } from "@/types";
+import { IProduct } from "@/types";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 interface CartState {
-  products: IUserCartProduct[];
+  products: IProduct[];
 }
 
 const initialState: CartState = {
@@ -20,7 +20,7 @@ const cartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
-    setCart: (state, action: PayloadAction<IUserCartProduct[]>) => {
+    setCart: (state, action: PayloadAction<IProduct[]>) => {
       state.products = action.payload;
       setToLocalStorage(
         "alwan_user_cart_items",
@@ -28,7 +28,7 @@ const cartSlice = createSlice({
       );
     },
 
-    addProductToCart: (state, action: PayloadAction<IUserCartProduct>) => {
+    addProductToCart: (state, action: PayloadAction<IProduct>) => {
       const { id, orderSize, orderColor, orderColorId, orderSizeId } =
         action.payload;
 
@@ -60,6 +60,7 @@ const cartSlice = createSlice({
       action: PayloadAction<{ id: string; size: string; color: string }>
     ) => {
       const { id, size, color } = action.payload;
+      console.log(action.payload);
 
       const product = state.products.find(
         (product) =>

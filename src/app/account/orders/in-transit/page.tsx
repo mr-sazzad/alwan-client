@@ -20,7 +20,7 @@ const InTransitOrdersPage = () => {
   }
 
   const inTransitOrders = orderRes?.data?.filter((order: IOrder) =>
-    order.items.some((item) => item.itemStatus === "IN_TRANSIT")
+    order.items.some((item) => item.itemStatus === "SHIPPED_TO_COURIER")
   );
 
   if (!inTransitOrders || inTransitOrders.length === 0) {

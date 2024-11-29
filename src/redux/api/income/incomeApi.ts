@@ -44,10 +44,12 @@ const incomesApi = baseApi.injectEndpoints({
     }),
 
     getIncomesBetweenDates: build.query({
-      query: ({ startDate, endDate }) => ({
-        url: `/incomes/between-dates?startDate=${startDate}&endDate=${endDate}`,
-        method: "GET",
-      }),
+      query: ({ startDate, endDate }) => {
+        return {
+          url: `/incomes/between-dates?startDate=${startDate}&endDate=${endDate}`,
+          method: "GET",
+        };
+      },
       providesTags: [tagTypes.income],
     }),
   }),

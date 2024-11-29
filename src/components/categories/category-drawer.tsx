@@ -6,7 +6,7 @@ import {
   useUpdateCategoryMutation,
 } from "@/redux/api/categoies/categoriesApi";
 import { categorySchema } from "@/schemas/admins/category-schema";
-import { ICreateCategory } from "@/types";
+import { ICategory } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertTriangle, X } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -115,7 +115,39 @@ const CategoryDrawer: React.FC<CategoryDrawerProps> = ({
         isLeaf,
       } = values;
 
-      const newValues: Partial<ICreateCategory> = {
+      if (isLeaf === "true" && !parentId) {
+        toast({
+          title: "Error",
+          description: "Leaf categories must have a parent category",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      if (isOnHomePage === "true" && !file) {
+        toast({
+          title: "Error",
+          description: "Categories shown on home page must have an image",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      if (
+        isLeaf === "true" &&
+        isOnHomePage === "true" &&
+        (!firstTitle || !secondTitle)
+      ) {
+        toast({
+          title: "Error",
+          description:
+            "Leaf categories shown on home page must have both first and second titles",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const newValues: Partial<ICategory> = {
         isOnHomePage: isOnHomePage === "true",
         isNavigational: isNavigational === "true",
         isLeaf: isLeaf === "true",
@@ -127,17 +159,17 @@ const CategoryDrawer: React.FC<CategoryDrawerProps> = ({
       if (secondTitle) newValues.secondTitle = secondTitle;
       if (parentId) newValues.parentId = parentId;
 
-      let response;
+      let response: any;
       if (mode === "create") {
-        response = await createCategory(newValues as ICreateCategory);
+        response = await createCategory(newValues as ICategory);
       } else {
         response = await updateCategory({
           id: categoryId,
           ...newValues,
-        } as ICreateCategory);
+        } as ICategory);
       }
 
-      if ("error" in response) {
+      if (!response.data.success) {
         toast({
           title: "Error Message",
           description: "Something went wrong, please try again",
@@ -167,12 +199,30 @@ const CategoryDrawer: React.FC<CategoryDrawerProps> = ({
   const isLoading = isCreating || isUpdating || isFetching;
 
   const watchIsLeaf = form.watch("isLeaf");
+  const watchIsNavigational = form.watch("isNavigational");
+  const watchIsOnHomePage = form.watch("isOnHomePage");
+
+  useEffect(() => {
+    if (watchIsLeaf === "true") {
+      form.setValue("isNavigational", "false");
+    } else if (watchIsLeaf === "false") {
+      form.setValue("isNavigational", "true");
+    }
+  }, [watchIsLeaf, form]);
+
+  useEffect(() => {
+    if (watchIsNavigational === "true") {
+      form.setValue("isLeaf", "false");
+    } else if (watchIsNavigational === "false") {
+      form.setValue("isLeaf", "true");
+    }
+  }, [watchIsNavigational, form]);
 
   return (
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerContent>
         <div className="mx-auto w-full max-w-md mt-2 py-4">
-          <Alert variant="destructive" className="mb-4">
+          <Alert variant="destructive" className="mb-4 dark:text-red-600">
             <AlertTriangle className="h-4 w-4" />
             <AlertTitle>Important Note</AlertTitle>
             <AlertDescription>
@@ -187,39 +237,6 @@ const CategoryDrawer: React.FC<CategoryDrawerProps> = ({
               onSubmit={form.handleSubmit(onSubmit)}
               className="max-h-[50vh] overflow-y-auto h-full hide-scrollbar space-y-4 w-full px-2 mt-2"
             >
-              <FormField
-                name="file"
-                control={form.control}
-                render={({ field: { value, onChange, ...fieldProps } }) => (
-                  <FormItem className="md:col-span-4 col-span-1">
-                    <FormControl>
-                      <div className="mb-4 flex justify-center items-center border border-dashed rounded-lg px-5 py-4 relative bg-gray-200">
-                        <Input
-                          type="file"
-                          {...fieldProps}
-                          accept="image/*"
-                          className="absolute w-full h-full opacity-0"
-                          onChange={(event) => {
-                            const file =
-                              event.target.files && event.target.files[0];
-                            onChange(file);
-                            setSelectedFile(file);
-                          }}
-                        />
-                        <div className="flex flex-col gap-2 items-center">
-                          <VscCloudUpload size="30" />
-                          <p className="ml-2 text-sm text-gray-500">
-                            JPEG, PNG, GIF up to 2MB
-                          </p>
-                          {selectedFile && <p>{selectedFile.name}</p>}
-                        </div>
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
               <FormField
                 control={form.control}
                 name="name"
@@ -315,12 +332,7 @@ const CategoryDrawer: React.FC<CategoryDrawerProps> = ({
                   <FormItem>
                     <FormLabel>Is Navigational</FormLabel>
                     <Select
-                      onValueChange={(value) => {
-                        field.onChange(value);
-                        if (value === "true" && watchIsLeaf === "true") {
-                          form.setValue("isLeaf", "false");
-                        }
-                      }}
+                      onValueChange={field.onChange}
                       value={field.value || undefined}
                     >
                       <FormControl>
@@ -329,10 +341,7 @@ const CategoryDrawer: React.FC<CategoryDrawerProps> = ({
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem
-                          value="true"
-                          disabled={watchIsLeaf === "true"}
-                        >
+                        <SelectItem value="true">
                           Yes, it&apos;s navigational
                         </SelectItem>
                         <SelectItem value="false">
@@ -349,62 +358,104 @@ const CategoryDrawer: React.FC<CategoryDrawerProps> = ({
                 )}
               />
 
-              <FormField
-                control={form.control}
-                name="firstTitle"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>First Title</FormLabel>
-                    <FormControl>
-                      <Input placeholder="First Title" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              {watchIsLeaf === "true" && (
+                <FormField
+                  control={form.control}
+                  name="isOnHomePage"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>On Home?</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        value={field.value || undefined}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Do you want to show this on the home page?" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="true">
+                            Yes, show on home page
+                          </SelectItem>
+                          <SelectItem value="false">
+                            No, don&apos;t show on home page
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
 
-              <FormField
-                control={form.control}
-                name="secondTitle"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Second Title</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Second Title" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="isOnHomePage"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>On Home?</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      value={field.value || undefined}
-                    >
+              {watchIsOnHomePage === "true" && (
+                <FormField
+                  name="file"
+                  control={form.control}
+                  render={({ field: { value, onChange, ...fieldProps } }) => (
+                    <FormItem className="md:col-span-4 col-span-1">
+                      <FormLabel>Image</FormLabel>
                       <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Do you want to show this on the home page?" />
-                        </SelectTrigger>
+                        <div className="mb-4 flex justify-center items-center border border-dashed rounded-lg px-5 py-4 relative bg-gray-200 dark:bg-gray-900">
+                          <Input
+                            type="file"
+                            {...fieldProps}
+                            accept="image/*"
+                            className="absolute w-full h-full opacity-0"
+                            onChange={(event) => {
+                              const file =
+                                event.target.files && event.target.files[0];
+                              onChange(file);
+                              setSelectedFile(file);
+                            }}
+                          />
+                          <div className="flex flex-col gap-2 items-center">
+                            <VscCloudUpload size="30" />
+                            <p className="ml-2 text-sm text-gray-500">
+                              JPEG, PNG, GIF up to 2MB
+                            </p>
+                            {selectedFile && <p>{selectedFile.name}</p>}
+                          </div>
+                        </div>
                       </FormControl>
-                      <SelectContent>
-                        <SelectItem value="true">
-                          Yes, show on home page
-                        </SelectItem>
-                        <SelectItem value="false">
-                          No, don&apos;t show on home page
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
+
+              {watchIsLeaf === "true" && watchIsOnHomePage === "true" && (
+                <>
+                  <FormField
+                    control={form.control}
+                    name="firstTitle"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>First Title</FormLabel>
+                        <FormControl>
+                          <Input placeholder="First Title" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="secondTitle"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Second Title</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Second Title" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </>
+              )}
 
               <Button type="submit" className="w-full" disabled={isLoading}>
                 {isLoading ? (

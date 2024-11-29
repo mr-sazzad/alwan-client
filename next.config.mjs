@@ -46,14 +46,13 @@ const nextConfig = {
       },
     ],
   },
-  webpack: (config, { dev, isServer }) => {
-    if (dev) {
-      config.devtool = 'inline-source-map';
-    } else {
-      config.devtool = 'source-map';
+  webpack: (config, options) => {
+    if (!options.dev) {
+      config.devtool = options.isServer ? false : 'your-custom-devtool'
     }
-    return config;
+    return config
   },
+  transpilePackages: ["geist"],
 };
 
 export default nextConfig;

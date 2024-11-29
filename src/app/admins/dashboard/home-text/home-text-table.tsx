@@ -10,12 +10,16 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Separator } from "@/components/ui/separator";
 import { toast } from "@/components/ui/use-toast";
 import { useDeleteHomePageTextMutation } from "@/redux/api/home-page-text/home-page-text-api";
-import { IReadCategory } from "@/types";
+import { ICategory } from "@/types";
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, MoreHorizontal } from "lucide-react";
+import {
+  ArrowUpDown,
+  ClipboardEdit,
+  MoreHorizontal,
+  Trash2,
+} from "lucide-react";
 import { useState } from "react";
 
 export type HomeText = {
@@ -24,7 +28,7 @@ export type HomeText = {
   text: string;
   buttonText: string;
   categoryId: string;
-  category: IReadCategory;
+  category: ICategory;
 };
 
 export type HomeTextTableProps = {
@@ -40,6 +44,7 @@ const HomeTextTable = ({ texts, onUpdateText }: HomeTextTableProps) => {
     useDeleteHomePageTextMutation();
 
   const handleTextDelete = async () => {
+    console.log("TEXT ID =>", textId);
     const result: any = await deleteHomePageText(textId);
 
     if (!result.data.success) {
@@ -76,7 +81,7 @@ const HomeTextTable = ({ texts, onUpdateText }: HomeTextTableProps) => {
       header: "BTN Text",
       cell: ({ row }) => {
         return (
-          <div className="inline-flex items-center bg-fuchsia-100 text-fuchsia-600 px-2 py-1 rounded-md">
+          <div className="inline-flex items-center text-emerald-600 px-2 py-1 rounded-md">
             <span>{row.original.buttonText}</span>
           </div>
         );
@@ -86,29 +91,21 @@ const HomeTextTable = ({ texts, onUpdateText }: HomeTextTableProps) => {
       accessorKey: "category.name",
       header: "Explore Category",
       cell: ({ row }) => (
-        <span
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            backgroundColor: "#e0f7fa",
-            padding: "4px 8px",
-            borderRadius: "4px",
-            gap: "6px",
-          }}
-        >
-          <div
-            style={{
-              backgroundColor: "#00796b",
-              height: "8px",
-              width: "8px",
-              borderRadius: "50%",
-            }}
-          />
+        <span className="inline-flex items-center p-2 rounded gap-2 text-emerald-600">
+          <div className="bg-emerald-800 h-2 w-2 rounded-full" />
           <span>{row.original.category?.name ?? "No Category"}</span>
         </span>
       ),
     },
-
+    {
+      accessorKey: "text",
+      header: "Description",
+      cell: ({ row }) => (
+        <span className="inline-flex items-center p-2 rounded gap-2 text-gray-700">
+          <span>{row.original.text}</span>
+        </span>
+      ),
+    },
     {
       id: "actions",
       enableHiding: false,
@@ -125,16 +122,21 @@ const HomeTextTable = ({ texts, onUpdateText }: HomeTextTableProps) => {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem onClick={() => onUpdateText(text)}>
-                Update Home Text
+              <DropdownMenuItem
+                onClick={() => onUpdateText(text)}
+                className="flex items-center gap-2"
+              >
+                <ClipboardEdit className="w-4 h-4" />
+                <p>Update Home Text</p>
               </DropdownMenuItem>
-              <Separator />
               <DropdownMenuItem
                 onClick={() => {
                   setOpen(true), setTextId(row.original.id);
                 }}
+                className="flex items-center gap-2"
               >
-                Delete Home Text
+                <Trash2 className="w-4 h-4" />
+                <p>Delete Home Text</p>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

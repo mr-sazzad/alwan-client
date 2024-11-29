@@ -17,8 +17,10 @@ import { useEffect, useState } from "react";
 import * as z from "zod";
 
 import Loading from "@/app/loading";
+import ImageSlider from "@/components/cards/image-slider";
 import InvoiceForm from "@/components/invoice/invoice-form";
 import InvoiceGenerator from "@/components/invoice/invoice-generator";
+import CourierInfoDialog from "@/components/order/courier-info-dialog";
 import OrderStatus from "@/components/order/order-status";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -33,35 +35,27 @@ import { Separator } from "@/components/ui/separator";
 import { toast } from "@/components/ui/use-toast";
 import { formatCurrency } from "@/components/utils/money";
 import { shortenId } from "@/components/utils/utils";
+import { useCreateCourierInfoMutation } from "@/redux/api/courier/courier-api";
 import {
   useGetSingleOrderByOrderIdQuery,
   useUpdateOrderByOrderIdMutation,
   useUpdateOrderStatusMutation,
 } from "@/redux/api/orders/ordersApi";
+import { useGetReturnsQuery } from "@/redux/api/return/return-api";
+import { courierInfoSchema } from "@/schemas/admins/courier-info-schema";
+import { formSchema } from "@/schemas/invoice-form-schema";
 import { IOrderItem } from "@/types";
-import Image from "next/image";
 
 const statusColors = {
-  PROCESSING: "bg-blue-100 text-blue-600",
-  IN_TRANSIT: "bg-yellow-100 text-yellow-600",
-  DELIVERED: "bg-green-100 text-green-600",
-  REQUESTTORETURN: "bg-orange-100 text-orange-600",
-  RETURNED: "bg-red-100 text-red-600",
+  PROCESSING: "bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-300",
+  SHIPPED_TO_COURIER:
+    "bg-yellow-100 text-yellow-600 dark:bg-yellow-900 dark:text-yellow-300",
+  DELIVERED:
+    "bg-green-100 text-green-600 dark:bg-green-900 dark:text-green-300",
+  RETURN_REQUESTED:
+    "bg-orange-100 text-orange-600 dark:bg-orange-900 dark:text-orange-300",
+  RETURNED: "bg-red-100 text-red-600 dark:bg-red-900 dark:text-red-300",
 };
-
-const formSchema = z.object({
-  brandPhone: z.string().min(2, {
-    message: "Brand phone must be at least 2 characters.",
-  }),
-  brandEmail: z.string().email({
-    message: "Please enter a valid email address.",
-  }),
-  invoiceDate: z.date(),
-  invoiceNumber: z.string(),
-  paymentMethod: z.string(),
-  courierPartner: z.string(),
-  notes: z.string(),
-});
 
 export default function OrderDetails() {
   const { id } = useParams();
@@ -71,20 +65,23 @@ export default function OrderDetails() {
     error,
     refetch,
   } = useGetSingleOrderByOrderIdQuery(id);
+  const { data: returnRes, isLoading: isReturnProductLoading } =
+    useGetReturnsQuery(id);
   const [updateOrderStatus, { isLoading: isUpdating }] =
     useUpdateOrderStatusMutation();
   const [updateOrderByOrderId, { isLoading: isOrderUpdating }] =
     useUpdateOrderByOrderIdMutation();
+  const [createCourierInfo, { isLoading: isCourierInfoUpdating }] =
+    useCreateCourierInfoMutation();
   const [localItems, setLocalItems] = useState<IOrderItem[]>([]);
   const [isInvoiceFormOpen, setIsInvoiceFormOpen] = useState(false);
   const [showInvoice, setShowInvoice] = useState(false);
+  const [courierInfoOpen, setCourierInfoOpen] = useState(false);
+  const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
   const [invoiceData, setInvoiceData] = useState({
     brandPhone: "+880 1234567890",
     brandEmail: "info@alwan.com",
     invoiceDate: new Date().toISOString().split("T")[0],
-    invoiceNumber: "",
-    paymentMethod: "",
-    courierPartner: "",
     notes:
       "Dear Customer,\nThank you so much for your order.\nReceive the product and make an unboxing video.\nContact our hotline if there is any issue.\nHotline: +880145744358",
   });
@@ -100,16 +97,18 @@ export default function OrderDetails() {
     }
   }, [response]);
 
-  if (isOrderLoading) {
+  if (isOrderLoading || isReturnProductLoading) {
     return <Loading />;
   }
 
   if (error) {
     return (
-      <div className="flex flex-col items-center justify-center h-screen bg-gray-50">
+      <div className="flex flex-col items-center justify-center h-screen bg-gray-50 dark:bg-gray-900">
         <AlertTriangle className="w-16 h-16 text-red-500 mb-4" />
-        <h1 className="text-2xl font-medium mb-2">Error Loading Order</h1>
-        <p className="text-center">
+        <h1 className="text-2xl font-medium mb-2 text-gray-900 dark:text-gray-100">
+          Error Loading Order
+        </h1>
+        <p className="text-center text-gray-600 dark:text-gray-400">
           There was a problem fetching the order details. Please try again
           later.
         </p>
@@ -117,14 +116,14 @@ export default function OrderDetails() {
     );
   }
 
-  console.log(response?.data);
-
   if (!response?.data) {
     return (
-      <div className="flex flex-col items-center justify-center h-screen bg-gray-50">
+      <div className="flex flex-col items-center justify-center h-screen bg-gray-50 dark:bg-gray-900">
         <Package className="w-16 h-16 text-gray-400 mb-4" />
-        <h1 className="text-2xl font-bold mb-2">No Order Found</h1>
-        <p className="text-center">
+        <h1 className="text-2xl font-bold mb-2 text-gray-900 dark:text-gray-100">
+          No Order Found
+        </h1>
+        <p className="text-center text-gray-600 dark:text-gray-400">
           We couldn&apos;t find any order details for the given ID.
         </p>
       </div>
@@ -135,7 +134,6 @@ export default function OrderDetails() {
 
   const handleOrderStatusChange = async (newStatus: string) => {
     try {
-      console.log(order.id, "order id", newStatus, "new status");
       const result = await updateOrderByOrderId({
         orderId: order.id,
         orderStatus: newStatus,
@@ -195,14 +193,43 @@ export default function OrderDetails() {
     }
   };
 
+  const handleCourierInfoSubmit = async (
+    values: z.infer<typeof courierInfoSchema>
+  ) => {
+    if (!selectedItemId) return;
+
+    try {
+      const finalObj = {};
+      // const result = createCourierInfo({...values, selectedItemId})
+      console.log("Updating courier info for item:", selectedItemId, values);
+
+      toast({
+        title: "Courier Information Updated",
+        description: "The courier information has been successfully updated.",
+        variant: "default",
+      });
+
+      setCourierInfoOpen(false);
+    } catch (error) {
+      console.error("Error updating courier information:", error);
+      toast({
+        title: "Update Failed",
+        description:
+          "There was an error updating the courier information. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
   const getOverallOrderStatus = () => {
     if (!localItems || localItems.length === 0) return "UNKNOWN";
     const statuses = localItems.map((item) => item.itemStatus);
     if (statuses.every((status) => status === "DELIVERED")) return "DELIVERED";
     if (statuses.some((status) => status === "RETURNED")) return "RETURNED";
-    if (statuses.some((status) => status === "IN_TRANSIT")) return "IN_TRANSIT";
-    if (statuses.some((status) => status === "REQUESTTORETURN"))
-      return "REQUESTTORETURN";
+    if (statuses.some((status) => status === "SHIPPED_TO_COURIER"))
+      return "SHIPPED_TO_COURIER";
+    if (statuses.some((status) => status === "RETURN_REQUESTED"))
+      return "RETURN_REQUESTED";
     return "PROCESSING";
   };
 
@@ -229,14 +256,16 @@ export default function OrderDetails() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
-        <div className="bg-white overflow-hidden shadow-xl sm:rounded-lg">
+        <div className="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
           <div className="px-4 py-5 sm:p-6">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
               <div>
-                <h1 className="text-2xl font-medium">Order Details</h1>
-                <p className="mt-1 text-sm text-purple-600 bg-purple-100 px-2 py-1 rounded inline-block">
+                <h1 className="text-3xl font-medium text-gray-900 dark:text-white">
+                  Order Details
+                </h1>
+                <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
                   {order.id}
                 </p>
               </div>
@@ -246,7 +275,7 @@ export default function OrderDetails() {
                     statusColors[
                       getOverallOrderStatus() as keyof typeof statusColors
                     ]
-                  } px-3 py-2 text-sm font-medium rounded`}
+                  } px-3 py-2.5 text-sm font-medium rounded-md`}
                 >
                   {getOverallOrderStatus()}
                 </div>
@@ -256,20 +285,19 @@ export default function OrderDetails() {
                   isLoading={isOrderUpdating}
                 />
                 <Button
-                  variant="outline"
-                  onClick={() => refetch()}
-                  className="flex items-center"
-                >
-                  <RefreshCw className="mr-2 h-4 w-4" />
-                  Refresh
-                </Button>
-                <Button
-                  variant="success"
+                  variant="default"
                   onClick={() => setIsInvoiceFormOpen(true)}
                   className="flex items-center"
                 >
                   <ArrowDownToLine className="mr-2 h-4 w-4" />
-                  Generate Invoice
+                  Invoice
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => refetch()}
+                  className="flex items-center"
+                >
+                  <RefreshCw className="h-4 w-4" />
                 </Button>
               </div>
             </div>
@@ -278,7 +306,7 @@ export default function OrderDetails() {
               <div className="lg:col-span-2">
                 <Card>
                   <CardHeader>
-                    <CardTitle className="flex items-center text-2xl font-medium">
+                    <CardTitle className="flex items-center text-2xl font-medium text-gray-900 dark:text-white">
                       <Package className="mr-2" />
                       Order Items
                     </CardTitle>
@@ -288,30 +316,25 @@ export default function OrderDetails() {
                       localItems.map((item: IOrderItem) => (
                         <div
                           key={item.id}
-                          className="flex flex-col md:flex-row items-start md:items-center space-y-4 md:space-y-0 md:space-x-4 p-4 md:p-6 bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-300"
+                          className="flex flex-col md:flex-row items-start md:items-center space-y-4 md:space-y-0 md:space-x-4 p-4 md:p-6 bg-white dark:bg-gray-900 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md transition-shadow duration-300"
                         >
                           {item.product.imageUrls &&
                           item.product.imageUrls.length > 0 ? (
-                            <div className="relative lg:w-[160px] h-[100px] lg:h-[160px] w-[100px]">
-                              <Image
-                                src={item.product.imageUrls[0]}
-                                alt={item.product.name}
-                                fill
-                                objectFit="contain"
-                              />
+                            <div className="relative lg:w-[160px] h-[100px] lg:h-[160px] w-[100px] rounded overflow-hidden">
+                              <ImageSlider urls={item.product.imageUrls} />
                             </div>
                           ) : (
-                            <div className="w-full sm:w-[100px] h-[100px] bg-gray-200 rounded-md flex items-center justify-center">
-                              <Package className="w-16 h-16 text-gray-400" />
+                            <div className="w-full sm:w-[100px] h-[100px] bg-gray-200 dark:bg-gray-700 rounded-md flex items-center justify-center">
+                              <Package className="w-16 h-16 text-gray-400 dark:text-gray-500" />
                             </div>
                           )}
 
                           <div className="flex-grow space-y-2 w-full sm:w-auto">
-                            <h3 className="font-medium text-lg">
+                            <h3 className="font-medium text-lg text-gray-900 dark:text-white">
                               {item.product.name}
                             </h3>
                             <div className="flex flex-wrap gap-3 items-center">
-                              <span className="text-sm text-purple-600 bg-purple-100 px-2 py-1 rounded">
+                              <span className="text-sm px-2 py-1.5 rounded border">
                                 {shortenId(item.id)}
                               </span>
                               <Button
@@ -332,20 +355,20 @@ export default function OrderDetails() {
                               </Button>
                             </div>
                             <p className="text-sm flex flex-wrap gap-2 items-center">
-                              <span className="text-indigo-600 bg-indigo-100 px-2  py-1 rounded">
+                              <span className="px-3 py-1.5 rounded border">
                                 {item.size?.name || "N/A"}
                               </span>
                               <span
-                                className="inline-block w-6 h-6 rounded mr-1 align-middle"
+                                className="inline-block w-8 h-8 rounded align-middle border"
                                 style={{
                                   backgroundColor: item?.color?.hexCode,
                                 }}
                               ></span>
-                              <span className="text-indigo-600 bg-indigo-100 px-2 py-1 rounded">
+                              <span className="px-2 py-1.5 rounded border">
                                 {item.quantity} Pcs
                               </span>
                             </p>
-                            <p className="font-medium text-lg">
+                            <p className="font-medium text-gray-900 dark:text-white">
                               {formatCurrency(
                                 (item.discountedPrice ?? 0) * item.quantity
                               )}
@@ -355,7 +378,7 @@ export default function OrderDetails() {
                             <div
                               className={`${
                                 statusColors[item.itemStatus]
-                              } px-2 py-2 text-xs font-medium rounded w-full sm:w-auto text-center`}
+                              } px-3 py-2 text-xs font-medium rounded w-full sm:w-auto text-center`}
                             >
                               {item.itemStatus}
                             </div>
@@ -364,6 +387,7 @@ export default function OrderDetails() {
                                 handleItemStatusChange(item.id, value)
                               }
                               defaultValue={item.itemStatus}
+                              disabled={item.itemStatus === "RETURNED"}
                             >
                               <SelectTrigger className="w-full sm:w-[180px]">
                                 <SelectValue placeholder="Update Status" />
@@ -372,25 +396,40 @@ export default function OrderDetails() {
                                 <SelectItem value="PROCESSING">
                                   Processing
                                 </SelectItem>
-                                <SelectItem value="IN_TRANSIT">
-                                  In Transit
+                                <SelectItem value="SHIPPED_TO_COURIER">
+                                  Shipped To Courier
                                 </SelectItem>
                                 <SelectItem value="DELIVERED">
                                   Delivered
                                 </SelectItem>
-                                <SelectItem value="REQUESTTORETURN">
-                                  Request to Return
+                                <SelectItem value="RETURN_REQUESTED">
+                                  Return Requested
                                 </SelectItem>
                                 <SelectItem value="RETURNED">
                                   Returned
                                 </SelectItem>
                               </SelectContent>
                             </Select>
+
+                            {item.itemStatus === "SHIPPED_TO_COURIER" && (
+                              <CourierInfoDialog
+                                isOpen={
+                                  courierInfoOpen && selectedItemId === item.id
+                                }
+                                onOpenChange={(open) => {
+                                  setCourierInfoOpen(open);
+                                  if (open) setSelectedItemId(item.id);
+                                }}
+                                onSubmit={handleCourierInfoSubmit}
+                                itemId={item.id}
+                                isLoading={isCourierInfoUpdating}
+                              />
+                            )}
                           </div>
                         </div>
                       ))
                     ) : (
-                      <div className="text-center py-8 text-gray-500">
+                      <div className="text-center py-8 text-gray-500 dark:text-gray-400">
                         No items found in this order.
                       </div>
                     )}
@@ -399,14 +438,14 @@ export default function OrderDetails() {
               </div>
 
               <div className="space-y-6">
-                <Card className="bg-teal-400">
+                <Card className="bg-gradient-to-br from-teal-400 to-teal-600 dark:from-teal-600 dark:to-teal-800">
                   <CardHeader>
-                    <CardTitle className="flex items-center text-xl font-medium">
+                    <CardTitle className="flex items-center text-xl font-medium text-white">
                       <User className="mr-2" />
                       Buyer Information
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="space-y-2">
+                  <CardContent className="space-y-2 text-white">
                     <p className="font-medium">{order.userName || "No Name"}</p>
                     <p className="font-medium">{order.email || "N/A"}</p>
                     <p className="font-medium">{order.phone || "N/A"}</p>
@@ -416,14 +455,14 @@ export default function OrderDetails() {
                   </CardContent>
                 </Card>
 
-                <Card className="bg-purple-400">
+                <Card className="bg-gradient-to-br from-purple-400 to-purple-600 dark:from-purple-600 dark:to-purple-800">
                   <CardHeader>
-                    <CardTitle className="flex items-center text-xl font-medium">
+                    <CardTitle className="flex items-center text-xl font-medium text-white">
                       <Truck className="mr-2" />
                       Delivery Information
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="space-y-2">
+                  <CardContent className="space-y-2 text-white">
                     <div className="flex items-start">
                       <MapPin className="mr-2 mt-1 flex-shrink-0" />
                       <p>{formatAddress(order)}</p>
@@ -437,28 +476,28 @@ export default function OrderDetails() {
                   </CardContent>
                 </Card>
 
-                <Card className="bg-violet-400">
+                <Card className="bg-gradient-to-br from-violet-400 to-violet-600 dark:from-violet-600 dark:to-violet-800">
                   <CardHeader>
-                    <CardTitle className="flex items-center text-xl font-medium">
+                    <CardTitle className="flex items-center text-xl font-medium text-white">
                       <DollarSign className="mr-2" />
                       Payment Method
                     </CardTitle>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="text-white">
                     <p className="font-medium">
                       {order.shippingMethod || "N/A"}
                     </p>
                   </CardContent>
                 </Card>
 
-                <Card className="bg-indigo-400">
+                <Card className="bg-gradient-to-br from-indigo-400 to-indigo-600 dark:from-indigo-600 dark:to-indigo-800">
                   <CardHeader>
-                    <CardTitle className="flex items-center text-xl font-medium">
+                    <CardTitle className="flex items-center text-xl font-medium text-white">
                       <CreditCard className="mr-2" />
                       Payment Details
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="space-y-2">
+                  <CardContent className="space-y-2 text-white">
                     <p className="">
                       <span className="font-medium">Subtotal:</span>{" "}
                       {formatCurrency(order.totalCost || 0)}
@@ -467,7 +506,7 @@ export default function OrderDetails() {
                       <span className="font-medium">Shipping:</span>{" "}
                       {formatCurrency(order.shippingCost || 0)}
                     </p>
-                    <Separator className="my-2" />
+                    <Separator className="my-2 bg-white/20" />
                     <p className="text-lg font-medium">
                       Total:{" "}
                       {formatCurrency(
@@ -479,7 +518,7 @@ export default function OrderDetails() {
 
                 <Button
                   variant="outline"
-                  className="w-full"
+                  className="w-full bg-white dark:bg-gray-800 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
                   onClick={() => {
                     navigator.clipboard.writeText(order.id);
                     toast({

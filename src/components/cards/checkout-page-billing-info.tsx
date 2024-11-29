@@ -1,11 +1,12 @@
-import { IUserCartProduct } from "@/types";
+import { IProduct } from "@/types";
 import React, { useEffect, useState } from "react";
+import { PiSpinner } from "react-icons/pi";
 import CouponCodeModal from "../modals/coupon-code-modals";
 import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
 
 interface CheckOutPageBillingInfoProps {
-  products: IUserCartProduct[];
+  products: IProduct[];
   district: string;
   qty?: number;
   handlePlaceOrder: () => void;
@@ -21,6 +22,7 @@ const CheckOutPageBillingInfo: React.FC<CheckOutPageBillingInfoProps> = ({
   setTotalPrice,
   setShippingCost,
   handlePlaceOrder,
+  buttonLoading,
 }) => {
   const [subTotal, setSubTotal] = useState<number>(0);
   const [charge, setCharge] = useState<number>(0);
@@ -163,13 +165,19 @@ const CheckOutPageBillingInfo: React.FC<CheckOutPageBillingInfoProps> = ({
           </div>
         </div>
         <div className="w-full mt-4">
-<<<<<<< HEAD
-          <Button className="w-full" onClick={handlePlaceOrder}>
-            Order Now
-=======
-          <Button className="w-full" onClick={() => handlePlaceOrder()}>
-            Place Order
->>>>>>> 9c43714840d78f783524b6ab9b9d0e668617fbc4
+          <Button
+            className="w-full"
+            onClick={() => handlePlaceOrder()}
+            disabled={buttonLoading}
+          >
+            {buttonLoading ? (
+              <div className="flex items-center gap-2">
+                <PiSpinner className="animate-spin" size={18} />
+                <p>Processing</p>
+              </div>
+            ) : (
+              <p>Place Order</p>
+            )}
           </Button>
         </div>
       </div>

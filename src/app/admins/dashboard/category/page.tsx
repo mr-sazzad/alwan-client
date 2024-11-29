@@ -6,7 +6,7 @@ import CategoryDrawer from "@/components/categories/category-drawer";
 import AdminsCategorySkeleton from "@/components/skeletons/admins-category-skeleton";
 import { Button } from "@/components/ui/button";
 import { useGetCategoriesQuery } from "@/redux/api/categoies/categoriesApi";
-import { Upload } from "lucide-react";
+import { Plus } from "lucide-react";
 import { useState } from "react";
 import CategoryTableColumns from "./category-columns";
 
@@ -33,7 +33,7 @@ const Category = () => {
 
       <div className="flex justify-end items-center mt-5">
         <Button variant="outline" size="sm" onClick={() => setOpen(true)}>
-          <Upload className="w-4 h-4 mr-2" />
+          <Plus className="w-4 h-4 mr-2" />
           Create Category
         </Button>
       </div>

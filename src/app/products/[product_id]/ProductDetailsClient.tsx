@@ -125,7 +125,7 @@ export default function Component() {
     }
   };
 
-  const isComingSoon = product?.data?.availabilityTag === "coming soon";
+  const isComingSoon = product?.data?.stockStatus === "COMING_SOON";
 
   if (isLoading) {
     return (
@@ -163,7 +163,9 @@ export default function Component() {
           <div className="w-full md:w-1/2 space-y-6">
             <div>
               <span className="inline-block px-2 py-1 text-sm font-medium text-[#D33918] mb-2">
-                {product?.data?.availabilityTag}
+                {product?.data?.stockStatus === "COMING_SOON"
+                  ? "Coming Soon"
+                  : product?.data?.availabilityTag}
               </span>
 
               <h1 className="text-xl font-medium capitalize">

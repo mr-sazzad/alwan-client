@@ -364,6 +364,9 @@ export default function Component({
                           <SelectItem value="OUT_OF_STOCK">
                             Out of Stock
                           </SelectItem>
+                          <SelectItem value="COMING_SOON">
+                            Coming Soon
+                          </SelectItem>
                         </SelectGroup>
                       </SelectContent>
                     </Select>
@@ -390,7 +393,6 @@ export default function Component({
                           {[
                             "sustainable material",
                             "Just In",
-                            "Coming Soon",
                             "Comfortable",
                             "Durable",
                             "Stylish",

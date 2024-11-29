@@ -47,7 +47,7 @@ export default function OrderStatus({
             "w-[160px] justify-between",
             statusConfig[status].color
           )}
-          disabled={isLoading}
+          disabled
         >
           <span className="flex items-center gap-2">{status}</span>
           <svg

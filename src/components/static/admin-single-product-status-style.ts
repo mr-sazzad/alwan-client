@@ -4,20 +4,20 @@ export const statusStyles = {
     textColor: "text-yellow-900",
     displayText: "PROCESSING",
   },
-  IN_TRANSIT: {
+  SHIPPED_TO_COURIER: {
     bgColor: "bg-blue-300",
     textColor: "text-blue-900",
-    displayText: "IN_TRANSIT",
+    displayText: "SHIPPED_TO_COURIER",
   },
   DELIVERED: {
     bgColor: "bg-green-300",
     textColor: "text-green-900",
     displayText: "DELIVERED",
   },
-  REQUESTTORETURN: {
+  RETURN_REQUESTED: {
     bgColor: "bg-red-300",
     textColor: "text-red-900",
-    displayText: "REQUESTTORETURN",
+    displayText: "RETURN_REQUESTED",
   },
   RETURNED: {
     bgColor: "bg-gray-300",

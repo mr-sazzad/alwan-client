@@ -16,9 +16,10 @@ import { useGetIncomesBetweenDatesQuery } from "@/redux/api/income/incomeApi";
 import { endOfDay, format, parseISO, startOfDay, subDays } from "date-fns";
 import React, { useMemo, useState } from "react";
 import {
+  Bar,
+  BarChart,
   CartesianGrid,
-  Line,
-  LineChart,
+  Legend,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -55,20 +56,20 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({
   if (active && payload && payload.length) {
     const data = payload[0].payload as ChartDataPoint;
     return (
-      <div className="bg-white p-4 rounded shadow-md border border-gray-200">
-        <p className="font-bold text-lg mb-2">
+      <div className="bg-white dark:bg-gray-900 p-4 rounded shadow-lg border border-gray-200 dark:border-gray-600">
+        <p className="font-medium mb-1 text-sm">
+          <span className="w-4 h-4 bg-green-500" />
           {format(parseISO(data.date), "MMMM dd, yyyy")}
         </p>
-        <p className="text-md mb-2">
-          Total:{" "}
-          <span className="font-semibold">TK. {data.amount.toFixed(2)}</span>
+        <p className="mb-2 text-sm">
+          Total: <span>{data.amount.toFixed(2)} BDT</span>
         </p>
-        <p className="font-bold mt-2 mb-1">Transactions:</p>
+        <p className="font-medium mb-1 text-sm">Transactions:</p>
         <ul className="max-h-40 overflow-auto">
           {data.transactions.map((t, index) => (
             <li
               key={index}
-              className="text-sm py-1 border-b border-gray-100 last:border-b-0"
+              className="text-xs py-1 border-b border-gray-100 dark:border-gray-600 last:border-b-0"
             >
               {t.time}:{" "}
               <span className="font-medium">TK. {t.amount.toFixed(2)}</span>
@@ -164,25 +165,31 @@ const RevenueChart: React.FC = () => {
           </div>
         ) : (
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart
+            <BarChart
               data={chartData}
-              margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+              margin={{ top: 10, right: 30, left: 20, bottom: 30 }}
             >
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis
                 dataKey="date"
                 tickFormatter={formatXAxis}
                 interval="preserveStartEnd"
+                stroke="#333"
               />
-              <YAxis />
+              <YAxis
+                tickFormatter={(value) => `TK. ${value}`}
+                stroke="#333"
+                tick={{ fill: "#666" }}
+              />
               <Tooltip content={<CustomTooltip />} />
-              <Line
-                type="monotone"
+              <Legend />
+              <Bar
                 dataKey="amount"
-                stroke="#8884d8"
-                activeDot={{ r: 8 }}
+                fill="#8884d8"
+                radius={[8, 8, 0, 0]}
+                barSize={30}
               />
-            </LineChart>
+            </BarChart>
           </ResponsiveContainer>
         )}
       </CardContent>

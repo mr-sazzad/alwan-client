@@ -32,7 +32,8 @@ import { useGetSingleSizeQuery } from "@/redux/api/size/size-api";
 import { useGetSingleUserQuery } from "@/redux/api/users/user-api";
 import { RootState } from "@/redux/store";
 import { addressSchema } from "@/schemas/address-schema";
-import { FormValues, IUserAddress, IUserCartProduct, IUserData } from "@/types";
+import { FormValues, IProduct, IUser, IUserAddress } from "@/types";
+import { TbHomeCheck } from "react-icons/tb";
 
 const GUEST_ADDRESS_KEY = "alwan_guest_user_address";
 
@@ -47,16 +48,15 @@ export default function CheckoutPage() {
 
   const [totalPrice, setTotalPrice] = useState<number>(0);
   const [shippingCost, setShippingCost] = useState<number>(0);
-  const [currentUser, setCurrentUser] = useState<IUserData | null>(null);
+  const [currentUser, setCurrentUser] = useState<IUser | null>(null);
   const [createAOrder] = useCreateAOrderMutation();
   const [loading, setLoading] = useState<boolean>(false);
   const [addressModalOpen, setAddressModalOpen] = useState<boolean>(false);
   const [guestAddress, setGuestAddress] = useState<FormValues | null>(null);
   const [addressToShow, setAddressToShow] = useState<FormValues | null>(null);
-
   const cartProducts = useSelector((state: RootState) => state.cart.products);
 
-  const form = useForm<FormValues>({
+  const form = useForm<any>({
     resolver: zodResolver(addressSchema),
     defaultValues: {
       recipientName: "",
@@ -82,12 +82,12 @@ export default function CheckoutPage() {
     useGetSingleColorByIdQuery(colorId);
 
   useEffect(() => {
-    const user = getUserFromLocalStorage() as IUserData | null;
+    const user = getUserFromLocalStorage() as IUser | null;
     setCurrentUser(user);
 
     const storedGuestAddress = localStorage.getItem(GUEST_ADDRESS_KEY);
     if (storedGuestAddress && !user) {
-      const parsedAddress = JSON.parse(storedGuestAddress) as FormValues;
+      const parsedAddress = JSON.parse(storedGuestAddress) as any;
       setGuestAddress(parsedAddress);
       form.reset(parsedAddress);
     }
@@ -141,7 +141,7 @@ export default function CheckoutPage() {
     setLoading,
   });
 
-  const handleAddressSubmit = (values: FormValues) => {
+  const handleAddressSubmit = (values: any) => {
     if (currentUser) {
       form.reset(values);
     } else {
@@ -163,7 +163,7 @@ export default function CheckoutPage() {
   const isLoading =
     isUserLoading || isSizeLoading || isProductLoading || isColorLoading;
 
-  const productsToShow: IUserCartProduct[] =
+  const productsToShow: IProduct[] =
     productId && productRes?.data
       ? [
           {
@@ -194,10 +194,10 @@ export default function CheckoutPage() {
                   <Skeleton className="h-24 w-full" />
                 ) : !addressToShow ? (
                   <Button
-                    variant="outline"
-                    className="w-full h-24"
+                    className="w-full h-20 flex items-center gap-2 text-lg"
                     onClick={handleAddressButtonClick}
                   >
+                    <TbHomeCheck />
                     Add Delivery Address
                   </Button>
                 ) : (
@@ -245,7 +245,10 @@ export default function CheckoutPage() {
               </CardHeader>
               <CardContent>
                 {isLoading ? (
-                  <Skeleton className="h-24 w-full" />
+                  <div className="flex flex-col space-y-4">
+                    <Skeleton className="h-24 w-full" />
+                    <Skeleton className="h-24 w-full" />
+                  </div>
                 ) : (
                   <div className="space-y-4">
                     {productsToShow.map((product) => (

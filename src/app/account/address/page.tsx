@@ -227,24 +227,18 @@ export default function Address() {
           <Button
             className="flex items-center justify-center gap-2 w-full h-12 mb-6 font-medium rounded"
             onClick={handleAddAddressClick}
+            disabled={sortedAddresses?.length === 2}
           >
             <HiPlusSmall className="h-5 w-5" />
             Add New Address
           </Button>
 
           {sortedAddresses?.length ? (
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-6 md:grid-cols-2">
               {sortedAddresses.map((address: any) => (
                 <Card key={address.id} className="relative">
                   <CardContent className="pt-6">
                     <div className="flex items-start gap-4 mb-4">
-                      {/* <Image
-                        alt="home-icon"
-                        src={homeIcon}
-                        height={40}
-                        width={40}
-                        className="rounded-full bg-primary/10 p-2"
-                      /> */}
                       <div className="h-10 w-10 flex justify-center items-center rounded bg-primary/10">
                         <Earth className="h-8 w-8 p-1 text-emerald-500" />
                       </div>
@@ -276,7 +270,7 @@ export default function Address() {
                       )}
                     </div>
                     <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
+                      <DropdownMenuTrigger asChild className="mt-4">
                         <Button
                           variant="ghost"
                           size="icon"

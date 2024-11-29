@@ -4,13 +4,14 @@ import {
   decreaseProductQty,
   increaseProductQty,
 } from "@/redux/api/cart/cartSlice";
-import { IUserCartProduct } from "@/types";
+import { IProduct } from "@/types";
 import Image from "next/image";
+import { useSearchParams } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { Button } from "../ui/button";
 
 interface CheckoutPageSingleProductCardProps {
-  product: IUserCartProduct;
+  product: IProduct;
   quantity: string;
   size: string;
 }
@@ -18,8 +19,12 @@ interface CheckoutPageSingleProductCardProps {
 const CheckoutPageSingleProductCard: React.FC<
   CheckoutPageSingleProductCardProps
 > = ({ product, quantity, size }) => {
-  const qty = Number(quantity);
   const dispatch = useDispatch();
+  const searchParams = useSearchParams();
+
+  const productId = searchParams.get("productId") || undefined;
+  const sizeId = searchParams.get("sizeId") || undefined;
+  const colorId = searchParams.get("colorId") || undefined;
 
   const selectedSizeVariant = product?.sizeVariants?.find(
     (variant) => variant.size.name.toUpperCase() === size.toUpperCase()
@@ -51,7 +56,7 @@ const CheckoutPageSingleProductCard: React.FC<
         <div className="flex flex-row gap-4 w-full">
           <div className="relative w-24 h-24 rounded-md overflow-hidden">
             <Image
-              src={product.imageUrls[0] || "/placeholder.svg"}
+              src={product.imageUrls[0]}
               alt={product.name}
               layout="fill"
               objectFit="cover"
@@ -72,29 +77,44 @@ const CheckoutPageSingleProductCard: React.FC<
 
             <div className="flex justify-between items-center">
               <div className="flex gap-1 items-center font-medium text-lg">
-                <span className="bg-clip-text">TK</span>
-                <p className="bg-clip-text">
+                <span>BDT</span>
+                <p>
                   {selectedSizeVariant?.price || product.sizeVariants[0].price}
+                  .00
                 </p>
               </div>
               <div className="flex gap-1 items-center border rounded-md overflow-hidden">
-                <Button
-                  className="px-3 py-0 my-0"
-                  size="cc"
-                  variant="secondary"
-                  onClick={handleDecreaseQty}
-                >
-                  -
-                </Button>
-                <p className="px-2">{product.orderQty}</p>
-                <Button
-                  className="px-3 py-0 my-0"
-                  size="cc"
-                  variant="secondary"
-                  onClick={handleIncreaseQty}
-                >
-                  +
-                </Button>
+                {!(productId && colorId && sizeId) && (
+                  <>
+                    <Button
+                      className="px-3 py-0 my-0"
+                      size="cc"
+                      variant="secondary"
+                      onClick={handleDecreaseQty}
+                    >
+                      -
+                    </Button>
+                  </>
+                )}
+                {productId && colorId && sizeId ? (
+                  <p className="px-3 py-1 bg-gray-200 text-black font-medium border border-gray-300 rounded-md text-center">
+                    {quantity}
+                  </p>
+                ) : (
+                  <p className="px-2">{quantity}</p>
+                )}
+                {!(productId && colorId && sizeId) && (
+                  <>
+                    <Button
+                      className="px-3 py-0 my-0"
+                      size="cc"
+                      variant="secondary"
+                      onClick={handleIncreaseQty}
+                    >
+                      +
+                    </Button>
+                  </>
+                )}
               </div>
             </div>
           </div>
