@@ -1,6 +1,38 @@
 import z from "zod";
 
-export const statusEnum = ["AVAILABLE", "OUT_OF_STOCK"] as const;
+export const statusEnum = ["AVAILABLE", "OUT_OF_STOCK", "COMING_SOON"] as const;
+
+export const availabilityTag = [
+  "sustainable material",
+  "Just In",
+  "Comfortable",
+  "Durable",
+  "Stylish",
+  "Trendy",
+  "Elegant",
+  "Casual",
+  "Formal",
+  "Sporty",
+  "Luxurious",
+  "Minimalist",
+  "Premium",
+  "Limited Edition",
+  "Exclusive",
+  "Versatile",
+  "Unique",
+  "Handmade",
+  "Organic",
+  "Eco-Friendly",
+  "High-Quality",
+  "Innovative",
+  "Modern",
+  "Classic",
+  "Trending",
+  "Hipster",
+  "Vintage",
+  "Retro",
+  "Budget friendly",
+];
 
 export const productSchema = z.object({
   files: z
@@ -21,7 +53,12 @@ export const productSchema = z.object({
       message: "must be either 'In stock' or 'Out of stock'",
     })
     .default("AVAILABLE"),
-  availabilityTag: z.string().optional(),
+  availabilityTag: z
+    .string()
+    .refine((value) => availabilityTag.includes(value), {
+      message: "Invalid availability tag",
+    })
+    .optional(),
   couponEligible: z.boolean().default(false),
   freeShippingAvailable: z.boolean().default(false),
   isNewArrival: z.boolean().default(false),
@@ -29,6 +66,7 @@ export const productSchema = z.object({
   sizeVariants: z.array(
     z.object({
       price: z.number(),
+      discountedPrice: z.number().optional(),
       stock: z.number(),
       colorId: z.string().min(1, { message: "Color ID is required" }),
       sizeId: z.string().min(1, { message: "Size ID is required" }),

@@ -1,6 +1,6 @@
 import { getUserFromLocalStorage } from "@/helpers/jwt";
 import { handleSignInWithGoogle } from "@/helpers/sign-in-with-google";
-import { Category } from "@/types";
+import { ICategory } from "@/types";
 import Link from "next/link";
 import { useState } from "react";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
@@ -10,8 +10,8 @@ import { Button } from "../ui/button";
 import { Card, CardContent } from "../ui/card";
 
 interface CategoryListProps {
-  categories: Category[];
-  onCategoryClick: (category: Category) => void;
+  categories: ICategory[];
+  onCategoryClick: (category: ICategory) => void;
   backButtonText: string;
   parentCategoryName: string;
   onBack: () => void;

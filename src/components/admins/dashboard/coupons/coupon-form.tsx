@@ -17,6 +17,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { MultiSelect } from "@/components/ui/multi-select";
 import {
   Popover,
   PopoverContent,
@@ -39,7 +40,6 @@ import { CalendarIcon } from "lucide-react";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { RiLoaderLine } from "react-icons/ri";
-import ReactSelect from "react-select";
 import { z } from "zod";
 
 interface CouponFormProps {
@@ -344,33 +344,17 @@ export default function CouponForm({
                           name="categories"
                           control={form.control}
                           render={({ field }) => (
-                            <ReactSelect
-                              isMulti
+                            <MultiSelect
                               options={categories.map((category) => ({
-                                value: category.id,
                                 label: category.name,
+                                value: category.id,
                               }))}
-                              value={(field.value || []).map((id) => {
-                                const category = categories.find(
-                                  (c) => c.id === id
-                                );
-                                return category
-                                  ? { value: category.id, label: category.name }
-                                  : null;
-                              })}
-                              onChange={(newValue) =>
-                                field.onChange(
-                                  newValue.map((item) => item?.value || "")
-                                )
+                              onValueChange={(newValue) =>
+                                field.onChange(newValue)
                               }
-                              classNames={{
-                                control: (state) => "border-input",
-                                menu: () => "bg-background",
-                                option: (state) =>
-                                  state.isFocused
-                                    ? "bg-accent"
-                                    : "bg-background",
-                              }}
+                              defaultValue={field.value || []}
+                              placeholder="Select categories"
+                              modalPopover={true}
                             />
                           )}
                         />
@@ -393,33 +377,17 @@ export default function CouponForm({
                           name="products"
                           control={form.control}
                           render={({ field }) => (
-                            <ReactSelect
-                              isMulti
+                            <MultiSelect
                               options={products.map((product) => ({
-                                value: product.id,
                                 label: product.name,
+                                value: product.id,
                               }))}
-                              value={(field.value || []).map((id) => {
-                                const product = products.find(
-                                  (p) => p.id === id
-                                );
-                                return product
-                                  ? { value: product.id, label: product.name }
-                                  : null;
-                              })}
-                              onChange={(newValue) =>
-                                field.onChange(
-                                  newValue.map((item) => item?.value || "")
-                                )
+                              onValueChange={(newValue) =>
+                                field.onChange(newValue)
                               }
-                              classNames={{
-                                control: (state) => "border-input",
-                                menu: () => "bg-background",
-                                option: (state) =>
-                                  state.isFocused
-                                    ? "bg-accent"
-                                    : "bg-background",
-                              }}
+                              defaultValue={field.value || []}
+                              placeholder="Select products"
+                              modalPopover={true}
                             />
                           )}
                         />

@@ -5,7 +5,7 @@ import { useGetAllCarouselsQuery } from "@/redux/api/carousel/carouselApi";
 import { AlertCircle } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { Alert, AlertDescription } from "./ui/alert";
+import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
 import { Skeleton } from "./ui/skeleton";
 
 const DESKTOP_ASPECT_RATIO = 72 / 25;
@@ -30,7 +30,7 @@ const Banner = () => {
   useEffect(() => {
     const updateDimensions = () => {
       const width = window.innerWidth;
-      setIsMobile(width < 768); // Adjust this breakpoint as needed
+      setIsMobile(width < 768);
       setContainerHeight(
         width / (isMobile ? MOBILE_ASPECT_RATIO : DESKTOP_ASPECT_RATIO)
       );
@@ -55,13 +55,24 @@ const Banner = () => {
 
   if (isError || !response?.data || response.data.length === 0) {
     return (
-      <div className="w-full px-4 py-8 md:py-12">
-        <Alert variant="destructive">
-          <AlertCircle className="h-4 w-4" />
-          <AlertDescription>
-            Unable to load banner image. Please try again later.
-          </AlertDescription>
-        </Alert>
+      <div className="w-full px-4 py-8 md:py-12 lg:py-16 mt-[90px]">
+        <div className="mx-auto">
+          <Alert variant="destructive" className="mb-6">
+            <AlertCircle className="h-5 w-5" />
+            <AlertTitle className="mb-2">Error Loading Banner</AlertTitle>
+            <AlertDescription>
+              We encountered an issue while trying to load the banner image.
+              This could be due to a network problem or a temporary server
+              issue.
+            </AlertDescription>
+          </Alert>
+
+          <div className="text-center">
+            <p className="mt-4 text-sm text-muted-foreground">
+              If the problem persists, please contact our support team.
+            </p>
+          </div>
+        </div>
       </div>
     );
   }

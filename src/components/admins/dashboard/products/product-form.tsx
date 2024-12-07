@@ -34,12 +34,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/use-toast";
 
 // Assume these imports are available
+import CreateProductDialogSkeleton from "@/components/skeletons/create-product-dialog";
 import { useGetLeafCategoriesQuery } from "@/redux/api/categoies/categoriesApi";
 import { useGetAllColorsQuery } from "@/redux/api/color/color-api";
 import { useGetProductTypesQuery } from "@/redux/api/product-types/product-types-api";
@@ -65,6 +65,7 @@ export default function Component({
 }: ProductFormProps) {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
+  const [selectedColor, setSelectedColor] = useState<string>("");
 
   const { data: categories, isLoading: isCategoryLoading } =
     useGetLeafCategoriesQuery(undefined);
@@ -94,7 +95,14 @@ export default function Component({
       isNewArrival: false,
       sku: "",
       sizeVariants: [
-        { price: 0, stock: 0, colorId: "", sizeId: "", manufacturingCost: 0 },
+        {
+          price: 0,
+          discountedPrice: 0,
+          stock: 0,
+          colorId: "",
+          sizeId: "",
+          manufacturingCost: 0,
+        },
       ],
     },
   });
@@ -150,10 +158,10 @@ export default function Component({
 
       if ("data" in response && response.data.success) {
         toast({
-          title: "Success",
-          description: `Product ${
+          title: "Operation Successful",
+          description: `The product has been successfully ${
             mode === "create" ? "created" : "updated"
-          } successfully`,
+          }.`,
         });
         form.reset();
         setSelectedFiles([]);
@@ -164,8 +172,10 @@ export default function Component({
       }
     } catch (error) {
       toast({
-        title: "Error",
-        description: `Failed to ${mode} product. Please try again later.`,
+        title: "Operation Failed",
+        description: `An error occurred while trying to ${
+          mode === "create" ? "create" : "update"
+        } the product. Please try again later or contact support if the issue persists.`,
         variant: "destructive",
       });
     }
@@ -177,32 +187,13 @@ export default function Component({
     isSizeLoading ||
     isProductTypeLoading
   ) {
-    return (
-      <Card className="w-full max-w-4xl mx-auto">
-        <CardHeader>
-          <Skeleton className="h-8 w-3/4" />
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <Skeleton className="h-40 w-full" />
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Skeleton className="h-10 w-full" />
-            <Skeleton className="h-10 w-full" />
-          </div>
-          <Separator />
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <Skeleton className="h-10 w-full" />
-            <Skeleton className="h-10 w-full" />
-            <Skeleton className="h-10 w-full" />
-          </div>
-        </CardContent>
-      </Card>
-    );
+    return <CreateProductDialogSkeleton />;
   }
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <Card className="w-full max-w-4xl mx-auto">
+        <Card className="w-full max-w-6xl mx-auto border-none p-0 m-0">
           <CardHeader>
             <CardTitle className="text-2xl font-medium">
               {mode === "create" ? "Create New Product" : "Update Product"}
@@ -446,8 +437,9 @@ export default function Component({
                   onClick={() =>
                     append({
                       price: 0,
+                      discountedPrice: 0,
                       stock: 0,
-                      colorId: "",
+                      colorId: selectedColor,
                       sizeId: "",
                       manufacturingCost: 0,
                     })
@@ -460,7 +452,7 @@ export default function Component({
               {fields.map((item, index) => (
                 <Card key={item.id}>
                   <CardContent className="p-4">
-                    <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
                       <FormField
                         control={form.control}
                         name={`sizeVariants.${index}.price`}
@@ -471,6 +463,28 @@ export default function Component({
                               <Input
                                 type="number"
                                 placeholder="400"
+                                {...field}
+                                onChange={(e) =>
+                                  field.onChange(
+                                    e.target.value ? Number(e.target.value) : ""
+                                  )
+                                }
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name={`sizeVariants.${index}.discountedPrice`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Discounted Price</FormLabel>
+                            <FormControl>
+                              <Input
+                                type="number"
+                                placeholder="350"
                                 {...field}
                                 onChange={(e) =>
                                   field.onChange(
@@ -512,8 +526,23 @@ export default function Component({
                           <FormItem>
                             <FormLabel>Color</FormLabel>
                             <Select
-                              onValueChange={field.onChange}
+                              onValueChange={(value) => {
+                                field.onChange(value);
+                                if (index === 0) {
+                                  setSelectedColor(value);
+                                  // Update all other variants with the selected color
+                                  fields.forEach((_, i) => {
+                                    if (i !== 0) {
+                                      form.setValue(
+                                        `sizeVariants.${i}.colorId`,
+                                        value
+                                      );
+                                    }
+                                  });
+                                }
+                              }}
                               value={field.value}
+                              disabled={index !== 0 && selectedColor !== ""}
                             >
                               <FormControl>
                                 <SelectTrigger>
@@ -595,12 +624,13 @@ export default function Component({
                         )}
                       />
                     </div>
+
                     <Button
                       type="button"
                       variant="destructive"
                       size="sm"
                       onClick={() => remove(index)}
-                      className="mt-4"
+                      className="mt-4 w-full"
                     >
                       <BiTrash className="mr-2 h-4 w-4" />
                       Remove variant

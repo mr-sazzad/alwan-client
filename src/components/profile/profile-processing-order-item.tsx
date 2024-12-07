@@ -1,4 +1,4 @@
-import { IOrderItem } from "@/types";
+import { ISizeVariant } from "@/types";
 import ImageSlider from "../cards/image-slider";
 import { Button } from "../ui/button";
 
@@ -7,7 +7,7 @@ import { IoClose } from "react-icons/io5";
 import AlertDialogComp from "../alert-dialog/alert-dialog";
 
 interface IProfileProcessingOrderItemProps {
-  items: IOrderItem[];
+  items: any[];
 }
 
 const ProfileProcessingOrderItem: React.FC<
@@ -40,7 +40,7 @@ const ProfileProcessingOrderItem: React.FC<
                   </p>
                 </div>
                 {item.product.sizeVariants.map(
-                  (sizeVariant) =>
+                  (sizeVariant: ISizeVariant) =>
                     sizeVariant?.sizeId === item?.sizeId && (
                       <div
                         className="flex flex-col gap-1"

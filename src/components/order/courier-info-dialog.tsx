@@ -18,9 +18,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { courierInfoSchema } from "@/schemas/admins/courier-info-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2 } from "lucide-react";
+import { Loader2, Send } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { LuTruck } from "react-icons/lu";
 import { z } from "zod";
 
 interface CourierInfoDialogProps {
@@ -58,7 +57,7 @@ const CourierInfoDialog: React.FC<CourierInfoDialogProps> = ({
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>
         <Button variant="outline" className="flex items-center gap-1">
-          Update Courier Info <LuTruck className="h-4 w-4" />
+          Update Courier Info <Send className="w-4 h-4 ml-1" />
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[500px]">

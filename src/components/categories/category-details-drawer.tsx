@@ -1,6 +1,6 @@
 "use client";
 
-import { IReadCategory } from "@/types";
+import { ICategory } from "@/types";
 import { X } from "lucide-react";
 import Image from "next/image";
 import { Dispatch, SetStateAction } from "react";
@@ -14,7 +14,7 @@ import { Separator } from "../ui/separator";
 interface CategoryDetailsDrawerProps {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
-  category: IReadCategory;
+  category: ICategory;
   loading: boolean;
 }
 

@@ -13,7 +13,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useDeleteSingleProductMutation } from "@/redux/api/products/productsApi";
-import { IProduct, IReadCategory, IReadSize, IReadSizeVariant } from "@/types";
+import { ICategory, IProduct, ISize, ISizeVariant } from "@/types";
 import { ColumnDef } from "@tanstack/react-table";
 import {
   ArrowUpDown,
@@ -28,9 +28,9 @@ import { useState } from "react";
 export type Product = {
   id: string;
   name: string;
-  category: IReadCategory;
-  sizeVariants: IReadSizeVariant[];
-  size: IReadSize;
+  category: ICategory;
+  sizeVariants: ISizeVariant[];
+  size: ISize;
   stockStatus: "AVAILABLE" | "OUT_OF_STOCK";
 };
 

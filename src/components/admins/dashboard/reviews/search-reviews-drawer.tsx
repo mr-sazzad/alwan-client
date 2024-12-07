@@ -12,13 +12,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useGetCategoryProductsQuery } from "@/redux/api/products/productsApi";
-import { IProduct, IReadCategory } from "@/types";
+import { ICategory, IProduct } from "@/types";
 import { useState } from "react";
 
 interface SearchReviewsDrawerProps {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  categories: IReadCategory[];
+  categories: ICategory[];
   selectedProduct: IProduct | null;
   setSelectedProduct: React.Dispatch<React.SetStateAction<IProduct | null>>;
 }

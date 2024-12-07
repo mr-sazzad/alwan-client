@@ -22,8 +22,6 @@ const Page = () => {
     return <AdminColorSkeleton />;
   }
 
-  console.log(response);
-
   return (
     <div>
       <AlwanBreadCrumb
@@ -43,7 +41,7 @@ const Page = () => {
               <Box className="w-4 h-4" /> Add a new product
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-5xl">
+          <DialogContent className="max-w-6xl">
             <div className="h-[85vh] overflow-y-auto hide-scrollbar mt-5 px-1">
               <ProductForm mode="create" setOpen={setIsModalOpen} />
             </div>

@@ -20,7 +20,7 @@ import {
   increaseProductQty,
 } from "@/redux/api/cart/cartSlice";
 import { RootState } from "@/redux/store";
-import { IUserCartProduct } from "@/types";
+import { IProduct } from "@/types";
 import { Minus, Plus, ShoppingBag, ShoppingCart, Trash2 } from "lucide-react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
@@ -56,7 +56,7 @@ const Cart: React.FC<ICart> = ({ cartOpen, setCartOpen }) => {
 
   const calculateTotalPrice = () => {
     return cartProducts
-      .reduce((total: number, product: IUserCartProduct) => {
+      .reduce((total: number, product: IProduct) => {
         const sizeVariant = product.sizeVariants.find(
           (variant) =>
             variant.size.name === product.orderSize &&

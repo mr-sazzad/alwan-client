@@ -5,7 +5,6 @@ import {
   ArrowDownToLine,
   Clipboard,
   CreditCard,
-  DollarSign,
   MapPin,
   Package,
   RefreshCw,
@@ -20,6 +19,7 @@ import Loading from "@/app/loading";
 import ImageSlider from "@/components/cards/image-slider";
 import InvoiceForm from "@/components/invoice/invoice-form";
 import InvoiceGenerator from "@/components/invoice/invoice-generator";
+import { ReturnConfirmationDialog } from "@/components/order/accept-return-dialog";
 import CourierInfoDialog from "@/components/order/courier-info-dialog";
 import OrderStatus from "@/components/order/order-status";
 import { Button } from "@/components/ui/button";
@@ -44,7 +44,8 @@ import {
 import { useGetReturnsQuery } from "@/redux/api/return/return-api";
 import { courierInfoSchema } from "@/schemas/admins/courier-info-schema";
 import { formSchema } from "@/schemas/invoice-form-schema";
-import { IOrderItem } from "@/types";
+import { IOrder, IOrderItem } from "@/types";
+import { TbMoneybag } from "react-icons/tb";
 
 const statusColors = {
   PROCESSING: "bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-300",
@@ -78,6 +79,8 @@ export default function OrderDetails() {
   const [showInvoice, setShowInvoice] = useState(false);
   const [courierInfoOpen, setCourierInfoOpen] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
+  const [isReturnConfirmationOpen, setIsReturnConfirmationOpen] =
+    useState(false);
   const [invoiceData, setInvoiceData] = useState({
     brandPhone: "+880 1234567890",
     brandEmail: "info@alwan.com",
@@ -183,7 +186,6 @@ export default function OrderDetails() {
       });
       refetch();
     } catch (error) {
-      console.error("Error updating order status:", error);
       toast({
         title: "Update Failed",
         description:
@@ -199,8 +201,8 @@ export default function OrderDetails() {
     if (!selectedItemId) return;
 
     try {
-      const finalObj = {};
-      // const result = createCourierInfo({...values, selectedItemId})
+      const finalObj = { ...values, selectedItemId };
+      await createCourierInfo(finalObj).unwrap();
       console.log("Updating courier info for item:", selectedItemId, values);
 
       toast({
@@ -221,6 +223,28 @@ export default function OrderDetails() {
     }
   };
 
+  const handleReturnConfirmation = async (reason: string) => {
+    if (!selectedItemId) return;
+
+    try {
+      await handleItemStatusChange(selectedItemId, "RETURNED");
+      toast({
+        title: "Return Accepted",
+        description: `Return request for item ${selectedItemId} has been accepted. Reason: ${reason}`,
+        variant: "default",
+      });
+      setIsReturnConfirmationOpen(false);
+    } catch (error) {
+      console.error("Error accepting return request:", error);
+      toast({
+        title: "Update Failed",
+        description:
+          "There was an error accepting the return request. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
   const getOverallOrderStatus = () => {
     if (!localItems || localItems.length === 0) return "UNKNOWN";
     const statuses = localItems.map((item) => item.itemStatus);
@@ -233,7 +257,7 @@ export default function OrderDetails() {
     return "PROCESSING";
   };
 
-  const formatAddress = (order: any) => {
+  const formatAddress = (order: IOrder) => {
     return `${order.division}, ${order.district}, ${order.upazila}, ${order.union}, ${order.streetAddress}`;
   };
 
@@ -318,7 +342,8 @@ export default function OrderDetails() {
                           key={item.id}
                           className="flex flex-col md:flex-row items-start md:items-center space-y-4 md:space-y-0 md:space-x-4 p-4 md:p-6 bg-white dark:bg-gray-900 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md transition-shadow duration-300"
                         >
-                          {item.product.imageUrls &&
+                          {item.product &&
+                          item.product.imageUrls &&
                           item.product.imageUrls.length > 0 ? (
                             <div className="relative lg:w-[160px] h-[100px] lg:h-[160px] w-[100px] rounded overflow-hidden">
                               <ImageSlider urls={item.product.imageUrls} />
@@ -331,19 +356,17 @@ export default function OrderDetails() {
 
                           <div className="flex-grow space-y-2 w-full sm:w-auto">
                             <h3 className="font-medium text-lg text-gray-900 dark:text-white">
-                              {item.product.name}
+                              {item.product && item.product.name}
                             </h3>
                             <div className="flex flex-wrap gap-3 items-center">
                               <span className="text-sm px-2 py-1.5 rounded border">
-                                {shortenId(item.id)}
+                                {shortenId(item.id as string)}
                               </span>
                               <Button
                                 variant="outline"
                                 size="sm"
                                 onClick={() => {
-                                  navigator.clipboard.writeText(
-                                    item.product.id
-                                  );
+                                  navigator.clipboard.writeText(item.productId);
                                   toast({
                                     title: "Product ID Copied",
                                     description:
@@ -377,14 +400,14 @@ export default function OrderDetails() {
                           <div className="flex flex-col space-y-3 items-start sm:items-end w-full sm:w-auto mt-4 sm:mt-0">
                             <div
                               className={`${
-                                statusColors[item.itemStatus]
+                                statusColors[item.itemStatus ?? "PROCESSING"]
                               } px-3 py-2 text-xs font-medium rounded w-full sm:w-auto text-center`}
                             >
-                              {item.itemStatus}
+                              {item.itemStatus ?? "PROCESSING"}
                             </div>
                             <Select
                               onValueChange={(value) =>
-                                handleItemStatusChange(item.id, value)
+                                handleItemStatusChange(item.id as string, value)
                               }
                               defaultValue={item.itemStatus}
                               disabled={item.itemStatus === "RETURNED"}
@@ -418,12 +441,25 @@ export default function OrderDetails() {
                                 }
                                 onOpenChange={(open) => {
                                   setCourierInfoOpen(open);
-                                  if (open) setSelectedItemId(item.id);
+                                  if (open)
+                                    setSelectedItemId(item.id as string);
                                 }}
                                 onSubmit={handleCourierInfoSubmit}
-                                itemId={item.id}
+                                itemId={item.id as string}
                                 isLoading={isCourierInfoUpdating}
                               />
+                            )}
+
+                            {item.itemStatus === "RETURN_REQUESTED" && (
+                              <Button
+                                variant="outline"
+                                onClick={() => {
+                                  setSelectedItemId(item.id as string);
+                                  setIsReturnConfirmationOpen(true);
+                                }}
+                              >
+                                Accept Return
+                              </Button>
                             )}
                           </div>
                         </div>
@@ -438,33 +474,31 @@ export default function OrderDetails() {
               </div>
 
               <div className="space-y-6">
-                <Card className="bg-gradient-to-br from-teal-400 to-teal-600 dark:from-teal-600 dark:to-teal-800">
+                <Card className="border-teal-200 bg-teal-50 dark:bg-teal-900/10">
                   <CardHeader>
-                    <CardTitle className="flex items-center text-xl font-medium text-white">
-                      <User className="mr-2" />
+                    <CardTitle className="flex items-center text-xl font-medium text-teal-700 dark:text-teal-300">
+                      <User className="mr-2 w-5 h-5" />
                       Buyer Information
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="space-y-2 text-white">
-                    <p className="font-medium">{order.userName || "No Name"}</p>
-                    <p className="font-medium">{order.email || "N/A"}</p>
-                    <p className="font-medium">{order.phone || "N/A"}</p>
-                    {order.altPhone && (
-                      <p className="font-medium">{order.altPhone}</p>
-                    )}
+                  <CardContent className="space-y-2 text-teal-600 dark:text-teal-400">
+                    <p>{order.userName || "No Name"}</p>
+                    <p>{order.email || "Not Found"}</p>
+                    <p>{order.phone || "Not Found"}</p>
+                    {order.altPhone && <p>{order.altPhone}</p>}
                   </CardContent>
                 </Card>
 
-                <Card className="bg-gradient-to-br from-purple-400 to-purple-600 dark:from-purple-600 dark:to-purple-800">
+                <Card className="border-purple-200 bg-purple-50 dark:bg-purple-900/10">
                   <CardHeader>
-                    <CardTitle className="flex items-center text-xl font-medium text-white">
-                      <Truck className="mr-2" />
+                    <CardTitle className="flex items-center text-xl font-medium text-purple-700 dark:text-purple-300">
+                      <Truck className="mr-2 w-5 h-5" />
                       Delivery Information
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="space-y-2 text-white">
+                  <CardContent className="space-y-2 text-purple-600 dark:text-purple-400">
                     <div className="flex items-start">
-                      <MapPin className="mr-2 mt-1 flex-shrink-0" />
+                      <MapPin className="mr-2 mt-1 flex-shrink-0 w-5 h-5" />
                       <p>{formatAddress(order)}</p>
                     </div>
                     {order.orderNote && (
@@ -476,28 +510,32 @@ export default function OrderDetails() {
                   </CardContent>
                 </Card>
 
-                <Card className="bg-gradient-to-br from-violet-400 to-violet-600 dark:from-violet-600 dark:to-violet-800">
+                <Card className="border-violet-200 bg-violet-50 dark:bg-violet-900/10">
                   <CardHeader>
-                    <CardTitle className="flex items-center text-xl font-medium text-white">
-                      <DollarSign className="mr-2" />
+                    <CardTitle className="flex items-center text-xl font-medium text-violet-700 dark:text-violet-300">
+                      <TbMoneybag className="mr-2 w-5 h-5" />
                       Payment Method
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="text-white">
-                    <p className="font-medium">
-                      {order.shippingMethod || "N/A"}
+                  <CardContent>
+                    <p className="font-medium text-violet-600 dark:text-violet-400">
+                      {order.shippingMethod === "ONLINE_PAYMENT"
+                        ? "Online Payment"
+                        : order.shippingMethod === "CASH_ON_DELIVERY"
+                        ? "Cash on Delivery"
+                        : "N/A"}
                     </p>
                   </CardContent>
                 </Card>
 
-                <Card className="bg-gradient-to-br from-indigo-400 to-indigo-600 dark:from-indigo-600 dark:to-indigo-800">
+                <Card className="border-sky-200 bg-sky-50 dark:bg-sky-900/10">
                   <CardHeader>
-                    <CardTitle className="flex items-center text-xl font-medium text-white">
-                      <CreditCard className="mr-2" />
+                    <CardTitle className="flex items-center text-xl font-medium text-sky-700 dark:text-sky-300">
+                      <CreditCard className="mr-2 w-5 h-5" />
                       Payment Details
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="space-y-2 text-white">
+                  <CardContent className="space-y-2 text-sky-600 dark:text-sky-400">
                     <p className="">
                       <span className="font-medium">Subtotal:</span>{" "}
                       {formatCurrency(order.totalCost || 0)}
@@ -506,7 +544,7 @@ export default function OrderDetails() {
                       <span className="font-medium">Shipping:</span>{" "}
                       {formatCurrency(order.shippingCost || 0)}
                     </p>
-                    <Separator className="my-2 bg-white/20" />
+                    <Separator className="my-2 bg-sky-200 dark:bg-sky-700" />
                     <p className="text-lg font-medium">
                       Total:{" "}
                       {formatCurrency(
@@ -518,7 +556,7 @@ export default function OrderDetails() {
 
                 <Button
                   variant="outline"
-                  className="w-full bg-white dark:bg-gray-800 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
+                  className="w-full"
                   onClick={() => {
                     navigator.clipboard.writeText(order.id);
                     toast({
@@ -567,7 +605,7 @@ export default function OrderDetails() {
             shippingCost: order.shippingCost,
           }}
           items={localItems.map((item) => ({
-            product: { name: item.product.name },
+            product: { name: item.product?.name ?? "Unknown Product" },
             quantity: item.quantity,
             discountedPrice: item.discountedPrice ?? 0,
             size: item.size,
@@ -575,6 +613,13 @@ export default function OrderDetails() {
           onGenerate={handleInvoiceGenerated}
         />
       )}
+
+      <ReturnConfirmationDialog
+        isOpen={isReturnConfirmationOpen}
+        onClose={() => setIsReturnConfirmationOpen(false)}
+        onConfirm={handleReturnConfirmation}
+        itemId={selectedItemId ?? ""}
+      />
     </div>
   );
 }

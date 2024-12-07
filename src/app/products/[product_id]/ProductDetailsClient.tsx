@@ -174,8 +174,8 @@ export default function Component() {
               <p className="text-lg text-muted-foreground capitalize">
                 {product?.data?.category?.name}
               </p>
-              <p className="text-xl font-medium mt-2">
-                TK. {selectedSizeVariant?.price}
+              <p className="font-medium mt-2">
+                TK {selectedSizeVariant?.price.toFixed(2)}
               </p>
             </div>
 

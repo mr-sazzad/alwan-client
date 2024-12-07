@@ -1,18 +1,18 @@
 import { DataTable } from "@/components/admins/dashboard/products/data-table";
-import { IReadColor, IReadSize, SizeVariant } from "@/types";
+import { IColor, ISize, ISizeVariant } from "@/types";
 import { ColumnDef } from "@tanstack/react-table";
 
 export type ProductType = {
   id: string;
-  size: IReadSize;
-  color: IReadColor;
+  size: ISize;
+  color: IColor;
   price: number;
   manufacturingCost: number;
   stock: number;
 };
 
 export type AdminProductTableProps = {
-  data: SizeVariant[];
+  data: ISizeVariant[];
 };
 
 const AdminProductTable = ({ data }: AdminProductTableProps) => {

@@ -22,14 +22,14 @@ import {
   useCreateExpenseMutation,
   useUpdateExpenseMutation,
 } from "@/redux/api/expenses/expensesApi";
-import { Expense } from "@/types";
+import { IExpense } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
 interface ExpenseFormProps {
-  expense?: Expense | null;
+  expense?: IExpense | null;
   onClose: () => void;
 }
 

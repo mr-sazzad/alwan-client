@@ -18,6 +18,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { useAddFeedbackMutation } from "@/redux/api/feedback/feedbackApi";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Send } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { FaRegMeh, FaRegSadTear, FaRegSmile } from "react-icons/fa";
 import { PiSpinner } from "react-icons/pi";
@@ -77,9 +78,11 @@ const FeedbackDialog: React.FC<FeedbackDialogProps> = ({ open, setOpen }) => {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="sm:max-w-lg rounded">
+      <DialogContent className="sm:max-w-xl w-full rounded">
         <DialogHeader>
-          <DialogTitle className="mb-2 font-medium text-xl">Leave Feedback</DialogTitle>
+          <DialogTitle className="mb-2 font-medium text-xl">
+            Leave Feedback
+          </DialogTitle>
           <DialogDescription>
             We&apos;d love to hear what went well or how we can improve the
             product experience.
@@ -95,7 +98,7 @@ const FeedbackDialog: React.FC<FeedbackDialogProps> = ({ open, setOpen }) => {
                   <FormControl>
                     <Textarea
                       placeholder="Please provide more details about your feedback"
-                      rows={5}
+                      rows={6}
                       {...field}
                     />
                   </FormControl>
@@ -163,11 +166,14 @@ const FeedbackDialog: React.FC<FeedbackDialogProps> = ({ open, setOpen }) => {
                   Cancel
                 </Button>
 
-                <Button type="submit" disabled={isLoading}>
+                <Button type="submit" disabled={isLoading} className="group">
                   {isLoading ? (
                     <PiSpinner className="animate-spin w-[51px]" />
                   ) : (
-                    "Submit"
+                    <div className="flex justify-center items-center gap-2">
+                      <p>Send</p>{" "}
+                      <Send className="w-4 h-4 group-hover:rotate-45 duration-300" />
+                    </div>
                   )}
                 </Button>
               </div>

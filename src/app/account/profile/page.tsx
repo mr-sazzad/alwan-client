@@ -40,7 +40,6 @@ const profileSchema = z.object({
 export default function ProfilePage() {
   const router = useRouter();
   const [userData, setUserData] = useState<IUser | null>(null);
-  const [open, setOpen] = useState(false);
 
   const form = useForm<z.infer<typeof profileSchema>>({
     resolver: zodResolver(profileSchema),
@@ -182,8 +181,8 @@ export default function ProfilePage() {
               </div>
               <div className="text-center md:text-left">
                 <h2 className="text-lg font-medium">
-                  {user?.data.addresses.length
-                    ? user?.data.addresses.map((address: IUserAddress) =>
+                  {user?.data?.addresses.length
+                    ? user?.data?.addresses.map((address: IUserAddress) =>
                         address.isDefault ? address.recipientName : null
                       )
                     : "Create Address"}
