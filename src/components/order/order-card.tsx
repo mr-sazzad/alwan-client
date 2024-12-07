@@ -1,5 +1,5 @@
 import { useCancelOrderMutation } from "@/redux/api/orders/ordersApi";
-import { IOrder } from "@/types";
+import { IOrder, IOrderItem } from "@/types";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { useState } from "react";
@@ -70,13 +70,15 @@ const OrderCard: React.FC<{ order: IOrder }> = ({ order }) => {
   );
 
   const handleCancelOrder = async () => {
-    const result: any = await cancelOrder(order.id);
+    if (order.id) {
+      const result: any = await cancelOrder(order.id);
 
-    if (result.data.status === 200) {
-      toast({
-        title: "Order Cancelled!",
-        description: "Your order has been cancelled successfully",
-      });
+      if (result.data.status === 200) {
+        toast({
+          title: "Order Cancelled!",
+          description: "Your order has been cancelled successfully",
+        });
+      }
     }
   };
 
@@ -93,14 +95,16 @@ const OrderCard: React.FC<{ order: IOrder }> = ({ order }) => {
             <div className="flex justify-between items-center">
               <div>
                 <CardTitle className="text-lg font-medium">
-                  Order #{order.id.slice(0, 8)}
+                  Order #{order.id ? order.id.slice(0, 8) : "N/A"}
                 </CardTitle>
                 <span className="text-sm text-gray-500">
-                  {new Date(order.createdAt).toLocaleDateString("en-US", {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  })}
+                  {order.createdAt
+                    ? new Date(order.createdAt).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })
+                    : "N/A"}
                 </span>
               </div>
               <div>
@@ -108,7 +112,10 @@ const OrderCard: React.FC<{ order: IOrder }> = ({ order }) => {
                   <OrderStatusBadge status={OrderStatus.CANCELLED} />
                 ) : (
                   <OrderStatusBadge
-                    status={order.items[0].itemStatus as ItemStatus}
+                    status={
+                      (order.items[0]?.itemStatus as ItemStatus) ||
+                      ItemStatus.PROCESSING
+                    }
                   />
                 )}
               </div>
@@ -117,17 +124,19 @@ const OrderCard: React.FC<{ order: IOrder }> = ({ order }) => {
           <CardContent className="p-4">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center space-x-2">
-                {order.items.slice(0, 3).map((item, index) => (
+                {order.items.slice(0, 3).map((item: IOrderItem) => (
                   <div
                     key={item.id}
                     className="relative w-12 h-12 rounded overflow-hidden border"
                   >
-                    <Image
-                      src={item.product.imageUrls[0]}
-                      alt={item.product.name}
-                      layout="fill"
-                      objectFit="cover"
-                    />
+                    {item.product && item.product.imageUrls && (
+                      <Image
+                        src={item.product.imageUrls[0]}
+                        alt={item.product.name}
+                        layout="fill"
+                        objectFit="cover"
+                      />
+                    )}
                   </div>
                 ))}
                 {order.items.length > 3 && (
@@ -233,7 +242,7 @@ const OrderCard: React.FC<{ order: IOrder }> = ({ order }) => {
         setOpen={setOpen}
         handler={handleCancelOrder}
         loading={isLoading}
-        orderId={order.id}
+        orderId={order.id || ""}
       />
     </div>
   );
