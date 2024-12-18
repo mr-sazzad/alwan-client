@@ -75,19 +75,27 @@ const OrderItem: React.FC<{ item: IOrderItem }> = ({ item }) => {
     <>
       <div className="flex items-center space-x-4 py-4 border-b last:border-b-0">
         <div className="flex-shrink-0 w-20 h-20 relative rounded-md overflow-hidden">
-          <Image
-            src={item.product.imageUrls[0]}
-            alt={item.product.name}
-            layout="fill"
-            objectFit="cover"
-          />
+          {item.product &&
+            item.product.imageUrls &&
+            item.product.imageUrls.length > 0 && (
+              <Image
+                src={item.product.imageUrls[0]}
+                alt={item.product.name || "Product Image"}
+                layout="fill"
+                objectFit="cover"
+              />
+            )}
         </div>
         <div className="flex-grow">
-          <h4 className="text-sm font-medium">{item.product.name}</h4>
-          <p className="text-xs text-gray-500">{item.product.brand}</p>
+          <h4 className="text-sm font-medium">
+            {item.product?.name || "Unknown Product"}
+          </h4>
+          <p className="text-xs text-gray-500">
+            {item.product?.brand || "Unknown Brand"}
+          </p>
           <div className="flex items-center mt-1">
             <p className="text-xs text-gray-500">
-              {item.color.name} | {item.size.name}
+              {item.color?.name || "N/A"} | {item.size?.name || "N/A"}
             </p>
           </div>
           <p className="text-xs text-gray-500 mt-1">
@@ -99,7 +107,7 @@ const OrderItem: React.FC<{ item: IOrderItem }> = ({ item }) => {
           <div className="mb-2">
             <ItemStatusBadge status={item.itemStatus as ItemStatus} />
           </div>
-          <div>BDT {item.discountedPrice?.toFixed(2)}</div>
+          <div>BDT {item.discountedPrice?.toFixed(2) || "0.00"}</div>
           {item.itemStatus === ItemStatus.DELIVERED && (
             <Button
               variant="link"
@@ -117,7 +125,7 @@ const OrderItem: React.FC<{ item: IOrderItem }> = ({ item }) => {
         setOpen={setOpen}
         onSubmit={handleReturnRequest}
         orderQuantity={item.quantity}
-        orderId={item.orderId}
+        orderId={item.orderId || ""}
       />
     </>
   );

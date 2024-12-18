@@ -13,7 +13,7 @@ import {
   useUpdateTextMutation,
 } from "@/redux/api/home-text/homeTextApi";
 import { homeTextSchema } from "@/schemas/admins/home-text-schema";
-import { CaseUpper } from "lucide-react";
+import { Rocket } from "lucide-react";
 import { useState } from "react";
 import { z } from "zod";
 import HomeTextTable from "./home-text-table";
@@ -85,10 +85,11 @@ export default function HomeText() {
         className="my-3"
       />
       <PageTitle
-        title="Home Text"
-        description="Home Text information"
-        icon={<CaseUpper />}
-        accentColor="red"
+        title="Welcome to Page Title"
+        description="Discover amazing features and boost your productivity"
+        icon={<Rocket className="w-6 h-6" />}
+        size="lg"
+        className="mb-8"
       />
 
       <div className="flex justify-end">

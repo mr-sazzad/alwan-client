@@ -88,7 +88,7 @@ const CheckoutPageSingleProductCard: React.FC<
                   <>
                     <Button
                       className="px-3 py-0 my-0"
-                      size="cc"
+                      size="sm"
                       variant="secondary"
                       onClick={handleDecreaseQty}
                     >
@@ -107,7 +107,7 @@ const CheckoutPageSingleProductCard: React.FC<
                   <>
                     <Button
                       className="px-3 py-0 my-0"
-                      size="cc"
+                      size="sm"
                       variant="secondary"
                       onClick={handleIncreaseQty}
                     >

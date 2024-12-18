@@ -26,6 +26,7 @@ import { X } from "lucide-react";
 import { Dispatch, SetStateAction, useState } from "react";
 import { useForm } from "react-hook-form";
 import { GoShieldCheck } from "react-icons/go";
+import { PiSpinner } from "react-icons/pi";
 import { VscCloudUpload } from "react-icons/vsc";
 import { z } from "zod";
 
@@ -143,15 +144,18 @@ const CarouselDrawer: React.FC<CarouselDrawerProps> = ({
                             <span className="bg-orange-100 px-1 py-1 rounded text-orange-600 text-xs font-semibold">
                               CTRL
                             </span>{" "}
-                            btn to select multiple files
+                            <span className="text-destructive">
+                              btn to select multiple files you have to just give
+                              2 files one for desktop and one for mobile screen
+                            </span>
                           </p>
 
                           {selectedFiles.length > 0 && (
-                            <div className="rounded flex flex-wrap gap-1 bg-indigo-100 py-1 px-2 mt-2">
+                            <div className="rounded flex flex-wrap gap-1 py-1 px-2 mt-2">
                               {selectedFiles.map((file, index) => (
                                 <p
                                   key={index}
-                                  className="text-muted-foreground text-xs font-thin text-indigo-500"
+                                  className="text-muted-foreground text-sm"
                                 >
                                   {file.name}
                                   {index < selectedFiles.length - 1 ? "," : ""}
@@ -172,8 +176,12 @@ const CarouselDrawer: React.FC<CarouselDrawerProps> = ({
                 disabled={isCreating || isUpdating}
               >
                 <div className="flex gap-2 items-center">
-                  <GoShieldCheck size={20} /> {isUpdate ? "Update" : "Create"}{" "}
-                  Carousel
+                  {isCreating || isUpdating ? (
+                    <PiSpinner className="animate-spin" />
+                  ) : (
+                    <GoShieldCheck size={20} />
+                  )}
+                  <span>{isUpdate ? "Update" : "Create"} Carousel</span>
                 </div>
               </Button>
             </form>

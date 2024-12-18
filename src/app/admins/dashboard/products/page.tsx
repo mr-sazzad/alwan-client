@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { useGetAllProductsQuery } from "@/redux/api/products/productsApi";
 import ProductTableColumns from "./product-columns";
 
-import PageTitle from "@/components/admins/dashboard/page-titles/page-title";
 import { DataTable } from "@/components/admins/dashboard/products/data-table";
 import ProductForm from "@/components/admins/dashboard/products/product-form";
 import AlwanBreadCrumb from "@/components/breadcrumbs/breadcrumb";
@@ -32,13 +31,14 @@ const Page = () => {
         page="Products"
         className="my-3"
       />
-      <PageTitle title="Products" description="Products information" />
+
+      <h2 className="text-3xl font-medium">Product Management</h2>
 
       <div className="flex justify-end mt-3">
         <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
           <DialogTrigger asChild>
             <Button variant="outline" className="flex gap-1 items-center">
-              <Box className="w-4 h-4" /> Add a new product
+              <Box className="w-4 h-4" /> <p>Add new product</p>
             </Button>
           </DialogTrigger>
           <DialogContent className="max-w-6xl">

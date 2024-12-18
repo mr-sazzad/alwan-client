@@ -9,11 +9,7 @@ const ProfileRejectedOrders = () => {
         <p className="text-muted-foreground">
           If you&apos;d like to review your cancellations and returns
         </p>
-        <Button
-          variant="outlineDestructive"
-          size="sm"
-          className="flex gap-2 items-center"
-        >
+        <Button variant="outline" size="sm" className="flex gap-2 items-center">
           <PiTrashSimpleBold /> <p>Rejected Orders</p>
         </Button>
       </div>

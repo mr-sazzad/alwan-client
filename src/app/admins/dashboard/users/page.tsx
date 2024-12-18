@@ -67,8 +67,6 @@ const UsersPage = () => {
     return <AdminUsersSkeleton />;
   }
 
-  console.log(userRes);
-
   return (
     <div>
       <AlwanBreadCrumb

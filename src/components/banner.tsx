@@ -11,7 +11,8 @@ import { Skeleton } from "./ui/skeleton";
 const DESKTOP_ASPECT_RATIO = 72 / 25;
 const MOBILE_ASPECT_RATIO = 207 / 250;
 
-const getBlurPlaceholder = (url: string) => {
+const getBlurPlaceholder = (url: string | undefined) => {
+  if (!url) return "";
   return url.replace("/upload/", "/upload/w_100,e_blur:1000,q_auto,f_auto/");
 };
 
@@ -77,10 +78,10 @@ const Banner = () => {
     );
   }
 
-  const desktopImage = response.data[0].fileUrls[0];
-  const mobileImage = response.data[0].fileUrls[1];
+  const desktopImage = response.data[0]?.fileUrls[0];
+  const mobileImage = response.data[0]?.fileUrls[1];
   const desktopBlurDataURL = getBlurPlaceholder(desktopImage);
-  const mobileBlurDataURL = getBlurPlaceholder(mobileImage);
+  const mobileBlurDataURL = getBlurPlaceholder(mobileImage || desktopImage);
 
   const handleDesktopImageLoad = () => {
     setIsDesktopImageLoaded(true);
@@ -90,6 +91,20 @@ const Banner = () => {
     setIsMobileImageLoaded(true);
   };
 
+  if (!desktopImage) {
+    return (
+      <div className="w-full px-4 py-8 md:py-12 lg:py-16 mt-[90px]">
+        <Alert variant="destructive">
+          <AlertCircle className="h-5 w-5" />
+          <AlertTitle>Error Loading Banner</AlertTitle>
+          <AlertDescription>
+            We couldn&apos;t load the banner images. Please try again later.
+          </AlertDescription>
+        </Alert>
+      </div>
+    );
+  }
+
   return (
     <div
       className="relative w-full overflow-hidden mt-[90px]"
@@ -98,40 +113,50 @@ const Banner = () => {
       <div className="relative h-full w-full">
         {/* Desktop Image */}
         <Image
+          src={desktopBlurDataURL}
+          alt="Desktop Banner Image (Blurred)"
+          fill
+          sizes="100vw"
+          className="object-cover object-center"
+          priority
+        />
+        <Image
           src={desktopImage}
           alt="Desktop Banner Image"
           fill
           sizes="100vw"
           className={cn(
-            "object-cover object-center transition-all duration-700 hidden md:block",
-            isDesktopImageLoaded
-              ? "opacity-100 scale-100"
-              : "opacity-0 scale-105"
+            "object-cover object-center transition-opacity duration-700",
+            isDesktopImageLoaded ? "opacity-100" : "opacity-0"
           )}
           priority
           onLoad={handleDesktopImageLoad}
-          placeholder="blur"
-          blurDataURL={desktopBlurDataURL}
-          quality={100}
         />
-        {/* Mobile Image */}
-        <Image
-          src={mobileImage}
-          alt="Mobile Banner Image"
-          fill
-          sizes="100vw"
-          className={cn(
-            "object-cover object-center transition-all duration-700 md:hidden",
-            isMobileImageLoaded
-              ? "opacity-100 scale-100"
-              : "opacity-0 scale-105"
-          )}
-          priority
-          onLoad={handleMobileImageLoad}
-          placeholder="blur"
-          blurDataURL={mobileBlurDataURL}
-          quality={100}
-        />
+        {/* Mobile Image (if available) */}
+        {mobileImage && (
+          <>
+            <Image
+              src={mobileBlurDataURL}
+              alt="Mobile Banner Image (Blurred)"
+              fill
+              sizes="100vw"
+              className="object-cover object-center md:hidden"
+              priority
+            />
+            <Image
+              src={mobileImage}
+              alt="Mobile Banner Image"
+              fill
+              sizes="100vw"
+              className={cn(
+                "object-cover object-center transition-opacity duration-700 md:hidden",
+                isMobileImageLoaded ? "opacity-100" : "opacity-0"
+              )}
+              priority
+              onLoad={handleMobileImageLoad}
+            />
+          </>
+        )}
       </div>
     </div>
   );

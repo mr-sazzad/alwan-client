@@ -4,7 +4,7 @@ import {
   Bug,
   Diameter,
   FolderOpen,
-  GalleryHorizontal,
+  GalleryHorizontalEnd,
   Gem,
   Gift,
   HandCoins,
@@ -89,7 +89,7 @@ export const useAdminDashboardMenu = () => {
         id: 9,
         title: "Banner",
         href: "/admins/dashboard/carousel",
-        icon: GalleryHorizontal,
+        icon: GalleryHorizontalEnd,
         active: pathname.includes("/admins/dashboard/carousel"),
       },
 

@@ -10,21 +10,13 @@ import {
 } from "@/components/ui/tooltip";
 import { useAdminDashboardMenu } from "@/static/admin-dashboard-menu";
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { TbLayoutSidebarRight } from "react-icons/tb";
 
 export default function AdminsDesktopMenu() {
   const adminRoutes = useAdminDashboardMenu();
   const [isExpanded, setIsExpanded] = useState(true);
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 640);
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
 
   return (
     <motion.div
@@ -39,11 +31,7 @@ export default function AdminsDesktopMenu() {
           onClick={() => setIsExpanded(!isExpanded)}
           className={`${isExpanded ? "self-end" : "mx-auto"}`}
         >
-          {isExpanded ? (
-            <ChevronLeft className="h-4 w-4" />
-          ) : (
-            <ChevronRight className="h-4 w-4" />
-          )}
+          <TbLayoutSidebarRight className="h-4 w-4 rotate-180" />
         </Button>
       </div>
       <ScrollArea className="flex-grow">
@@ -60,7 +48,7 @@ export default function AdminsDesktopMenu() {
                         : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
                     }`}
                   >
-                    <menu.icon className="w-5 h-5 flex-shrink-0" />
+                    <menu.icon className="w-4 h-4 flex-shrink-0" />
                     <AnimatePresence>
                       {isExpanded && (
                         <motion.span

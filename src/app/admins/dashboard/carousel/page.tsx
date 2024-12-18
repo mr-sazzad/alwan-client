@@ -37,7 +37,11 @@ const Page = () => {
         className="my-3"
       />
 
-      <PageTitle title="Carousel" description="carousel information" />
+      <PageTitle
+        title="Carousel"
+        description="carousel information"
+        accentColor="red"
+      />
 
       <div className="flex justify-end mt-3">
         <Button variant="outline" onClick={() => setOpen(true)}>

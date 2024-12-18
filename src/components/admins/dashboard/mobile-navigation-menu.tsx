@@ -14,10 +14,11 @@ import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useAdminDashboardMenu } from "@/static/admin-dashboard-menu";
 import { AnimatePresence, motion } from "framer-motion";
-import { Fingerprint, Search, X } from "lucide-react";
+import { Search, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { PiSidebarSimpleBold } from "react-icons/pi";
 
 export default function AdminsMobileMenu() {
   const adminRoutes = useAdminDashboardMenu();
@@ -42,12 +43,12 @@ export default function AdminsMobileMenu() {
     <Drawer open={isOpen} onOpenChange={setIsOpen}>
       <DrawerTrigger asChild>
         <Button
-          variant="outline"
-          size="icon"
+          variant="secondary"
+          size="sm"
           className="sm:hidden"
           aria-label="Open dashboard menu"
         >
-          <Fingerprint className="h-5 w-5" />
+          <PiSidebarSimpleBold className="h-5 w-5" /> <p>Menu</p>
         </Button>
       </DrawerTrigger>
       <DrawerContent>
@@ -74,7 +75,7 @@ export default function AdminsMobileMenu() {
         </div>
         <ScrollArea className="h-[calc(100vh-12rem)] px-4">
           <motion.div
-            className="grid grid-cols-1 sm:grid-cols-2 gap-4 pb-8"
+            className="grid grid-cols-1 sm:grid-cols-2 gap-1 pb-8"
             initial="hidden"
             animate="visible"
             variants={{
@@ -93,13 +94,13 @@ export default function AdminsMobileMenu() {
                 >
                   <Link
                     href={menu.href}
-                    className={`flex items-center gap-3 rounded-lg border p-3 transition-all duration-200 ${
+                    className={`flex items-center gap-3 rounded-lg p-3 transition-all duration-200 ${
                       pathname === menu.href
                         ? "bg-primary text-primary-foreground shadow-md"
                         : "bg-background hover:bg-accent hover:text-accent-foreground hover:shadow-sm"
                     }`}
                   >
-                    <menu.icon className="h-5 w-5 flex-shrink-0" />
+                    <menu.icon className="h-4 w-4 flex-shrink-0" />
                     <span className="text-sm font-medium">{menu.title}</span>
                   </Link>
                 </motion.div>

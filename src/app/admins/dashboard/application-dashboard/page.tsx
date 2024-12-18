@@ -4,11 +4,7 @@ import AlwanBreadCrumb from "@/components/breadcrumbs/breadcrumb";
 import AdminDashboardSkeleton from "@/components/skeletons/admin-dashboard-skeleton";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart";
+import { ChartContainer, ChartTooltip } from "@/components/ui/chart";
 import {
   Select,
   SelectContent,
@@ -252,13 +248,22 @@ const AdminDashboard = () => {
               className="h-[300px]"
             >
               <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={incomeData}>
+                <LineChart
+                  data={incomeData}
+                  margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                >
                   <XAxis
                     dataKey="date"
                     stroke="#888888"
                     fontSize={12}
                     tickLine={false}
                     axisLine={false}
+                    tickFormatter={(value) =>
+                      new Date(value).toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                      })
+                    }
                   />
                   <YAxis
                     stroke="#888888"
@@ -267,13 +272,36 @@ const AdminDashboard = () => {
                     axisLine={false}
                     tickFormatter={(value) => `$${value}`}
                   />
-                  <ChartTooltip content={<ChartTooltipContent />} />
+                  <ChartTooltip
+                    content={({ active, payload }) => {
+                      if (active && payload && payload.length) {
+                        return (
+                          <div className="bg-background border border-border p-2 rounded-md shadow-md">
+                            <p className="font-semibold">
+                              {new Date(
+                                payload[0].payload.date
+                              ).toLocaleDateString("en-US", {
+                                month: "long",
+                                day: "numeric",
+                                year: "numeric",
+                              })}
+                            </p>
+                            <p className="text-chart-1">
+                              Income: ${payload[0].value}
+                            </p>
+                          </div>
+                        );
+                      }
+                      return null;
+                    }}
+                  />
                   <Line
                     type="monotone"
                     dataKey="income"
                     stroke="var(--color-income)"
                     strokeWidth={2}
                     dot={false}
+                    activeDot={{ r: 8 }}
                   />
                 </LineChart>
               </ResponsiveContainer>
@@ -298,13 +326,22 @@ const AdminDashboard = () => {
               className="h-[300px]"
             >
               <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={orderData}>
+                <LineChart
+                  data={orderData}
+                  margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                >
                   <XAxis
                     dataKey="date"
                     stroke="#888888"
                     fontSize={12}
                     tickLine={false}
                     axisLine={false}
+                    tickFormatter={(value) =>
+                      new Date(value).toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                      })
+                    }
                   />
                   <YAxis
                     stroke="#888888"
@@ -312,13 +349,36 @@ const AdminDashboard = () => {
                     tickLine={false}
                     axisLine={false}
                   />
-                  <ChartTooltip content={<ChartTooltipContent />} />
+                  <ChartTooltip
+                    content={({ active, payload }) => {
+                      if (active && payload && payload.length) {
+                        return (
+                          <div className="bg-background border border-border p-2 rounded-md shadow-md">
+                            <p className="font-semibold">
+                              {new Date(
+                                payload[0].payload.date
+                              ).toLocaleDateString("en-US", {
+                                month: "long",
+                                day: "numeric",
+                                year: "numeric",
+                              })}
+                            </p>
+                            <p className="text-chart-2">
+                              Orders: {payload[0].value}
+                            </p>
+                          </div>
+                        );
+                      }
+                      return null;
+                    }}
+                  />
                   <Line
                     type="monotone"
                     dataKey="orders"
                     stroke="var(--color-orders)"
                     strokeWidth={2}
                     dot={false}
+                    activeDot={{ r: 8 }}
                   />
                 </LineChart>
               </ResponsiveContainer>
