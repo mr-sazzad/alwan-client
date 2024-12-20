@@ -1,7 +1,7 @@
 "use client";
 
 import { useGetCategoriesQuery } from "@/redux/api/categoies/categoriesApi";
-import { Category } from "@/types";
+import { ICategory } from "@/types";
 import { useState } from "react";
 import { HiOutlineMenuAlt1 } from "react-icons/hi";
 import { Button } from "../ui/button";
@@ -11,20 +11,20 @@ import Sidebar from "./sidebar";
 export default function SheetComponent() {
   const [open, setOpen] = useState(false);
   const { data: response, isLoading } = useGetCategoriesQuery(undefined);
-  const [categoryStack, setCategoryStack] = useState<Category[]>([]);
+  const [categoryStack, setCategoryStack] = useState<ICategory[]>([]);
 
   if (isLoading) {
     return <Skeleton className="h-10 w-10" />;
   }
 
-  const convertCategories = (categories: Category[]): Category[] => {
-    const categoryMap: { [key: string]: Category } = {};
+  const convertCategories = (categories: ICategory[]): ICategory[] => {
+    const categoryMap: { [key: string]: ICategory } = {};
 
     categories.forEach((category) => {
       categoryMap[category.id] = { ...category, subCategories: [] };
     });
 
-    const nestedCategories: Category[] = [];
+    const nestedCategories: ICategory[] = [];
 
     categories.forEach((category) => {
       if (category.parentId) {
@@ -43,7 +43,7 @@ export default function SheetComponent() {
   const convertedCategories =
     response?.data && convertCategories(response?.data);
 
-  const handleCategorySelect = (category: Category) => {
+  const handleCategorySelect = (category: ICategory) => {
     setCategoryStack((prev) => [...prev, category]);
   };
 

@@ -1,13 +1,13 @@
-import { Category } from "@/types";
+import { ICategory } from "@/types";
 
-export const convertCategories = (categories: Category[]): Category[] => {
-  const categoryMap: { [key: string]: Category } = {};
+export const convertCategories = (categories: ICategory[]): ICategory[] => {
+  const categoryMap: { [key: string]: ICategory } = {};
 
   categories.forEach((category) => {
     categoryMap[category.id] = { ...category, subCategories: [] };
   });
 
-  const nestedCategories: Category[] = [];
+  const nestedCategories: ICategory[] = [];
 
   categories.forEach((category) => {
     if (category.parentId) {

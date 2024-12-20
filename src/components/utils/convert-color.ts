@@ -1,7 +1,7 @@
-import { IConvertedColor, IReadColor } from "@/types";
+import { IColor } from "@/types";
 
-export const ConvertedColors = (colors: IReadColor[]): IConvertedColor[] => {
-  return colors.map((col: IReadColor) => ({
+export const ConvertedColors = (colors: IColor[]) => {
+  return colors.map((col) => ({
     id: col.id,
     value: col.name.toLowerCase(),
     label: col.name,

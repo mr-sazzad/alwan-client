@@ -1,7 +1,7 @@
 "use client";
 
 import { Sheet, SheetContent } from "@/components/ui/sheet";
-import { Category } from "@/types";
+import { ICategory } from "@/types";
 import { AnimatePresence, motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { Dispatch, SetStateAction, useState } from "react";
@@ -10,10 +10,10 @@ import { CategoryList } from "./category-list";
 interface SidebarProps {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
-  categories: Category[];
+  categories: ICategory[];
   onBack: () => void;
-  onCategorySelect: (category: Category) => void;
-  categoryStack: Category[];
+  onCategorySelect: (category: ICategory) => void;
+  categoryStack: ICategory[];
 }
 
 export default function Sidebar({
@@ -27,7 +27,7 @@ export default function Sidebar({
   const router = useRouter();
   const [direction, setDirection] = useState<"forward" | "backward">("forward");
 
-  const handleCategoryClick = (category: Category) => {
+  const handleCategoryClick = (category: ICategory) => {
     if (category.isLeaf) {
       router.push(`/categories/${category.id}`);
     }
