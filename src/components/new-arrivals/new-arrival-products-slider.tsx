@@ -52,11 +52,11 @@ const NewArrivalProductsSlider = () => {
   }
 
   return (
-    <section className="py-5 relative">
-      <div className="container mx-auto">
+    <section className="py-5 relative mt-16">
+      <div className="container mx-auto px-0">
         <div className="flex flex-col sm:flex-row justify-between items-center mb-5">
           <h2 className="text-4xl font-medium relative mb-4 sm:mb-0">
-            New Arrivals
+            Shop New Arrivals
           </h2>
           <p>
             {productsRes?.data?.length || 0} Item

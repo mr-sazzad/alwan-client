@@ -26,7 +26,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
         title: "Access Denied",
         description: "You are not authorized to access this page.",
       });
-      router.push("/");
+      router.back();
     }
   }, [user, router, toast]);
 

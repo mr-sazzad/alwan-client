@@ -28,8 +28,9 @@ import { toast } from "@/components/ui/use-toast";
 import { getUserFromLocalStorage } from "@/helpers/jwt";
 import { removeFromLocalStorage } from "@/helpers/local-storage";
 import { handleSignInWithGoogle } from "@/helpers/sign-in-with-google";
+import { useGetSingleUserQuery } from "@/redux/api/users/user-api";
 import { KEY } from "@/types";
-import { LogOut, User, UserCheck, UserPlus } from "lucide-react";
+import { Loader2, LogOut, User, UserCheck, UserPlus } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import LoginModal from "../modals/login-modal";
@@ -46,6 +47,9 @@ export interface ICurrentUser {
 
 export default function Profile() {
   const currentUser = getUserFromLocalStorage() as ICurrentUser | null;
+  const { data: userRes, isLoading } = useGetSingleUserQuery(
+    currentUser?.userId
+  );
   const [open, setOpen] = useState(false);
   const [signOutDialogOpen, setSignOutDialogOpen] = useState(false);
   const [signUpOpen, setSignUpOpen] = useState(false);
@@ -58,18 +62,36 @@ export default function Profile() {
     });
   };
 
+  const renderAvatar = () => {
+    if (isLoading) {
+      return (
+        <div className="h-8 w-8 rounded-full flex justify-center items-center bg-muted">
+          <Loader2 className="h-4 w-4 animate-spin" />
+        </div>
+      );
+    }
+
+    return (
+      <Avatar className="h-8 w-8">
+        <AvatarImage
+          src={userRes?.data?.imageUrl || "https://i.ibb.co/Qkf0sqm/images.jpg"}
+          alt="Profile"
+        />
+        <AvatarFallback>
+          {currentUser
+            ? extractNameFromEmail(currentUser.email).charAt(0)
+            : "U"}
+        </AvatarFallback>
+      </Avatar>
+    );
+  };
+
   return (
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button className="relative h-8 w-8 rounded-full flex justify-center items-center">
-            <Avatar className="h-8 w-8">
-              <AvatarImage
-                src="https://i.ibb.co/Qkf0sqm/images.jpg"
-                alt="Profile"
-              />
-              <AvatarFallback>AW</AvatarFallback>
-            </Avatar>
+          <Button className="relative h-8 w-8 rounded-full flex justify-center items-center p-0">
+            {renderAvatar()}
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-80 mr-1 mt-6" align="center">

@@ -17,7 +17,7 @@ const Home = () => {
         <div className="mb-5">
           <HomeCategories />
         </div>
-        <div className="flex md:flex-row flex-col gap-5 rounded bg-gray-50 md:items-center mt-8">
+        <div className="flex md:flex-row flex-col gap-5 rounded md:items-center mt-8">
           <WhatWeOffer />
         </div>
         <div>

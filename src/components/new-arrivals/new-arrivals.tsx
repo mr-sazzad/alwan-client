@@ -14,8 +14,8 @@ const NewArrivals = () => {
           <Button className="rounded-full text-[17px] font-medium capitalize group transition-all duration-300">
             Shop new arrivals
             <LuArrowUpRight
-              size={20}
-              className="ml-2 group-hover:rotate-45 group-hover:ml-5 group-hover:bg-white group-hover:text-black transition-all duration-300 ease-in-out p-1 rounded-full"
+              size={30}
+              className="ml-2 group-hover:rotate-45 group-hover:ml-5 group-hover:bg-white group-hover:text-black transition-all duration-300 ease-in-out rounded-full"
             />
           </Button>
         </div>
