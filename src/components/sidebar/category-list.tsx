@@ -33,6 +33,11 @@ export function CategoryList({
 
   const currentUser = getUserFromLocalStorage();
 
+  const handleModalClose = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setOpen(false);
+  };
+
   return (
     <>
       <div className="p-6 flex flex-col h-full">
@@ -122,11 +127,13 @@ export function CategoryList({
         open={open}
         setOpen={setOpen}
         handler={handleSignInWithGoogle}
+        onClose={handleModalClose}
       />
       <SignUpModal
         signUpOpen={SignUpOpen}
         setSignUpOpen={setSignUpOpen}
         handler={handleSignInWithGoogle}
+        onClose={handleModalClose}
       />
     </>
   );
