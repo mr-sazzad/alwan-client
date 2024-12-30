@@ -33,7 +33,7 @@ const CouponCodeModal: React.FC<CouponCodeModalProps> = ({
   setOpen,
   onCouponApply,
 }) => {
-  const serverUrl = process.env.NEXT_PUBLIC_SERVER_URI;
+  const serverUrl = "https://api.alwan-bd.com/api/v1";
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const form = useForm<z.infer<typeof couponSchema>>({

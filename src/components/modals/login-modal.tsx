@@ -38,12 +38,14 @@ interface LoginModalProps {
   open: boolean;
   setOpen: (open: boolean) => void;
   handler: () => void;
+  onClose: (e: React.MouseEvent) => void;
 }
 
 export default function LoginModal({
   open,
   setOpen,
   handler,
+  onClose,
 }: LoginModalProps) {
   const [isPasswordResetOpen, setIsPasswordResetOpen] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -139,7 +141,10 @@ export default function LoginModal({
   return (
     <>
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="sm:max-w-[425px] md:max-w-lg rounded">
+        <DialogContent
+          className="sm:max-w-[425px] md:max-w-lg rounded"
+          onClick={onClose}
+        >
           <DialogHeader>
             <DialogTitle className="text-2xl font-medium">Log In</DialogTitle>
             <DialogDescription className="text-base">

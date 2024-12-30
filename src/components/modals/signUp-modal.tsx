@@ -40,12 +40,14 @@ interface SignUpModalProps {
   signUpOpen: boolean;
   setSignUpOpen: React.Dispatch<React.SetStateAction<boolean>>;
   handler: () => void;
+  onClose: (e: React.MouseEvent) => void;
 }
 
 export default function SignUpModal({
   signUpOpen,
   setSignUpOpen,
   handler,
+  onClose,
 }: SignUpModalProps) {
   const [showPasswords, setShowPasswords] = useState(false);
   const [signUpUser] = useSignUpUserMutation();
@@ -113,7 +115,10 @@ export default function SignUpModal({
 
   return (
     <Dialog open={signUpOpen} onOpenChange={setSignUpOpen}>
-      <DialogContent className="sm:max-w-[425px] md:max-w-lg rounded">
+      <DialogContent
+        className="sm:max-w-[425px] md:max-w-lg rounded"
+        onClick={onClose}
+      >
         <DialogHeader>
           <DialogTitle className="text-2xl font-medium">Sign Up</DialogTitle>
           <DialogDescription className="text-base">

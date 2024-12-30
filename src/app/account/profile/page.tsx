@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Clock,
+  Loader,
   MapPin,
   Phone,
   Settings,
@@ -40,6 +41,7 @@ const profileSchema = z.object({
 export default function ProfilePage() {
   const router = useRouter();
   const [userData, setUserData] = useState<IUser | null>(null);
+  const [isUpdatingImage, setIsUpdatingImage] = useState(false);
 
   const form = useForm<z.infer<typeof profileSchema>>({
     resolver: zodResolver(profileSchema),
@@ -64,8 +66,7 @@ export default function ProfilePage() {
     }
   );
 
-  const [updateSingleUser, { isLoading: isUpdating }] =
-    useUpdateSingleUserMutation();
+  const [updateSingleUser] = useUpdateSingleUserMutation();
 
   const { data: orders, isLoading: isOrderLoading } =
     useGetSingleUserOrdersQuery(userData?.userId ?? "", {
@@ -82,6 +83,7 @@ export default function ProfilePage() {
       return;
     }
 
+    setIsUpdatingImage(true);
     const formData = new FormData();
     formData.append("file", values.file);
 
@@ -109,12 +111,16 @@ export default function ProfilePage() {
         description: "Error uploading profile image",
         variant: "destructive",
       });
+    } finally {
+      setIsUpdatingImage(false);
     }
   };
 
   if (isUserLoading || isOrderLoading || !userData) {
     return <ProfileSkeleton />;
   }
+
+  const isCustomer = user?.data?.role === "USER";
 
   return (
     <>
@@ -123,13 +129,13 @@ export default function ProfilePage() {
           <CardContent className="p-6 relative">
             <div className="flex flex-col md:flex-row items-center gap-8">
               <div className="relative">
-                <Avatar className="w-32 h-32 border-4 border-primary">
+                <Avatar className="w-[100] h-[100] border-4 border-primary">
                   {user?.data?.imageUrl ? (
                     <Image
                       src={user.data.imageUrl}
                       alt={user.data.name || "Profile"}
-                      width={128}
-                      height={128}
+                      width={100}
+                      height={100}
                       className="rounded-full object-cover"
                     />
                   ) : (
@@ -162,7 +168,7 @@ export default function ProfilePage() {
                             size="icon"
                             variant="secondary"
                             className="absolute bottom-0 right-0 rounded-full shadow-lg"
-                            disabled={isUpdating}
+                            disabled={isUpdatingImage}
                             type="button"
                             aria-label="Upload profile picture"
                             onClick={() => {
@@ -171,7 +177,11 @@ export default function ProfilePage() {
                                 ?.click();
                             }}
                           >
-                            <Upload className="h-4 w-4" />
+                            {isUpdatingImage ? (
+                              <Loader className="h-4 w-4 animate-spin" />
+                            ) : (
+                              <Upload className="h-4 w-4" />
+                            )}
                           </Button>
                         </FormItem>
                       )}
@@ -192,8 +202,7 @@ export default function ProfilePage() {
                 </p>
                 <div className="text-muted-foreground mb-4 text-sm">
                   <span>Role: </span>
-                  {user?.data?.role?.charAt(0).toUpperCase() +
-                    user?.data?.role?.slice(1).toLowerCase()}
+                  {isCustomer ? "Customer" : user?.data?.role}
                 </div>
                 <div className="flex flex-wrap justify-center md:justify-start gap-2">
                   <AlwanBadge variant="blue">
@@ -222,19 +231,21 @@ export default function ProfilePage() {
         <div>
           <h3 className="text-lg font-medium mb-4">Your Account Information</h3>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
-                  Total Orders
-                </CardTitle>
-                <ShoppingCart className="h-6 w-6 text-emerald-500 p-1 rounded-full bg-emerald-100" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-medium">
-                  {orders?.data?.length || 0}
-                </div>
-              </CardContent>
-            </Card>
+            {isCustomer && (
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">
+                    Total Orders
+                  </CardTitle>
+                  <ShoppingCart className="h-6 w-6 text-emerald-500 p-1 rounded-full bg-emerald-100" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-medium">
+                    {orders?.data?.length || 0}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">

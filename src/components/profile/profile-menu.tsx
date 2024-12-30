@@ -86,6 +86,10 @@ export default function Profile() {
     );
   };
 
+  const handleModalClose = (e: React.MouseEvent) => {
+    e.stopPropagation();
+  };
+
   return (
     <>
       <DropdownMenu>
@@ -143,7 +147,10 @@ export default function Profile() {
                 <Button
                   variant="outline"
                   className="w-full justify-start"
-                  onClick={() => setOpen(true)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setOpen(true);
+                  }}
                 >
                   <UserCheck className="mr-2 h-4 w-4" />
                   Sign In
@@ -151,7 +158,10 @@ export default function Profile() {
                 <Button
                   variant="outline"
                   className="w-full justify-start"
-                  onClick={() => setSignUpOpen(true)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSignUpOpen(true);
+                  }}
                 >
                   <UserPlus className="mr-2 h-4 w-4" />
                   Sign Up
@@ -166,11 +176,13 @@ export default function Profile() {
         open={open}
         setOpen={setOpen}
         handler={handleSignInWithGoogle}
+        onClose={handleModalClose}
       />
       <SignUpModal
         signUpOpen={signUpOpen}
         setSignUpOpen={setSignUpOpen}
         handler={handleSignInWithGoogle}
+        onClose={handleModalClose}
       />
 
       <AlertDialog open={signOutDialogOpen} onOpenChange={setSignOutDialogOpen}>
