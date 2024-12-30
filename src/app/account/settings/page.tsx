@@ -104,7 +104,7 @@ export default function AccountSettings() {
               <Button
                 variant="destructive"
                 onClick={() => setDeleteDialogOpen(true)}
-                disabled={currentUser.role !== "USER"}
+                disabled={currentUser?.role !== "USER"}
               >
                 Delete Account
               </Button>
