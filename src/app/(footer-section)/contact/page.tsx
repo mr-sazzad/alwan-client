@@ -1,27 +1,27 @@
 "use client";
 
-import { Clock, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
-import Link from "next/link";
-import { Suspense, useEffect } from "react";
-import { BsMessenger } from "react-icons/bs";
-import { IoLogoWhatsapp } from "react-icons/io";
-import MaxWidth from "../../../components/max-width";
+import MaxWidth from "@/components/max-width";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "../../../components/ui/accordion";
-import { Button } from "../../../components/ui/button";
+} from "@/components/ui/accordion";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "../../../components/ui/card";
-import { Separator } from "../../../components/ui/separator";
-import { useToast } from "../../../components/ui/use-toast";
+} from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { useToast } from "@/components/ui/use-toast";
+import { Clock, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
+import Link from "next/link";
+import { Suspense, useEffect } from "react";
+import { BsMessenger } from "react-icons/bs";
+import { IoLogoWhatsapp } from "react-icons/io";
 
 type FernandOptions = { appId?: string };
 type FernandCommand = (command: string, options?: FernandOptions) => void;
