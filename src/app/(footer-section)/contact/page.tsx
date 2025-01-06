@@ -1,6 +1,5 @@
 "use client";
 
-import MaxWidth from "@/components/max-width";
 import {
   Accordion,
   AccordionContent,
@@ -22,6 +21,7 @@ import Link from "next/link";
 import { Suspense, useEffect } from "react";
 import { BsMessenger } from "react-icons/bs";
 import { IoLogoWhatsapp } from "react-icons/io";
+import MaxWidth from "../../../components/max-width";
 
 type FernandOptions = { appId?: string };
 type FernandCommand = (command: string, options?: FernandOptions) => void;
