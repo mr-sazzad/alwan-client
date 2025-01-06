@@ -1,6 +1,5 @@
 "use state";
 
-import { cn } from "@/lib/utils";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
@@ -9,6 +8,7 @@ import "swiper/css";
 import "swiper/css/pagination";
 import { Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
+import { cn } from "../../lib/utils";
 
 interface ImageSliderProps {
   urls: string[];

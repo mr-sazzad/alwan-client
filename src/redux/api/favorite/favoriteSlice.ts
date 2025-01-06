@@ -1,9 +1,9 @@
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import {
   removeFromLocalStorage,
   setToLocalStorage,
-} from "@/helpers/local-storage";
-import { IProduct } from "@/types";
-import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+} from "../../../helpers/local-storage";
+import { IProduct } from "../../../types";
 
 interface FavoriteState {
   products: IProduct[];
