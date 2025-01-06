@@ -12,7 +12,7 @@ import { useGetlatestCarouselQuery } from "@/redux/api/carousel/carouselApi";
 import { useState } from "react";
 import { LuSquirrel } from "react-icons/lu";
 
-const Page = () => {
+export default function CarouselPage() {
   const [open, setOpen] = useState(false);
   const { data: response, isLoading } = useGetlatestCarouselQuery(undefined);
 
@@ -68,6 +68,4 @@ const Page = () => {
       </div>
     </div>
   );
-};
-
-export default Page;
+}

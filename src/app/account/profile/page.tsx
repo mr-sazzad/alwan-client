@@ -38,7 +38,7 @@ const profileSchema = z.object({
   }),
 });
 
-export default function ProfilePage() {
+const ProfilePage = () => {
   const router = useRouter();
   const [userData, setUserData] = useState<IUser | null>(null);
   const [isUpdatingImage, setIsUpdatingImage] = useState(false);
@@ -294,4 +294,6 @@ export default function ProfilePage() {
       </div>
     </>
   );
-}
+};
+
+export default ProfilePage;
