@@ -1,15 +1,15 @@
 "use client";
-
-import { Button } from "@/components/ui/button";
+import { BarChart, FileText, Settings, Users } from "lucide-react";
+import Link from "next/link";
+import React from "react";
+import { Button } from "../../../components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { BarChart, FileText, Settings, Users } from "lucide-react";
-import Link from "next/link";
+} from "../../../components/ui/card";
 
 export default function AdminDashboard() {
   const menuItems = [

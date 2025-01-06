@@ -1,5 +1,6 @@
 "use client";
-
+import Link from "next/link";
+import * as React from "react";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -7,11 +8,9 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
-} from "@/components/ui/navigation-menu";
-import { cn } from "@/lib/utils";
-import { useGetCategoriesQuery } from "@/redux/api/categoies/categoriesApi";
-import Link from "next/link";
-import * as React from "react";
+} from "../../components/ui/navigation-menu";
+import { cn } from "../../lib/utils";
+import { useGetCategoriesQuery } from "../../redux/api/categoies/categoriesApi";
 import { Skeleton } from "../ui/skeleton";
 import transformCategories from "../utils/transformCategories";
 

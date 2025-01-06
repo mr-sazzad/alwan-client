@@ -1,5 +1,5 @@
+import React from "react";
 import { IconType } from "react-icons";
-
 interface NotFoundProps {
   icon: IconType;
   size: number;

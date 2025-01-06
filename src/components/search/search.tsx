@@ -1,15 +1,14 @@
 "use client";
-
-import { useGetAllProductsQuery } from "@/redux/api/products/productsApi";
-import { IProduct } from "@/types";
 import { Loader2, Search, X } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useGetAllProductsQuery } from "../../redux/api/products/productsApi";
+import { IProduct } from "../../types";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { Button } from "../../components/ui/button";
+import { Input } from "../../components/ui/input";
+import { ScrollArea } from "../../components/ui/scroll-area";
 
 interface FullWidthSearchProps {
   isOpen: boolean;

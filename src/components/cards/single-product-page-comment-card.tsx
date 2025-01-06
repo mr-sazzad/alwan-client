@@ -1,11 +1,11 @@
+import { RiSearchLine } from "react-icons/ri";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { RiSearchLine } from "react-icons/ri";
+} from "../../../components/ui/card";
 
 const ReviewsCard = () => {
   return (

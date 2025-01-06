@@ -1,3 +1,4 @@
+import React from "react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -7,7 +8,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+} from "../../components/ui/alert-dialog";
 
 import { Dispatch, SetStateAction } from "react";
 

@@ -2,18 +2,18 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Eye, EyeOff, Lock } from "lucide-react";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { PiSpinner } from "react-icons/pi";
 import { z } from "zod";
-
-import { Button } from "@/components/ui/button";
+import { Button } from "../../components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
+} from "../../components/ui/dialog";
 import {
   Form,
   FormControl,
@@ -21,13 +21,12 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { getUserFromLocalStorage } from "@/helpers/jwt";
-import { useChangePasswordMutation } from "@/redux/api/auth/auth-api";
-import { passwordSchema } from "@/schemas/password-schema";
-import { IUser } from "@/types";
-import { PiSpinner } from "react-icons/pi";
+} from "../../components/ui/form";
+import { Input } from "../../components/ui/input";
+import { getUserFromLocalStorage } from "../../helpers/jwt";
+import { useChangePasswordMutation } from "../../redux/api/auth/auth-api";
+import { passwordSchema } from "../../schemas/password-schema";
+import { IUser } from "../../types";
 import { toast } from "../ui/use-toast";
 
 interface ChangePasswordDialogProps {

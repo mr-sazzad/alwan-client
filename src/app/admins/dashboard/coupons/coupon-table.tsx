@@ -1,23 +1,22 @@
 "use client";
-
-import { DataTable } from "@/components/admins/dashboard/products/data-table";
-import AlertDialogComp from "@/components/alert-dialog/alert-dialog";
-import { Button } from "@/components/ui/button";
+import { ColumnDef } from "@tanstack/react-table";
+import { ArrowUpDown, Edit, Eye, MoreHorizontal, Trash2 } from "lucide-react";
+import React, { useState } from "react";
+import { z } from "zod";
+import { DataTable } from "../../../../components/admins/dashboard/products/data-table";
+import AlertDialogComp from "../../../../components/alert-dialog/alert-dialog";
+import { Button } from "../../../../components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Separator } from "@/components/ui/separator";
-import { toast } from "@/components/ui/use-toast";
-import { useDeleteCouponMutation } from "@/redux/api/coupon/couponApi";
-import { CouponSchema } from "@/schemas/admins/coupon-schema";
-import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, Edit, Eye, MoreHorizontal, Trash2 } from "lucide-react";
-import { useState } from "react";
-import { z } from "zod";
+} from "../../../../components/ui/dropdown-menu";
+import { Separator } from "../../../../components/ui/separator";
+import { toast } from "../../../../components/ui/use-toast";
+import { useDeleteCouponMutation } from "../../../../redux/api/coupon/couponApi";
+import { CouponSchema } from "../../../../schemas/admins/coupon-schema";
 
 export type Coupon = z.infer<typeof CouponSchema> & {
   id: string;

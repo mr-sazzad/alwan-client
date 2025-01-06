@@ -1,10 +1,9 @@
-import { ISizeVariant } from "@/types";
+import React, { useState } from "react";
+import { IoClose } from "react-icons/io5";
+import { ISizeVariant } from "../../types";
+import AlertDialogComp from "../alert-dialog/alert-dialog";
 import ImageSlider from "../cards/image-slider";
 import { Button } from "../ui/button";
-
-import { useState } from "react";
-import { IoClose } from "react-icons/io5";
-import AlertDialogComp from "../alert-dialog/alert-dialog";
 
 interface IProfileProcessingOrderItemProps {
   items: any[];

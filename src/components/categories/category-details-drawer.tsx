@@ -1,9 +1,8 @@
 "use client";
-
-import { ICategory } from "@/types";
 import { X } from "lucide-react";
 import Image from "next/image";
-import { Dispatch, SetStateAction } from "react";
+import React, { Dispatch, SetStateAction } from "react";
+import { ICategory } from "../../types";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";

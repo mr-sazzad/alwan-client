@@ -1,12 +1,11 @@
 "use client";
-
-import AlertDialogComp from "@/components/alert-dialog/alert-dialog";
-import { Button } from "@/components/ui/button";
-import { IExpense } from "@/types";
 import { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
 import { Edit, Trash2 } from "lucide-react";
-import { useState } from "react";
+import React, { useState } from "react";
+import AlertDialogComp from "../../../../components/alert-dialog/alert-dialog";
+import { Button } from "../../../../components/ui/button";
+import { IExpense } from "../../../../types";
 
 interface ExpensesColumnsProps {
   onEdit: (expense: IExpense) => void;

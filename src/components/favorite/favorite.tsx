@@ -1,5 +1,9 @@
 "use client";
-
+import { Heart, Trash2 } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -9,10 +13,10 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
+} from "../../components/ui/alert-dialog";
+import { Button } from "../../components/ui/button";
+import { ScrollArea } from "../../components/ui/scroll-area";
+import { Separator } from "../../components/ui/separator";
 import {
   Sheet,
   SheetClose,
@@ -22,20 +26,15 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "@/components/ui/sheet";
-import { useToast } from "@/components/ui/use-toast";
+} from "../../components/ui/sheet";
+import { useToast } from "../../components/ui/use-toast";
 import {
   clearFavorites,
   removeProductFromFavorite,
   setFavorites,
-} from "@/redux/api/favorite/favoriteSlice";
-import { RootState } from "@/redux/store";
-import { IProduct } from "@/types";
-import { Heart, Trash2 } from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+} from "../../redux/api/favorite/favoriteSlice";
+import { RootState } from "../../redux/store";
+import { IProduct } from "../../types";
 
 interface IFavorite {
   open: boolean;

@@ -1,13 +1,13 @@
-import { cn } from "@/lib/utils";
 import { Check } from "lucide-react";
-
-import { Button } from "@/components/ui/button";
+import React from "react";
+import { Button } from "../../components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "../../components/ui/dropdown-menu";
+import { cn } from "../../lib/utils";
 
 type OrderStatusType = "CONFIRM" | "CANCELLED";
 

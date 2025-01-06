@@ -2,7 +2,8 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { CheckIcon, ChevronDown, X, XIcon } from "lucide-react";
 import * as React from "react";
 
-import { Button } from "@/components/ui/button";
+import { cn } from "../../lib/utils";
+import { Button } from "./button";
 import {
   Command,
   CommandEmpty,
@@ -11,14 +12,9 @@ import {
   CommandItem,
   CommandList,
   CommandSeparator,
-} from "@/components/ui/command";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Separator } from "@/components/ui/separator";
-import { cn } from "@/lib/utils";
+} from "./command";
+import { Popover, PopoverContent, PopoverTrigger } from "./popover";
+import { Separator } from "./separator";
 
 const multiSelectVariants = cva(
   "m-1 transition ease-in-out delay-150 duration-300",

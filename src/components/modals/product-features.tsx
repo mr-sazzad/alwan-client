@@ -1,10 +1,10 @@
-import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { Drawer, DrawerClose, DrawerContent } from "@/components/ui/drawer";
-import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { Check, X } from "lucide-react";
 import Image from "next/image";
 import * as React from "react";
+import { Button } from "../../components/ui/button";
+import { Dialog, DialogContent } from "../../components/ui/dialog";
+import { Drawer, DrawerClose, DrawerContent } from "../../components/ui/drawer";
+import { useMediaQuery } from "../../hooks/useMediaQuery";
 
 interface IProductFeaturesProps {
   open: boolean;

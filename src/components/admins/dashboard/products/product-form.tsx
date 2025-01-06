@@ -1,19 +1,18 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { BiTrash } from "react-icons/bi";
 import { TbCubePlus } from "react-icons/tb";
 import { VscCloudUpload } from "react-icons/vsc";
 import { z } from "zod";
-
-import { Button } from "@/components/ui/button";
+import { Button } from "../../../../components/ui/button";
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "../../../../components/ui/card";
 import {
   Form,
   FormControl,
@@ -22,8 +21,8 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+} from "../../../../components/ui/form";
+import { Input } from "../../../../components/ui/input";
 import {
   Select,
   SelectContent,
@@ -32,25 +31,25 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
-import { Switch } from "@/components/ui/switch";
-import { Textarea } from "@/components/ui/textarea";
-import { toast } from "@/components/ui/use-toast";
+} from "../../../../components/ui/select";
+import { Separator } from "../../../../components/ui/separator";
+import { Switch } from "../../../../components/ui/switch";
+import { Textarea } from "../../../../components/ui/textarea";
+import { toast } from "../../../../components/ui/use-toast";
 
 // Assume these imports are available
-import CreateProductDialogSkeleton from "@/components/skeletons/create-product-dialog";
-import { useGetLeafCategoriesQuery } from "@/redux/api/categoies/categoriesApi";
-import { useGetAllColorsQuery } from "@/redux/api/color/color-api";
-import { useGetProductTypesQuery } from "@/redux/api/product-types/product-types-api";
+import { Loader } from "lucide-react";
+import CreateProductDialogSkeleton from "../../../../components/skeletons/create-product-dialog";
+import { useGetLeafCategoriesQuery } from "../../../../redux/api/categoies/categoriesApi";
+import { useGetAllColorsQuery } from "../../../../redux/api/color/color-api";
+import { useGetProductTypesQuery } from "../../../../redux/api/product-types/product-types-api";
 import {
   useCreateProductMutation,
   useUpdateProductMutation,
-} from "@/redux/api/products/productsApi";
-import { useGetAllSizesQuery } from "@/redux/api/size/size-api";
-import { productSchema } from "@/schemas/product-schema";
-import { IProduct } from "@/types";
-import { Loader } from "lucide-react";
+} from "../../../../redux/api/products/productsApi";
+import { useGetAllSizesQuery } from "../../../../redux/api/size/size-api";
+import { productSchema } from "../../../../schemas/product-schema";
+import { IProduct } from "../../../../types";
 
 interface ProductFormProps {
   mode: "create" | "update";

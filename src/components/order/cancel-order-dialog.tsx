@@ -1,3 +1,5 @@
+import React, { useState } from "react";
+import { RiLoaderLine } from "react-icons/ri";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -7,11 +9,9 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { useState } from "react";
-import { RiLoaderLine } from "react-icons/ri";
+} from "../../components/ui/alert-dialog";
+import { Input } from "../../components/ui/input";
+import { Label } from "../../components/ui/label";
 
 interface AlertDialogCompProps {
   open: boolean;

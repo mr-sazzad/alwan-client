@@ -1,10 +1,9 @@
 "use client";
-
-import { Sheet, SheetContent } from "@/components/ui/sheet";
-import { ICategory } from "@/types";
 import { AnimatePresence, motion } from "framer-motion";
 import { useRouter } from "next/navigation";
-import { Dispatch, SetStateAction, useState } from "react";
+import React, { Dispatch, SetStateAction, useState } from "react";
+import { Sheet, SheetContent } from "../../components/ui/sheet";
+import { ICategory } from "../../types";
 import { CategoryList } from "./category-list";
 
 interface SidebarProps {

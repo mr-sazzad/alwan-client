@@ -1,6 +1,7 @@
-import MaxWidth from "@/components/max-width"
-import NotFoundButtons from "@/components/not-found/not-found-button"
-import { BiMeteor } from "react-icons/bi"
+import React from "react";
+import { BiMeteor } from "react-icons/bi";
+import MaxWidth from "../components/max-width";
+import NotFoundButtons from "../components/not-found/not-found-button";
 
 const NotFound = () => {
   return (
@@ -20,7 +21,7 @@ const NotFound = () => {
         </div>
       </div>
     </MaxWidth>
-  )
-}
+  );
+};
 
-export default NotFound
+export default NotFound;

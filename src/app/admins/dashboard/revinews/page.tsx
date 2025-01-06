@@ -1,24 +1,4 @@
 "use client";
-
-import RevenueChart from "@/components/admins/dashboard/revenue/revenue-chart";
-import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Skeleton } from "@/components/ui/skeleton";
-import { cn } from "@/lib/utils";
-import {
-  useGetIncomesBetweenDatesQuery,
-  useGetLastMonthIncomesQuery,
-  useGetLifetimeIncomesQuery,
-  useGetPreviousWeekIncomesQuery,
-  useGetTodayIncomesQuery,
-  useGetYesterdayIncomesQuery,
-} from "@/redux/api/income/incomeApi";
 import { addDays, format } from "date-fns";
 import {
   Calendar as CalendarIcon,
@@ -27,8 +7,32 @@ import {
   Search,
   TrendingUp,
 } from "lucide-react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { DateRange } from "react-day-picker";
+import RevenueChart from "../../../../components/admins/dashboard/revenue/revenue-chart";
+import { Button } from "../../../../components/ui/button";
+import { Calendar } from "../../../../components/ui/calendar";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "../../../../components/ui/card";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "../../../../components/ui/popover";
+import { Skeleton } from "../../../../components/ui/skeleton";
+import { cn } from "../../../../lib/utils";
+import {
+  useGetIncomesBetweenDatesQuery,
+  useGetLastMonthIncomesQuery,
+  useGetLifetimeIncomesQuery,
+  useGetPreviousWeekIncomesQuery,
+  useGetTodayIncomesQuery,
+  useGetYesterdayIncomesQuery,
+} from "../../../../redux/api/income/incomeApi";
 
 const DateRangePicker = ({
   className,

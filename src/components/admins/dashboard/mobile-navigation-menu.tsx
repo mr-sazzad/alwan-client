@@ -1,6 +1,11 @@
 "use client";
-
-import { Button } from "@/components/ui/button";
+import { AnimatePresence, motion } from "framer-motion";
+import { Search, X } from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import React, { useEffect, useState } from "react";
+import { PiSidebarSimpleBold } from "react-icons/pi";
+import { Button } from "../../../components/ui/button";
 import {
   Drawer,
   DrawerClose,
@@ -9,16 +14,10 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from "@/components/ui/drawer";
-import { Input } from "@/components/ui/input";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { useAdminDashboardMenu } from "@/static/admin-dashboard-menu";
-import { AnimatePresence, motion } from "framer-motion";
-import { Search, X } from "lucide-react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
-import { PiSidebarSimpleBold } from "react-icons/pi";
+} from "../../../components/ui/drawer";
+import { Input } from "../../../components/ui/input";
+import { ScrollArea } from "../../../components/ui/scroll-area";
+import { useAdminDashboardMenu } from "../../../static/admin-dashboard-menu";
 
 export default function AdminsMobileMenu() {
   const adminRoutes = useAdminDashboardMenu();

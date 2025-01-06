@@ -1,34 +1,33 @@
 "use client";
-
-import { Button } from "@/components/ui/button";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { X } from "lucide-react";
+import React, { Dispatch, SetStateAction, useState } from "react";
+import { useForm } from "react-hook-form";
+import { GoShieldCheck } from "react-icons/go";
+import { PiSpinner } from "react-icons/pi";
+import { VscCloudUpload } from "react-icons/vsc";
+import { z } from "zod";
+import { Button } from "../../../../components/ui/button";
 import {
   Drawer,
   DrawerClose,
   DrawerContent,
   DrawerFooter,
-} from "@/components/ui/drawer";
+} from "../../../../components/ui/drawer";
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { toast } from "@/components/ui/use-toast";
+} from "../../../../components/ui/form";
+import { Input } from "../../../../components/ui/input";
+import { toast } from "../../../../components/ui/use-toast";
 import {
   useRegisterACarouselMutation,
   useUpdateCarouselMutation,
-} from "@/redux/api/carousel/carouselApi";
-import { carouselSchema } from "@/schemas/admins/carousel-schema";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { X } from "lucide-react";
-import { Dispatch, SetStateAction, useState } from "react";
-import { useForm } from "react-hook-form";
-import { GoShieldCheck } from "react-icons/go";
-import { PiSpinner } from "react-icons/pi";
-import { VscCloudUpload } from "react-icons/vsc";
-import { z } from "zod";
+} from "../../../../redux/api/carousel/carouselApi";
+import { carouselSchema } from "../../../../schemas/admins/carousel-schema";
 
 interface CarouselDrawerProps {
   open: boolean;

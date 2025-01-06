@@ -1,8 +1,7 @@
 "use client";
-
 import { Bell, CircleDot, Heart, Loader2, ShoppingCart } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import {
@@ -10,22 +9,22 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion";
-import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
-import { toast } from "@/components/ui/use-toast";
+} from "../../../components/ui/accordion";
+import { Button } from "../../../components/ui/button";
+import { Skeleton } from "../../../components/ui/skeleton";
+import { toast } from "../../../components/ui/use-toast";
 
-import DetailsPageImageSlider from "@/components/cards/details-page-slider";
-import MaxWidth from "@/components/max-width";
-import NotificationDialog from "@/components/modals/notify-dialog";
-import ProductFeatures from "@/components/modals/product-features";
-import ReviewAndInfoTab from "@/components/tabs/review-and-info-tab";
+import DetailsPageImageSlider from "../../../components/cards/details-page-slider";
+import MaxWidth from "../../../components/max-width";
+import NotificationDialog from "../../../components/modals/notify-dialog";
+import ProductFeatures from "../../../components/modals/product-features";
+import ReviewAndInfoTab from "../../../components/tabs/review-and-info-tab";
 
-import { addProductToCart } from "@/redux/api/cart/cartSlice";
-import { addProductToFavorite } from "@/redux/api/favorite/favoriteSlice";
-import { useGetSingleProductQuery } from "@/redux/api/products/productsApi";
-import { AppDispatch, RootState } from "@/redux/store";
-import { ISizeVariant } from "@/types";
+import { addProductToCart } from "../../../redux/api/cart/cartSlice";
+import { addProductToFavorite } from "../../../redux/api/favorite/favoriteSlice";
+import { useGetSingleProductQuery } from "../../../redux/api/products/productsApi";
+import { AppDispatch, RootState } from "../../../redux/store";
+import { ISizeVariant } from "../../../types";
 
 export default function Component() {
   const router = useRouter();

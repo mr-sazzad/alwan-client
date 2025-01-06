@@ -1,12 +1,11 @@
 "use client";
-
-import PageTitle from "@/components/admins/dashboard/page-titles/page-title";
-import ProductTypeDrawer from "@/components/admins/dashboard/product-types/product-type-drawer";
-import AlwanBreadCrumb from "@/components/breadcrumbs/breadcrumb";
-import AdminColorSkeleton from "@/components/skeletons/admin-color-skeleton";
-import { Button } from "@/components/ui/button";
-import { useGetProductTypesQuery } from "@/redux/api/product-types/product-types-api";
-import { useState } from "react";
+import React, { useState } from "react";
+import PageTitle from "../../../../components/admins/dashboard/page-titles/page-title";
+import ProductTypeDrawer from "../../../../components/admins/dashboard/product-types/product-type-drawer";
+import AlwanBreadCrumb from "../../../../components/breadcrumbs/breadcrumb";
+import AdminColorSkeleton from "../../../../components/skeletons/admin-color-skeleton";
+import { Button } from "../../../../components/ui/button";
+import { useGetProductTypesQuery } from "../../../../redux/api/product-types/product-types-api";
 import ProductTypeColumns from "./product-type-columns";
 
 const ProductType = () => {

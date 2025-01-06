@@ -1,13 +1,13 @@
 "use client";
-
+import Image from "next/image";
+import { useSearchParams } from "next/navigation";
+import React from "react";
+import { useDispatch } from "react-redux";
 import {
   decreaseProductQty,
   increaseProductQty,
-} from "@/redux/api/cart/cartSlice";
-import { IProduct } from "@/types";
-import Image from "next/image";
-import { useSearchParams } from "next/navigation";
-import { useDispatch } from "react-redux";
+} from "../../redux/api/cart/cartSlice";
+import { IProduct } from "../../types";
 import { Button } from "../ui/button";
 
 interface CheckoutPageSingleProductCardProps {

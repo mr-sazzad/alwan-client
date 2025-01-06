@@ -1,8 +1,12 @@
 "use client";
-
-import { DataTable } from "@/components/admins/dashboard/products/data-table";
-import AlertDialogComp from "@/components/alert-dialog/alert-dialog";
-import { Button } from "@/components/ui/button";
+import { ColumnDef } from "@tanstack/react-table";
+import { format } from "date-fns";
+import { MoreHorizontal, Trash2 } from "lucide-react";
+import React, { useState } from "react";
+import { FaRegMeh, FaRegSadTear, FaRegSmile } from "react-icons/fa";
+import { DataTable } from "../../../../components/admins/dashboard/products/data-table";
+import AlertDialogComp from "../../../../components/alert-dialog/alert-dialog";
+import { Button } from "../../../../components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,14 +14,9 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { toast } from "@/components/ui/use-toast";
-import { useDeleteFeedbackMutation } from "@/redux/api/feedback/feedbackApi";
-import { ColumnDef } from "@tanstack/react-table";
-import { format } from "date-fns";
-import { MoreHorizontal, Trash2 } from "lucide-react";
-import { useState } from "react";
-import { FaRegMeh, FaRegSadTear, FaRegSmile } from "react-icons/fa";
+} from "../../../../components/ui/dropdown-menu";
+import { toast } from "../../../../components/ui/use-toast";
+import { useDeleteFeedbackMutation } from "../../../../redux/api/feedback/feedbackApi";
 
 export type Feedback = {
   id: string;

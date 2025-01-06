@@ -1,13 +1,18 @@
-import MaxWidth from "@/components/max-width";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Award, Heart, Leaf, ShoppingBag, Sun, Users } from "lucide-react";
+import React from "react";
+import MaxWidth from "../../../components/max-width";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "../../../components/ui/avatar";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Award, Heart, Leaf, ShoppingBag, Sun, Users } from "lucide-react";
+} from "../../../components/ui/card";
 
 export default function AboutPage() {
   return (

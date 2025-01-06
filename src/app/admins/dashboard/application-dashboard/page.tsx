@@ -1,20 +1,4 @@
 "use client";
-
-import AlwanBreadCrumb from "@/components/breadcrumbs/breadcrumb";
-import AdminDashboardSkeleton from "@/components/skeletons/admin-dashboard-skeleton";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ChartContainer, ChartTooltip } from "@/components/ui/chart";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { useGetAllOrdersQuery } from "@/redux/api/orders/ordersApi";
-import { useGetAllUsersQuery } from "@/redux/api/users/user-api";
-import { IOrder, IUser } from "@/types";
 import {
   AlertCircle,
   DollarSign,
@@ -24,8 +8,32 @@ import {
   TrendingUp,
   Users,
 } from "lucide-react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { Line, LineChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
+import AlwanBreadCrumb from "../../../../components/breadcrumbs/breadcrumb";
+import AdminDashboardSkeleton from "../../../../components/skeletons/admin-dashboard-skeleton";
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from "../../../../components/ui/alert";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "../../../../components/ui/card";
+import { ChartContainer, ChartTooltip } from "../../../../components/ui/chart";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../../../components/ui/select";
+import { useGetAllOrdersQuery } from "../../../../redux/api/orders/ordersApi";
+import { useGetAllUsersQuery } from "../../../../redux/api/users/user-api";
+import { IOrder, IUser } from "../../../../types";
 
 interface AdminCardComponentProps {
   title: string;

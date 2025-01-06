@@ -1,13 +1,12 @@
 "use client";
-
-import PageTitle from "@/components/admins/dashboard/page-titles/page-title";
-import AlwanBreadCrumb from "@/components/breadcrumbs/breadcrumb";
-import CategoryDrawer from "@/components/categories/category-drawer";
-import AdminsCategorySkeleton from "@/components/skeletons/admins-category-skeleton";
-import { Button } from "@/components/ui/button";
-import { useGetCategoriesQuery } from "@/redux/api/categoies/categoriesApi";
 import { Plus } from "lucide-react";
-import { useState } from "react";
+import React, { useState } from "react";
+import PageTitle from "../../../../components/admins/dashboard/page-titles/page-title";
+import AlwanBreadCrumb from "../../../../components/breadcrumbs/breadcrumb";
+import CategoryDrawer from "../../../../components/categories/category-drawer";
+import AdminsCategorySkeleton from "../../../../components/skeletons/admins-category-skeleton";
+import { Button } from "../../../../components/ui/button";
+import { useGetCategoriesQuery } from "../../../../redux/api/categoies/categoriesApi";
 import CategoryTableColumns from "./category-columns";
 
 const Category = () => {

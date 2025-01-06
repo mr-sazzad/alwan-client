@@ -1,13 +1,19 @@
 "use client";
-
-import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { format } from "date-fns";
+import { CalendarIcon } from "lucide-react";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { RiLoaderLine } from "react-icons/ri";
+import { z } from "zod";
+import { Button } from "../../../../components/ui/button";
+import { Calendar } from "../../../../components/ui/calendar";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
+} from "../../../../components/ui/dialog";
 import {
   Form,
   FormControl,
@@ -15,14 +21,14 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { MultiSelect } from "@/components/ui/multi-select";
+} from "../../../../components/ui/form";
+import { Input } from "../../../../components/ui/input";
+import { MultiSelect } from "../../../../components/ui/multi-select";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
+} from "../../../../components/ui/popover";
 import {
   Select,
   SelectContent,
@@ -31,16 +37,9 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { cn } from "@/lib/utils";
-import { CouponSchema } from "@/schemas/admins/coupon-schema";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { format } from "date-fns";
-import { CalendarIcon } from "lucide-react";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
-import { RiLoaderLine } from "react-icons/ri";
-import { z } from "zod";
+} from "../../../../components/ui/select";
+import { cn } from "../../../../lib/utils";
+import { CouponSchema } from "../../../../schemas/admins/coupon-schema";
 
 interface CouponFormProps {
   open: boolean;

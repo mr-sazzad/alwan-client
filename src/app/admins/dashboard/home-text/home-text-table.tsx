@@ -1,18 +1,4 @@
 "use client";
-
-import { DataTable } from "@/components/admins/dashboard/products/data-table";
-import AlertDialogComp from "@/components/alert-dialog/alert-dialog";
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { toast } from "@/components/ui/use-toast";
-import { useDeleteHomePageTextMutation } from "@/redux/api/home-page-text/home-page-text-api";
-import { ICategory } from "@/types";
 import { ColumnDef } from "@tanstack/react-table";
 import {
   ArrowUpDown,
@@ -20,7 +6,20 @@ import {
   MoreHorizontal,
   Trash2,
 } from "lucide-react";
-import { useState } from "react";
+import React, { useState } from "react";
+import { DataTable } from "../../../../components/admins/dashboard/products/data-table";
+import AlertDialogComp from "../../../../components/alert-dialog/alert-dialog";
+import { Button } from "../../../../components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from "../../../../components/ui/dropdown-menu";
+import { toast } from "../../../../components/ui/use-toast";
+import { useDeleteHomePageTextMutation } from "../../../../redux/api/home-page-text/home-page-text-api";
+import { ICategory } from "../../../../types";
 
 export type HomeText = {
   id: string;

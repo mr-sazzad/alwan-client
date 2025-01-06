@@ -1,16 +1,20 @@
 "use client";
-
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { HiOutlineSparkles, HiPlusSmall } from "react-icons/hi2";
 import { TbHomeCheck, TbHomeEdit } from "react-icons/tb";
 import { z } from "zod";
 
-import AlertDialogComp from "@/components/alert-dialog/alert-dialog";
-import AddressDialog from "@/components/profile/address-dialog";
-import AddressSkeleton from "@/components/skeletons/profile-address-skeleton";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import AlertDialogComp from "../../../components/alert-dialog/alert-dialog";
+import AddressDialog from "../../../components/profile/address-dialog";
+import AddressSkeleton from "../../../components/skeletons/profile-address-skeleton";
+import { Button } from "../../../components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "../../../components/ui/card";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,18 +23,18 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { toast } from "@/components/ui/use-toast";
-import { getUserFromLocalStorage } from "@/helpers/jwt";
+} from "../../../components/ui/dropdown-menu";
+import { toast } from "../../../components/ui/use-toast";
+import { getUserFromLocalStorage } from "../../../helpers/jwt";
 import {
   useAddNewAddressMutation,
   useDeleteAddressMutation,
   useSetActiveAddressMutation,
   useUpdateAddressMutation,
-} from "@/redux/api/address/addressApi";
-import { useGetSingleUserQuery } from "@/redux/api/users/user-api";
-import { profileAddressSchema } from "@/schemas/profile-address-schema";
-import { IUser } from "@/types";
+} from "../../../redux/api/address/addressApi";
+import { useGetSingleUserQuery } from "../../../redux/api/users/user-api";
+import { profileAddressSchema } from "../../../schemas/profile-address-schema";
+import { IUser } from "../../../types";
 
 import { Earth, MapPin, Search, Trash2 } from "lucide-react";
 

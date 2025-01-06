@@ -1,20 +1,19 @@
 "use client";
-
-import ChangePasswordDialog from "@/components/profile/change-password-dialog";
-import DeleteUserDialog from "@/components/profile/delete-user-dialog";
-import ThemeToggle from "@/components/themes/theme-toggle";
-import { Button } from "@/components/ui/button";
+import { AlertCircle, Key, Paintbrush, Trash2 } from "lucide-react";
+import React, { useState } from "react";
+import { PiPasswordLight } from "react-icons/pi";
+import ChangePasswordDialog from "../../../components/profile/change-password-dialog";
+import DeleteUserDialog from "../../../components/profile/delete-user-dialog";
+import ThemeToggle from "../../../components/themes/theme-toggle";
+import { Button } from "../../../components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { getUserFromLocalStorage } from "@/helpers/jwt";
-import { AlertCircle, Key, Paintbrush, Trash2 } from "lucide-react";
-import { useState } from "react";
-import { PiPasswordLight } from "react-icons/pi";
+} from "../../../components/ui/card";
+import { getUserFromLocalStorage } from "../../../helpers/jwt";
 
 export default function AccountSettings() {
   const [changePasswordDialogOpen, setChangePasswordDialogOpen] =

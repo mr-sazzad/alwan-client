@@ -1,9 +1,8 @@
 "use client";
-
-import { IOrderItem } from "@/types";
-import { useState } from "react";
+import React, { useState } from "react";
 import { FcSms } from "react-icons/fc";
 import { TbExchange } from "react-icons/tb";
+import { IOrderItem } from "../../types";
 import ImageSlider from "../cards/image-slider";
 import ProductReturnDialog from "../modals/product-return-dialog";
 import { Button } from "../ui/button";

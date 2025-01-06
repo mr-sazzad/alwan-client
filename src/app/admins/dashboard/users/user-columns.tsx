@@ -1,6 +1,9 @@
 "use client";
-
-import { Button } from "@/components/ui/button";
+import { ColumnDef } from "@tanstack/react-table";
+import { CopyIcon, EyeIcon, MoreHorizontal } from "lucide-react";
+import Link from "next/link";
+import React, { useCallback } from "react";
+import { Button } from "../../../../components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,13 +11,9 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { useToast } from "@/components/ui/use-toast";
-import { IUser } from "@/types";
-import { ColumnDef } from "@tanstack/react-table";
-import { CopyIcon, EyeIcon, MoreHorizontal } from "lucide-react";
-import Link from "next/link";
-import { useCallback } from "react";
+} from "../../../../components/ui/dropdown-menu";
+import { useToast } from "../../../../components/ui/use-toast";
+import { IUser } from "../../../../types";
 
 const path = "/admins/dashboard/users";
 

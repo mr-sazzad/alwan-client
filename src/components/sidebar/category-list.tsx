@@ -1,9 +1,9 @@
-import { getUserFromLocalStorage } from "@/helpers/jwt";
-import { handleSignInWithGoogle } from "@/helpers/sign-in-with-google";
-import { ICategory } from "@/types";
 import Link from "next/link";
-import { useState } from "react";
+import React, { useState } from "react";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import { getUserFromLocalStorage } from "../../helpers/jwt";
+import { handleSignInWithGoogle } from "../../helpers/sign-in-with-google";
+import { ICategory } from "../../types";
 import LoginModal from "../modals/login-modal";
 import SignUpModal from "../modals/signUp-modal";
 import { Button } from "../ui/button";

@@ -1,9 +1,8 @@
 "use client";
-
-import { formatCurrency } from "@/components/utils/money";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { useEffect, useState } from "react";
+import { formatCurrency } from "../../components/utils/money";
 
 // Extend the jsPDF type to include autoTable
 declare module "jspdf" {

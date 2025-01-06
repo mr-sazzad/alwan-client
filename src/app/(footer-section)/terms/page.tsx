@@ -1,12 +1,18 @@
-import MaxWidth from "@/components/max-width";
+import React from "react";
+import MaxWidth from "../../../components/max-width";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ScrollArea } from "@/components/ui/scroll-area";
+} from "../../../components/ui/accordion";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "../../../components/ui/card";
+import { ScrollArea } from "../../../components/ui/scroll-area";
 
 export default function TermsAndConditionsPage() {
   return (

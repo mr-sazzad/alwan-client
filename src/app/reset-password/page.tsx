@@ -1,20 +1,19 @@
 "use client";
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Eye, EyeOff, Lock } from "lucide-react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
 
-import MaxWidth from "@/components/max-width";
-import { Button } from "@/components/ui/button";
+import MaxWidth from "../../components/max-width";
+import { Button } from "../../components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "../../components/ui/card";
 import {
   Form,
   FormControl,
@@ -22,9 +21,9 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { toast } from "@/components/ui/use-toast";
+} from "../../components/ui/form";
+import { Input } from "../../components/ui/input";
+import { toast } from "../../components/ui/use-toast";
 
 const passwordSchema = z.object({
   newPassword: z

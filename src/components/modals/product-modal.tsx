@@ -1,5 +1,5 @@
 "use client";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import ImageSlider from "../cards/image-slider";
 import { Button } from "../ui/button";
 import {
@@ -15,17 +15,17 @@ import "swiper/css";
 import "swiper/css/pagination";
 import { toast } from "../ui/use-toast";
 
-import { RootState } from "@/redux/store";
-import { IProduct, ISizeVariant } from "@/types";
 import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../redux/store";
+import { IProduct, ISizeVariant } from "../../types";
 
 // icons
-import { addProductToCart } from "@/redux/api/cart/cartSlice";
-import { addProductToFavorite } from "@/redux/api/favorite/favoriteSlice";
 import { Heart, ShoppingCart } from "lucide-react";
 import { HiMinusSm, HiPlusSm } from "react-icons/hi";
 import { IoMdAlarm } from "react-icons/io";
 import { PiSpinnerBold } from "react-icons/pi";
+import { addProductToCart } from "../../redux/api/cart/cartSlice";
+import { addProductToFavorite } from "../../redux/api/favorite/favoriteSlice";
 
 interface ProductModalProps {
   open: boolean;

@@ -1,5 +1,7 @@
 "use client";
-
+import { Loader2, LogOut, User, UserCheck, UserPlus } from "lucide-react";
+import Link from "next/link";
+import React, { useState } from "react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -9,30 +11,31 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
+} from "../../components/ui/alert-dialog";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "../../components/ui/avatar";
+import { Button } from "../../components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "../../components/ui/card";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { toast } from "@/components/ui/use-toast";
-import { getUserFromLocalStorage } from "@/helpers/jwt";
-import { removeFromLocalStorage } from "@/helpers/local-storage";
-import { handleSignInWithGoogle } from "@/helpers/sign-in-with-google";
-import { useGetSingleUserQuery } from "@/redux/api/users/user-api";
-import { KEY } from "@/types";
-import { Loader2, LogOut, User, UserCheck, UserPlus } from "lucide-react";
-import Link from "next/link";
-import { useState } from "react";
+} from "../../components/ui/dropdown-menu";
+import { toast } from "../../components/ui/use-toast";
+import { getUserFromLocalStorage } from "../../helpers/jwt";
+import { removeFromLocalStorage } from "../../helpers/local-storage";
+import { handleSignInWithGoogle } from "../../helpers/sign-in-with-google";
+import { useGetSingleUserQuery } from "../../redux/api/users/user-api";
+import { KEY } from "../../types";
 import LoginModal from "../modals/login-modal";
 import SignUpModal from "../modals/signUp-modal";
 import { extractNameFromEmail } from "../utils/utils";

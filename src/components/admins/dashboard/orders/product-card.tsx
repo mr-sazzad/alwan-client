@@ -1,12 +1,16 @@
-import ImageSlider from "@/components/cards/image-slider";
+import React from "react";
+import ImageSlider from "../../../../components/cards/image-slider";
 import {
   orderStatusArray,
   statusStyles,
-} from "@/components/static/admin-single-product-status-style";
-import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Separator } from "@/components/ui/separator";
-import { IProduct } from "@/types";
+} from "../../../../components/static/admin-single-product-status-style";
+import { Label } from "../../../../components/ui/label";
+import {
+  RadioGroup,
+  RadioGroupItem,
+} from "../../../../components/ui/radio-group";
+import { Separator } from "../../../../components/ui/separator";
+import { IProduct } from "../../../../types";
 
 import { PiSpinnerLight } from "react-icons/pi";
 

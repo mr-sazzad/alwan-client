@@ -1,17 +1,4 @@
 "use client";
-
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Dialog, DialogTrigger } from "@/components/ui/dialog";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useToast } from "@/components/ui/use-toast";
-import {
-  useDeleteExpenseMutation,
-  useGetAllExpensesQuery,
-  useGetMonthlyExpensesQuery,
-  useGetWeeklyExpensesQuery,
-  useUpdateExpenseMutation,
-} from "@/redux/api/expenses/expensesApi";
 import {
   ArrowDownRight,
   ArrowUpRight,
@@ -19,12 +6,34 @@ import {
   DollarSign,
   PlusCircle,
 } from "lucide-react";
-import { useState } from "react";
+import React, { useState } from "react";
+import { Button } from "../../../../components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "../../../../components/ui/card";
+import { Dialog, DialogTrigger } from "../../../../components/ui/dialog";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "../../../../components/ui/tabs";
+import { useToast } from "../../../../components/ui/use-toast";
+import {
+  useDeleteExpenseMutation,
+  useGetAllExpensesQuery,
+  useGetMonthlyExpensesQuery,
+  useGetWeeklyExpensesQuery,
+  useUpdateExpenseMutation,
+} from "../../../../redux/api/expenses/expensesApi";
 
-import ExpenseForm from "@/components/admins/dashboard/expense/expense-form";
-import { DataTable } from "@/components/admins/dashboard/products/data-table";
-import AlwanBreadCrumb from "@/components/breadcrumbs/breadcrumb";
-import { IExpense } from "@/types";
+import ExpenseForm from "../../../../components/admins/dashboard/expense/expense-form";
+import { DataTable } from "../../../../components/admins/dashboard/products/data-table";
+import AlwanBreadCrumb from "../../../../components/breadcrumbs/breadcrumb";
+import { IExpense } from "../../../../types";
 import { ExpensesColumns } from "./expense-columns";
 
 export default function ExpensePage() {

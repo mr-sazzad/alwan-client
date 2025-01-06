@@ -1,12 +1,11 @@
 "use client";
-
-import MaxWidth from "@/components/max-width";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { useUserAccountMenu } from "@/static/user-account-menu";
 import { Menu, X } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import MaxWidth from "../../components/max-width";
+import { Button } from "../../components/ui/button";
+import { Card, CardContent } from "../../components/ui/card";
+import { useUserAccountMenu } from "../../static/user-account-menu";
 
 interface AccountLayoutProps {
   children: React.ReactNode;

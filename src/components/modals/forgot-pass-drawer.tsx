@@ -1,13 +1,18 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2 } from "lucide-react";
+import * as React from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { Button } from "../../components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
+} from "../../components/ui/dialog";
 import {
   Drawer,
   DrawerClose,
@@ -16,7 +21,7 @@ import {
   DrawerFooter,
   DrawerHeader,
   DrawerTitle,
-} from "@/components/ui/drawer";
+} from "../../components/ui/drawer";
 import {
   Form,
   FormControl,
@@ -24,16 +29,11 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { useToast } from "@/components/ui/use-toast";
-import { useMediaQuery } from "@/hooks/useMediaQuery";
-import { useForgetPasswordMutation } from "@/redux/api/auth/auth-api";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2 } from "lucide-react";
-import * as React from "react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
+} from "../../components/ui/form";
+import { Input } from "../../components/ui/input";
+import { useToast } from "../../components/ui/use-toast";
+import { useMediaQuery } from "../../hooks/useMediaQuery";
+import { useForgetPasswordMutation } from "../../redux/api/auth/auth-api";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address" }),

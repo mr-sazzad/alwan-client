@@ -1,12 +1,4 @@
 "use client";
-
-import { DataTable } from "@/components/admins/dashboard/products/data-table";
-import AlwanBreadCrumb from "@/components/breadcrumbs/breadcrumb";
-import AdminOrdersSkeleton from "@/components/skeletons/admin-orders-skeleton";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useGetAllOrdersQuery } from "@/redux/api/orders/ordersApi";
-import { IOrder } from "@/types";
 import {
   AlertCircle,
   ArrowLeftRight,
@@ -17,6 +9,24 @@ import {
   Truck,
   XCircle,
 } from "lucide-react";
+import React from "react";
+import { DataTable } from "../../../../components/admins/dashboard/products/data-table";
+import AlwanBreadCrumb from "../../../../components/breadcrumbs/breadcrumb";
+import AdminOrdersSkeleton from "../../../../components/skeletons/admin-orders-skeleton";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "../../../../components/ui/card";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "../../../../components/ui/tabs";
+import { useGetAllOrdersQuery } from "../../../../redux/api/orders/ordersApi";
+import { IOrder } from "../../../../types";
 import OrderTableColumns from "./orders-column";
 
 function StatusCard({

@@ -1,25 +1,26 @@
-import MaxWidth from "@/components/max-width";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import Link from "next/link";
+import React from "react";
 import {
   FaCalendarAlt,
   FaExchangeAlt,
   FaInfoCircle,
   FaTruck,
 } from "react-icons/fa";
+import MaxWidth from "../../../components/max-width";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "../../../components/ui/accordion";
+import { Button } from "../../../components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../../../components/ui/card";
 
 export default function ReturnPolicyPage() {
   return (

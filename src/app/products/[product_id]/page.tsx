@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import React from "react";
 import ProductDetailsClient from "./ProductDetailsClient";
 
 type Props = {

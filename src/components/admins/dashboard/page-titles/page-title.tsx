@@ -1,7 +1,7 @@
-import { Card, CardContent } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
 import { cva, type VariantProps } from "class-variance-authority";
 import React from "react";
+import { Card, CardContent } from "../../../../components/ui/card";
+import { cn } from "../../../../lib/utils";
 
 const pageTitleVariants = cva("relative p-6 bg-gradient-to-br", {
   variants: {

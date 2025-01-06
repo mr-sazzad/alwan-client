@@ -1,12 +1,12 @@
 "use client";
-
-import { DataTable } from "@/components/admins/dashboard/products/data-table";
-import AlwanBreadCrumb from "@/components/breadcrumbs/breadcrumb";
-import AdminUsersSkeleton from "@/components/skeletons/admins-users-skeleton";
-import { Card, CardContent } from "@/components/ui/card";
-import { useGetAllUsersQuery } from "@/redux/api/users/user-api";
-import { IUser } from "@/types";
 import { CalendarIcon, UserPlusIcon, UsersIcon } from "lucide-react";
+import React from "react";
+import { DataTable } from "../../../../components/admins/dashboard/products/data-table";
+import AlwanBreadCrumb from "../../../../components/breadcrumbs/breadcrumb";
+import AdminUsersSkeleton from "../../../../components/skeletons/admins-users-skeleton";
+import { Card, CardContent } from "../../../../components/ui/card";
+import { useGetAllUsersQuery } from "../../../../redux/api/users/user-api";
+import { IUser } from "../../../../types";
 import UserColumns from "./user-columns";
 
 function StatusCard({

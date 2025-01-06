@@ -1,18 +1,3 @@
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { useGetIncomesBetweenDatesQuery } from "@/redux/api/income/incomeApi";
 import { endOfDay, format, parseISO, startOfDay, subDays } from "date-fns";
 import React, { useMemo, useState } from "react";
 import {
@@ -25,6 +10,21 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../../../../components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../../../components/ui/select";
+import { useGetIncomesBetweenDatesQuery } from "../../../../redux/api/income/incomeApi";
 
 interface Transaction {
   time: string;

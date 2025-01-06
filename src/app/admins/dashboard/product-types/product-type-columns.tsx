@@ -1,8 +1,10 @@
 "use client";
-
-import ProductTypeDrawer from "@/components/admins/dashboard/product-types/product-type-drawer";
-import { DataTable } from "@/components/admins/dashboard/products/data-table";
-import { Button } from "@/components/ui/button";
+import { ColumnDef } from "@tanstack/react-table";
+import { ArrowUpDown, MoreHorizontal, PencilLine, Trash2 } from "lucide-react";
+import React, { useState } from "react";
+import ProductTypeDrawer from "../../../../components/admins/dashboard/product-types/product-type-drawer";
+import { DataTable } from "../../../../components/admins/dashboard/products/data-table";
+import { Button } from "../../../../components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,11 +12,8 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { IProductType } from "@/types";
-import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, MoreHorizontal, PencilLine, Trash2 } from "lucide-react";
-import { useState } from "react";
+} from "../../../../components/ui/dropdown-menu";
+import { IProductType } from "../../../../types";
 
 export type ProductType = {
   id: string;

@@ -1,10 +1,9 @@
 "use client";
-
-import { cn } from "@/lib/utils";
-import { useGetCategoriesQuery } from "@/redux/api/categoies/categoriesApi";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+import { cn } from "../../lib/utils";
+import { useGetCategoriesQuery } from "../../redux/api/categoies/categoriesApi";
 import { Button } from "../ui/button";
 
 interface ICategory {

@@ -1,5 +1,4 @@
 "use client";
-
 import {
   AlertTriangle,
   ArrowDownToLine,
@@ -12,40 +11,45 @@ import {
   User,
 } from "lucide-react";
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import * as z from "zod";
 
-import Loading from "@/app/loading";
-import ImageSlider from "@/components/cards/image-slider";
-import InvoiceForm from "@/components/invoice/invoice-form";
-import InvoiceGenerator from "@/components/invoice/invoice-generator";
-import { ReturnConfirmationDialog } from "@/components/order/accept-return-dialog";
-import CourierInfoDialog from "@/components/order/courier-info-dialog";
-import OrderStatus from "@/components/order/order-status";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { TbMoneybag } from "react-icons/tb";
+import Loading from "../../../../../app/loading";
+import ImageSlider from "../../../../../components/cards/image-slider";
+import InvoiceForm from "../../../../../components/invoice/invoice-form";
+import InvoiceGenerator from "../../../../../components/invoice/invoice-generator";
+import { ReturnConfirmationDialog } from "../../../../../components/order/accept-return-dialog";
+import CourierInfoDialog from "../../../../../components/order/courier-info-dialog";
+import OrderStatus from "../../../../../components/order/order-status";
+import { Button } from "../../../../../components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "../../../../../components/ui/card";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
-import { toast } from "@/components/ui/use-toast";
-import { formatCurrency } from "@/components/utils/money";
-import { shortenId } from "@/components/utils/utils";
-import { useCreateCourierInfoMutation } from "@/redux/api/courier/courier-api";
+} from "../../../../../components/ui/select";
+import { Separator } from "../../../../../components/ui/separator";
+import { toast } from "../../../../../components/ui/use-toast";
+import { formatCurrency } from "../../../../../components/utils/money";
+import { shortenId } from "../../../../../components/utils/utils";
+import { useCreateCourierInfoMutation } from "../../../../../redux/api/courier/courier-api";
 import {
   useGetSingleOrderByOrderIdQuery,
   useUpdateOrderByOrderIdMutation,
   useUpdateOrderStatusMutation,
-} from "@/redux/api/orders/ordersApi";
-import { useGetReturnsQuery } from "@/redux/api/return/return-api";
-import { courierInfoSchema } from "@/schemas/admins/courier-info-schema";
-import { formSchema } from "@/schemas/invoice-form-schema";
-import { IOrder, IOrderItem } from "@/types";
-import { TbMoneybag } from "react-icons/tb";
+} from "../../../../../redux/api/orders/ordersApi";
+import { useGetReturnsQuery } from "../../../../../redux/api/return/return-api";
+import { courierInfoSchema } from "../../../../../schemas/admins/courier-info-schema";
+import { formSchema } from "../../../../../schemas/invoice-form-schema";
+import { IOrder, IOrderItem } from "../../../../../types";
 
 const statusColors = {
   PROCESSING: "bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-300",

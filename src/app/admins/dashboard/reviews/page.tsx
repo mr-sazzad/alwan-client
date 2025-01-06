@@ -1,16 +1,15 @@
 "use client";
 
-import { useState } from "react";
-
-import PageTitle from "@/components/admins/dashboard/page-titles/page-title";
-import { DataTable } from "@/components/admins/dashboard/products/data-table";
-import SearchReviewsDrawer from "@/components/admins/dashboard/reviews/search-reviews-drawer";
-import AlwanBreadCrumb from "@/components/breadcrumbs/breadcrumb";
-import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
-import { useGetLeafCategoriesQuery } from "@/redux/api/categoies/categoriesApi";
-import { useGetProductReviewsQuery } from "@/redux/api/reviews/reviews-api";
-import { IProduct } from "@/types";
+import React, { useState } from "react";
+import PageTitle from "../../../../components/admins/dashboard/page-titles/page-title";
+import { DataTable } from "../../../../components/admins/dashboard/products/data-table";
+import SearchReviewsDrawer from "../../../../components/admins/dashboard/reviews/search-reviews-drawer";
+import AlwanBreadCrumb from "../../../../components/breadcrumbs/breadcrumb";
+import { Button } from "../../../../components/ui/button";
+import { Skeleton } from "../../../../components/ui/skeleton";
+import { useGetLeafCategoriesQuery } from "../../../../redux/api/categoies/categoriesApi";
+import { useGetProductReviewsQuery } from "../../../../redux/api/reviews/reviews-api";
+import { IProduct } from "../../../../types";
 import ReviewsTableColumns from "./reviews-columns";
 
 const Reviews = () => {

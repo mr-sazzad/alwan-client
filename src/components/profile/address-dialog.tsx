@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import {
   PiEnvelope,
@@ -11,14 +11,13 @@ import {
   PiSpinner,
   PiUser,
 } from "react-icons/pi";
-
-import { Button } from "@/components/ui/button";
+import { Button } from "../../components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
+} from "../../components/ui/dialog";
 import {
   Form,
   FormControl,
@@ -26,8 +25,8 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+} from "../../components/ui/form";
+import { Input } from "../../components/ui/input";
 import {
   Select,
   SelectContent,
@@ -36,10 +35,16 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
-import { addressSchema } from "@/schemas/address-schema";
-import { FormValues, IDistrict, IDivision, IUnion, IUpazila } from "@/types";
+} from "../../components/ui/select";
+import { Textarea } from "../../components/ui/textarea";
+import { addressSchema } from "../../schemas/address-schema";
+import {
+  FormValues,
+  IDistrict,
+  IDivision,
+  IUnion,
+  IUpazila,
+} from "../../types";
 import { getNameById } from "../utils/get-name-by-id";
 
 import districtData from "../../../public/address/district.json";

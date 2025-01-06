@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { useGetAllProductsQuery } from "@/redux/api/products/productsApi";
 import { IProduct } from "@/types";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -11,6 +10,7 @@ import type { Swiper as SwiperType } from "swiper";
 import "swiper/css";
 import { Navigation } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
+import { Button } from "../../../components/ui/button";
 
 const NewArrivalProductsSlider = () => {
   const { data: productsRes, isLoading } = useGetAllProductsQuery(undefined);

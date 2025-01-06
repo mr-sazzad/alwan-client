@@ -1,11 +1,15 @@
 "use client";
-
-import ReviewsCard from "@/components/cards/single-product-page-comment-card";
-import InformationCard from "@/components/cards/single-product-page-info-card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AnimatePresence, motion } from "framer-motion";
 import { Info, MessageSquare } from "lucide-react";
-import { useState } from "react";
+import React, { useState } from "react";
+import ReviewsCard from "../../components/cards/single-product-page-comment-card";
+import InformationCard from "../../components/cards/single-product-page-info-card";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "../../components/ui/tabs";
 
 const ReviewAndInfoTab = () => {
   const [activeTab, setActiveTab] = useState("information");

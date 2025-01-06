@@ -1,9 +1,11 @@
 "use client";
-
-import ColorDrawer from "@/components/admins/dashboard/color/create-color-drawer";
-import { DataTable } from "@/components/admins/dashboard/products/data-table";
-import AlertDialogComp from "@/components/alert-dialog/alert-dialog";
-import { Button } from "@/components/ui/button";
+import { ColumnDef } from "@tanstack/react-table";
+import { ArrowUpDown, MoreHorizontal } from "lucide-react";
+import React, { useState } from "react";
+import ColorDrawer from "../../../../components/admins/dashboard/color/create-color-drawer";
+import { DataTable } from "../../../../components/admins/dashboard/products/data-table";
+import AlertDialogComp from "../../../../components/alert-dialog/alert-dialog";
+import { Button } from "../../../../components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,12 +13,9 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { toast } from "@/components/ui/use-toast";
-import { useDeleteColorMutation } from "@/redux/api/color/color-api";
-import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, MoreHorizontal } from "lucide-react";
-import { useState } from "react";
+} from "../../../../components/ui/dropdown-menu";
+import { toast } from "../../../../components/ui/use-toast";
+import { useDeleteColorMutation } from "../../../../redux/api/color/color-api";
 
 export type Color = {
   id: string;

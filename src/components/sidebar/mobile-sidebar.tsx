@@ -1,9 +1,8 @@
 "use client";
-
-import { useGetCategoriesQuery } from "@/redux/api/categoies/categoriesApi";
-import { ICategory } from "@/types";
-import { useState } from "react";
+import React, { useState } from "react";
 import { HiOutlineMenuAlt1 } from "react-icons/hi";
+import { useGetCategoriesQuery } from "../../redux/api/categoies/categoriesApi";
+import { ICategory } from "../../types";
 import { Button } from "../ui/button";
 import { Skeleton } from "../ui/skeleton";
 import Sidebar from "./sidebar";

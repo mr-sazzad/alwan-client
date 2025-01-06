@@ -1,6 +1,6 @@
-import { IOrderItem } from "@/types";
+import React from "react";
+import { IOrderItem } from "../../types";
 import ImageSlider from "../cards/image-slider";
-
 interface IProfileOnTheWayOrderItemProps {
   items: IOrderItem[];
 }

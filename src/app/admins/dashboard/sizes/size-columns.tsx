@@ -1,18 +1,4 @@
 "use client";
-
-import { DataTable } from "@/components/admins/dashboard/products/data-table";
-import SizeDrawer from "@/components/admins/dashboard/sizes/size-drawer";
-import AlertDialogComp from "@/components/alert-dialog/alert-dialog";
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { toast } from "@/components/ui/use-toast";
-import { useDeleteSizeMutation } from "@/redux/api/size/size-api";
 import { DropdownMenuLabel } from "@radix-ui/react-dropdown-menu";
 import { ColumnDef } from "@tanstack/react-table";
 import {
@@ -21,7 +7,20 @@ import {
   MoreHorizontal,
   Trash2,
 } from "lucide-react";
-import { useState } from "react";
+import React, { useState } from "react";
+import { DataTable } from "../../../../components/admins/dashboard/products/data-table";
+import SizeDrawer from "../../../../components/admins/dashboard/sizes/size-drawer";
+import AlertDialogComp from "../../../../components/alert-dialog/alert-dialog";
+import { Button } from "../../../../components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "../../../../components/ui/dropdown-menu";
+import { toast } from "../../../../components/ui/use-toast";
+import { useDeleteSizeMutation } from "../../../../redux/api/size/size-api";
 
 export type Size = {
   id: string;

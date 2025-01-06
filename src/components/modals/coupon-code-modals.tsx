@@ -1,9 +1,9 @@
-import { couponSchema } from "@/schemas/coupon-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { RiLoaderLine } from "react-icons/ri";
 import { z } from "zod";
+import { couponSchema } from "../../schemas/coupon-schema";
 import { Button } from "../ui/button";
 import {
   Dialog,

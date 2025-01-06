@@ -1,15 +1,14 @@
 "use client";
-
-import { filterSchema } from "@/schemas/filter-schema";
-import { prices } from "@/static/product-prices";
-import { IColor } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { X } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { PiSlidersHorizontalBold } from "react-icons/pi";
 import { z } from "zod";
+import { filterSchema } from "../../schemas/filter-schema";
+import { prices } from "../../static/product-prices";
+import { IColor } from "../../types";
 import {
   Accordion,
   AccordionContent,

@@ -1,5 +1,6 @@
-import { Card, CardContent } from "@/components/ui/card";
 import { CreditCard, HeadphonesIcon, RefreshCcw, Rocket } from "lucide-react";
+import React from "react";
+import { Card, CardContent } from "../ui/card";
 
 const offerItems = [
   {

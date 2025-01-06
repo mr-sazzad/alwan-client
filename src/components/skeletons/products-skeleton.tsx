@@ -1,3 +1,4 @@
+import React from "react";
 import MaxWidth from "../max-width";
 import { Skeleton } from "../ui/skeleton";
 

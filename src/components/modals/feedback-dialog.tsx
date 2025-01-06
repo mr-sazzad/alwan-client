@@ -1,28 +1,28 @@
 "use client";
-
-import { Button } from "@/components/ui/button";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Send } from "lucide-react";
+import React from "react";
+import { useForm } from "react-hook-form";
+import { FaRegMeh, FaRegSadTear, FaRegSmile } from "react-icons/fa";
+import { PiSpinner } from "react-icons/pi";
+import * as z from "zod";
+import { Button } from "../../components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
+} from "../../components/ui/dialog";
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormMessage,
-} from "@/components/ui/form";
-import { Textarea } from "@/components/ui/textarea";
-import { useAddFeedbackMutation } from "@/redux/api/feedback/feedbackApi";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Send } from "lucide-react";
-import { useForm } from "react-hook-form";
-import { FaRegMeh, FaRegSadTear, FaRegSmile } from "react-icons/fa";
-import { PiSpinner } from "react-icons/pi";
-import * as z from "zod";
+} from "../../components/ui/form";
+import { Textarea } from "../../components/ui/textarea";
+import { useAddFeedbackMutation } from "../../redux/api/feedback/feedbackApi";
 import { toast } from "../ui/use-toast";
 
 const formSchema = z.object({

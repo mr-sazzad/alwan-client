@@ -1,20 +1,19 @@
 "use client";
-
-import CouponForm from "@/components/admins/dashboard/coupons/coupon-form";
-import PageTitle from "@/components/admins/dashboard/page-titles/page-title";
-import AlwanBreadCrumb from "@/components/breadcrumbs/breadcrumb";
-import AdminColorSkeleton from "@/components/skeletons/admin-color-skeleton";
-import { Button } from "@/components/ui/button";
-import { useGetLeafCategoriesQuery } from "@/redux/api/categoies/categoriesApi";
+import React, { useState } from "react";
+import { z } from "zod";
+import CouponForm from "../../../../components/admins/dashboard/coupons/coupon-form";
+import PageTitle from "../../../../components/admins/dashboard/page-titles/page-title";
+import AlwanBreadCrumb from "../../../../components/breadcrumbs/breadcrumb";
+import AdminColorSkeleton from "../../../../components/skeletons/admin-color-skeleton";
+import { Button } from "../../../../components/ui/button";
+import { useGetLeafCategoriesQuery } from "../../../../redux/api/categoies/categoriesApi";
 import {
   useCreateCouponMutation,
   useGetCouponsQuery,
   useUpdateCouponMutation,
-} from "@/redux/api/coupon/couponApi";
-import { useGetAllProductsQuery } from "@/redux/api/products/productsApi";
-import { CouponSchema } from "@/schemas/admins/coupon-schema";
-import { useState } from "react";
-import { z } from "zod";
+} from "../../../../redux/api/coupon/couponApi";
+import { useGetAllProductsQuery } from "../../../../redux/api/products/productsApi";
+import { CouponSchema } from "../../../../schemas/admins/coupon-schema";
 import CouponTableColumns from "./coupon-table";
 
 const Coupon = () => {

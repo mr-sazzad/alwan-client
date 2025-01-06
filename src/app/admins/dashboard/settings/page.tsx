@@ -1,15 +1,4 @@
 "use client";
-
-import AlwanBreadCrumb from "@/components/breadcrumbs/breadcrumb";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import {
   AlertTriangle,
   Info,
@@ -20,7 +9,17 @@ import {
   TrendingUp,
 } from "lucide-react";
 import { useTheme } from "next-themes";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+import AlwanBreadCrumb from "../../../../components/breadcrumbs/breadcrumb";
+import { Button } from "../../../../components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../../../../components/ui/card";
+import { Separator } from "../../../../components/ui/separator";
 
 const AdminSettings = () => {
   const { theme, setTheme } = useTheme();

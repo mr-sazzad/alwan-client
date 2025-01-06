@@ -1,7 +1,11 @@
 "use client";
-
-import { Button } from "@/components/ui/button";
-import { Drawer, DrawerClose, DrawerContent } from "@/components/ui/drawer";
+import React, { useState } from "react";
+import { Button } from "../../../../components/ui/button";
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+} from "../../../../components/ui/drawer";
 import {
   Select,
   SelectContent,
@@ -10,10 +14,9 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { useGetCategoryProductsQuery } from "@/redux/api/products/productsApi";
-import { ICategory, IProduct } from "@/types";
-import { useState } from "react";
+} from "../../../../components/ui/select";
+import { useGetCategoryProductsQuery } from "../../../../redux/api/products/productsApi";
+import { ICategory, IProduct } from "../../../../types";
 
 interface SearchReviewsDrawerProps {
   open: boolean;

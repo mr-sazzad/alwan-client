@@ -1,5 +1,5 @@
 "use client";
-
+import React from "react";
 import {
   Form,
   FormControl,
@@ -21,12 +21,12 @@ import {
 import { Separator } from "../ui/separator";
 
 // addresses
-import { IDistrict, IDivision, IUnion, IUpazila } from "@/types";
 import { useState } from "react";
 import districtData from "../../../public/address/district.json";
 import divisionData from "../../../public/address/division.json";
 import unionData from "../../../public/address/union.json";
 import upazilaData from "../../../public/address/upazila.json";
+import { IDistrict, IDivision, IUnion, IUpazila } from "../../types";
 import { Textarea } from "../ui/textarea";
 
 interface CheckoutFormProps {

@@ -1,8 +1,8 @@
-import { useCancelOrderMutation } from "@/redux/api/orders/ordersApi";
-import { IOrder, IOrderItem } from "@/types";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { useState } from "react";
+import React, { useState } from "react";
+import { useCancelOrderMutation } from "../../redux/api/orders/ordersApi";
+import { IOrder, IOrderItem } from "../../types";
 import {
   Accordion,
   AccordionContent,

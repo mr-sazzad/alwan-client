@@ -1,13 +1,18 @@
 "use client";
-
-import { Button } from "@/components/ui/button";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { FaGoogle } from "react-icons/fa";
+import { z } from "zod";
+import { Button } from "../../components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
+} from "../../components/ui/dialog";
 import {
   Form,
   FormControl,
@@ -15,23 +20,17 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
-import { useToast } from "@/components/ui/use-toast";
+} from "../../components/ui/form";
+import { Input } from "../../components/ui/input";
+import { Separator } from "../../components/ui/separator";
+import { useToast } from "../../components/ui/use-toast";
 import {
   getFromLocalStorage,
   setToLocalStorage,
-} from "@/helpers/local-storage";
-import { useSignInUserMutation } from "@/redux/api/auth/auth-api";
-import { loginSchema } from "@/schemas/login-schemas";
-import { KEY } from "@/types";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Eye, EyeOff, Loader2 } from "lucide-react";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { FaGoogle } from "react-icons/fa";
-import { z } from "zod";
+} from "../../helpers/local-storage";
+import { useSignInUserMutation } from "../../redux/api/auth/auth-api";
+import { loginSchema } from "../../schemas/login-schemas";
+import { KEY } from "../../types";
 import ForgotPasswordDrawer from "./forgot-pass-drawer";
 
 interface LoginModalProps {

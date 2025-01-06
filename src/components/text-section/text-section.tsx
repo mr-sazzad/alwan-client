@@ -1,6 +1,7 @@
-import { useGetHomePageTextQuery } from "@/redux/api/home-page-text/home-page-text-api";
 import Link from "next/link";
+import React from "react";
 import { LuArrowUpRight } from "react-icons/lu";
+import { useGetHomePageTextQuery } from "../../redux/api/home-page-text/home-page-text-api";
 import { Button } from "../ui/button";
 import { Skeleton } from "../ui/skeleton";
 

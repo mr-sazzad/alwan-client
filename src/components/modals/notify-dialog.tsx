@@ -1,6 +1,11 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2, Mail } from "lucide-react";
+import React from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { Button } from "../../components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -8,23 +13,18 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
+} from "../../components/ui/dialog";
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { useToast } from "@/components/ui/use-toast";
-import { useAddToSubscriptionMutation } from "@/redux/api/notification-subscription/notificationSubscriptionApi";
-import { notificationSchema } from "@/schemas/notification-schema";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2, Mail } from "lucide-react";
-import React from "react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
+} from "../../components/ui/form";
+import { Input } from "../../components/ui/input";
+import { useToast } from "../../components/ui/use-toast";
+import { useAddToSubscriptionMutation } from "../../redux/api/notification-subscription/notificationSubscriptionApi";
+import { notificationSchema } from "../../schemas/notification-schema";
 
 interface NotificationDialogProps {
   open: boolean;

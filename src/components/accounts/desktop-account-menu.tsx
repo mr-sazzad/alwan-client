@@ -1,7 +1,7 @@
 "use client";
-
-import { useUserAccountMenu } from "@/static/user-account-menu";
 import Link from "next/link";
+import React from "react";
+import { useUserAccountMenu } from "../../static/user-account-menu";
 import { Button } from "../ui/button";
 
 const DesktopAccountMenu = () => {

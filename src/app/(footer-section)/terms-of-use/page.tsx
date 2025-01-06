@@ -1,14 +1,20 @@
-import MaxWidth from "@/components/max-width";
+import { FileText } from "lucide-react";
+import Link from "next/link";
+import React from "react";
+import MaxWidth from "../../../components/max-width";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { FileText } from "lucide-react";
-import Link from "next/link";
+} from "../../../components/ui/accordion";
+import { Button } from "../../../components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "../../../components/ui/card";
 
 const TermsOfUsePage = () => {
   return (

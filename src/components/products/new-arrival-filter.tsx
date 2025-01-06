@@ -1,33 +1,36 @@
 "use client";
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
+import { PiSlidersHorizontalBold } from "react-icons/pi";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion";
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
+} from "../../components/ui/accordion";
+import { Button } from "../../components/ui/button";
+import { Checkbox } from "../../components/ui/checkbox";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerTrigger,
+} from "../../components/ui/drawer";
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
-} from "@/components/ui/form";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Separator } from "@/components/ui/separator";
-import { ConvertedColors } from "@/components/utils/convert-color";
-import { useGetAllColorsQuery } from "@/redux/api/color/color-api";
-import { prices } from "@/static/product-prices";
-import { PiSlidersHorizontalBold } from "react-icons/pi";
+} from "../../components/ui/form";
+import { RadioGroup, RadioGroupItem } from "../../components/ui/radio-group";
+import { Separator } from "../../components/ui/separator";
+import { ConvertedColors } from "../../components/utils/convert-color";
+import { useGetAllColorsQuery } from "../../redux/api/color/color-api";
+import { prices } from "../../static/product-prices";
 
 const filterSchema = z.object({
   colors: z.array(z.string()),

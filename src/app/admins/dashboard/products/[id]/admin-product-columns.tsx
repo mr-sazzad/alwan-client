@@ -1,6 +1,7 @@
-import { DataTable } from "@/components/admins/dashboard/products/data-table";
-import { IColor, ISize, ISizeVariant } from "@/types";
 import { ColumnDef } from "@tanstack/react-table";
+import React from "react";
+import { DataTable } from "../../../../../components/admins/dashboard/products/data-table";
+import { IColor, ISize, ISizeVariant } from "../../../../../types";
 
 export type ProductType = {
   id: string;

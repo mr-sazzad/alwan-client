@@ -1,4 +1,8 @@
-import { Button } from "@/components/ui/button";
+import { zodResolver } from "@hookform/resolvers/zod";
+import React, { Dispatch, SetStateAction, useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { Button } from "../../components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -6,14 +10,10 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { useUpdateSingleUserMutation } from "@/redux/api/users/user-api";
-import { profileInfoSchema } from "@/schemas/profile-info-schema";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Dispatch, SetStateAction, useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
+} from "../../components/ui/dialog";
+import { Input } from "../../components/ui/input";
+import { useUpdateSingleUserMutation } from "../../redux/api/users/user-api";
+import { profileInfoSchema } from "../../schemas/profile-info-schema";
 import {
   Form,
   FormControl,

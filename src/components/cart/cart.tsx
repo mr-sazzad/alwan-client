@@ -1,8 +1,13 @@
 "use client";
-
-import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
+import { Minus, Plus, ShoppingBag, ShoppingCart, Trash2 } from "lucide-react";
+import dynamic from "next/dynamic";
+import Image from "next/image";
+import Link from "next/link";
+import React, { Dispatch, SetStateAction, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Button } from "../../components/ui/button";
+import { ScrollArea } from "../../components/ui/scroll-area";
+import { Separator } from "../../components/ui/separator";
 import {
   Sheet,
   SheetContent,
@@ -11,22 +16,16 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "@/components/ui/sheet";
-import { useToast } from "@/components/ui/use-toast";
+} from "../../components/ui/sheet";
+import { useToast } from "../../components/ui/use-toast";
 import {
   clearCart,
   decreaseProductQty,
   deleteProduct,
   increaseProductQty,
-} from "@/redux/api/cart/cartSlice";
-import { RootState } from "@/redux/store";
-import { IProduct } from "@/types";
-import { Minus, Plus, ShoppingBag, ShoppingCart, Trash2 } from "lucide-react";
-import dynamic from "next/dynamic";
-import Image from "next/image";
-import Link from "next/link";
-import { Dispatch, SetStateAction, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+} from "../../redux/api/cart/cartSlice";
+import { RootState } from "../../redux/store";
+import { IProduct } from "../../types";
 import AlertDialogComp from "../alert-dialog/alert-dialog";
 
 const ClientOnly = dynamic<{ children: React.ReactNode }>(

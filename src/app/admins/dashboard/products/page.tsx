@@ -1,16 +1,20 @@
 "use client";
-
-import { Button } from "@/components/ui/button";
-import { useGetAllProductsQuery } from "@/redux/api/products/productsApi";
+import React from "react";
+import { Button } from "../../../../components/ui/button";
+import { useGetAllProductsQuery } from "../../../../redux/api/products/productsApi";
 import ProductTableColumns from "./product-columns";
 
-import { DataTable } from "@/components/admins/dashboard/products/data-table";
-import ProductForm from "@/components/admins/dashboard/products/product-form";
-import AlwanBreadCrumb from "@/components/breadcrumbs/breadcrumb";
-import AdminColorSkeleton from "@/components/skeletons/admin-color-skeleton";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Box } from "lucide-react";
 import { useState } from "react";
+import { DataTable } from "../../../../components/admins/dashboard/products/data-table";
+import ProductForm from "../../../../components/admins/dashboard/products/product-form";
+import AlwanBreadCrumb from "../../../../components/breadcrumbs/breadcrumb";
+import AdminColorSkeleton from "../../../../components/skeletons/admin-color-skeleton";
+import {
+  Dialog,
+  DialogContent,
+  DialogTrigger,
+} from "../../../../components/ui/dialog";
 
 const Page = () => {
   const { data: response, isLoading } = useGetAllProductsQuery(undefined);

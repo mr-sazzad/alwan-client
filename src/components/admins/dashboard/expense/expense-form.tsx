@@ -1,12 +1,15 @@
 "use client";
-
-import { Button } from "@/components/ui/button";
+import { zodResolver } from "@hookform/resolvers/zod";
+import React, { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+import { Button } from "../../../../components/ui/button";
 import {
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
+} from "../../../../components/ui/dialog";
 import {
   Form,
   FormControl,
@@ -14,19 +17,15 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { toast } from "@/components/ui/use-toast";
+} from "../../../../components/ui/form";
+import { Input } from "../../../../components/ui/input";
+import { Textarea } from "../../../../components/ui/textarea";
+import { toast } from "../../../../components/ui/use-toast";
 import {
   useCreateExpenseMutation,
   useUpdateExpenseMutation,
-} from "@/redux/api/expenses/expensesApi";
-import { IExpense } from "@/types";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect } from "react";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
+} from "../../../../redux/api/expenses/expensesApi";
+import { IExpense } from "../../../../types";
 
 interface ExpenseFormProps {
   expense?: IExpense | null;

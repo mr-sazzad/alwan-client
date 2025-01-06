@@ -1,18 +1,17 @@
 "use client";
-
-import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { AnimatePresence, motion } from "framer-motion";
+import Link from "next/link";
+import React, { useState } from "react";
+import { TbLayoutSidebarRight } from "react-icons/tb";
+import { Button } from "../../../components/ui/button";
+import { ScrollArea } from "../../../components/ui/scroll-area";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { useAdminDashboardMenu } from "@/static/admin-dashboard-menu";
-import { AnimatePresence, motion } from "framer-motion";
-import Link from "next/link";
-import { useState } from "react";
-import { TbLayoutSidebarRight } from "react-icons/tb";
+} from "../../../components/ui/tooltip";
+import { useAdminDashboardMenu } from "../../../static/admin-dashboard-menu";
 
 export default function AdminsDesktopMenu() {
   const adminRoutes = useAdminDashboardMenu();

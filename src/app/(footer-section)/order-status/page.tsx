@@ -1,18 +1,19 @@
-import MaxWidth from "@/components/max-width";
+import { AlertCircle, CheckCircle, Home, Package, Truck } from "lucide-react";
+import React from "react";
+import MaxWidth from "../../../components/max-width";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion";
+} from "../../../components/ui/accordion";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { AlertCircle, CheckCircle, Home, Package, Truck } from "lucide-react";
+} from "../../../components/ui/card";
 
 export default function OrderProcess() {
   const orderStatuses = [

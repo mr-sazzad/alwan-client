@@ -1,5 +1,4 @@
 "use client";
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   ChevronRight,
@@ -11,29 +10,34 @@ import {
   User,
 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 
-import CheckOutPageBillingInfo from "@/components/cards/checkout-page-billing-info";
-import CheckoutPageSingleProductCard from "@/components/cards/checkout-page-single-product-card";
-import MaxWidth from "@/components/max-width";
-import AddressDialog from "@/components/profile/address-dialog";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
+import CheckOutPageBillingInfo from "../../components/cards/checkout-page-billing-info";
+import CheckoutPageSingleProductCard from "../../components/cards/checkout-page-single-product-card";
+import MaxWidth from "../../components/max-width";
+import AddressDialog from "../../components/profile/address-dialog";
+import { Button } from "../../components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "../../components/ui/card";
+import { Skeleton } from "../../components/ui/skeleton";
 
-import { getUserFromLocalStorage } from "@/helpers/jwt";
-import { usePlaceOrder } from "@/hooks/use-place-order";
-import { useGetSingleColorByIdQuery } from "@/redux/api/color/color-api";
-import { useCreateAOrderMutation } from "@/redux/api/orders/ordersApi";
-import { useGetSingleProductQuery } from "@/redux/api/products/productsApi";
-import { useGetSingleSizeQuery } from "@/redux/api/size/size-api";
-import { useGetSingleUserQuery } from "@/redux/api/users/user-api";
-import { RootState } from "@/redux/store";
-import { addressSchema } from "@/schemas/address-schema";
-import { FormValues, IProduct, IUser, IUserAddress } from "@/types";
 import { TbHomeCheck } from "react-icons/tb";
+import { getUserFromLocalStorage } from "../../helpers/jwt";
+import { usePlaceOrder } from "../../hooks/use-place-order";
+import { useGetSingleColorByIdQuery } from "../../redux/api/color/color-api";
+import { useCreateAOrderMutation } from "../../redux/api/orders/ordersApi";
+import { useGetSingleProductQuery } from "../../redux/api/products/productsApi";
+import { useGetSingleSizeQuery } from "../../redux/api/size/size-api";
+import { useGetSingleUserQuery } from "../../redux/api/users/user-api";
+import { RootState } from "../../redux/store";
+import { addressSchema } from "../../schemas/address-schema";
+import { FormValues, IProduct, IUser, IUserAddress } from "../../types";
 
 const GUEST_ADDRESS_KEY = "alwan_guest_user_address";
 

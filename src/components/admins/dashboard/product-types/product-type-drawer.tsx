@@ -1,6 +1,11 @@
 "use client";
-
-import { Button } from "@/components/ui/button";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { X } from "lucide-react";
+import React, { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { PiSpinner } from "react-icons/pi";
+import { z } from "zod";
+import { Button } from "../../../../components/ui/button";
 import {
   Drawer,
   DrawerClose,
@@ -9,7 +14,7 @@ import {
   DrawerFooter,
   DrawerHeader,
   DrawerTitle,
-} from "@/components/ui/drawer";
+} from "../../../../components/ui/drawer";
 import {
   Form,
   FormControl,
@@ -18,21 +23,15 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { toast } from "@/components/ui/use-toast";
+} from "../../../../components/ui/form";
+import { Input } from "../../../../components/ui/input";
+import { toast } from "../../../../components/ui/use-toast";
 import {
   useCreateProductTypeMutation,
   useUpdateProductTypeByIdMutation,
-} from "@/redux/api/product-types/product-types-api";
-import { productTypeSchema } from "@/schemas/admins/product-type-schema";
-import { IProductType } from "@/types";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { X } from "lucide-react";
-import { useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { PiSpinner } from "react-icons/pi";
-import { z } from "zod";
+} from "../../../../redux/api/product-types/product-types-api";
+import { productTypeSchema } from "../../../../schemas/admins/product-type-schema";
+import { IProductType } from "../../../../types";
 
 interface ProductTypeDrawerProps {
   open: boolean;

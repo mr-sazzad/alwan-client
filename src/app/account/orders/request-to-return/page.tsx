@@ -1,11 +1,11 @@
 "use client";
-
-import OrderCard from "@/components/order/order-card";
-import { getUserFromLocalStorage } from "@/helpers/jwt";
-import { useGetSingleUserOrdersQuery } from "@/redux/api/orders/ordersApi";
-import { IOrder, IUser } from "@/types";
 import { AnimatePresence } from "framer-motion";
 import { Activity } from "lucide-react";
+import React from "react";
+import OrderCard from "../../../../components/order/order-card";
+import { getUserFromLocalStorage } from "../../../../helpers/jwt";
+import { useGetSingleUserOrdersQuery } from "../../../../redux/api/orders/ordersApi";
+import { IOrder, IUser } from "../../../../types";
 import NoOrdersFound from "../components/no-orders-fount";
 import OrdersLoader from "../components/orders-loader";
 

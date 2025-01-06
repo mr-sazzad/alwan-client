@@ -1,13 +1,19 @@
 "use client";
-
-import { Button } from "@/components/ui/button";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+import { FcGoogle } from "react-icons/fc";
+import { z } from "zod";
+import { Button } from "../../components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
+} from "../../components/ui/dialog";
 import {
   Form,
   FormControl,
@@ -15,24 +21,17 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
-import { toast } from "@/components/ui/use-toast";
-import { setToLocalStorage } from "@/helpers/local-storage";
+} from "../../components/ui/form";
+import { Input } from "../../components/ui/input";
+import { Separator } from "../../components/ui/separator";
+import { toast } from "../../components/ui/use-toast";
+import { setToLocalStorage } from "../../helpers/local-storage";
 import {
   useSignInUserMutation,
   useSignUpUserMutation,
-} from "@/redux/api/auth/auth-api";
-import { signUpSchema } from "@/schemas/signup-schema";
-import { KEY } from "@/types";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Eye, EyeOff, Loader2 } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { FcGoogle } from "react-icons/fc";
-import { z } from "zod";
+} from "../../redux/api/auth/auth-api";
+import { signUpSchema } from "../../schemas/signup-schema";
+import { KEY } from "../../types";
 
 type SignUpFormData = z.infer<typeof signUpSchema> & { retypePassword: string };
 

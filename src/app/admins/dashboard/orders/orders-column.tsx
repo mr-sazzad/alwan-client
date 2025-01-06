@@ -1,7 +1,10 @@
 "use client";
-
-import CourierRatioChecker from "@/components/admins/dashboard/courier-ration-checker/courier-ratio-checker";
-import { Button } from "@/components/ui/button";
+import { ColumnDef } from "@tanstack/react-table";
+import { ArrowUpDown, EyeIcon, MoreHorizontal, Package } from "lucide-react";
+import Link from "next/link";
+import React, { useState } from "react";
+import CourierRatioChecker from "../../../../components/admins/dashboard/courier-ration-checker/courier-ratio-checker";
+import { Button } from "../../../../components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,11 +12,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, EyeIcon, MoreHorizontal, Package } from "lucide-react";
-import Link from "next/link";
-import { useState } from "react";
+} from "../../../../components/ui/dropdown-menu";
 
 export type OrderItem = {
   id: string;

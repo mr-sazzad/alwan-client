@@ -1,11 +1,11 @@
 "use client";
-
-import AlwanBreadCrumb from "@/components/breadcrumbs/breadcrumb";
-import AdminOrdersSkeleton from "@/components/skeletons/admin-orders-skeleton";
-import { Card, CardContent } from "@/components/ui/card";
-import { useGetFeedbacksQuery } from "@/redux/api/feedback/feedbackApi";
-import { IFeedback } from "@/types";
 import { BarChart2, Calendar, MessageSquare, TrendingUp } from "lucide-react";
+import React from "react";
+import AlwanBreadCrumb from "../../../../components/breadcrumbs/breadcrumb";
+import AdminOrdersSkeleton from "../../../../components/skeletons/admin-orders-skeleton";
+import { Card, CardContent } from "../../../../components/ui/card";
+import { useGetFeedbacksQuery } from "../../../../redux/api/feedback/feedbackApi";
+import { IFeedback } from "../../../../types";
 import { FeedbacksColumns } from "./feedbacks-columns";
 
 function StatusCard({

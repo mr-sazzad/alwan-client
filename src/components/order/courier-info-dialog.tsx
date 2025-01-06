@@ -1,4 +1,9 @@
-import { Button } from "@/components/ui/button";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2, Send } from "lucide-react";
+import React from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { Button } from "../../components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -6,7 +11,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
+} from "../../components/ui/dialog";
 import {
   Form,
   FormControl,
@@ -14,13 +19,9 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { courierInfoSchema } from "@/schemas/admins/courier-info-schema";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2, Send } from "lucide-react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
+} from "../../components/ui/form";
+import { Input } from "../../components/ui/input";
+import { courierInfoSchema } from "../../schemas/admins/courier-info-schema";
 
 interface CourierInfoDialogProps {
   isOpen: boolean;

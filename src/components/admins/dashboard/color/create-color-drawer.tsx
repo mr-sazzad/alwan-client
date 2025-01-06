@@ -1,6 +1,11 @@
 "use client";
-
-import { Button } from "@/components/ui/button";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { X } from "lucide-react";
+import React, { Dispatch, SetStateAction, useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { PiSpinner } from "react-icons/pi";
+import { z } from "zod";
+import { Button } from "../../../../components/ui/button";
 import {
   Drawer,
   DrawerClose,
@@ -8,7 +13,7 @@ import {
   DrawerFooter,
   DrawerHeader,
   DrawerTitle,
-} from "@/components/ui/drawer";
+} from "../../../../components/ui/drawer";
 import {
   Form,
   FormControl,
@@ -17,20 +22,14 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { toast } from "@/components/ui/use-toast";
+} from "../../../../components/ui/form";
+import { Input } from "../../../../components/ui/input";
+import { toast } from "../../../../components/ui/use-toast";
 import {
   useCreateNewColorMutation,
   useUpdateColorMutation,
-} from "@/redux/api/color/color-api";
-import { colorSchema } from "@/schemas/admins/color-schema";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { X } from "lucide-react";
-import { Dispatch, SetStateAction, useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { PiSpinner } from "react-icons/pi";
-import { z } from "zod";
+} from "../../../../redux/api/color/color-api";
+import { colorSchema } from "../../../../schemas/admins/color-schema";
 
 interface ColorDrawerProps {
   open: boolean;

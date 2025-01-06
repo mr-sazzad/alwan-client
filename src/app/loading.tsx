@@ -1,5 +1,6 @@
-import { Card } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
+import React from "react";
+import { Card } from "../components/ui/card";
+import { Skeleton } from "../components/ui/skeleton";
 
 interface LoadingProps {
   className?: string;

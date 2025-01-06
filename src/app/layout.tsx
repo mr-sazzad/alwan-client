@@ -1,12 +1,13 @@
-import Footer from "@/components/footer/footer";
-import Header from "@/components/header";
-import UserMobileMenu from "@/components/navigation-menu/user-mobile-menu";
-import { Toaster } from "@/components/ui/toaster";
-import Providers from "@/providers/reduxProvider";
-import { ThemeProvider } from "@/providers/theme-provider";
 import { GeistMono } from "geist/font/mono";
 import { GeistSans } from "geist/font/sans";
 import type { Metadata } from "next";
+import React from "react";
+import Footer from "../components/footer/footer";
+import Header from "../components/header";
+import UserMobileMenu from "../components/navigation-menu/user-mobile-menu";
+import { Toaster } from "../components/ui/toaster";
+import Providers from "../providers/reduxProvider";
+import { ThemeProvider } from "../providers/theme-provider";
 import "./globals.css";
 
 export const metadata: Metadata = {

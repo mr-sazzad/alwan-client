@@ -1,5 +1,4 @@
 "use client";
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Clock,
@@ -12,24 +11,28 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { Avatar, AvatarFallback } from "../../../components/ui/avatar";
+import { Button } from "../../../components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "../../../components/ui/card";
+import { toast } from "../../../components/ui/use-toast";
 
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { toast } from "@/components/ui/use-toast";
-
-import AlwanBadge from "@/components/badge/badge";
-import ProfileSkeleton from "@/components/skeletons/profile-skeleton";
-import { getUserFromLocalStorage } from "@/helpers/jwt";
-import { useGetSingleUserOrdersQuery } from "@/redux/api/orders/ordersApi";
+import AlwanBadge from "../../../components/badge/badge";
+import ProfileSkeleton from "../../../components/skeletons/profile-skeleton";
+import { getUserFromLocalStorage } from "../../../helpers/jwt";
+import { useGetSingleUserOrdersQuery } from "../../../redux/api/orders/ordersApi";
 import {
   useGetSingleUserQuery,
   useUpdateSingleUserMutation,
-} from "@/redux/api/users/user-api";
-import { IUser, IUserAddress } from "@/types";
+} from "../../../redux/api/users/user-api";
+import { IUser, IUserAddress } from "../../../types";
 
 const profileSchema = z.object({
   file: z.instanceof(File).refine((file) => file.size < 3 * 1024 * 1024, {

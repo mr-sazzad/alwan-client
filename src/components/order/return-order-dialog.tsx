@@ -1,5 +1,8 @@
 "use client";
-
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2 } from "lucide-react";
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -9,7 +12,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+} from "../../components/ui/alert-dialog";
 import {
   Form,
   FormControl,
@@ -17,18 +20,14 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/components/ui/use-toast";
+} from "../../components/ui/form";
+import { Input } from "../../components/ui/input";
+import { Textarea } from "../../components/ui/textarea";
+import { useToast } from "../../components/ui/use-toast";
 import {
   ReturnOrderFormValues,
   returnOrderSchema,
-} from "@/schemas/order-return-schema";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2 } from "lucide-react";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
+} from "../../schemas/order-return-schema";
 
 interface ReturnOrderDialogProps {
   open: boolean;

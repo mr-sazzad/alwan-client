@@ -1,24 +1,24 @@
-import { DataTable } from "@/components/admins/dashboard/products/data-table";
-import AlertDialogComp from "@/components/alert-dialog/alert-dialog";
-import CategoryDetailsDrawer from "@/components/categories/category-details-drawer";
-import CategoryDrawer from "@/components/categories/category-drawer";
-import { Button } from "@/components/ui/button";
+import { DropdownMenuLabel } from "@radix-ui/react-dropdown-menu";
+import { ColumnDef } from "@tanstack/react-table";
+import { ArrowUpDown, Edit, Eye, MoreHorizontal, Trash2 } from "lucide-react";
+import React, { useState } from "react";
+import { DataTable } from "../../../../components/admins/dashboard/products/data-table";
+import AlertDialogComp from "../../../../components/alert-dialog/alert-dialog";
+import CategoryDetailsDrawer from "../../../../components/categories/category-details-drawer";
+import CategoryDrawer from "../../../../components/categories/category-drawer";
+import { Button } from "../../../../components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { toast } from "@/components/ui/use-toast";
+} from "../../../../components/ui/dropdown-menu";
+import { toast } from "../../../../components/ui/use-toast";
 import {
   useDeleteCategoryMutation,
   useGetCategoryQuery,
-} from "@/redux/api/categoies/categoriesApi";
-import { DropdownMenuLabel } from "@radix-ui/react-dropdown-menu";
-import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, Edit, Eye, MoreHorizontal, Trash2 } from "lucide-react";
-import React, { useState } from "react";
+} from "../../../../redux/api/categoies/categoriesApi";
 
 export type Category = {
   id: string;

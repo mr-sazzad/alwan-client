@@ -1,5 +1,6 @@
-import Home from "@/components/home/home";
 import { Metadata } from "next";
+import React from "react";
+import Home from "../components/home/home";
 
 export const metadata: Metadata = {
   title: "Home | Alwan",

@@ -1,16 +1,15 @@
 "use client";
-
-import CarouselDrawer from "@/components/admins/dashboard/carousel/carousel-drawer";
-import PageTitle from "@/components/admins/dashboard/page-titles/page-title";
-import AlwanBreadCrumb from "@/components/breadcrumbs/breadcrumb";
-import AdminCarousel from "@/components/carousels/admin-carousel";
-import NotFound from "@/components/not-found/not-found";
-import AdminCarouselSkeleton from "@/components/skeletons/admin-carousel-skeleton";
-import { Button } from "@/components/ui/button";
-import { transformCarousel } from "@/components/utils/transform-carousel";
-import { useGetlatestCarouselQuery } from "@/redux/api/carousel/carouselApi";
-import { useState } from "react";
+import React, { useState } from "react";
 import { LuSquirrel } from "react-icons/lu";
+import CarouselDrawer from "../../../../components/admins/dashboard/carousel/carousel-drawer";
+import PageTitle from "../../../../components/admins/dashboard/page-titles/page-title";
+import AlwanBreadCrumb from "../../../../components/breadcrumbs/breadcrumb";
+import AdminCarousel from "../../../../components/carousels/admin-carousel";
+import NotFound from "../../../../components/not-found/not-found";
+import AdminCarouselSkeleton from "../../../../components/skeletons/admin-carousel-skeleton";
+import { Button } from "../../../../components/ui/button";
+import { transformCarousel } from "../../../../components/utils/transform-carousel";
+import { useGetlatestCarouselQuery } from "../../../../redux/api/carousel/carouselApi";
 
 export default function CarouselPage() {
   const [open, setOpen] = useState(false);

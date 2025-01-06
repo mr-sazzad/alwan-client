@@ -1,14 +1,13 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
-
-import AdminsDesktopMenu from "@/components/admins/dashboard/desktop-navigation-menu";
-import AdminsMobileMenu from "@/components/admins/dashboard/mobile-navigation-menu";
-import MaxWidth from "@/components/max-width";
-import { Toaster } from "@/components/ui/toaster";
-import { useToast } from "@/components/ui/use-toast";
-import { getUserFromLocalStorage } from "@/helpers/jwt";
+import React, { useEffect } from "react";
+import AdminsDesktopMenu from "../../../components/admins/dashboard/desktop-navigation-menu";
+import AdminsMobileMenu from "../../../components/admins/dashboard/mobile-navigation-menu";
+import MaxWidth from "../../../components/max-width";
+import { Toaster } from "../../../components/ui/toaster";
+import { useToast } from "../../../components/ui/use-toast";
+import { getUserFromLocalStorage } from "../../../helpers/jwt";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;

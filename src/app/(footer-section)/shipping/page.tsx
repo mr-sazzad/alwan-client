@@ -1,17 +1,19 @@
-import MaxWidth from "@/components/max-width";
+import { Clock, HelpCircle, Leaf, MapPin, Package, Truck } from "lucide-react";
+import React from "react";
+import MaxWidth from "../../../components/max-width";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion";
+} from "../../../components/ui/accordion";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "../../../components/ui/card";
 import {
   Table,
   TableBody,
@@ -19,8 +21,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { Clock, HelpCircle, Leaf, MapPin, Package, Truck } from "lucide-react";
+} from "../../../components/ui/table";
 
 export default function ShippingPage() {
   return (

@@ -1,8 +1,18 @@
 "use client";
-
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { AlertCircle, Rocket } from "lucide-react";
+import React, { useState } from "react";
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from "../../../../components/ui/alert";
+import { Button } from "../../../../components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "../../../../components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -10,9 +20,9 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Skeleton } from "@/components/ui/skeleton";
+} from "../../../../components/ui/dialog";
+import { ScrollArea } from "../../../../components/ui/scroll-area";
+import { Skeleton } from "../../../../components/ui/skeleton";
 import {
   Table,
   TableBody,
@@ -20,10 +30,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { useGetCourierRatioMutation } from "@/redux/api/bd-courier/bd-courier-api";
-import { AlertCircle, Rocket } from "lucide-react";
-import { useState } from "react";
+} from "../../../../components/ui/table";
+import { useGetCourierRatioMutation } from "../../../../redux/api/bd-courier/bd-courier-api";
 
 type CourierData = {
   total_parcel: number;

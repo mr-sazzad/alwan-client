@@ -1,19 +1,18 @@
 "use client";
-
-import {
-  useCreateCategoryMutation,
-  useGetCategoryQuery,
-  useUpdateCategoryMutation,
-} from "@/redux/api/categoies/categoriesApi";
-import { categorySchema } from "@/schemas/admins/category-schema";
-import { ICategory } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertTriangle, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { PiSpinnerGapBold } from "react-icons/pi";
 import { VscCloudUpload } from "react-icons/vsc";
 import { z } from "zod";
+import {
+  useCreateCategoryMutation,
+  useGetCategoryQuery,
+  useUpdateCategoryMutation,
+} from "../../redux/api/categoies/categoriesApi";
+import { categorySchema } from "../../schemas/admins/category-schema";
+import { ICategory } from "../../types";
 import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
 import { Button } from "../ui/button";
 import { Drawer, DrawerClose, DrawerContent, DrawerFooter } from "../ui/drawer";

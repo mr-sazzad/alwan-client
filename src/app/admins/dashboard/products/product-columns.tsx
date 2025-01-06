@@ -1,19 +1,4 @@
 "use client";
-
-import ProductForm from "@/components/admins/dashboard/products/product-form";
-import AlertDialogComp from "@/components/alert-dialog/alert-dialog";
-import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { useDeleteSingleProductMutation } from "@/redux/api/products/productsApi";
-import { ICategory, IProduct, ISize, ISizeVariant } from "@/types";
 import { ColumnDef } from "@tanstack/react-table";
 import {
   ArrowUpDown,
@@ -23,7 +8,21 @@ import {
   Trash2,
 } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import React, { useState } from "react";
+import ProductForm from "../../../../components/admins/dashboard/products/product-form";
+import AlertDialogComp from "../../../../components/alert-dialog/alert-dialog";
+import { Button } from "../../../../components/ui/button";
+import { Dialog, DialogContent } from "../../../../components/ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "../../../../components/ui/dropdown-menu";
+import { useDeleteSingleProductMutation } from "../../../../redux/api/products/productsApi";
+import { ICategory, IProduct, ISize, ISizeVariant } from "../../../../types";
 
 export type Product = {
   id: string;

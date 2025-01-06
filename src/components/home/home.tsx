@@ -1,5 +1,5 @@
 "use client";
-
+import React from "react";
 import Banner from "../banner";
 import HomeCategories from "../categories/home-categories";
 import MaxWidth from "../max-width";

@@ -1,11 +1,11 @@
+import { CheckCircle, RefreshCcw } from "lucide-react";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { CheckCircle, RefreshCcw } from "lucide-react";
+} from "../../../components/ui/card";
 
 const InformationCard = () => {
   return (

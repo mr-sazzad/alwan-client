@@ -1,16 +1,16 @@
 "use client";
-
-import ProductCard from "@/components/cards/product-card";
-import MaxWidth from "@/components/max-width";
-import Filter from "@/components/products/desktop-filter";
-import EmptyProductsPage from "@/components/products/EmptyProductsPage";
-import MobileFilter from "@/components/products/mobile-filter";
-import ProductsSkeleton from "@/components/skeletons/products-skeleton";
-import { useGetCategoryQuery } from "@/redux/api/categoies/categoriesApi";
-import { useGetAllColorsQuery } from "@/redux/api/color/color-api";
-import { useGetCategoryProductsQuery } from "@/redux/api/products/productsApi";
-import { IProduct } from "@/types";
 import { useParams, useSearchParams } from "next/navigation";
+import React from "react";
+import ProductCard from "../../../components/cards/product-card";
+import MaxWidth from "../../../components/max-width";
+import Filter from "../../../components/products/desktop-filter";
+import EmptyProductsPage from "../../../components/products/EmptyProductsPage";
+import MobileFilter from "../../../components/products/mobile-filter";
+import ProductsSkeleton from "../../../components/skeletons/products-skeleton";
+import { useGetCategoryQuery } from "../../../redux/api/categoies/categoriesApi";
+import { useGetAllColorsQuery } from "../../../redux/api/color/color-api";
+import { useGetCategoryProductsQuery } from "../../../redux/api/products/productsApi";
+import { IProduct } from "../../../types";
 
 export default function CategoryProductsClient() {
   const params = useParams();

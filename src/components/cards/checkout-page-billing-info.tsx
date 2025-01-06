@@ -1,6 +1,6 @@
-import { IProduct } from "@/types";
 import React, { useEffect, useState } from "react";
 import { PiSpinner } from "react-icons/pi";
+import { IProduct } from "../../types";
 import CouponCodeModal from "../modals/coupon-code-modals";
 import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";

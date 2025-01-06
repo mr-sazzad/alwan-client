@@ -1,12 +1,11 @@
 "use client";
-
-import CreateColorDrawer from "@/components/admins/dashboard/color/create-color-drawer";
-import PageTitle from "@/components/admins/dashboard/page-titles/page-title";
-import AlwanBreadCrumb from "@/components/breadcrumbs/breadcrumb";
-import AdminColorSkeleton from "@/components/skeletons/admin-color-skeleton";
-import { Button } from "@/components/ui/button";
-import { useGetAllColorsQuery } from "@/redux/api/color/color-api";
-import { useState } from "react";
+import React, { useState } from "react";
+import CreateColorDrawer from "../../../../components/admins/dashboard/color/create-color-drawer";
+import PageTitle from "../../../../components/admins/dashboard/page-titles/page-title";
+import AlwanBreadCrumb from "../../../../components/breadcrumbs/breadcrumb";
+import AdminColorSkeleton from "../../../../components/skeletons/admin-color-skeleton";
+import { Button } from "../../../../components/ui/button";
+import { useGetAllColorsQuery } from "../../../../redux/api/color/color-api";
 import ColorTableColumns from "./color-columns";
 
 const Color = () => {

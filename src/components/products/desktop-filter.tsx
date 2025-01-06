@@ -2,29 +2,28 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion";
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
+} from "../../components/ui/accordion";
+import { Button } from "../../components/ui/button";
+import { Checkbox } from "../../components/ui/checkbox";
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
-} from "@/components/ui/form";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { ConvertedColors } from "@/components/utils/convert-color";
-import { useGetAllColorsQuery } from "@/redux/api/color/color-api";
-import { prices } from "@/static/product-prices";
+} from "../../components/ui/form";
+import { RadioGroup, RadioGroupItem } from "../../components/ui/radio-group";
+import { ConvertedColors } from "../../components/utils/convert-color";
+import { useGetAllColorsQuery } from "../../redux/api/color/color-api";
+import { prices } from "../../static/product-prices";
 import { Separator } from "../ui/separator";
 
 const filterSchema = z.object({

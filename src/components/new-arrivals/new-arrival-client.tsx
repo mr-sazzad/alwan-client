@@ -1,14 +1,13 @@
 "use client";
-
-import MaxWidth from "@/components/max-width";
-import { Button } from "@/components/ui/button";
-import { useGetAllProductsQuery } from "@/redux/api/products/productsApi";
-import { IProduct } from "@/types";
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useState } from "react";
+import React, { useState } from "react";
 import { PiSlidersHorizontalBold } from "react-icons/pi";
+import MaxWidth from "../../components/max-width";
+import { Button } from "../../components/ui/button";
+import { useGetAllProductsQuery } from "../../redux/api/products/productsApi";
+import { IProduct } from "../../types";
 import Filter from "../products/new-arrival-filter";
 import NewArrivalSkeleton from "../skeletons/new-arrival-products";
 import { formatPriceRange } from "../utils/utils";

@@ -1,5 +1,8 @@
-import AlertDialogComp from "@/components/alert-dialog/alert-dialog";
-import { Button } from "@/components/ui/button";
+import { ColumnDef } from "@tanstack/react-table";
+import { MoreHorizontal } from "lucide-react";
+import React, { useState } from "react";
+import AlertDialogComp from "../../../../components/alert-dialog/alert-dialog";
+import { Button } from "../../../../components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -7,13 +10,10 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { toast } from "@/components/ui/use-toast";
-import { useDeleteProductReviewMutation } from "@/redux/api/reviews/reviews-api";
-import { IReview } from "@/types";
-import { ColumnDef } from "@tanstack/react-table";
-import { MoreHorizontal } from "lucide-react";
-import { useState } from "react";
+} from "../../../../components/ui/dropdown-menu";
+import { toast } from "../../../../components/ui/use-toast";
+import { useDeleteProductReviewMutation } from "../../../../redux/api/reviews/reviews-api";
+import { IReview } from "../../../../types";
 
 const ReviewsTableColumns = () => {
   const [deleteProductReview, { isLoading }] = useDeleteProductReviewMutation();

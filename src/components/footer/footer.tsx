@@ -1,7 +1,6 @@
 "use client";
-
 import Link from "next/link";
-import { useState } from "react";
+import React, { useState } from "react";
 import { PiGlobeHemisphereEast } from "react-icons/pi";
 import FeedbackDialog from "../modals/feedback-dialog";
 

@@ -1,4 +1,5 @@
-import { Skeleton } from "@/components/ui/skeleton";
+import React from "react";
+import { Skeleton } from "../ui/skeleton";
 
 const AdminsCategorySkeleton = () => {
   return (

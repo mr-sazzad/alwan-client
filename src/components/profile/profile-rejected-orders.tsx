@@ -1,6 +1,6 @@
+import React from "react";
 import { PiTrashSimpleBold } from "react-icons/pi";
 import { Button } from "../ui/button";
-
 const ProfileRejectedOrders = () => {
   return (
     <div className="border rounded-md mt-5 p-2">

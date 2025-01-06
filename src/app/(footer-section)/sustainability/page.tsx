@@ -1,13 +1,23 @@
-import MaxWidth from "@/components/max-width";
+import { AlertTriangle, Leaf, Recycle, ShoppingBag } from "lucide-react";
+import React from "react";
+import MaxWidth from "../../../components/max-width";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { AlertTriangle, Leaf, Recycle, ShoppingBag } from "lucide-react";
+} from "../../../components/ui/accordion";
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from "../../../components/ui/alert";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "../../../components/ui/card";
 
 export default function SustainabilityPage() {
   return (

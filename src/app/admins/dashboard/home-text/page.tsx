@@ -1,21 +1,20 @@
 "use client";
-
-import HomeTextForm from "@/components/admins/dashboard/home-text/home-text-form";
-import PageTitle from "@/components/admins/dashboard/page-titles/page-title";
-import AlwanBreadCrumb from "@/components/breadcrumbs/breadcrumb";
-import AdminColorSkeleton from "@/components/skeletons/admin-color-skeleton";
-import { Button } from "@/components/ui/button";
-import { toast } from "@/components/ui/use-toast";
-import { useGetLeafCategoriesQuery } from "@/redux/api/categoies/categoriesApi";
+import { Rocket } from "lucide-react";
+import React, { useState } from "react";
+import { z } from "zod";
+import HomeTextForm from "../../../../components/admins/dashboard/home-text/home-text-form";
+import PageTitle from "../../../../components/admins/dashboard/page-titles/page-title";
+import AlwanBreadCrumb from "../../../../components/breadcrumbs/breadcrumb";
+import AdminColorSkeleton from "../../../../components/skeletons/admin-color-skeleton";
+import { Button } from "../../../../components/ui/button";
+import { toast } from "../../../../components/ui/use-toast";
+import { useGetLeafCategoriesQuery } from "../../../../redux/api/categoies/categoriesApi";
 import {
   useAddTextMutation,
   useGetTextsQuery,
   useUpdateTextMutation,
-} from "@/redux/api/home-text/homeTextApi";
-import { homeTextSchema } from "@/schemas/admins/home-text-schema";
-import { Rocket } from "lucide-react";
-import { useState } from "react";
-import { z } from "zod";
+} from "../../../../redux/api/home-text/homeTextApi";
+import { homeTextSchema } from "../../../../schemas/admins/home-text-schema";
 import HomeTextTable from "./home-text-table";
 
 type HomeTextType = z.infer<typeof homeTextSchema>;

@@ -1,10 +1,10 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { FiSearch } from "react-icons/fi";
+import { Button } from "../../../components/ui/button";
 import blackLogo from "../images/logo-black-40.png";
 import Cart from "./cart/cart";
 import Favorite from "./favorite/favorite";
