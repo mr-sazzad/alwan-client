@@ -1,11 +1,10 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
+import * as React from "react";
 import { useCallback, useEffect, useState } from "react";
 import { FiSearch } from "react-icons/fi";
-import { Button } from "../../../components/ui/button";
-import blackLogo from "../images/logo-black-40.png";
+import { Button } from "../components/ui/button";
 import Cart from "./cart/cart";
 import Favorite from "./favorite/favorite";
 import Profile from "./profile/profile-menu";
@@ -56,7 +55,7 @@ export default function Header() {
         <div className="flex justify-between items-center relative h-full">
           <div>
             <Link href="/">
-              <Image src={blackLogo} alt="main-logo" height={40} width={40} />
+              {/* <Image src={blackLogo} alt="main-logo" height={40} width={40} /> */}
             </Link>
           </div>
 

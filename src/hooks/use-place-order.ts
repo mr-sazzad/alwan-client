@@ -1,7 +1,7 @@
-import { IOrder, IProduct } from "@/types";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import { UseFormReturn } from "react-hook-form";
-import { toast } from "../../../components/ui/use-toast";
+import { toast } from "../components/ui/use-toast";
+import { IOrder, IProduct } from "../types";
 
 type UsePlaceOrderParams = {
   form: UseFormReturn<any>;
