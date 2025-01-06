@@ -12,14 +12,13 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Form, FormField, FormItem } from "@/components/ui/form";
 import { toast } from "@/components/ui/use-toast";
 
 import AlwanBadge from "@/components/badge/badge";
@@ -42,6 +41,7 @@ const ProfilePage = () => {
   const router = useRouter();
   const [userData, setUserData] = useState<IUser | null>(null);
   const [isUpdatingImage, setIsUpdatingImage] = useState(false);
+  const [preview, setPreview] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof profileSchema>>({
     resolver: zodResolver(profileSchema),
@@ -59,19 +59,23 @@ const ProfilePage = () => {
     }
   }, [router]);
 
-  const { data: user, isLoading: isUserLoading } = useGetSingleUserQuery(
-    userData?.userId ?? "",
-    {
-      skip: !userData?.userId,
-    }
-  );
+  const {
+    data: user,
+    isLoading: isUserLoading,
+    error: userError,
+  } = useGetSingleUserQuery(userData?.userId ?? "", {
+    skip: !userData?.userId,
+  });
 
   const [updateSingleUser] = useUpdateSingleUserMutation();
 
-  const { data: orders, isLoading: isOrderLoading } =
-    useGetSingleUserOrdersQuery(userData?.userId ?? "", {
-      skip: !userData?.userId,
-    });
+  const {
+    data: orders,
+    isLoading: isOrderLoading,
+    error: orderError,
+  } = useGetSingleUserOrdersQuery(userData?.userId ?? "", {
+    skip: !userData?.userId,
+  });
 
   const onSubmit = async (values: z.infer<typeof profileSchema>) => {
     if (!userData?.userId) {
@@ -116,183 +120,179 @@ const ProfilePage = () => {
     }
   };
 
+  const isCustomer = useMemo(
+    () => user?.data?.role === "USER",
+    [user?.data?.role]
+  );
+
   if (isUserLoading || isOrderLoading || !userData) {
     return <ProfileSkeleton />;
   }
 
-  const isCustomer = user?.data?.role === "USER";
+  if (userError || orderError) {
+    return (
+      <div className="container mx-auto py-10 px-4">
+        <p className="text-red-500">An error occurred while loading data.</p>
+      </div>
+    );
+  }
+
+  const handleFileChange = (file: File) => {
+    if (file) {
+      setPreview(URL.createObjectURL(file));
+      form.setValue("file", file);
+      form.handleSubmit(onSubmit)();
+    }
+  };
+
+  const MetricCard = ({
+    title,
+    value,
+    icon: Icon,
+    iconBgClass,
+    iconClass,
+  }: {
+    title: string;
+    value: string | number;
+    icon: any;
+    iconBgClass: string;
+    iconClass: string;
+  }) => (
+    <Card>
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <CardTitle className="text-sm font-medium">{title}</CardTitle>
+        <Icon className={`h-6 w-6 ${iconBgClass} ${iconClass}`} />
+      </CardHeader>
+      <CardContent>
+        <div className="text-2xl font-medium">{value}</div>
+      </CardContent>
+    </Card>
+  );
 
   return (
-    <>
-      <div className="container mx-auto py-10 px-4">
-        <Card className="mb-8">
-          <CardContent className="p-6 relative">
-            <div className="flex flex-col md:flex-row items-center gap-8">
-              <div className="relative">
-                <Avatar className="w-[100] h-[100] border-4 border-primary">
-                  {user?.data?.imageUrl ? (
-                    <Image
-                      src={user.data.imageUrl}
-                      alt={user.data.name || "Profile"}
-                      width={100}
-                      height={100}
-                      className="rounded-full object-cover"
-                    />
-                  ) : (
-                    <AvatarFallback>
-                      {user?.data?.name?.charAt(0)}
-                    </AvatarFallback>
-                  )}
-                </Avatar>
-                <Form {...form}>
-                  <form onSubmit={form.handleSubmit(onSubmit)}>
-                    <FormField
-                      control={form.control}
-                      name="file"
-                      render={({ field }) => (
-                        <FormItem>
-                          <input
-                            type="file"
-                            accept="image/*"
-                            className="hidden"
-                            id="profile-image-upload"
-                            onChange={(e) => {
-                              const file = e.target.files?.[0];
-                              if (file) {
-                                field.onChange(file);
-                                form.handleSubmit(onSubmit)();
-                              }
-                            }}
-                          />
-                          <Button
-                            size="icon"
-                            variant="secondary"
-                            className="absolute bottom-0 right-0 rounded-full shadow-lg"
-                            disabled={isUpdatingImage}
-                            type="button"
-                            aria-label="Upload profile picture"
-                            onClick={() => {
-                              document
-                                .getElementById("profile-image-upload")
-                                ?.click();
-                            }}
-                          >
-                            {isUpdatingImage ? (
-                              <Loader className="h-4 w-4 animate-spin" />
-                            ) : (
-                              <Upload className="h-4 w-4" />
-                            )}
-                          </Button>
-                        </FormItem>
-                      )}
-                    />
-                  </form>
-                </Form>
+    <div className="container mx-auto py-10 px-4">
+      <Card className="mb-8">
+        <CardContent className="p-6 relative">
+          <div className="flex flex-col md:flex-row items-center gap-8">
+            <div className="relative">
+              <Avatar className="w-[100] h-[100] border-4 border-primary">
+                {preview ? (
+                  <Image
+                    src={preview}
+                    alt="Preview"
+                    width={100}
+                    height={100}
+                    className="rounded-full object-cover"
+                  />
+                ) : user?.data?.imageUrl ? (
+                  <Image
+                    src={user.data.imageUrl}
+                    alt={user.data.name || "Profile"}
+                    width={100}
+                    height={100}
+                    className="rounded-full object-cover"
+                  />
+                ) : (
+                  <AvatarFallback>{user?.data?.name?.charAt(0)}</AvatarFallback>
+                )}
+              </Avatar>
+              <input
+                type="file"
+                accept="image/*"
+                className="hidden"
+                id="profile-image-upload"
+                onChange={(e) =>
+                  e.target.files && handleFileChange(e.target.files[0])
+                }
+              />
+              <Button
+                size="icon"
+                variant="secondary"
+                className="absolute bottom-0 right-0 rounded-full shadow-lg"
+                disabled={isUpdatingImage}
+                onClick={() =>
+                  document.getElementById("profile-image-upload")?.click()
+                }
+              >
+                {isUpdatingImage ? (
+                  <Loader className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Upload className="h-4 w-4" />
+                )}
+              </Button>
+            </div>
+            <div className="text-center md:text-left">
+              <h2 className="text-lg font-medium">
+                {user?.data?.addresses.length
+                  ? user?.data?.addresses.map((address: IUserAddress) =>
+                      address.isDefault ? address.recipientName : null
+                    )
+                  : "Create Address"}
+              </h2>
+              <p className="text-muted-foreground mb-1">{user?.data?.email}</p>
+              <div className="text-muted-foreground mb-4 text-sm">
+                <span>Role: </span>
+                {isCustomer ? "Customer" : user?.data?.role}
               </div>
-              <div className="text-center md:text-left">
-                <h2 className="text-lg font-medium">
-                  {user?.data?.addresses.length
-                    ? user?.data?.addresses.map((address: IUserAddress) =>
-                        address.isDefault ? address.recipientName : null
-                      )
-                    : "Create Address"}
-                </h2>
-                <p className="text-muted-foreground mb-1">
-                  {user?.data?.email}
-                </p>
-                <div className="text-muted-foreground mb-4 text-sm">
-                  <span>Role: </span>
-                  {isCustomer ? "Customer" : user?.data?.role}
-                </div>
-                <div className="flex flex-wrap justify-center md:justify-start gap-2">
-                  <AlwanBadge variant="blue">
-                    <MapPin className="w-3 h-3 mr-1" />
-                    {user?.data?.addresses && user.data.addresses.length > 0
-                      ? `${user.data.addresses.length} ${
-                          user.data.addresses.length === 1
-                            ? "address"
-                            : "addresses"
-                        }`
-                      : "No address"}
-                  </AlwanBadge>
-                  <AlwanBadge variant="blue">
-                    <Phone className="w-3 h-3 mr-1" />
-                    {user?.data?.addresses && user.data.addresses.length > 0
-                      ? user.data.addresses.find((addr: any) => addr.isDefault)
-                          ?.phone || user.data.addresses[0].phone
-                      : "No phone"}
-                  </AlwanBadge>
-                </div>
+              <div className="flex flex-wrap justify-center md:justify-start gap-2">
+                <AlwanBadge variant="blue">
+                  <MapPin className="w-3 h-3 mr-1" />
+                  {user?.data?.addresses.length || "No address"}
+                </AlwanBadge>
+                <AlwanBadge variant="blue">
+                  <Phone className="w-3 h-3 mr-1" />
+                  {user?.data?.addresses[0]?.phone || "No phone"}
+                </AlwanBadge>
               </div>
             </div>
-          </CardContent>
-        </Card>
-
-        <div>
-          <h3 className="text-lg font-medium mb-4">Your Account Information</h3>
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            {isCustomer && (
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">
-                    Total Orders
-                  </CardTitle>
-                  <ShoppingCart className="h-6 w-6 text-emerald-500 p-1 rounded-full bg-emerald-100" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-medium">
-                    {orders?.data?.length || 0}
-                  </div>
-                </CardContent>
-              </Card>
-            )}
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
-                  Account Age
-                </CardTitle>
-                <Clock className="h-6 w-6 text-orange-500 p-1 rounded-full bg-orange-100" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-medium">
-                  {user?.data?.createdAt
-                    ? `${Math.floor(
-                        (new Date().getTime() -
-                          new Date(user.data.createdAt).getTime()) /
-                          (1000 * 3600 * 24)
-                      )} days`
-                    : "N/A"}
-                </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
-                  Saved Addresses
-                </CardTitle>
-                <MapPin className="h-6 w-6 text-blue-500 p-1 rounded-full bg-blue-100" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-medium">
-                  {user?.data?.addresses?.length || 0}
-                </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
-                  Account Status
-                </CardTitle>
-                <Settings className="h-6 w-6 text-yellow-500 p-1 rounded-full bg-yellow-100" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-medium">Active</div>
-              </CardContent>
-            </Card>
           </div>
+        </CardContent>
+      </Card>
+
+      <div>
+        <h3 className="text-lg font-medium mb-4">Your Account Information</h3>
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          {isCustomer && (
+            <MetricCard
+              title="Total Orders"
+              value={orders?.data?.length || 0}
+              icon={ShoppingCart}
+              iconBgClass="bg-emerald-100"
+              iconClass="text-emerald-500"
+            />
+          )}
+          <MetricCard
+            title="Account Age"
+            value={
+              user?.data?.createdAt
+                ? `${Math.floor(
+                    (new Date().getTime() -
+                      new Date(user.data.createdAt).getTime()) /
+                      (1000 * 3600 * 24)
+                  )} days`
+                : "N/A"
+            }
+            icon={Clock}
+            iconBgClass="bg-orange-100"
+            iconClass="text-orange-500"
+          />
+          <MetricCard
+            title="Saved Addresses"
+            value={user?.data?.addresses?.length || 0}
+            icon={MapPin}
+            iconBgClass="bg-blue-100"
+            iconClass="text-blue-500"
+          />
+          <MetricCard
+            title="Account Status"
+            value="Active"
+            icon={Settings}
+            iconBgClass="bg-yellow-100"
+            iconClass="text-yellow-500"
+          />
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
