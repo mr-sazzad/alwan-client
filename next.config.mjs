@@ -2,42 +2,42 @@
 const nextConfig = {
   images: {
     remotePatterns: [
+      // Cloudinary images
       {
-        protocol: 'http',
+        protocol: 'https',
         hostname: 'res.cloudinary.com',
         port: '',
         pathname: '**',
       },
+      // Nike static assets
       {
         protocol: 'https',
         hostname: 'static.nike.com',
         port: '',
         pathname: '**',
       },
-      {
-        protocol: 'https',
-        hostname: 'res.cloudinary.com',
-        port: '',
-        pathname: '**',
-      },
+      // Swiper JS assets
       {
         protocol: 'https',
         hostname: 'swiperjs.com',
         port: '',
         pathname: '**',
       },
+      // i.ibb.co images
       {
         protocol: 'https',
         hostname: 'i.ibb.co',
         port: '',
         pathname: '**',
       },
+      // Fabrilife assets
       {
         protocol: 'https',
         hostname: 'fabrilife.com',
         port: '',
         pathname: '**',
       },
+      // CDN for BitCommerz
       {
         protocol: 'https',
         hostname: 'cdn.bitcommerz.com',
@@ -47,13 +47,15 @@ const nextConfig = {
     ],
   },
   webpack: (config, options) => {
-    if (!options.dev) {
-      config.devtool = options.isServer ? false : 'source-map'
+    // Enable source maps in development
+    if (options.dev) {
+      config.devtool = 'source-map';
+    } else {
+      config.devtool = false; // Disable source maps in production
     }
-    return config
+    return config;
   },
-  transpilePackages: ["geist"],
+  transpilePackages: ["geist"], // Add more packages if necessary
 };
 
 export default nextConfig;
-
