@@ -1,3 +1,4 @@
+import * as React from "react";
 interface MoneyProps {
   prices: number[];
   className?: string;

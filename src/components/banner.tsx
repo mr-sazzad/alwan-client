@@ -1,10 +1,11 @@
 "use client";
 
-import { cn } from "@/lib/utils";
-import { useGetAllCarouselsQuery } from "@/redux/api/carousel/carouselApi";
 import { AlertCircle } from "lucide-react";
 import Image from "next/image";
+import * as React from "react";
 import { useEffect, useState } from "react";
+import { cn } from "../lib/utils";
+import { useGetAllCarouselsQuery } from "../redux/api/carousel/carouselApi";
 import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
 import { Skeleton } from "./ui/skeleton";
 

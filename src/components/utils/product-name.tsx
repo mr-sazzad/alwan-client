@@ -1,3 +1,5 @@
+import * as React from "react";
+
 interface SmallNameProps {
   name: string;
   className?: string;

@@ -1,4 +1,4 @@
-import { ISizeVariant } from "@/types";
+import { ISizeVariant } from "../../types";
 
 export const shortenId = (id: string) => {
   if (id.length <= 13) return id;

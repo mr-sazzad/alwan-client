@@ -1,5 +1,5 @@
-import { KEY } from "@/types";
 import { JwtPayload, jwtDecode } from "jwt-decode";
+import { KEY } from "../types";
 import { getFromLocalStorage } from "./local-storage";
 
 export const getUserFromLocalStorage = (): JwtPayload | undefined => {

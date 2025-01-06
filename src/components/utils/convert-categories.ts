@@ -1,4 +1,4 @@
-import { ICategory } from "@/types";
+import { ICategory } from "../../types";
 
 export const convertCategories = (categories: ICategory[]): ICategory[] => {
   const categoryMap: { [key: string]: ICategory } = {};

@@ -1,8 +1,9 @@
 "use client";
-import { useUserMobileMenu } from "@/static/user-mobile-menu";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import * as React from "react";
 import { useState } from "react";
+import { useUserMobileMenu } from "../../static/user-mobile-menu";
 import Cart from "../cart/cart";
 import Favorite from "../favorite/favorite";
 
