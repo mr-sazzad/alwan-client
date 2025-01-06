@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   title: "Home | Alwan",
   description: "this is home page",
 };
-
+// home page
 export default function Page() {
   return (
     <div>
