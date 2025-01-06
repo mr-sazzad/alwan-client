@@ -1,11 +1,12 @@
 import { CheckCircle, RefreshCcw } from "lucide-react";
+import * as React from "react";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "../../../components/ui/card";
+} from "../../components/ui/card";
 
 const InformationCard = () => {
   return (

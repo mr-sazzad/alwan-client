@@ -1,3 +1,4 @@
+import * as React from "react";
 import { RiSearchLine } from "react-icons/ri";
 import {
   Card,
@@ -5,7 +6,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "../../../components/ui/card";
+} from "../../components/ui/card";
 
 const ReviewsCard = () => {
   return (
