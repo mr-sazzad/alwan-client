@@ -78,6 +78,7 @@ export default function InvoiceGenerator({
     if (isReady) {
       generatePDF();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isReady]);
 
   const generatePDF = () => {
