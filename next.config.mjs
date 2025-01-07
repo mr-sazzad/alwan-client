@@ -55,6 +55,9 @@ const nextConfig = {
     }
     return config;
   },
+  experimental: {
+    outputFileTracing: true,
+  },
   transpilePackages: ["geist"], // Add more packages if necessary
 };
 
