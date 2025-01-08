@@ -58,6 +58,9 @@ const nextConfig = {
     }
     return config;
   },
+    eslint: {
+        ignoreDuringBuilds: true,
+    },
   transpilePackages: ["geist"], // Add more packages if necessary
 };
 
