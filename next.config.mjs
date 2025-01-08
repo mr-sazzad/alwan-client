@@ -58,6 +58,9 @@ const nextConfig = {
     }
     return config;
   },
+  experimental: {
+    serverActions: true,
+  },
     eslint: {
         ignoreDuringBuilds: true,
     },
