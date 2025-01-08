@@ -5,7 +5,7 @@
   "engine": "node -v20.12.2",
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "next build --no-lint",
     "start": "next start",
     "lint": "next lint",
     "type-check": "tsc --noEmit && echo '✔ Type check passed successfully!'"
