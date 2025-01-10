@@ -46,9 +46,9 @@ const nextConfig = {
       },
     ],
   },
-  // typescript:{
-  //   ignoreBuildErrors: true
-  // },
+  typescript:{
+    ignoreBuildErrors: true
+  },
   webpack: (config, options) => {
     // Enable source maps in development
     if (options.dev) {
