@@ -46,9 +46,6 @@ const nextConfig = {
       },
     ],
   },
-  typescript:{
-    ignoreBuildErrors: true
-  },
   webpack: (config, options) => {
     // Enable source maps in development
     if (options.dev) {
@@ -61,10 +58,7 @@ const nextConfig = {
   experimental: {
     serverActions: true,
   },
-    eslint: {
-        ignoreDuringBuilds: true,
-    },
-  transpilePackages: ["geist"], // Add more packages if necessary
+  transpilePackages: ["geist"], 
 };
 
 export default nextConfig;
