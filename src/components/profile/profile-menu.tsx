@@ -1,5 +1,5 @@
 "use client";
-import { Loader2, LogOut, User, UserCheck, UserPlus } from "lucide-react";
+import { Loader, LogOut, User, UserCheck, UserPlus } from "lucide-react";
 import Link from "next/link";
 import React, { useState } from "react";
 import {
@@ -69,7 +69,7 @@ export default function Profile() {
     if (isLoading) {
       return (
         <div className="h-8 w-8 rounded-full flex justify-center items-center bg-muted">
-          <Loader2 className="h-4 w-4 animate-spin" />
+          <Loader className="h-4 w-4 animate-spin" />
         </div>
       );
     }

@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import * as React from "react";
 import { useCallback, useEffect, useState } from "react";
 import { FiSearch } from "react-icons/fi";
 import { Button } from "../components/ui/button";
@@ -48,7 +47,7 @@ export default function Header() {
   return (
     <>
       <nav
-        className={`h-[90px] md:px-14 sm:px-10 px-5 w-full fixed top-0 z-30 transition-transform duration-200 border-b bg-white dark:bg-slate-900 ${
+        className={`h-[90px] md:px-14 sm:px-10 px-5 w-full fixed top-0 z-30 transition-transform duration-200 border-b bg-background ${
           visible ? "translate-y-0" : "-translate-y-full"
         }`}
       >

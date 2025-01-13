@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import AdminsDesktopMenu from "../../../components/admins/dashboard/desktop-navigation-menu";
 import AdminsMobileMenu from "../../../components/admins/dashboard/mobile-navigation-menu";
 import MaxWidth from "../../../components/max-width";
@@ -16,10 +16,15 @@ interface DashboardLayoutProps {
 const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   const router = useRouter();
   const { toast } = useToast();
-  const user: any = getUserFromLocalStorage();
+  const [isAuthorized, setIsAuthorized] = useState<boolean | null>(null);
 
   useEffect(() => {
-    if (!user || (user.role !== "ADMIN" && user.role !== "SUPER_ADMIN")) {
+    const user: any = getUserFromLocalStorage();
+    const authorized =
+      user && (user.role === "ADMIN" || user.role === "SUPER_ADMIN");
+    setIsAuthorized(authorized);
+
+    if (!authorized) {
       toast({
         variant: "destructive",
         title: "Access Denied",
@@ -27,9 +32,15 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
       });
       router.back();
     }
-  }, [user, router, toast]);
+  }, [router, toast]);
 
-  if (!user || (user.role !== "ADMIN" && user.role !== "SUPER_ADMIN")) {
+  if (isAuthorized === null) {
+    // Return a loading state or null while checking authorization
+    return null;
+  }
+
+  if (!isAuthorized) {
+    // User is not authorized, don't render the layout
     return null;
   }
 

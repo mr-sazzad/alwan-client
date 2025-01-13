@@ -3,7 +3,6 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import * as React from "react";
 import { useEffect, useRef, useState } from "react";
 import type { Swiper as SwiperType } from "swiper";
 import "swiper/css";
@@ -37,7 +36,7 @@ const NewArrivalProductsSlider = () => {
         {[...Array(6)].map((_, index) => (
           <div
             key={index}
-            className="bg-gradient-to-t from-gray-200 to-white animate-pulse w-48 h-48 flex-shrink-0 rounded-lg"
+            className="bg-gradient-to-t from-gray-200 to-white animate-pulse w-full pb-[133.33%] flex-shrink-0 rounded-lg"
           />
         ))}
       </div>
@@ -54,12 +53,12 @@ const NewArrivalProductsSlider = () => {
 
   return (
     <section className="py-5 relative mt-16">
-      <div className="container mx-auto px-0">
+      <div className="mx-auto">
         <div className="flex flex-col sm:flex-row justify-between items-center mb-5">
-          <h2 className="text-4xl font-medium relative mb-4 sm:mb-0">
+          <h2 className="text-3xl md:text-4xl font-bold relative mb-4 sm:mb-0">
             Shop New Arrivals
           </h2>
-          <p>
+          <p className="text-sm sm:text-base">
             {productsRes?.data?.length || 0} Item
             {(productsRes?.data?.length || 0) !== 1 ? "s" : ""}
           </p>
@@ -71,13 +70,14 @@ const NewArrivalProductsSlider = () => {
               swiperRef.current = swiper;
             }}
             slidesPerView="auto"
-            spaceBetween={24}
+            spaceBetween={14}
             loop={true}
             centeredSlides={false}
             slideToClickedSlide={true}
             speed={800}
             breakpoints={{
-              320: { slidesPerView: 2.2, spaceBetween: 16 },
+              320: { slidesPerView: 1.2, spaceBetween: 16 },
+              480: { slidesPerView: 2.2, spaceBetween: 16 },
               640: { slidesPerView: 3.2, spaceBetween: 20 },
               768: { slidesPerView: 4.2, spaceBetween: 24 },
               1024: { slidesPerView: 5.2, spaceBetween: 28 },
@@ -86,15 +86,15 @@ const NewArrivalProductsSlider = () => {
             className="mySwiper"
           >
             {products.map((product: IProduct, index: number) => (
-              <SwiperSlide key={`${product.id}-${index}`} className="w-auto">
+              <SwiperSlide key={`${product.id}-${index}`} className="w-full">
                 <Link href={`/products/${product.id}`} className="block">
-                  <div className="bg-white rounded-lg shadow-md overflow-hidden transition-all hover:shadow-lg group">
-                    <div className="relative aspect-square w-48 h-48">
+                  <div className="bg-white shadow-md overflow-hidden transition-all hover:shadow-lg group">
+                    <div className="relative w-full pb-[133.33%]">
                       <Image
                         src={product.imageUrls[0] || "/placeholder.svg"}
                         alt={product.name}
                         fill
-                        sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, (max-width: 1280px) 25vw, 20vw"
+                        sizes="(max-width: 480px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, (max-width: 1280px) 25vw, 20vw"
                         className="object-cover"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center">
@@ -111,7 +111,7 @@ const NewArrivalProductsSlider = () => {
           <Button
             variant="outline"
             size="icon"
-            className="absolute left-0 top-1/2 -translate-y-1/2 z-10 rounded-full"
+            className="absolute left-2 top-1/2 -translate-y-1/2 z-10 rounded-full bg-gray-900/90 hover:bg-gray-900/80"
             onClick={() => swiperRef.current?.slidePrev()}
             aria-label="Previous slide"
           >
@@ -120,7 +120,7 @@ const NewArrivalProductsSlider = () => {
           <Button
             variant="outline"
             size="icon"
-            className="absolute right-0 top-1/2 -translate-y-1/2 z-10 rounded-full"
+            className="absolute right-2 top-1/2 -translate-y-1/2 z-10 rounded-full bg-gray-900/90 hover:bg-gray-900/80"
             onClick={() => swiperRef.current?.slideNext()}
             aria-label="Next slide"
           >

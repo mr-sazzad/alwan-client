@@ -1,7 +1,6 @@
 "use client";
 import { BarChart, FileText, Settings, Users } from "lucide-react";
 import Link from "next/link";
-import React from "react";
 import { Button } from "../../../components/ui/button";
 import {
   Card,

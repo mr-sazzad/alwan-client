@@ -1,21 +1,18 @@
 "use client";
+
+import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import * as React from "react";
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-} from "../../components/ui/navigation-menu";
-import { cn } from "../../lib/utils";
 import { useGetCategoriesQuery } from "../../redux/api/categoies/categoriesApi";
+import { Button } from "../ui/button";
 import { Skeleton } from "../ui/skeleton";
 import transformCategories from "../utils/transformCategories";
 
 const DesktopMenu: React.FC = () => {
   const { data: response, isLoading } = useGetCategoriesQuery(undefined);
+  const [activeCategory, setActiveCategory] = React.useState<string | null>(
+    null
+  );
 
   if (isLoading) {
     return (
@@ -30,80 +27,102 @@ const DesktopMenu: React.FC = () => {
 
   const categories = response?.data && transformCategories(response?.data);
 
+  console.log(categories);
+
   return (
-    <NavigationMenu className="relative z-10">
-      <NavigationMenuList>
+    <nav className="relative z-10">
+      <ul className="flex gap-6">
         {categories &&
           categories?.map((parentCategory: any) => (
-            <NavigationMenuItem key={parentCategory.id}>
-              <NavigationMenuTrigger className="bg-transparent hover:bg-transparent text-lg font-medium">
-                {parentCategory.name}
-              </NavigationMenuTrigger>
+            <li
+              key={parentCategory.id}
+              className="relative"
+              onMouseEnter={() => setActiveCategory(parentCategory.id)}
+              onMouseLeave={() => setActiveCategory(null)}
+            >
+              <Button
+                variant="link"
+                className="flex items-center space-x-1 text-[18px] transition-colors"
+              >
+                <span>{parentCategory.name}</span>
+              </Button>
 
-              <NavigationMenuContent>
-                <div className="ml-[150px] w-screen p-4">
-                  <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3 mt-14 mb-8">
-                    {parentCategory.children.map((childCategory: any) => (
-                      <div key={childCategory.id} className="space-y-2">
-                        {childCategory.isLeaf ? (
-                          <Link
-                            href={`/categories/${childCategory.id}`}
-                            className="font-medium text-sm block text-muted-foreground hover:text-black dark:hover:text-white"
-                          >
-                            {childCategory.name}
-                          </Link>
-                        ) : (
-                          <span className="font-medium text-sm cursor-default">
-                            {childCategory.name}
-                          </span>
-                        )}
-                        <ul className="space-y-1 text-sm">
-                          {childCategory.children?.map((subCategory: any) => (
-                            <ListItem
-                              key={subCategory.id}
-                              title={subCategory.name}
-                              href={`/categories/${subCategory.id}`}
+              <AnimatePresence>
+                {activeCategory === parentCategory.id && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.1 }}
+                    className="absolute -left-[735px] top-full mt-2 w-screen bg-background"
+                  >
+                    <div className="mx-auto grid grid-cols-4 gap-8 p-8">
+                      {parentCategory.children.map((childCategory: any) => (
+                        <div key={childCategory.id} className="space-y-4">
+                          {childCategory.isLeaf ? (
+                            <Link
+                              href={`/categories/${childCategory.id}`}
+                              className="font-medium block text-primary hover:text-muted-foreground"
                             >
-                              {subCategory.description}
-                            </ListItem>
-                          ))}
-                        </ul>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </NavigationMenuContent>
-            </NavigationMenuItem>
+                              {childCategory.name}
+                            </Link>
+                          ) : (
+                            <React.Fragment>
+                              <span className="font-medium block text-primary cursor-pointer">
+                                {childCategory.name}
+                              </span>
+                              {childCategory.children &&
+                                childCategory.children.length > 0 && (
+                                  <ul className="space-y-2">
+                                    {childCategory.children.map(
+                                      (subCategory: any) => (
+                                        <ListItem
+                                          key={subCategory.id}
+                                          title={subCategory.name}
+                                          href={`/categories/${subCategory.id}`}
+                                          isLeaf={subCategory.isLeaf}
+                                        />
+                                      )
+                                    )}
+                                  </ul>
+                                )}
+                            </React.Fragment>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </li>
           ))}
-      </NavigationMenuList>
-    </NavigationMenu>
+      </ul>
+    </nav>
   );
 };
 
-const ListItem = React.forwardRef<
-  React.ElementRef<"a">,
-  React.ComponentPropsWithoutRef<"a">
->(({ className, title, children, ...props }, ref) => {
+const ListItem: React.FC<{
+  title: string;
+  href: string;
+  isLeaf: boolean;
+}> = ({ title, href, isLeaf }) => {
+  if (isLeaf) {
+    return (
+      <li>
+        <Link
+          href={href}
+          className="block text-sm text-muted-foreground hover:text-primary transition-colors"
+        >
+          {title}
+        </Link>
+      </li>
+    );
+  }
   return (
     <li>
-      <NavigationMenuLink asChild>
-        <a
-          ref={ref}
-          className={cn(
-            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
-            className
-          )}
-          {...props}
-        >
-          <div className="text-sm font-medium leading-none">{title}</div>
-          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-            {children}
-          </p>
-        </a>
-      </NavigationMenuLink>
+      <span className="block text-sm text-muted-foreground">{title}</span>
     </li>
   );
-});
-ListItem.displayName = "ListItem";
+};
 
 export default DesktopMenu;
