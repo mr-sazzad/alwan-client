@@ -18,11 +18,6 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Alwan",
   description: "The ideal lifestyle",
-  viewport: "width=device-width, initial-scale=1",
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "white" },
-    { media: "(prefers-color-scheme: dark)", color: "black" },
-  ],
 };
 
 export default function RootLayout({

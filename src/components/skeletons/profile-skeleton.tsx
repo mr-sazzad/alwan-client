@@ -1,4 +1,3 @@
-import React from "react";
 import { Card, CardContent, CardHeader } from "../ui/card";
 import { Skeleton } from "../ui/skeleton";
 
@@ -8,7 +7,7 @@ const ProfileSkeleton = () => {
       <Card className="mb-8">
         <CardContent className="p-6">
           <div className="flex flex-col md:flex-row items-center gap-8">
-            <Skeleton className="w-32 h-32 rounded-full" />
+            <Skeleton className="w-[104px] h-[104px] rounded-full" />
             <div className="flex flex-col items-center md:items-start gap-2">
               <Skeleton className="h-6 w-48" />
               <Skeleton className="h-4 w-64" />

@@ -11,10 +11,10 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Avatar, AvatarFallback } from "../../../components/ui/avatar";
+import { Avatar } from "../../../components/ui/avatar";
 import { Button } from "../../../components/ui/button";
 import {
   Card,
@@ -26,13 +26,14 @@ import { toast } from "../../../components/ui/use-toast";
 
 import AlwanBadge from "../../../components/badge/badge";
 import ProfileSkeleton from "../../../components/skeletons/profile-skeleton";
+import ImageCropper from "../../../components/utils/image-cropper";
 import { getUserFromLocalStorage } from "../../../helpers/jwt";
 import { useGetSingleUserOrdersQuery } from "../../../redux/api/orders/ordersApi";
 import {
   useGetSingleUserQuery,
   useUpdateSingleUserMutation,
 } from "../../../redux/api/users/user-api";
-import { IUser, IUserAddress } from "../../../types";
+import type { IUser, IUserAddress } from "../../../types";
 
 const profileSchema = z.object({
   file: z.instanceof(File).refine((file) => file.size < 3 * 1024 * 1024, {
@@ -40,11 +41,35 @@ const profileSchema = z.object({
   }),
 });
 
+const formatAccountAge = (createdAt: string) => {
+  const now = new Date();
+  const created = new Date(createdAt);
+  const diffTime = Math.abs(now.getTime() - created.getTime());
+  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+  if (diffDays < 7) {
+    return diffDays === 1 ? "1 day" : `${diffDays} days`;
+  } else if (diffDays < 30) {
+    const weeks = Math.floor(diffDays / 7);
+    return weeks === 1 ? "1 week" : `${weeks} weeks`;
+  } else if (diffDays < 365) {
+    const months = Math.floor(diffDays / 30);
+    const remainingDays = diffDays % 30;
+    return `${months}m ${remainingDays}d`;
+  } else {
+    const years = Math.floor(diffDays / 365);
+    const remainingDays = diffDays % 365;
+    return `${years}y ${remainingDays}d`;
+  }
+};
+
 const ProfilePage = () => {
   const router = useRouter();
   const [userData, setUserData] = useState<IUser | null>(null);
   const [isUpdatingImage, setIsUpdatingImage] = useState(false);
   const [preview, setPreview] = useState<string | null>(null);
+  const [showCropper, setShowCropper] = useState(false);
+  const [imageToEdit, setImageToEdit] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof profileSchema>>({
     resolver: zodResolver(profileSchema),
@@ -80,7 +105,7 @@ const ProfilePage = () => {
     skip: !userData?.userId,
   });
 
-  const onSubmit = async (values: z.infer<typeof profileSchema>) => {
+  const onSubmit = async (croppedImage: string) => {
     if (!userData?.userId) {
       toast({
         title: "Error",
@@ -92,7 +117,13 @@ const ProfilePage = () => {
 
     setIsUpdatingImage(true);
     const formData = new FormData();
-    formData.append("file", values.file);
+
+    // Convert the cropped image URL to a File object
+    const response = await fetch(croppedImage);
+    const blob = await response.blob();
+    const file = new File([blob], "profile.jpg", { type: "image/jpeg" });
+
+    formData.append("file", file);
 
     try {
       const result = await updateSingleUser({
@@ -105,6 +136,7 @@ const ProfilePage = () => {
           title: "Success",
           description: "Profile image updated successfully",
         });
+        setPreview(croppedImage);
       } else {
         toast({
           title: "Error",
@@ -120,11 +152,17 @@ const ProfilePage = () => {
       });
     } finally {
       setIsUpdatingImage(false);
+      setShowCropper(false);
     }
   };
 
   const isCustomer = useMemo(
     () => user?.data?.role === "USER",
+    [user?.data?.role]
+  );
+
+  const isAdminOrSuperAdmin = useMemo(
+    () => user?.data?.role === "ADMIN" || user?.data?.role === "SUPER_ADMIN",
     [user?.data?.role]
   );
 
@@ -142,9 +180,9 @@ const ProfilePage = () => {
 
   const handleFileChange = (file: File) => {
     if (file) {
-      setPreview(URL.createObjectURL(file));
-      form.setValue("file", file);
-      form.handleSubmit(onSubmit)();
+      const imageUrl = URL.createObjectURL(file);
+      setImageToEdit(imageUrl);
+      setShowCropper(true);
     }
   };
 
@@ -158,7 +196,7 @@ const ProfilePage = () => {
     title: string;
     value: string | number;
     icon: any;
-    iconBgClass: string;
+    iconBgClass?: string;
     iconClass: string;
   }) => (
     <Card>
@@ -181,7 +219,7 @@ const ProfilePage = () => {
               <Avatar className="w-[100] h-[100] border-4 border-primary">
                 {preview ? (
                   <Image
-                    src={preview}
+                    src={preview || "/placeholder.svg"}
                     alt="Preview"
                     width={100}
                     height={100}
@@ -189,14 +227,20 @@ const ProfilePage = () => {
                   />
                 ) : user?.data?.imageUrl ? (
                   <Image
-                    src={user.data.imageUrl}
+                    src={user.data.imageUrl || "/placeholder.svg"}
                     alt={user.data.name || "Profile"}
                     width={100}
                     height={100}
                     className="rounded-full object-cover"
                   />
                 ) : (
-                  <AvatarFallback>{user?.data?.name?.charAt(0)}</AvatarFallback>
+                  <Image
+                    src="/placeholder.svg"
+                    alt="Placeholder"
+                    width={100}
+                    height={100}
+                    className="rounded-full object-cover"
+                  />
                 )}
               </Avatar>
               <input
@@ -234,7 +278,6 @@ const ProfilePage = () => {
               </h2>
               <p className="text-muted-foreground mb-1">{user?.data?.email}</p>
               <div className="text-muted-foreground mb-4 text-sm">
-                <span>Role: </span>
                 {isCustomer ? "Customer" : user?.data?.role}
               </div>
               <div className="flex flex-wrap justify-center md:justify-start gap-2">
@@ -253,14 +296,19 @@ const ProfilePage = () => {
       </Card>
 
       <div>
-        <h3 className="text-lg font-medium mb-4">Your Account Information</h3>
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          {isCustomer && (
+        <h3 className="text-lg font-medium mb-4">Account Information</h3>
+        <div
+          className={`grid gap-4 ${
+            isAdminOrSuperAdmin
+              ? "md:grid-cols-3"
+              : "md:grid-cols-2 lg:grid-cols-4"
+          }`}
+        >
+          {!isAdminOrSuperAdmin && isCustomer && (
             <MetricCard
               title="Total Orders"
               value={orders?.data?.length || 0}
               icon={ShoppingCart}
-              iconBgClass="bg-emerald-100"
               iconClass="text-emerald-500"
             />
           )}
@@ -268,33 +316,36 @@ const ProfilePage = () => {
             title="Account Age"
             value={
               user?.data?.createdAt
-                ? `${Math.floor(
-                    (new Date().getTime() -
-                      new Date(user.data.createdAt).getTime()) /
-                      (1000 * 3600 * 24)
-                  )} days`
+                ? formatAccountAge(user.data.createdAt)
                 : "N/A"
             }
             icon={Clock}
-            iconBgClass="bg-orange-100"
             iconClass="text-orange-500"
           />
           <MetricCard
             title="Saved Addresses"
             value={user?.data?.addresses?.length || 0}
             icon={MapPin}
-            iconBgClass="bg-blue-100"
             iconClass="text-blue-500"
           />
           <MetricCard
             title="Account Status"
             value="Active"
             icon={Settings}
-            iconBgClass="bg-yellow-100"
             iconClass="text-yellow-500"
           />
         </div>
       </div>
+      {showCropper && imageToEdit && (
+        <ImageCropper
+          image={imageToEdit}
+          onCropComplete={onSubmit}
+          onClose={() => {
+            setShowCropper(false);
+            setImageToEdit(null);
+          }}
+        />
+      )}
     </div>
   );
 };
