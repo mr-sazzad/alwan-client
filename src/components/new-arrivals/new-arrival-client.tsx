@@ -1,4 +1,5 @@
 "use client";
+import { X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
@@ -104,8 +105,26 @@ const NewArrivalClient = () => {
   if (sortedProducts.length === 0) {
     return (
       <MaxWidth className="mt-[100px] md:px-14 sm:px-10 px-5">
-        <h1 className="text-3xl font-medium mb-8">New Arrivals</h1>
-        <p>No new arrivals match your filters. Try adjusting your selection.</p>
+        <div className="mt-[140px] md:px-14 sm:px-10 px-5 text-center">
+          <X className="mx-auto h-8 w-8 text-muted-foreground" />
+          <h2 className="mt-2 text-2xl font-medium mb-2 text-primary">
+            No matching products found
+          </h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            We couldn&apos;t find any new arrivals that match your current
+            filters.
+          </p>
+          <div className="mt-6 flex justify-center gap-4">
+            <Button variant="link">Reset Filters</Button>
+          </div>
+          <p className="mt-8 text-sm text-muted-foreground">
+            Need help finding something specific? Our team is here to assist
+            you.
+          </p>
+          <Button variant="link" asChild className="mt-2">
+            <Link href="/contact">Contact Support</Link>
+          </Button>
+        </div>
       </MaxWidth>
     );
   }
@@ -117,7 +136,7 @@ const NewArrivalClient = () => {
   return (
     <MaxWidth className="mt-[100px] md:px-14 sm:px-10 px-5">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-2xl font-medium">New Arrivals</h1>
+        <h1 className="text-xl font-medium">New Arrivals</h1>
         <div className="hidden lg:block">
           <Button
             onClick={toggleFilter}
@@ -138,13 +157,13 @@ const NewArrivalClient = () => {
         }`}
       >
         <div
-          className={`lg:w-1/5 overflow-hidden transition duration-300 ease flex justify-between items-center ${
+          className={`lg:w-1/5 overflow-hidden transition duration-300 ease flex justify-between items-center${
             isFilterVisible
               ? "max-h-[1000px] opacity-100"
               : "max-h-0 opacity-0 md:hidden"
           }`}
         >
-          <div className="text-lg font-medium text-muted-foreground lg:hidden">
+          <div className="text-lg text-muted-foreground lg:hidden -mb-1">
             {filteredProducts.length === 1
               ? "01 Result"
               : (filteredProducts.length < 10
@@ -204,7 +223,7 @@ const NewArrivalClient = () => {
                             />
                           ))}
                           {product.imageUrls.length > 4 && (
-                            <div className="w-18 h-18 flex items-center justify-center text-gray-500 text-sm rounded">
+                            <div className="w-18 h-18 flex items-center justify-center text-muted-foreground text-sm rounded">
                               +{product.imageUrls.length - 4}
                             </div>
                           )}

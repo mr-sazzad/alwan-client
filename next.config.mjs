@@ -55,6 +55,9 @@ const nextConfig = {
     }
     return config;
   },
+  experimental: {
+    serverActions: true,
+  },
   transpilePackages: ["geist"], 
 };
 

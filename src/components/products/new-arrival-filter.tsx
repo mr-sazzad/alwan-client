@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
-import { PiSlidersHorizontalBold } from "react-icons/pi";
+import { SlidersHorizontal } from "lucide-react";
 import {
   Accordion,
   AccordionContent,
@@ -37,6 +37,43 @@ const filterSchema = z.object({
   prices: z.array(z.string()),
   sort: z.string().optional(),
 });
+
+export default function Filter() {
+  const [open, setOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 1024);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  if (isMobile) {
+    return (
+      <Drawer open={open} onOpenChange={setOpen}>
+        <DrawerTrigger asChild>
+          <Button
+            variant="outline"
+            className="mb-4 rounded-full text-lg font-normal"
+          >
+            Filter
+            <SlidersHorizontal className="ml-2 h-4 w-4" />
+          </Button>
+        </DrawerTrigger>
+        <DrawerContent>
+          <div className="p-4">
+            <FilterContent />
+          </div>
+        </DrawerContent>
+      </Drawer>
+    );
+  }
+
+  return <FilterContent />;
+}
 
 function FilterContent() {
   const router = useRouter();
@@ -274,38 +311,4 @@ function FilterContent() {
       </form>
     </Form>
   );
-}
-
-export default function Filter() {
-  const [open, setOpen] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 1024);
-    };
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
-
-  if (isMobile) {
-    return (
-      <Drawer open={open} onOpenChange={setOpen}>
-        <DrawerTrigger asChild>
-          <Button variant="ghost" className="mb-4 rounded-full text-lg">
-            Filter
-            <PiSlidersHorizontalBold className="ml-2 h-4 w-4" />
-          </Button>
-        </DrawerTrigger>
-        <DrawerContent>
-          <div className="p-4">
-            <FilterContent />
-          </div>
-        </DrawerContent>
-      </Drawer>
-    );
-  }
-
-  return <FilterContent />;
 }
