@@ -52,9 +52,9 @@ const DesktopMenu: React.FC = () => {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
                     transition={{ duration: 0.1 }}
-                    className="absolute -left-[735px] top-full mt-2 w-screen bg-background"
+                    className="absolute -left-[804px] top-full mt-2 w-screen bg-background"
                   >
-                    <div className="mx-auto grid grid-cols-4 gap-8 p-8">
+                    <div className="mx-40 grid grid-cols-4 gap-8 p-8">
                       {parentCategory.children.map((childCategory: any) => (
                         <div key={childCategory.id} className="space-y-4">
                           {childCategory.isLeaf ? (

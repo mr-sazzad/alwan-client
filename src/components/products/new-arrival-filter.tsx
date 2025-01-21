@@ -1,11 +1,10 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter, useSearchParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
-import { SlidersHorizontal } from "lucide-react";
 import {
   Accordion,
   AccordionContent,
@@ -14,11 +13,6 @@ import {
 } from "../../components/ui/accordion";
 import { Button } from "../../components/ui/button";
 import { Checkbox } from "../../components/ui/checkbox";
-import {
-  Drawer,
-  DrawerContent,
-  DrawerTrigger,
-} from "../../components/ui/drawer";
 import {
   Form,
   FormControl,
@@ -39,7 +33,6 @@ const filterSchema = z.object({
 });
 
 export default function Filter() {
-  const [open, setOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -53,22 +46,11 @@ export default function Filter() {
 
   if (isMobile) {
     return (
-      <Drawer open={open} onOpenChange={setOpen}>
-        <DrawerTrigger asChild>
-          <Button
-            variant="outline"
-            className="mb-4 rounded-full text-lg font-normal"
-          >
-            Filter
-            <SlidersHorizontal className="ml-2 h-4 w-4" />
-          </Button>
-        </DrawerTrigger>
-        <DrawerContent>
-          <div className="p-4">
-            <FilterContent />
-          </div>
-        </DrawerContent>
-      </Drawer>
+      <div>
+        <div className="p-4">
+          <FilterContent />
+        </div>
+      </div>
     );
   }
 
@@ -133,7 +115,7 @@ function FilterContent() {
       <form className="space-y-4 w-full">
         <Accordion
           type="multiple"
-          defaultValue={["sortby", "colors", "prices"]}
+          defaultValue={["categories", "sortby", "colors", "prices"]}
           className="w-full"
         >
           <AccordionItem value="sortby" className="border-none">

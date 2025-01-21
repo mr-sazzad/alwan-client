@@ -51,12 +51,9 @@ const nextConfig = {
     if (options.dev) {
       config.devtool = 'source-map';
     } else {
-      config.devtool = false; // Disable source maps in production
+      config.devtool = false;
     }
     return config;
-  },
-  experimental: {
-    serverActions: true,
   },
   transpilePackages: ["geist"], 
 };

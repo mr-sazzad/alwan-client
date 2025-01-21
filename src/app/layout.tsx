@@ -1,10 +1,10 @@
+import { GoogleAnalytics } from "@next/third-parties/google";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { GeistMono } from "geist/font/mono";
 import { GeistSans } from "geist/font/sans";
 import type { Metadata } from "next";
 import React from "react";
-
 import Footer from "../components/footer/footer";
 import Header from "../components/header";
 import UserMobileMenu from "../components/navigation-menu/user-mobile-menu";
@@ -52,6 +52,7 @@ export default function RootLayout({
         <Analytics />
         <SpeedInsights />
       </body>
+      <GoogleAnalytics gaId="G-EWF8W84S7H" />
     </html>
   );
 }

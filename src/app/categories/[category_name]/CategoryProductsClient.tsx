@@ -1,6 +1,5 @@
 "use client";
 import { useParams, useSearchParams } from "next/navigation";
-import React from "react";
 import ProductCard from "../../../components/cards/product-card";
 import MaxWidth from "../../../components/max-width";
 import Filter from "../../../components/products/desktop-filter";
@@ -93,12 +92,12 @@ export default function CategoryProductsClient() {
 
   return (
     <MaxWidth className="mt-[100px] md:px-14 sm:px-10 px-5">
-      <h1 className="md:text-2xl sm:text-xl text-lg font-medium mb-6 capitalize">
+      <h1 className="md:text-2xl sm:text-xl text-lg font-medium capitalize">
         {response?.data.name}
       </h1>
       <div className="flex flex-col md:flex-row gap-3 relative w-full">
-        <div className="md:min-w-[240px]">
-          <div className="w-full md:border-r md:sticky md:top-[90px] hidden md:flex self-start h-screen overflow-y-auto px-2">
+        <div className="md:min-w-[280px]">
+          <div className="w-full md:sticky md:top-[90px] hidden md:flex self-start h-screen overflow-y-auto px-2">
             <Filter categoryId={category_name} />
           </div>
         </div>
