@@ -60,7 +60,6 @@ const cartSlice = createSlice({
       action: PayloadAction<{ id: string; size: string; color: string }>
     ) => {
       const { id, size, color } = action.payload;
-      console.log(action.payload);
 
       const product = state.products.find(
         (product) =>

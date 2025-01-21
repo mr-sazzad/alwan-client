@@ -27,8 +27,6 @@ const DesktopMenu: React.FC = () => {
 
   const categories = response?.data && transformCategories(response?.data);
 
-  console.log(categories);
-
   return (
     <nav className="relative z-10">
       <ul className="flex gap-6">

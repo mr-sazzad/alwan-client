@@ -43,7 +43,6 @@ const HomeTextTable = ({ texts, onUpdateText }: HomeTextTableProps) => {
     useDeleteHomePageTextMutation();
 
   const handleTextDelete = async () => {
-    console.log("TEXT ID =>", textId);
     const result: any = await deleteHomePageText(textId);
 
     if (!result.data.success) {

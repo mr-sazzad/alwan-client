@@ -68,7 +68,6 @@ const ProductTypeDrawer = ({
 
   const onSubmit = async (value: z.infer<typeof productTypeSchema>) => {
     try {
-      console.log(value);
       let response;
       if (isEditing && productType) {
         response = await updateProductType({

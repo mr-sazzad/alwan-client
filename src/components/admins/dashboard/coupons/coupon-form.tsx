@@ -100,7 +100,6 @@ export default function CouponForm({
   }, [isUpdating, couponData, form]);
 
   const handleSubmit = async (data: z.infer<typeof CouponSchema>) => {
-    console.log("Submitting data:", data);
     setIsLoading(true);
     try {
       const formattedData = {

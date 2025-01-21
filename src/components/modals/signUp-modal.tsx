@@ -63,7 +63,6 @@ export default function SignUpModal({
   });
 
   const onSubmit = async (data: SignUpFormData) => {
-    console.log(data);
     if (data.password !== data.retypePassword) {
       form.setError("retypePassword", {
         type: "manual",

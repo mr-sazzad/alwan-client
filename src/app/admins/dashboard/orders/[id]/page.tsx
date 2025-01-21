@@ -207,7 +207,6 @@ export default function OrderDetails() {
     try {
       const finalObj = { ...values, selectedItemId };
       await createCourierInfo(finalObj).unwrap();
-      console.log("Updating courier info for item:", selectedItemId, values);
 
       toast({
         title: "Courier Information Updated",

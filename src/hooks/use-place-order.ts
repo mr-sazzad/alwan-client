@@ -48,8 +48,6 @@ export const usePlaceOrder = ({
       orderNote,
     } = form.getValues();
 
-    console.log("DIVISION => ", division);
-
     if (
       !recipientName ||
       !email ||
@@ -85,8 +83,6 @@ export const usePlaceOrder = ({
       userId: currentUser?.userId,
     };
 
-    console.log(" 🛒 🛒 🛒 Cart Products =>", cartProducts);
-
     if (productId && quantity) {
       orderData.items.push({
         productId,
@@ -103,13 +99,9 @@ export const usePlaceOrder = ({
       }));
     }
 
-    console.log(orderData, "ORDER DATA FROM USE PLACE ORDER");
-
     // Create order
     try {
       const createdOrder = await createAOrder(orderData);
-
-      console.log("🚀🚀🚀 CREATED ORDER =>", createdOrder);
 
       if (!createdOrder.data?.success) {
         toast({

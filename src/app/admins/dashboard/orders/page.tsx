@@ -71,8 +71,6 @@ export default function OrderPage() {
     return <AdminOrdersSkeleton />;
   }
 
-  console.log(orderRes);
-
   const filterOrders = (status: string) => {
     if (!orderRes?.data) return [];
 

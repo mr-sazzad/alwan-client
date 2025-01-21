@@ -48,7 +48,6 @@ export default function ResetPassword() {
   });
 
   const onSubmit = (values: z.infer<typeof passwordSchema>) => {
-    console.log("Password reset submitted:", values);
     toast({
       title: "Password Reset",
       description: "Your password has been successfully reset.",

@@ -89,8 +89,6 @@ const AdminDashboard = () => {
     );
   }
 
-  console.log(userRes.data);
-
   const userCount = (userRes?.data as IUser[] | undefined)?.length || 0;
   const orders = orderRes?.data as IOrder[] | undefined;
 
