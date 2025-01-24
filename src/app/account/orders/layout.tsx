@@ -15,7 +15,6 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 import React from "react";
-import AdminErrorPage from "../../../components/errors/order-error";
 import { Button } from "../../../components/ui/button";
 import { Card, CardContent } from "../../../components/ui/card";
 import { getUserFromLocalStorage } from "../../../helpers/jwt";
@@ -102,9 +101,9 @@ export default function Component({ children }: { children: React.ReactNode }) {
     }
   };
 
-  if ((user && user.role === "ADMIN") || user.role === "SUPER_ADMIN") {
-    return <AdminErrorPage />;
-  }
+  // if ((user && user.role === "ADMIN") || user.role === "SUPER_ADMIN") {
+  //   return <AdminErrorPage />;
+  // }
 
   return (
     <div className="container mx-auto p-4 space-y-6">
