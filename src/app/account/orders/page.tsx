@@ -1,6 +1,7 @@
 "use client";
 
 import { AnimatePresence } from "framer-motion";
+import React from "react";
 import OrderCard from "../../../components/order/order-card";
 import { getUserFromLocalStorage } from "../../../helpers/jwt";
 import { useGetSingleUserOrdersQuery } from "../../../redux/api/orders/ordersApi";

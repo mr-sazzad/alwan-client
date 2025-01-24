@@ -14,11 +14,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
-import { getUserFromLocalStorage } from "@/helpers/jwt";
-import { IUser } from "@/types";
+import React from "react";
 import AdminErrorPage from "../../../components/errors/order-error";
 import { Button } from "../../../components/ui/button";
 import { Card, CardContent } from "../../../components/ui/card";
+import { getUserFromLocalStorage } from "../../../helpers/jwt";
+import { IUser } from "../../../types";
 
 const orderStatuses = [
   {

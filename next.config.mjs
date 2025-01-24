@@ -47,7 +47,6 @@ const nextConfig = {
     ],
   },
   webpack: (config, options) => {
-    // Enable source maps in development
     if (options.dev) {
       config.devtool = 'source-map';
     } else {
