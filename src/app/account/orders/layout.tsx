@@ -102,7 +102,7 @@ export default function Component({ children }: { children: React.ReactNode }) {
     }
   };
 
-  if (user.role === "ADMIN" || user.role === "SUPER_ADMIN") {
+  if ((user && user.role === "ADMIN") || user.role === "SUPER_ADMIN") {
     return <AdminErrorPage />;
   }
 
