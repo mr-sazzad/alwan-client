@@ -14,6 +14,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
+import { getUserFromLocalStorage } from "@/helpers/jwt";
+import { IUser } from "@/types";
+import AdminErrorPage from "../../../components/errors/order-error";
 import { Button } from "../../../components/ui/button";
 import { Card, CardContent } from "../../../components/ui/card";
 
@@ -57,6 +60,7 @@ const orderStatuses = [
 ];
 
 export default function Component({ children }: { children: React.ReactNode }) {
+  const user = getUserFromLocalStorage() as IUser;
   const pathname = usePathname();
   const [activeFilter, setActiveFilter] = useState("All Orders");
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -96,6 +100,10 @@ export default function Component({ children }: { children: React.ReactNode }) {
       });
     }
   };
+
+  if (user.role === "ADMIN" || user.role === "SUPER_ADMIN") {
+    return <AdminErrorPage />;
+  }
 
   return (
     <div className="container mx-auto p-4 space-y-6">

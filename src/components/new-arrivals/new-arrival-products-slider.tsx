@@ -111,7 +111,7 @@ const NewArrivalProductsSlider = () => {
           <Button
             variant="outline"
             size="icon"
-            className="absolute left-2 top-1/2 -translate-y-1/2 z-10 rounded-full bg-gray-900/90 hover:bg-gray-900/80"
+            className="absolute left-2 top-1/2 -translate-y-1/2 z-10 rounded-full bg-black text-white"
             onClick={() => swiperRef.current?.slidePrev()}
             aria-label="Previous slide"
           >
@@ -120,7 +120,7 @@ const NewArrivalProductsSlider = () => {
           <Button
             variant="outline"
             size="icon"
-            className="absolute right-2 top-1/2 -translate-y-1/2 z-10 rounded-full bg-gray-900/90 hover:bg-gray-900/80"
+            className="absolute right-2 top-1/2 -translate-y-1/2 z-10 rounded-full bg-black text-white"
             onClick={() => swiperRef.current?.slideNext()}
             aria-label="Next slide"
           >

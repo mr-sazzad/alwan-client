@@ -2,40 +2,40 @@
 
 import { AlertCircle } from "lucide-react";
 import Image from "next/image";
-import * as React from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { cn } from "../lib/utils";
 import { useGetAllCarouselsQuery } from "../redux/api/carousel/carouselApi";
 import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
 import { Skeleton } from "./ui/skeleton";
 
-const DESKTOP_ASPECT_RATIO = 72 / 25;
 const MOBILE_ASPECT_RATIO = 207 / 250;
-
-const getBlurPlaceholder = (url: string | undefined) => {
-  if (!url) return "";
-  return url.replace("/upload/", "/upload/w_100,e_blur:1000,q_auto,f_auto/");
-};
+const DEFAULT_DESKTOP_ASPECT_RATIO = 72 / 25;
 
 const Banner = () => {
-  const {
-    data: response,
-    isLoading,
-    isError,
-  } = useGetAllCarouselsQuery(undefined);
+  const { data: response, isLoading, isError } = useGetAllCarouselsQuery({});
 
   const [isDesktopImageLoaded, setIsDesktopImageLoaded] = useState(false);
   const [isMobileImageLoaded, setIsMobileImageLoaded] = useState(false);
   const [containerHeight, setContainerHeight] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
+  const desktopImageRef = useRef<HTMLImageElement>(null);
 
   useEffect(() => {
     const updateDimensions = () => {
       const width = window.innerWidth;
       setIsMobile(width < 768);
-      setContainerHeight(
-        width / (isMobile ? MOBILE_ASPECT_RATIO : DESKTOP_ASPECT_RATIO)
-      );
+
+      if (desktopImageRef.current && !isMobile) {
+        const aspectRatio =
+          desktopImageRef.current.naturalWidth /
+          desktopImageRef.current.naturalHeight;
+        setContainerHeight(width / aspectRatio);
+      } else {
+        setContainerHeight(
+          width /
+            (isMobile ? MOBILE_ASPECT_RATIO : DEFAULT_DESKTOP_ASPECT_RATIO)
+        );
+      }
     };
 
     updateDimensions();
@@ -81,11 +81,15 @@ const Banner = () => {
 
   const desktopImage = response.data[0]?.fileUrls[0];
   const mobileImage = response.data[0]?.fileUrls[1];
-  const desktopBlurDataURL = getBlurPlaceholder(desktopImage);
-  const mobileBlurDataURL = getBlurPlaceholder(mobileImage || desktopImage);
 
   const handleDesktopImageLoad = () => {
     setIsDesktopImageLoaded(true);
+    if (desktopImageRef.current) {
+      const aspectRatio =
+        desktopImageRef.current.naturalWidth /
+        desktopImageRef.current.naturalHeight;
+      setContainerHeight(window.innerWidth / aspectRatio);
+    }
   };
 
   const handleMobileImageLoad = () => {
@@ -114,15 +118,8 @@ const Banner = () => {
       <div className="relative h-full w-full">
         {/* Desktop Image */}
         <Image
-          src={desktopBlurDataURL}
-          alt="Desktop Banner Image (Blurred)"
-          fill
-          sizes="100vw"
-          className="object-cover object-center"
-          priority
-        />
-        <Image
-          src={desktopImage}
+          ref={desktopImageRef}
+          src={desktopImage || "/placeholder.svg"}
           alt="Desktop Banner Image"
           fill
           sizes="100vw"
@@ -132,35 +129,54 @@ const Banner = () => {
           )}
           priority
           onLoad={handleDesktopImageLoad}
+          placeholder="blur"
+          blurDataURL={`data:image/svg+xml;base64,${toBase64(
+            shimmer(700, 475)
+          )}`}
         />
         {/* Mobile Image (if available) */}
         {mobileImage && (
-          <>
-            <Image
-              src={mobileBlurDataURL}
-              alt="Mobile Banner Image (Blurred)"
-              fill
-              sizes="100vw"
-              className="object-cover object-center md:hidden"
-              priority
-            />
-            <Image
-              src={mobileImage}
-              alt="Mobile Banner Image"
-              fill
-              sizes="100vw"
-              className={cn(
-                "object-cover object-center transition-opacity duration-700 md:hidden",
-                isMobileImageLoaded ? "opacity-100" : "opacity-0"
-              )}
-              priority
-              onLoad={handleMobileImageLoad}
-            />
-          </>
+          <Image
+            src={mobileImage || "/placeholder.svg"}
+            alt="Mobile Banner Image"
+            fill
+            sizes="100vw"
+            className={cn(
+              "object-cover object-center transition-opacity duration-700 md:hidden",
+              isMobileImageLoaded ? "opacity-100" : "opacity-0"
+            )}
+            priority
+            onLoad={handleMobileImageLoad}
+            placeholder="blur"
+            blurDataURL={`data:image/svg+xml;base64,${toBase64(
+              shimmer(700, 475)
+            )}`}
+          />
         )}
       </div>
     </div>
   );
 };
+
+// Helper function to generate SVG
+const shimmer = (w: number, h: number) => `
+<svg width="${w}" height="${h}" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <defs>
+    <linearGradient id="g">
+      <stop stop-color="#333" offset="20%" />
+      <stop stop-color="#222" offset="50%" />
+      <stop stop-color="#333" offset="70%" />
+    </linearGradient>
+  </defs>
+  <rect width="${w}" height="${h}" fill="#333" />
+  <rect id="r" width="${w}" height="${h}" fill="url(#g)" />
+  <animate xlink:href="#r" attributeName="x" from="-${w}" to="${w}" dur="1s" repeatCount="indefinite"  />
+</svg>`;
+
+// Helper function to convert SVG to Base64
+const toBase64 = (str: string) =>
+  typeof window === "undefined"
+    ? Buffer.from(str).toString("base64")
+    : window.btoa(str);
 
 export default Banner;

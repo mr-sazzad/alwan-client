@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const addressSchema = z.object({
   recipientName: z.string().min(1, { message: "Please enter your name" }),
-  email: z.string().email({ message: "Please enter a valid email address" }),
+  email: z.string().email().optional(),
   label: z.enum(["HOME", "OFFICE"]).optional(),
   phone: z
     .string()

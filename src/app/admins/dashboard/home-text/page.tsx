@@ -1,6 +1,6 @@
 "use client";
-import { Rocket } from "lucide-react";
-import React, { useState } from "react";
+import { Plus, Rocket } from "lucide-react";
+import { useState } from "react";
 import { z } from "zod";
 import HomeTextForm from "../../../../components/admins/dashboard/home-text/home-text-form";
 import PageTitle from "../../../../components/admins/dashboard/page-titles/page-title";
@@ -33,6 +33,8 @@ export default function HomeText() {
   if (isLoading || isCategoriesLoading) {
     return <AdminColorSkeleton />;
   }
+
+  console.log("Res =>", response.data);
 
   const handleSubmit = async (values: HomeTextType) => {
     try {
@@ -93,14 +95,15 @@ export default function HomeText() {
 
       <div className="flex justify-end">
         <Button
-          variant="outline"
           onClick={() => {
             setIsUpdating(false);
             setSelectedText(null);
             setOpen(true);
           }}
+          disabled={response?.data && response.data.length > 0}
         >
-          Add New Text
+          <Plus />
+          Add New Home Text
         </Button>
       </div>
 

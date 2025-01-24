@@ -1,7 +1,7 @@
 "use client";
-import { Bell, CircleDot, Heart, Loader2, ShoppingCart } from "lucide-react";
+import { Bell, CircleDot, Heart, Loader, ShoppingCart } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import {
@@ -20,14 +20,16 @@ import NotificationDialog from "../../../components/modals/notify-dialog";
 import ProductFeatures from "../../../components/modals/product-features";
 import ReviewAndInfoTab from "../../../components/tabs/review-and-info-tab";
 
+import { getUserFromLocalStorage } from "@/helpers/jwt";
 import { addProductToCart } from "../../../redux/api/cart/cartSlice";
 import { addProductToFavorite } from "../../../redux/api/favorite/favoriteSlice";
 import { useGetSingleProductQuery } from "../../../redux/api/products/productsApi";
 import { AppDispatch, RootState } from "../../../redux/store";
-import { ISizeVariant } from "../../../types";
+import { ISizeVariant, IUser } from "../../../types";
 
 export default function Component() {
   const router = useRouter();
+  const user = getUserFromLocalStorage() as IUser;
   const { product_id } = useParams() as { product_id: string };
   const dispatch = useDispatch<AppDispatch>();
   const favorites = useSelector((state: RootState) => state.favorite.products);
@@ -268,7 +270,7 @@ export default function Component() {
                       className="w-full"
                       variant="outline"
                       onClick={handleAddToBag}
-                      disabled={!qty}
+                      disabled={!qty || (user && user.role !== "USER")}
                       size="lg"
                     >
                       <ShoppingCart className="mr-2 w-4 h-4" /> Add To Bag
@@ -278,6 +280,7 @@ export default function Component() {
                       variant="outline"
                       onClick={handleFavorite}
                       size="lg"
+                      disabled={user && user.role !== "USER"}
                     >
                       <Heart
                         className="mr-2 h-4 w-4"
@@ -290,13 +293,14 @@ export default function Component() {
                   <Button
                     className="w-full"
                     onClick={handleBuyNow}
-                    disabled={!qty}
+                    disabled={!qty || (user && user.role !== "USER")}
                     size="lg"
                   >
                     {loading ? (
-                      <Loader2 size={16} className="animate-spin mr-2" />
-                    ) : null}
-                    Buy Now
+                      <Loader size={16} className="animate-spin mr-2" />
+                    ) : (
+                      <p>Buy Now</p>
+                    )}
                   </Button>
                 </div>
               )}

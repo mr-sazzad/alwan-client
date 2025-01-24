@@ -1,6 +1,4 @@
 import Link from "next/link";
-import React from "react";
-import { LuArrowUpRight } from "react-icons/lu";
 import { useGetHomePageTextQuery } from "../../redux/api/home-page-text/home-page-text-api";
 import { Button } from "../ui/button";
 import { Skeleton } from "../ui/skeleton";
@@ -21,35 +19,32 @@ const TextSection = () => {
     );
   }
 
-  const homeText = response?.data[0] || {};
+  console.log("Res =>", response);
+  const homeText = response?.data || {};
 
   return (
     <div>
       {homeText && (
         <div className="flex flex-col w-full justify-center items-center mt-10">
-          <h1 className="text-4xl font-extrabold uppercase mb-2 text-center">
-            {homeText.title}
+          <h1 className="md:text-6xl text-4xl font-[900] uppercase text-center -mb-2">
+            {homeText.firstTitle}
+          </h1>
+          <h1 className="md:text-6xl text-4xl font-[900] uppercase mb-2 text-center">
+            {homeText.secondTitle}
           </h1>
           {homeText?.text?.map((txt: string, i: number) => (
-            <p
-              key={i}
-              className="text-center md:text-base text-sm text-muted-foreground w-full"
-            >
+            <p key={i} className="text-center md:text-base text-sm w-full">
               {txt}
             </p>
           ))}
 
           <Button
-            className="rounded-full text-[17px] font-medium capitalize group transition-all duration-300 mt-3"
+            className="rounded-full text-[17px] font-medium capitalize group transition-all duration-300 mt-3 px-5"
             asChild
           >
             {homeText.categoryId && (
               <Link href={`categories/${homeText.categoryId}`}>
                 {homeText.buttonText}
-                <LuArrowUpRight
-                  size={20}
-                  className="ml-2 group-hover:rotate-45 group-hover:ml-5 group-hover:bg-white group-hover:text-black transition-all duration-300 ease-in-out p-1 rounded-full"
-                />
               </Link>
             )}
           </Button>

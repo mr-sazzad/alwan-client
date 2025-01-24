@@ -55,9 +55,7 @@ export default function ProductFeatures({
               {getPriceRange(product?.sizeVariants)}
             </p>
           </div>
-          <p className="text-sm text-muted-foreground mt-2">
-            SKU: {product?.sku}
-          </p>
+          <p className="text-sm  mt-2">SKU: {product?.sku}</p>
         </div>
       </div>
 
@@ -65,9 +63,7 @@ export default function ProductFeatures({
         <div className="space-y-4">
           <section>
             <h3 className="text-lg font-medium mb-2">Description</h3>
-            <p className="text-muted-foreground leading-relaxed">
-              {product?.description}
-            </p>
+            <p className=" leading-relaxed">{product?.description}</p>
           </section>
 
           <section>
@@ -75,11 +71,8 @@ export default function ProductFeatures({
             <ul className="grid grid-cols-1 gap-2">
               {product?.features.map((feature: string, i: number) => (
                 <li key={i} className="flex items-center gap-1">
-                  <Check
-                    size={16}
-                    className="text-muted-foreground flex-shrink-0"
-                  />
-                  <span className="text-muted-foreground">{feature}</span>
+                  <Check size={16} className=" flex-shrink-0" />
+                  <span>{feature}</span>
                 </li>
               ))}
             </ul>
@@ -89,11 +82,9 @@ export default function ProductFeatures({
             <h3 className="text-lg font-medium mb-2">Product Details</h3>
             <div className="bg-secondary rounded-lg p-4">
               <div className="grid grid-cols-2 gap-y-2 text-sm">
-                <span className="text-muted-foreground">Category:</span>
+                <span>Category:</span>
                 <span className="font-medium">{product?.category.name}</span>
-                <span className="text-muted-foreground">Brand:</span>
-                <span className="font-medium">{product?.brand}</span>
-                <span className="text-muted-foreground">Stock Status:</span>
+                <span>Stock Status:</span>
                 <span className="font-medium">
                   {product?.stockStatus.charAt(0).toUpperCase() +
                     product?.stockStatus.slice(1).toLowerCase()}

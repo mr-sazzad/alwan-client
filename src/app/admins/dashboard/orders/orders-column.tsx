@@ -49,7 +49,6 @@ export type Order = {
 
 const OrderTableColumns = () => {
   const path = "/admins/dashboard/orders";
-  const [open, setOpen] = useState(false);
 
   const columns: ColumnDef<Order>[] = [
     {

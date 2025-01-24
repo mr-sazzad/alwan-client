@@ -11,6 +11,10 @@ import {
   PiSpinner,
   PiUser,
 } from "react-icons/pi";
+import districtData from "../../../public/address/district.json";
+import divisionData from "../../../public/address/division.json";
+import unionData from "../../../public/address/union.json";
+import upazilaData from "../../../public/address/upazila.json";
 import { Button } from "../../components/ui/button";
 import {
   Dialog,
@@ -38,7 +42,7 @@ import {
 } from "../../components/ui/select";
 import { Textarea } from "../../components/ui/textarea";
 import { addressSchema } from "../../schemas/address-schema";
-import {
+import type {
   FormValues,
   IDistrict,
   IDivision,
@@ -46,11 +50,6 @@ import {
   IUpazila,
 } from "../../types";
 import { getNameById } from "../utils/get-name-by-id";
-
-import districtData from "../../../public/address/district.json";
-import divisionData from "../../../public/address/division.json";
-import unionData from "../../../public/address/union.json";
-import upazilaData from "../../../public/address/upazila.json";
 
 interface IAddressDialogProps {
   addressModalOpen: boolean;
@@ -97,7 +96,7 @@ export default function AddressDialog({
     if (selectedAddress) {
       form.reset({
         recipientName: selectedAddress.recipientName,
-        email: currentUser?.email || "",
+        email: currentUser?.email || selectedAddress.email || "",
         phone: selectedAddress.phone,
         altPhone: selectedAddress.altPhone || "",
         division: selectedAddress.divisionId,
@@ -187,9 +186,14 @@ export default function AddressDialog({
                         type="email"
                         placeholder="john@example.com"
                         {...field}
-                        disabled={!!currentUser}
+                        disabled={!!currentUser?.email}
                         className="pl-10"
                         value={currentUser?.email || field.value}
+                        onChange={(e) => {
+                          if (!currentUser?.email) {
+                            field.onChange(e);
+                          }
+                        }}
                       />
                       <PiEnvelope className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
                     </div>
@@ -265,7 +269,7 @@ export default function AddressDialog({
                         <SelectLabel>Divisions</SelectLabel>
                         {divisionData.map((division: IDivision) => (
                           <SelectItem key={division.id} value={division.id}>
-                            {division.name}
+                            {`${division.name} - (${division.bn_name})`}
                           </SelectItem>
                         ))}
                       </SelectGroup>
@@ -302,7 +306,7 @@ export default function AddressDialog({
                           <SelectLabel>Districts</SelectLabel>
                           {filteredDistricts.map((district: IDistrict) => (
                             <SelectItem key={district.id} value={district.id}>
-                              {district.name}
+                              {`${district.name} - (${district.bn_name})`}
                             </SelectItem>
                           ))}
                         </SelectGroup>
@@ -339,7 +343,7 @@ export default function AddressDialog({
                           <SelectLabel>Upazilas</SelectLabel>
                           {filteredUpazilas.map((upazila: IUpazila) => (
                             <SelectItem key={upazila.id} value={upazila.id}>
-                              {upazila.name}
+                              {`${upazila.name} - (${upazila.bn_name})`}
                             </SelectItem>
                           ))}
                         </SelectGroup>
@@ -366,7 +370,7 @@ export default function AddressDialog({
                           <SelectLabel>Unions</SelectLabel>
                           {filteredUnions.map((union: IUnion) => (
                             <SelectItem key={union.id} value={union.id}>
-                              {union.name}
+                              {`${union.name} - (${union.bn_name})`}
                             </SelectItem>
                           ))}
                         </SelectGroup>

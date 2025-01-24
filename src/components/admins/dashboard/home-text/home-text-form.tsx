@@ -1,7 +1,7 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { X } from "lucide-react";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "../../../../components/ui/button";
@@ -32,7 +32,7 @@ import {
 import { Textarea } from "../../../../components/ui/textarea";
 import { toast } from "../../../../components/ui/use-toast";
 import { homeTextSchema } from "../../../../schemas/admins/home-text-schema";
-import { ICategory } from "../../../../types";
+import type { ICategory } from "../../../../types";
 
 const extendedHomeTextSchema = homeTextSchema.extend({ text: z.string() });
 type HomeTextFormData = z.infer<typeof extendedHomeTextSchema>;
@@ -59,7 +59,8 @@ export default function HomeTextForm({
   const form = useForm<HomeTextFormData>({
     resolver: zodResolver(extendedHomeTextSchema),
     defaultValues: {
-      title: "",
+      firstTitle: "",
+      secondTitle: "",
       text: "",
       buttonText: "",
       categoryId: "",
@@ -70,6 +71,8 @@ export default function HomeTextForm({
     if (initialData) {
       form.reset({
         ...initialData,
+        firstTitle: initialData.firstTitle ?? "",
+        secondTitle: initialData.secondTitle ?? "",
         categoryId: initialData.categoryId ?? "",
         buttonText: initialData.buttonText ?? "",
         text: Array.isArray(initialData.text)
@@ -78,7 +81,8 @@ export default function HomeTextForm({
       });
     } else {
       form.reset({
-        title: "",
+        firstTitle: "",
+        secondTitle: "",
         text: "",
         buttonText: "",
         categoryId: "",
@@ -133,12 +137,25 @@ export default function HomeTextForm({
             >
               <FormField
                 control={form.control}
-                name="title"
+                name="firstTitle"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Title</FormLabel>
+                    <FormLabel>First Title</FormLabel>
                     <FormControl>
-                      <Input placeholder="SUMMER-2024" {...field} />
+                      <Input placeholder="Enter first title" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="secondTitle"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Second Title (Optional)</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter second title" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

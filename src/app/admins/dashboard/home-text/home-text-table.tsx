@@ -6,7 +6,7 @@ import {
   MoreHorizontal,
   Trash2,
 } from "lucide-react";
-import React, { useState } from "react";
+import { useState } from "react";
 import { DataTable } from "../../../../components/admins/dashboard/products/data-table";
 import AlertDialogComp from "../../../../components/alert-dialog/alert-dialog";
 import { Button } from "../../../../components/ui/button";
@@ -23,7 +23,8 @@ import { ICategory } from "../../../../types";
 
 export type HomeText = {
   id: string;
-  title: string;
+  firstTitle: string;
+  secondTitle: string;
   text: string;
   buttonText: string;
   categoryId: string;
@@ -63,23 +64,35 @@ const HomeTextTable = ({ texts, onUpdateText }: HomeTextTableProps) => {
 
   const columns: ColumnDef<HomeText>[] = [
     {
-      accessorKey: "title",
+      accessorKey: "firstTitle",
       header: ({ column }) => (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Title
+          1ST Title
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      ),
+    },
+    {
+      accessorKey: "secondTitle",
+      header: ({ column }) => (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          2ND Title
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       ),
     },
     {
       accessorKey: "buttonText",
-      header: "BTN Text",
+      header: "Button",
       cell: ({ row }) => {
         return (
-          <div className="inline-flex items-center text-emerald-600 px-2 py-1 rounded-md">
+          <div className="inline-flex items-center text-orange-600 px-2 py-1 rounded-md">
             <span>{row.original.buttonText}</span>
           </div>
         );
@@ -87,10 +100,9 @@ const HomeTextTable = ({ texts, onUpdateText }: HomeTextTableProps) => {
     },
     {
       accessorKey: "category.name",
-      header: "Explore Category",
+      header: "Category",
       cell: ({ row }) => (
         <span className="inline-flex items-center p-2 rounded gap-2 text-emerald-600">
-          <div className="bg-emerald-800 h-2 w-2 rounded-full" />
           <span>{row.original.category?.name ?? "No Category"}</span>
         </span>
       ),
@@ -99,7 +111,7 @@ const HomeTextTable = ({ texts, onUpdateText }: HomeTextTableProps) => {
       accessorKey: "text",
       header: "Description",
       cell: ({ row }) => (
-        <span className="inline-flex items-center p-2 rounded gap-2 text-gray-700">
+        <span className="inline-flex items-center p-2 rounded gap-2">
           <span>{row.original.text}</span>
         </span>
       ),
@@ -146,7 +158,7 @@ const HomeTextTable = ({ texts, onUpdateText }: HomeTextTableProps) => {
   return (
     <>
       <div className="px-1 hide-scrollbar">
-        <DataTable columns={columns} data={texts} filterColumn="title" />
+        <DataTable columns={columns} data={texts} filterColumn="firstTitle" />
       </div>
 
       <AlertDialogComp

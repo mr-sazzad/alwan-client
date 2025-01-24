@@ -75,9 +75,11 @@ export default function Profile() {
     }
 
     return (
-      <Avatar className="h-8 w-8">
+      <Avatar>
         <AvatarImage
-          src={userRes?.data?.imageUrl || "https://i.ibb.co/Qkf0sqm/images.jpg"}
+          src={
+            userRes?.data?.imageUrl || "https://i.ibb.co.com/2Ytx57K/827.jpg"
+          }
           alt="Profile"
         />
         <AvatarFallback>

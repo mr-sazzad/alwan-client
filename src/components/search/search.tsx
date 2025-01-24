@@ -1,11 +1,11 @@
 "use client";
 
-import { Loader2, Search, SearchSlash, X } from "lucide-react";
+import { Loader, Search, SearchSlash, X } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useGetAllProductsQuery } from "../../redux/api/products/productsApi";
-import { IProduct } from "../../types";
+import type { IProduct } from "../../types";
 
 import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
@@ -98,24 +98,24 @@ export default function FullWidthSearch(
             Search Products
           </h2>
           <div className="relative w-full max-w-2xl mx-auto">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
             <Input
               ref={inputRef}
               type="text"
               placeholder="Search for products..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-10 py-2 text-base sm:text-lg rounded-full"
+              className="w-full pl-12 pr-12 md:py-4 py-2 text-lg sm:text-xl rounded-full shadow-md"
             />
             {searchTerm && (
               <Button
                 size="icon"
                 variant="ghost"
-                className="absolute right-1 top-1/2 transform -translate-y-1/2 rounded-full hover:bg-primary/10 transition-colors duration-300"
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 rounded-full hover:bg-primary/10 transition-colors duration-300"
                 onClick={() => setSearchTerm("")}
                 aria-label="Clear search"
               >
-                <X className="h-4 w-4" />
+                <X className="h-5 w-5" />
               </Button>
             )}
           </div>
@@ -131,7 +131,7 @@ export default function FullWidthSearch(
 
         <div className="flex flex-col lg:flex-row gap-4 lg:gap-8 h-full">
           {/* Suggestions */}
-          <div className="w-full lg:w-1/3 xl:w-1/4 mb-4 lg:mb-0">
+          <div className="w-full lg:w-[200px] mb-4 lg:mb-0 lg:mr-8 rounded">
             {searchTerm &&
               productSuggestions &&
               productSuggestions.length > 0 && (
@@ -142,12 +142,13 @@ export default function FullWidthSearch(
                   <ul className="flex flex-wrap gap-2 lg:flex-col lg:gap-1">
                     {productSuggestions.map(
                       (suggestion: string, index: number) => (
-                        <li key={index} className="flex-grow">
+                        <li key={index} className="w-full">
                           <Button
                             variant="outline"
-                            className="w-full justify-start text-sm sm:text-base py-1 px-3 rounded-full hover:bg-primary/10 transition-colors duration-300"
+                            className="w-full justify-start text-sm sm:text-base py-2 px-3 hover:bg-primary/10 transition-colors duration-300 rounded-lg"
                             onClick={() => setSearchTerm(suggestion)}
                           >
+                            <Search className="mr-2 h-4 w-4" />
                             {suggestion}
                           </Button>
                         </li>
@@ -159,14 +160,14 @@ export default function FullWidthSearch(
           </div>
 
           {/* Search Results */}
-          <ScrollArea className="flex-grow rounded-lg overflow-hidden scrollbar-hide mb-10">
+          <ScrollArea className="flex-grow rounded overflow-hidden scrollbar-hide mb-10 p-4 bg-card">
             {isLoading ? (
               <div className="flex flex-col justify-center items-center h-full p-8">
-                <Loader2 className="h-16 w-16 animate-spin text-primary mb-6" />
-                <p className="text-3xl font-medium text-primary mb-2">
+                <Loader className="h-16 w-16 animate-spin text-primary mb-6" />
+                <p className="text-2xl font-medium text-primary mb-2">
                   Searching for products...
                 </p>
-                <p className="text-xl text-muted-foreground">
+                <p className="text-lg text-muted-foreground">
                   This won&apos;t take long
                 </p>
               </div>
@@ -175,19 +176,19 @@ export default function FullWidthSearch(
                 {filteredProducts.map((product: IProduct) => (
                   <div
                     key={product.id}
-                    className="bg-card text-card-foreground rounded-lg shadow-md overflow-hidden cursor-pointer transition-all duration-300 ease-in-out hover:shadow-lg hover:scale-102"
+                    className="overflow-hidden cursor-pointer group rounded"
                     onClick={() => handleGoToDetailsPage(product.id)}
                   >
-                    <div className="aspect-square relative overflow-hidden">
+                    <div className="aspect-square relative overflow-hidden group-hover:opacity-90 transition-opacity duration-300">
                       <Image
-                        src={product.imageUrls[0]}
+                        src={product.imageUrls[0] || "/placeholder.svg"}
                         alt={product.name}
                         fill
                         sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
                         className="object-cover"
                       />
                     </div>
-                    <div className="p-2 sm:p-3">
+                    <div className="p-3 sm:p-4 bg-gradient-to-b from-card to-card/90">
                       <h3 className="font-semibold text-sm sm:text-base line-clamp-1 mb-1">
                         {product.name}
                       </h3>
@@ -214,18 +215,18 @@ export default function FullWidthSearch(
               </div>
             ) : searchTerm.length >= 3 ? (
               <div className="flex flex-col items-center justify-center h-full text-center p-12">
-                <SearchSlash size="28" className="text-primary mb-4 " />
-                <p className="text-2xl font-medium text-primary">
+                <SearchSlash size={48} className="text-primary mb-6" />
+                <p className="text-3xl font-medium text-primary mb-2">
                   No products found
                 </p>
-                <p className="text-lg text-muted-foreground max-w-md">
+                <p className="text-xl text-muted-foreground max-w-md">
                   Try a different search term or browse our categories
                 </p>
               </div>
             ) : (
               <div className="flex flex-col items-center justify-center h-full text-center p-12">
-                <Search className="h-32 w-32 text-primary mb-8" />
-                <p className="text-4xl font-bold mb-4 text-primary">
+                <Search size={48} className="text-primary mb-6" />
+                <p className="text-3xl font-medium mb-4 text-primary">
                   Discover Amazing Products
                 </p>
                 <p className="text-xl text-muted-foreground max-w-md">
