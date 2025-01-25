@@ -1,7 +1,7 @@
 "use client";
 import Banner from "../banner";
-// import HomeCategories from "../categories/home-categories";
-// import MaxWidth from "../max-width";
+import HomeCategories from "../categories/home-categories";
+import MaxWidth from "../max-width";
 // import NewArrivalProductsSlider from "../new-arrivals/new-arrival-products-slider";
 // import NewArrivals from "../new-arrivals/new-arrivals";
 // import WhatWeOffer from "../static/what-we-offer";
@@ -12,18 +12,16 @@ const Home = () => {
     <div>
       <Banner />
       <TextSection />
-      {/* <MaxWidth>
+      <MaxWidth>
         <div className="mb-5">
           <HomeCategories />
         </div>
         <div className="flex md:flex-row flex-col gap-5 rounded md:items-center mt-8">
-          <WhatWeOffer />
+          {/* <WhatWeOffer /> */}
         </div>
-        <div>
-          <NewArrivals />
-        </div>
-        <NewArrivalProductsSlider />
-      </MaxWidth> */}
+        <div>{/* <NewArrivals /> */}</div>
+        {/* <NewArrivalProductsSlider /> */}
+      </MaxWidth>
     </div>
   );
 };
