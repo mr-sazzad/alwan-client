@@ -10,7 +10,7 @@ export default function Loading({ className }: LoadingProps) {
     <div
       className={`flex justify-center items-center w-full h-[80vh] ${className}`}
     >
-      <Card className="relative w-64 h-64 overflow-hidden bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center">
+      <Card className="relative">
         <svg
           width="130"
           height="60"
