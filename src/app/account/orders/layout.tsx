@@ -15,10 +15,11 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 import React from "react";
+// import AdminErrorPage from "../../../components/errors/order-error";
 import { Button } from "../../../components/ui/button";
 import { Card, CardContent } from "../../../components/ui/card";
 import { getUserFromLocalStorage } from "../../../helpers/jwt";
-import { IUser } from "../../../types";
+// import { IUser } from "../../../types";
 
 const orderStatuses = [
   {
@@ -60,7 +61,7 @@ const orderStatuses = [
 ];
 
 export default function Component({ children }: { children: React.ReactNode }) {
-  const user = getUserFromLocalStorage() as IUser;
+  const user = getUserFromLocalStorage() as any;
   const pathname = usePathname();
   const [activeFilter, setActiveFilter] = useState("All Orders");
   const scrollContainerRef = useRef<HTMLDivElement>(null);

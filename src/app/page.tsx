@@ -1,6 +1,5 @@
 import { Metadata } from "next";
-import React from "react";
-import Home from "../components/home/home";
+// import Home from "../components/home/home";
 
 export const metadata: Metadata = {
   title: "Home | Alwan",
@@ -9,7 +8,9 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <div>
-      <Home />
+      {/* <Home /> */}
+
+      <p>Hello from home page</p>
     </div>
   );
 }
