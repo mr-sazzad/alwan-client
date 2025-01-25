@@ -1,16 +1,16 @@
 "use client";
 
-// import { ChevronLeft, ChevronRight } from "lucide-react";
-// import Image from "next/image";
-// import Link from "next/link";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 import React, { useRef } from "react";
 import type { Swiper as SwiperType } from "swiper";
 import "swiper/css";
-// import { Navigation } from "swiper/modules";
-// import { Swiper, SwiperSlide } from "swiper/react";
-// import { Button } from "../../components/ui/button";
+import { Navigation } from "swiper/modules";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Button } from "../../components/ui/button";
 import { useGetAllProductsQuery } from "../../redux/api/products/productsApi";
-// import type { IProduct } from "../../types";
+import type { IProduct } from "../../types";
 
 const NewArrivalProductsSlider = () => {
   const { data: products, isLoading } = useGetAllProductsQuery(undefined);
@@ -48,7 +48,7 @@ const NewArrivalProductsSlider = () => {
             {products.length} Item{products.length !== 1 ? "s" : ""}
           </p>
         </div>
-        {/* <div className="relative">
+        <div className="relative">
           <Swiper
             modules={[Navigation]}
             onBeforeInit={(swiper) => {
@@ -112,7 +112,7 @@ const NewArrivalProductsSlider = () => {
           >
             <ChevronRight className="h-4 w-4" />
           </Button>
-        </div> */}
+        </div>
       </div>
     </section>
   );

@@ -1,5 +1,4 @@
 import { Clock, HelpCircle, Leaf, MapPin, Package, Truck } from "lucide-react";
-import React from "react";
 import MaxWidth from "../../../components/max-width";
 import {
   Accordion,
@@ -27,8 +26,10 @@ export default function ShippingPage() {
   return (
     <MaxWidth className="mt-[100px]">
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-medium mb-4">Shipping Information</h1>
-        <p className="mb-8 text-muted-foreground">
+        <h1 className="md:text-3xl sm:text-2xl text-xl font-medium md:mb-4 mb-2">
+          Shipping Information
+        </h1>
+        <p className="mb-8">
           At Alwan, we&apos;re committed to delivering tranquility and
           mindfulness to your doorstep across Bangladesh. Our shipping process
           is designed to be as smooth and stress-free as your journey to inner
@@ -38,8 +39,10 @@ export default function ShippingPage() {
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mb-12">
           <Card>
             <CardHeader>
-              <Truck className="w-10 h-10 mb-2 text-primary" />
-              <CardTitle className="font-medium">Nationwide Delivery</CardTitle>
+              <Truck className="md:w-10 md:h-10 w-6 h-6 mb-2 text-primary" />
+              <CardTitle className="font-medium md:text-3xl sm:text-2xl text-xl">
+                Nationwide Delivery
+              </CardTitle>
               <CardDescription>Serving all of Bangladesh</CardDescription>
             </CardHeader>
             <CardContent>
@@ -50,8 +53,10 @@ export default function ShippingPage() {
           </Card>
           <Card>
             <CardHeader>
-              <MapPin className="w-10 h-10 mb-2 text-primary" />
-              <CardTitle className="font-medium">Local Partnerships</CardTitle>
+              <MapPin className="md:w-10 md:h-10 w-6 h-6 mb-2 text-primary" />
+              <CardTitle className="font-medium md:text-3xl sm:text-2xl text-xl">
+                Local Partnerships
+              </CardTitle>
               <CardDescription>Reliable courier services</CardDescription>
             </CardHeader>
             <CardContent>
@@ -62,8 +67,10 @@ export default function ShippingPage() {
           </Card>
           <Card>
             <CardHeader>
-              <Clock className="w-10 h-10 mb-2 text-primary" />
-              <CardTitle className="font-medium">Processing Time</CardTitle>
+              <Clock className="md:w-10 md:h-10 w-6 h-6 mb-2 text-primary" />
+              <CardTitle className="font-medium md:text-3xl sm:text-2xl text-xl">
+                Processing Time
+              </CardTitle>
               <CardDescription>1-2 business days</CardDescription>
             </CardHeader>
             <CardContent>
@@ -75,7 +82,7 @@ export default function ShippingPage() {
 
         <Card className="mb-12">
           <CardHeader>
-            <CardTitle className="font-medium">
+            <CardTitle className="font-medium md:text-3xl sm:text-2xl text-xl">
               Shipping Rates and Estimated Delivery Times
             </CardTitle>
           </CardHeader>
@@ -91,12 +98,12 @@ export default function ShippingPage() {
               <TableBody>
                 <TableRow>
                   <TableCell>Inside Dhaka</TableCell>
-                  <TableCell>৳70</TableCell>
+                  <TableCell>৳70 - 90</TableCell>
                   <TableCell>2-3 business days</TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>Outside Dhaka</TableCell>
-                  <TableCell>৳130</TableCell>
+                  <TableCell>৳130 - 150</TableCell>
                   <TableCell>3-5 business days</TableCell>
                 </TableRow>
               </TableBody>
@@ -106,7 +113,9 @@ export default function ShippingPage() {
 
         <Card className="mb-12">
           <CardHeader>
-            <CardTitle className="font-medium">Our Shipping Process</CardTitle>
+            <CardTitle className="font-medium md:text-3xl sm:text-2xl text-xl">
+              Our Shipping Process
+            </CardTitle>
             <CardDescription>From our hands to your home</CardDescription>
           </CardHeader>
           <CardContent>
@@ -142,7 +151,7 @@ export default function ShippingPage() {
           </CardContent>
         </Card>
 
-        <h2 className="text-2xl font-medium mb-4">
+        <h2 className="font-medium md:text-3xl sm:text-2xl text-xl">
           Frequently Asked Questions
         </h2>
         <Accordion type="single" collapsible className="mb-12">
@@ -190,8 +199,8 @@ export default function ShippingPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center font-medium">
-              <HelpCircle className="w-6 h-6 mr-2" />
+            <CardTitle className="font-medium md:text-3xl sm:text-2xl text-xl">
+              <HelpCircle className="w-6 h-6 my-2" />
               Need More Information?
             </CardTitle>
           </CardHeader>
@@ -201,7 +210,7 @@ export default function ShippingPage() {
               assistance with your order, our customer support team is here to
               help.
             </p>
-            <div className="flex flex-wrap space-x-4">
+            <div className="flex flex-wrap gap-2">
               <span className="text-sm py-1 px-2 border rounded-full">
                 support.alwan@gmail.com
               </span>
