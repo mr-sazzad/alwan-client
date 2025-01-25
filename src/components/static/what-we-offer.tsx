@@ -1,6 +1,7 @@
 "use client";
 
 import { Card, CardContent } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 import {
   CreditCard,
   Gift,
@@ -11,7 +12,14 @@ import {
   ThumbsUp,
   Truck,
 } from "lucide-react";
-import { useState } from "react";
+import { Marquee } from "../ui/marquee";
+
+type IItem = {
+  id: number;
+  icon: React.ElementType;
+  label: string;
+  description: string;
+};
 
 const offerItems = [
   {
@@ -54,7 +62,7 @@ const offerItems = [
     id: 7,
     icon: Truck,
     label: "Free Shipping",
-    description: "On orders over $50",
+    description: "Terms & conditions apply",
   },
   {
     id: 8,
@@ -64,46 +72,52 @@ const offerItems = [
   },
 ];
 
-export default function MarqueeOffers() {
-  const [isPaused, setIsPaused] = useState(false);
+const firstRow = offerItems.slice(0, offerItems.length / 2);
+const secondRow = offerItems.slice(offerItems.length / 2);
 
+const OfferCard = (item: IItem) => {
   return (
-    <section className="w-full overflow-hidden py-12 bg-gradient-to-r from-primary/5 to-primary/10">
-      <div className="container mx-auto px-4">
-        <h2 className="text-3xl font-bold text-center mb-8 text-primary">
-          What We Offer
-        </h2>
-        <div
-          className={`flex gap-6 ${isPaused ? "" : "animate-marquee"}`}
-          onMouseEnter={() => setIsPaused(true)}
-          onMouseLeave={() => setIsPaused(false)}
-        >
-          {[...offerItems, ...offerItems].map((item, index) => (
-            <div
-              key={`${item.id}-${index}`}
-              className="flex-shrink-0 w-[250px]"
-            >
-              <Card className="h-full transition-all duration-300 hover:shadow-lg hover:-translate-y-1 bg-white/80 backdrop-blur-sm">
-                <CardContent className="p-6">
-                  <div className="flex flex-col items-center text-center space-y-4">
-                    <div className="bg-primary/10 rounded-full p-4">
-                      <item.icon className="w-8 h-8 text-primary" />
-                    </div>
-                    <div>
-                      <h3 className="text-xl font-medium text-primary">
-                        {item.label}
-                      </h3>
-                      <p className="text-sm text-muted-foreground mt-2">
-                        {item.description}
-                      </p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          ))}
+    <Card
+      className={cn(
+        "relative cursor-pointer overflow-hidden rounded-xl border-0 p-2",
+        // light styles
+        "border-gray-950/[.1] bg-gray-950/[.01] hover:bg-gray-950/[.05]",
+        // dark styles
+        "dark:border-gray-50/[.1] dark:bg-gray-50/[.10] dark:hover:bg-gray-50/[.15]"
+      )}
+    >
+      <CardContent className="p-6">
+        <div className="flex flex-row items-center gap-4">
+          <div className="bg-primary/10 rounded-full p-4">
+            <item.icon className="w-6 h-6 text-primary" />
+          </div>
+          <div>
+            <h3 className="text-xl font-medium text-primary">{item.label}</h3>
+            <p className="text-sm text-muted-foreground mt-1">
+              {item.description}
+            </p>
+          </div>
         </div>
-      </div>
-    </section>
+      </CardContent>
+    </Card>
+  );
+};
+
+export default function MarqueeOffers() {
+  return (
+    <div className="relative flex w-full flex-col items-center justify-center overflow-hidden">
+      <Marquee pauseOnHover className="[--duration:20s]">
+        {firstRow.map((item) => (
+          <OfferCard key={item.id} {...item} />
+        ))}
+      </Marquee>
+      <Marquee reverse pauseOnHover className="[--duration:20s]">
+        {secondRow.map((item) => (
+          <OfferCard key={item.id} {...item} />
+        ))}
+      </Marquee>
+      <div className="pointer-events-none absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-white dark:from-background"></div>
+      <div className="pointer-events-none absolute inset-y-0 right-0 w-1/3 bg-gradient-to-l from-white dark:from-background"></div>
+    </div>
   );
 }
