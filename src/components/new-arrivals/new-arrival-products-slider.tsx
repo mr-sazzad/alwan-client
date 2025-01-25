@@ -3,32 +3,18 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import type { Swiper as SwiperType } from "swiper";
 import "swiper/css";
 import { Navigation } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Button } from "../../components/ui/button";
 import { useGetAllProductsQuery } from "../../redux/api/products/productsApi";
-import { IProduct } from "../../types";
+import type { IProduct } from "../../types";
 
 const NewArrivalProductsSlider = () => {
-  const { data: productsRes, isLoading } = useGetAllProductsQuery(undefined);
-  const [products, setProducts] = useState<IProduct[]>([]);
+  const { data: products, isLoading } = useGetAllProductsQuery(undefined);
   const swiperRef = useRef<SwiperType>();
-
-  useEffect(() => {
-    if (productsRes?.data) {
-      const originalProducts = productsRes.data;
-      let extendedProducts = [...originalProducts];
-
-      while (extendedProducts.length < 20) {
-        extendedProducts = [...extendedProducts, ...originalProducts];
-      }
-
-      setProducts(extendedProducts);
-    }
-  }, [productsRes]);
 
   if (isLoading) {
     return (
@@ -43,7 +29,7 @@ const NewArrivalProductsSlider = () => {
     );
   }
 
-  if (products.length === 0) {
+  if (!products || products.length === 0) {
     return (
       <div className="text-center py-5 text-gray-600">
         No products available
@@ -59,8 +45,7 @@ const NewArrivalProductsSlider = () => {
             Shop New Arrivals
           </h2>
           <p className="text-sm sm:text-base">
-            {productsRes?.data?.length || 0} Item
-            {(productsRes?.data?.length || 0) !== 1 ? "s" : ""}
+            {products.length} Item{products.length !== 1 ? "s" : ""}
           </p>
         </div>
         <div className="relative">
@@ -71,7 +56,7 @@ const NewArrivalProductsSlider = () => {
             }}
             slidesPerView="auto"
             spaceBetween={14}
-            loop={true}
+            loop={false}
             centeredSlides={false}
             slideToClickedSlide={true}
             speed={800}
@@ -85,8 +70,8 @@ const NewArrivalProductsSlider = () => {
             }}
             className="mySwiper"
           >
-            {products.map((product: IProduct, index: number) => (
-              <SwiperSlide key={`${product.id}-${index}`} className="w-full">
+            {products.map((product: IProduct) => (
+              <SwiperSlide key={product.id} className="w-full">
                 <Link href={`/products/${product.id}`} className="block">
                   <div className="bg-white shadow-md overflow-hidden transition-all hover:shadow-lg group">
                     <div className="relative w-full pb-[133.33%]">
@@ -96,6 +81,7 @@ const NewArrivalProductsSlider = () => {
                         fill
                         sizes="(max-width: 480px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, (max-width: 1280px) 25vw, 20vw"
                         className="object-cover"
+                        loading="lazy"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center">
                         <h3 className="text-white font-medium p-4 text-center line-clamp-2">
