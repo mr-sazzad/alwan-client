@@ -201,7 +201,7 @@ export default function ShippingPage() {
               assistance with your order, our customer support team is here to
               help.
             </p>
-            <div className="flex space-x-4">
+            <div className="flex flex-wrap space-x-4">
               <span className="text-sm py-1 px-2 border rounded-full">
                 support.alwan@gmail.com
               </span>
