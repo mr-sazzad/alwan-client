@@ -1,6 +1,5 @@
 "use client";
 
-import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import {
   CreditCard,
@@ -77,29 +76,25 @@ const secondRow = offerItems.slice(offerItems.length / 2);
 
 const OfferCard = (item: IItem) => {
   return (
-    <Card
+    <figure
       className={cn(
-        "relative cursor-pointer overflow-hidden rounded-xl border-0 p-2",
+        "relative cursor-pointer overflow-hidden rounded-xl border p-4",
         // light styles
         "border-gray-950/[.1] bg-gray-950/[.01] hover:bg-gray-950/[.05]",
         // dark styles
         "dark:border-gray-50/[.1] dark:bg-gray-50/[.10] dark:hover:bg-gray-50/[.15]"
       )}
     >
-      <CardContent className="p-6">
-        <div className="flex flex-row items-center gap-4">
-          <div className="bg-primary/10 rounded-full p-4">
-            <item.icon className="w-6 h-6 text-primary" />
-          </div>
-          <div>
-            <h3 className="text-xl font-medium text-primary">{item.label}</h3>
-            <p className="text-sm text-muted-foreground mt-1">
-              {item.description}
-            </p>
-          </div>
+      <div className="flex flex-row items-center gap-4 p-4">
+        <div className="p-3.5 rounded-full border">
+          <item.icon className="w-6 h-6" />
         </div>
-      </CardContent>
-    </Card>
+        <div className="flex flex-col">
+          <p className="text-lg font-medium">{item.label}</p>
+          <blockquote className="mt-2 text-sm">{item.description}</blockquote>
+        </div>
+      </div>
+    </figure>
   );
 };
 
