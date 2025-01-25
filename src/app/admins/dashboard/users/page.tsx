@@ -125,6 +125,8 @@
 // export default UsersPage;
 
 import React from "react";
-export const Page = () => {
-  return <div>Hello From User Page</div>;
+const Page = () => {
+  return <div>Hello From Page</div>;
 };
+
+export default Page;

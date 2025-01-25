@@ -356,6 +356,8 @@
 // }
 
 import React from "react";
-export const Page = () => {
+const AddressPage = () => {
   return <div>Hello From Address Page</div>;
 };
+
+export default AddressPage;

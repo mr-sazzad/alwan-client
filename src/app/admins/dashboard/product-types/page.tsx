@@ -43,6 +43,8 @@
 // export default ProductType;
 
 import React from "react";
-export const Page = () => {
-  return <div>Hello From Delivered Page</div>;
+const Page = () => {
+  return <div>Hello From Page</div>;
 };
+
+export default Page;
