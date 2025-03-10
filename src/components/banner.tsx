@@ -2,7 +2,7 @@
 
 import { AlertCircle } from "lucide-react";
 import Image from "next/image";
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { cn } from "../lib/utils";
 import { useGetAllCarouselsQuery } from "../redux/api/carousel/carouselApi";
 import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
@@ -163,9 +163,9 @@ const shimmer = (w: number, h: number) => `
 <svg width="${w}" height="${h}" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
   <defs>
     <linearGradient id="g">
-      <stop stop-color="#333" offset="20%" />
-      <stop stop-color="#222" offset="50%" />
-      <stop stop-color="#333" offset="70%" />
+      <stop stopColor="#333" offset="20%" />
+      <stop stopColor="#222" offset="50%" />
+      <stop stopColor="#333" offset="70%" />
     </linearGradient>
   </defs>
   <rect width="${w}" height="${h}" fill="#333" />

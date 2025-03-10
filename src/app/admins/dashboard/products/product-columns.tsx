@@ -42,6 +42,7 @@ const ProductTableColumns = () => {
 
   const deleteProductHandler = async (id: string) => {
     const result = await deleteSingleProduct(id);
+    console.log(result);
   };
 
   const columns: ColumnDef<IProduct>[] = [

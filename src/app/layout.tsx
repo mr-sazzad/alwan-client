@@ -27,7 +27,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable}`}>
-    <meta name="google-site-verification" content="YUkMM4VjysowrgIWODPR0z0iz0MJY0BB5a8ORfCyjBg" />
+      <meta
+        name="google-site-verification"
+        content="YUkMM4VjysowrgIWODPR0z0iz0MJY0BB5a8ORfCyjBg"
+      />
       <body className="font-mono min-h-screen flex flex-col">
         {/* MICROSOFT CLARITY TRACKER */}
         <ClarityTracker />

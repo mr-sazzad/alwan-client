@@ -62,18 +62,18 @@ export default function Header() {
               >
                 <defs>
                   <linearGradient id="a" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" stop-color="#ff6b6b" />
-                    <stop offset="50%" stop-color="#4ecdc4" />
-                    <stop offset="100%" stop-color="#45b7d1" />
+                    <stop offset="0%" stopColor="#ff6b6b" />
+                    <stop offset="50%" stopColor="#4ecdc4" />
+                    <stop offset="100%" stopColor="#45b7d1" />
                   </linearGradient>
                 </defs>
                 <path
                   d="m10 60 20-40 20 40m20-40 20 40 20-40m20 0v40m20-40 20 20 20-20v40"
                   fill="none"
                   stroke="url(#a)"
-                  stroke-width="8"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeWidth="8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 />
               </svg>
             </Link>
