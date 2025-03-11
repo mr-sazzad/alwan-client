@@ -150,6 +150,8 @@ export default function Component({
 
       formData.append("data", JSON.stringify(productData));
 
+      console.log("FORM DATA => ", formData);
+
       const response =
         mode === "create"
           ? await createProduct(formData)

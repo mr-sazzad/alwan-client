@@ -20,12 +20,12 @@ import NotificationDialog from "../../../components/modals/notify-dialog";
 import ProductFeatures from "../../../components/modals/product-features";
 import ReviewAndInfoTab from "../../../components/tabs/review-and-info-tab";
 
-import { getUserFromLocalStorage } from "@/helpers/jwt";
+import { getUserFromLocalStorage } from "../../../helpers/jwt";
 import { addProductToCart } from "../../../redux/api/cart/cartSlice";
 import { addProductToFavorite } from "../../../redux/api/favorite/favoriteSlice";
 import { useGetSingleProductQuery } from "../../../redux/api/products/productsApi";
-import { AppDispatch, RootState } from "../../../redux/store";
-import { ISizeVariant, IUser } from "../../../types";
+import type { AppDispatch, RootState } from "../../../redux/store";
+import type { ISizeVariant, IUser } from "../../../types";
 
 export default function Component() {
   const router = useRouter();
@@ -127,6 +127,7 @@ export default function Component() {
   };
 
   const isComingSoon = product?.data?.stockStatus === "COMING_SOON";
+  const isOutOfStock = product?.data?.stockStatus === "OUT_OF_STOCK";
 
   if (isLoading) {
     return (
@@ -156,9 +157,18 @@ export default function Component() {
     <MaxWidth className="flex flex-col items-center w-full">
       <div className="mt-[100px] w-full max-w-6xl">
         <div className="flex flex-col md:flex-row gap-8">
-          <div className="w-full md:w-1/2">
+          <div className="w-full md:w-1/2 relative">
             {product?.data?.imageUrls && (
-              <DetailsPageImageSlider urls={product.data.imageUrls} />
+              <>
+                <DetailsPageImageSlider urls={product.data.imageUrls} />
+                {product.data.stockStatus === "OUT_OF_STOCK" && (
+                  <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                    <span className="bg-red-600 text-white px-4 py-2 font-bold rounded">
+                      OUT OF STOCK
+                    </span>
+                  </div>
+                )}
+              </>
             )}
           </div>
           <div className="w-full md:w-1/2 space-y-6">
@@ -166,6 +176,8 @@ export default function Component() {
               <span className="inline-block px-2 py-1 text-sm font-medium text-[#D33918] mb-2">
                 {product?.data?.stockStatus === "COMING_SOON"
                   ? "Coming Soon"
+                  : product?.data?.stockStatus === "OUT_OF_STOCK"
+                  ? "Out of Stock"
                   : product?.data?.availabilityTag}
               </span>
 
@@ -175,9 +187,21 @@ export default function Component() {
               <p className="text-lg text-muted-foreground capitalize">
                 {product?.data?.category?.name}
               </p>
-              <p className="font-medium mt-2">
-                TK {selectedSizeVariant?.price.toFixed(2)}
-              </p>
+
+              <div className="font-medium mt-2">
+                {selectedSizeVariant?.discountedPrice ? (
+                  <div className="flex items-center gap-2">
+                    <span className="line-through text-muted-foreground">
+                      TK {selectedSizeVariant.price}
+                    </span>
+                    <span className="text-[#D33918]">
+                      TK {selectedSizeVariant.discountedPrice}
+                    </span>
+                  </div>
+                ) : (
+                  <p>TK {selectedSizeVariant?.price}</p>
+                )}
+              </div>
             </div>
 
             <div className="space-y-4">
@@ -270,7 +294,9 @@ export default function Component() {
                       className="w-full"
                       variant="outline"
                       onClick={handleAddToBag}
-                      disabled={!qty || (user && user.role !== "USER")}
+                      disabled={
+                        !qty || isOutOfStock || (user && user.role !== "USER")
+                      }
                       size="lg"
                     >
                       <ShoppingCart className="mr-2 w-4 h-4" /> Add To Bag
@@ -293,7 +319,9 @@ export default function Component() {
                   <Button
                     className="w-full"
                     onClick={handleBuyNow}
-                    disabled={!qty || (user && user.role !== "USER")}
+                    disabled={
+                      !qty || isOutOfStock || (user && user.role !== "USER")
+                    }
                     size="lg"
                   >
                     {loading ? (

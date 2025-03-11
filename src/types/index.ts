@@ -130,6 +130,7 @@ export interface ISizeVariant {
   id: string;
   productId: string;
   price: number;
+  discountedPrice: number;
   stock: number;
   colorId: string;
   color: IColor;

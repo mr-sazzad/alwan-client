@@ -11,6 +11,28 @@ const productsApi = baseApi.injectEndpoints({
         contentType: "multipart/form-data",
       }),
       invalidatesTags: [tagTypes.product],
+
+      async onQueryStarted(data, { queryFulfilled }) {
+        // Log FormData contents
+        if (data instanceof FormData) {
+          for (const [key, value] of data.entries()) {
+            if (value instanceof File) {
+              console.log(key, value.name);
+            } else {
+              console.log(key, value);
+            }
+          }
+        } else {
+          console.log(data);
+        }
+
+        try {
+          const result = await queryFulfilled;
+          console.log("Product created successfully:", result.data);
+        } catch (error) {
+          console.error("Error creating product:", error);
+        }
+      },
     }),
 
     getAllProducts: build.query({
