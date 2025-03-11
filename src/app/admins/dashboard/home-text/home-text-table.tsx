@@ -6,7 +6,7 @@ import {
   MoreHorizontal,
   Trash2,
 } from "lucide-react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { DataTable } from "../../../../components/admins/dashboard/products/data-table";
 import AlertDialogComp from "../../../../components/alert-dialog/alert-dialog";
 import { Button } from "../../../../components/ui/button";
@@ -158,7 +158,7 @@ const HomeTextTable = ({ texts, onUpdateText }: HomeTextTableProps) => {
   return (
     <>
       <div className="px-1 hide-scrollbar">
-        <DataTable columns={columns} data={texts} filterColumn="firstTitle" />
+        <DataTable columns={columns} data={texts} />
       </div>
 
       <AlertDialogComp

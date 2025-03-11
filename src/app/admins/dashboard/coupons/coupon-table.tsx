@@ -159,7 +159,7 @@ const CouponTableColumns = ({
   return (
     <>
       <div className="px-1 hide-scrollbar">
-        <DataTable columns={columns} data={coupons} filterColumn="code" />
+        <DataTable columns={columns} data={coupons} />
       </div>
 
       <AlertDialogComp

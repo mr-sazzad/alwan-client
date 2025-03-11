@@ -112,11 +112,7 @@ const UsersPage = () => {
 
       <div className="mt-8">
         <h2 className="text-2xl font-medium mb-4">All Users</h2>
-        <DataTable
-          columns={columns}
-          data={userRes?.data}
-          filterColumn="email"
-        />
+        <DataTable columns={columns} data={userRes?.data} />
       </div>
     </div>
   );

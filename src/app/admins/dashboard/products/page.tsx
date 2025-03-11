@@ -1,5 +1,4 @@
 "use client";
-import React from "react";
 import { Button } from "../../../../components/ui/button";
 import { useGetAllProductsQuery } from "../../../../redux/api/products/productsApi";
 import ProductTableColumns from "./product-columns";
@@ -54,11 +53,7 @@ const Page = () => {
       </div>
 
       {!isLoading && response?.data && (
-        <DataTable
-          columns={columns}
-          data={response?.data}
-          filterColumn="name"
-        />
+        <DataTable columns={columns} data={response?.data} />
       )}
     </div>
   );

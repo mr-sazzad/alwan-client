@@ -134,7 +134,7 @@ export const FeedbacksColumns = ({ feedbacks }: FeedbacksColumnsProps) => {
 
   return (
     <div>
-      <DataTable columns={columns} data={feedbacks} filterColumn="rating" />
+      <DataTable columns={columns} data={feedbacks} />
 
       <AlertDialogComp
         open={open}

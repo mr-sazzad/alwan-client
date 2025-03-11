@@ -101,7 +101,7 @@ const ProductTypeColumns: React.FC<ProductTypeColumnsProps> = ({
 
   return (
     <div>
-      <DataTable columns={columns} data={productTypes} filterColumn="name" />
+      <DataTable columns={columns} data={productTypes} />
       <ProductTypeDrawer
         open={open}
         setOpen={setOpen}

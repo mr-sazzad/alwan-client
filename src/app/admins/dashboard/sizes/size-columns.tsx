@@ -132,7 +132,7 @@ const SizeTableColumns: React.FC<SizeTableColumnsProps> = ({ sizes }) => {
 
   return (
     <div>
-      <DataTable columns={columns} data={sizes} filterColumn="name" />
+      <DataTable columns={columns} data={sizes} />
       <SizeDrawer open={open} setOpen={setOpen} size={size} />
 
       <AlertDialogComp

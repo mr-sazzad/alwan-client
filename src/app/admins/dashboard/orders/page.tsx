@@ -254,53 +254,31 @@ export default function OrderPage() {
               </TabsList>
             </div>
             <TabsContent value="all" className="space-y-4">
-              <DataTable
-                columns={columns}
-                data={filterOrders("all")}
-                filterColumn="email"
-              />
+              <DataTable columns={columns} data={filterOrders("all")} />
             </TabsContent>
             <TabsContent value="processing" className="space-y-4">
-              <DataTable
-                columns={columns}
-                data={filterOrders("processing")}
-                filterColumn="email"
-              />
+              <DataTable columns={columns} data={filterOrders("processing")} />
             </TabsContent>
             <TabsContent value="CANCELLED" className="space-y-4">
-              <DataTable
-                columns={columns}
-                data={filterOrders("CANCELLED")}
-                filterColumn="email"
-              />
+              <DataTable columns={columns} data={filterOrders("CANCELLED")} />
             </TabsContent>
             <TabsContent value="shipped-to-courier" className="space-y-4">
               <DataTable
                 columns={columns}
                 data={filterOrders("shipped-to-courier")}
-                filterColumn="email"
               />
             </TabsContent>
             <TabsContent value="completed" className="space-y-4">
-              <DataTable
-                columns={columns}
-                data={filterOrders("completed")}
-                filterColumn="email"
-              />
+              <DataTable columns={columns} data={filterOrders("completed")} />
             </TabsContent>
             <TabsContent value="return-requested" className="space-y-4">
               <DataTable
                 columns={columns}
                 data={filterOrders("return-requested")}
-                filterColumn="email"
               />
             </TabsContent>
             <TabsContent value="returned" className="space-y-4">
-              <DataTable
-                columns={columns}
-                data={filterOrders("returned")}
-                filterColumn="email"
-              />
+              <DataTable columns={columns} data={filterOrders("returned")} />
             </TabsContent>
           </Tabs>
         </CardContent>

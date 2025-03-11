@@ -150,7 +150,7 @@ const ColorTableColumns: React.FC<ColorTableColumnsProps> = ({ colors }) => {
 
   return (
     <div>
-      <DataTable columns={columns} data={colors} filterColumn="name" />
+      <DataTable columns={columns} data={colors} />
 
       <ColorDrawer open={open} setOpen={setOpen} color={color} />
 

@@ -190,25 +190,13 @@ export default function ExpensePage() {
               </TabsList>
             </div>
             <TabsContent value="all">
-              <DataTable
-                columns={columns}
-                data={allExpenses?.data || []}
-                filterColumn="title"
-              />
+              <DataTable columns={columns} data={allExpenses?.data || []} />
             </TabsContent>
             <TabsContent value="weekly">
-              <DataTable
-                columns={columns}
-                data={weeklyExpenses?.data || []}
-                filterColumn="title"
-              />
+              <DataTable columns={columns} data={weeklyExpenses?.data || []} />
             </TabsContent>
             <TabsContent value="monthly">
-              <DataTable
-                columns={columns}
-                data={monthlyExpenses?.data || []}
-                filterColumn="title"
-              />
+              <DataTable columns={columns} data={monthlyExpenses?.data || []} />
             </TabsContent>
           </Tabs>
         </CardContent>

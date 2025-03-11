@@ -71,11 +71,7 @@ const Reviews = () => {
       ) : (
         <>
           <div>
-            <DataTable
-              columns={columns}
-              data={reviews?.data ?? []}
-              filterColumn="rating"
-            />
+            <DataTable columns={columns} data={reviews?.data ?? []} />
           </div>
         </>
       )}
