@@ -178,7 +178,7 @@ const CategoryTableColumns: React.FC<CategoryTableColumnsProps> = ({
 
   return (
     <div>
-      <DataTable columns={columns} data={categories} filterColumn="name" />
+      <DataTable columns={columns} data={categories} />
 
       <CategoryDetailsDrawer
         open={open}
